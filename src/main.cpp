@@ -109,8 +109,8 @@ int main(int, char**)
     
     std::cout << "GLFW_Info                 : " << glfwGetVersionString() << std::endl;
     
-    constexpr int fboWidth(800);  // フレームバッファオブジェクトの幅
-    constexpr int fboHeight(640); // フレームバッファオブジェクトの高さ
+    constexpr int fboWidth(800);  
+    constexpr int fboHeight(640); 
 
     GraphicsInit();
     

@@ -2,6 +2,7 @@
 #define vector3_h
 
 #include<exception>
+#include<memory>
 #include "quaternion.h"
 #include "matrix4.h"
 
@@ -11,7 +12,7 @@ class Vector3 {
         //public data member
         T x,y,z;
 
-		Vector3()=default;
+		Vector3();
         Vector3(T x,T y,T z):x(x),y(y),z(z){};
         //only constructors take base initializers
         Vector3& set(T x,T y,T z){
@@ -156,84 +157,6 @@ class Vector3 {
 		return fromArray(m.elements, index * 4);
 	}
 
-	Vector3& fromArray(T array[], int offset = 0 ) {
-		x = array[ offset ];
-		y = array[ offset + 1 ];
-		z = array[ offset + 2 ];
-
-		return *this;
-	}
-
-
-
-
-
-	// TODO lengthSquared?
-	T lengthSq() {
-		return x * x + y * y + z * z;
-	}
-
-	T length() {
-		return sqrt(lengthSq());
-	}
-
-	T manhattanLength(){
-		return abs( this->x ) + abs( this->y ) + abs( this->z );
-	}
-
-	T normalize() {
-		return divideScalar(length()?length():1);
-	}
-
-	T divideScalar(T scalar) {
-		return multiplyScalar(1 / scalar);
-
-	}
-
-// 	min( v ) {
-
-// 		this->x = Math.min( this->x, v.x );
-// 		this->y = Math.min( this->y, v.y );
-// 		this->z = Math.min( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-// 	max( v ) {
-
-// 		this->x = Math.max( this->x, v.x );
-// 		this->y = Math.max( this->y, v.y );
-// 		this->z = Math.max( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-	Vector3& crossVectors(Vector3 a,Vector3 b){
-
-		const T ax = a.x, ay = a.y, az = a.z;
-		const T bx = b.x, by = b.y, bz = b.z;
-
-		this->x = ay * bz - az * by;
-		this->y = az * bx - ax * bz;
-		this->z = ax * by - ay * bx;
-
-		return *this;
-	}
-
-
-    private:
-        
-};
-
-
-
-
-
-
-
-
 // 	applyEuler( euler ) {
 
 // 		if ( ! ( euler && euler.isEuler ) ) {
@@ -246,11 +169,11 @@ class Vector3 {
 
 // 	}
 
-// 	applyAxisAngle( axis, angle ) {
+	Vector3& applyAxisAngle(Vector3 axis, double angle) {
+		applyQuaternion( _quaternion->setFromAxisAngle(axis,angle));
 
-// 		return *this-applyQuaternion( _quaternion.setFromAxisAngle( axis, angle ) );
-
-// 	}
+		return *this;
+	}
 
 // 	applyMatrix3( m ) {
 
@@ -265,54 +188,29 @@ class Vector3 {
 
 // 	}
 
-// 	applyNormalMatrix( m ) {
+	// applyNormalMatrix( m ) {
 
-// 		return *this-applyMatrix3( m ).normalize();
+	// 	return *this-applyMatrix3( m ).normalize();
 
-// 	}
+	// }
 
-// 	applyMatrix4( m ) {
+	Vector3 applyMatrix4(Matrix4 m) {
+		const T x = this->x, y = this->y, z = this->z;
 
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const e = m.elements;
+		const double w = 1 / (m.elements[ 3 ] * x + m.elements[ 7 ] * y + m.elements[ 11 ] * z + m.elements[ 15 ]);
 
-// 		const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
+		this->x = ( m.elements[ 0 ] * x + m.elements[ 4 ] * y + m.elements[ 8 ] * z + m.elements[ 12 ] ) * w;
+		this->y = ( m.elements[ 1 ] * x + m.elements[ 5 ] * y + m.elements[ 9 ] * z + m.elements[ 13 ] ) * w;
+		this->z = ( m.elements[ 2 ] * x + m.elements[ 6 ] * y + m.elements[ 10 ] * z + m.elements[ 14 ] ) * w;
 
-// 		this->x = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
-// 		this->y = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
-// 		this->z = ( e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] ) * w;
+		return *this;
+	}
 
-// 		return *this;
-
-// 	}
-
-// 	applyQuaternion( q ) {
-
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const qx = q.x, qy = q.y, qz = q.z, qw = q.w;
-
-// 		// calculate quat * vector
-
-// 		const ix = qw * x + qy * z - qz * y;
-// 		const iy = qw * y + qz * x - qx * z;
-// 		const iz = qw * z + qx * y - qy * x;
-// 		const iw = - qx * x - qy * y - qz * z;
-
-// 		// calculate result * inverse quat
-
-// 		this->x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-// 		this->y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-// 		this->z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
-
-// 		return *this;
-
-// 	}
-
-// 	project( camera ) {
-
-// 		return *this-applyMatrix4( camera.matrixWorldInverse ).applyMatrix4( camera.projectionMatrix );
-
-// 	}
+	// Vector3& project(Matrix4 camera) {
+	// 	applyMatrix4(camera.matrixWorldInverse ).applyMatrix4(camera.projectionMatrix);
+		
+	// 	return *this;
+	// }
 
 // 	unproject( camera ) {
 
@@ -320,172 +218,42 @@ class Vector3 {
 
 // 	}
 
-// 	transformDirection( m ) {
+	Vector3& transformDirection(Matrix4 m) {
+		// input: THREE.Matrix4 affine matrix
+		// vector interpreted as a direction
 
-// 		// input: THREE.Matrix4 affine matrix
-// 		// vector interpreted as a direction
+		const T x = this->x, y = this->y, z = this->z;
 
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const e = m.elements;
+		this->x = m.elements[ 0 ] * x + m.elements[ 4 ] * y + m.elements[ 8 ] * z;
+		this->y = m.elements[ 1 ] * x + m.elements[ 5 ] * y + m.elements[ 9 ] * z;
+		this->z = m.elements[ 2 ] * x + m.elements[ 6 ] * y + m.elements[ 10 ] * z;
 
-// 		this->x = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z;
-// 		this->y = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z;
-// 		this->z = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z;
+		return this->normalize();
 
-// 		return *this-normalize();
+	}
 
-// 	}
+	// TODO lengthSquared?
+	T lengthSq() {
+		return x * x + y * y + z * z;
+	}
 
-// 	divide( v ) {
+	T length() {
+		return sqrt(lengthSq());
+	}
 
-// 		this->x /= v.x;
-// 		this->y /= v.y;
-// 		this->z /= v.z;
+	T manhattanLength(){
+		return abs( this->x ) + abs( this->y ) + abs( this->z );
+	}
 
-// 		return *this;
+	Vector3& normalize() {
+		return divideScalar(length()?length():1);
+	}
 
-// 	}
+	Vector3& setLength(double length) {
 
-// 	divideScalar( scalar ) {
+		return *this-normalize().multiplyScalar( length );
 
-// 		return *this-multiplyScalar( 1 / scalar );
-
-// 	}
-
-// 	min( v ) {
-
-// 		this->x = Math.min( this->x, v.x );
-// 		this->y = Math.min( this->y, v.y );
-// 		this->z = Math.min( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-// 	max( v ) {
-
-// 		this->x = Math.max( this->x, v.x );
-// 		this->y = Math.max( this->y, v.y );
-// 		this->z = Math.max( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-// 	clamp( min, max ) {
-
-// 		// assumes min < max, componentwise
-
-// 		this->x = Math.max( min.x, Math.min( max.x, this->x ) );
-// 		this->y = Math.max( min.y, Math.min( max.y, this->y ) );
-// 		this->z = Math.max( min.z, Math.min( max.z, this->z ) );
-
-// 		return *this;
-
-// 	}
-
-// 	clampScalar( minVal, maxVal ) {
-
-// 		this->x = Math.max( minVal, Math.min( maxVal, this->x ) );
-// 		this->y = Math.max( minVal, Math.min( maxVal, this->y ) );
-// 		this->z = Math.max( minVal, Math.min( maxVal, this->z ) );
-
-// 		return *this;
-
-// 	}
-
-// 	clampLength( min, max ) {
-// 		//length()函数返回的是Vector的长度
-// 		const length = this-length();
-
-// 		// (length||1)用来保证除数不为1
-// 		return *this-divideScalar( length || 1 ).multiplyScalar( Math.max( min, Math.min( max, length ) ) );
-
-// 	}
-
-// 	floor() {
-
-// 		this->x = Math.floor( this->x );
-// 		this->y = Math.floor( this->y );
-// 		this->z = Math.floor( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	ceil() {
-
-// 		this->x = Math.ceil( this->x );
-// 		this->y = Math.ceil( this->y );
-// 		this->z = Math.ceil( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	round() {
-
-// 		this->x = Math.round( this->x );
-// 		this->y = Math.round( this->y );
-// 		this->z = Math.round( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	roundToZero() {
-
-// 		this->x = ( this->x < 0 ) ? Math.ceil( this->x ) : Math.floor( this->x );
-// 		this->y = ( this->y < 0 ) ? Math.ceil( this->y ) : Math.floor( this->y );
-// 		this->z = ( this->z < 0 ) ? Math.ceil( this->z ) : Math.floor( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	negate() {
-
-// 		this->x = - this->x;
-// 		this->y = - this->y;
-// 		this->z = - this->z;
-
-// 		return *this;
-
-// 	}
-
-
-
-// 	// TODO lengthSquared?
-
-// 	lengthSq() {
-
-// 		return *this->x * this->x + this->y * this->y + this->z * this->z;
-
-// 	}
-
-// 	length() {
-
-// 		return Math.sqrt( this->x * this->x + this->y * this->y + this->z * this->z );
-
-// 	}
-
-// 	manhattanLength() {
-
-// 		return Math.abs( this->x ) + Math.abs( this->y ) + Math.abs( this->z );
-
-// 	}
-
-// 	normalize() {
-
-// 		return *this-divideScalar( this-length() || 1 );
-
-// 	}
-
-// 	setLength( length ) {
-
-// 		return *this-normalize().multiplyScalar( length );
-
-// 	}
+	}
 
 // 	lerp( v, alpha ) {
 
@@ -507,94 +275,169 @@ class Vector3 {
 
 // 	}
 
-// 	cross( v, w ) {
+	Vector3& divide(Vector3 v) {
 
-// 		if ( w !== undefined ) {
+		this->x /= v.x;
+		this->y /= v.y;
+		this->z /= v.z;
 
-// 			console.warn( 'THREE.Vector3: .cross() now only accepts one argument. Use .crossVectors( a, b ) instead.' );
-// 			return *this-crossVectors( v, w );
+		return *this;
+	}
 
-// 		}
+	Vector3& divideScalar(T scalar) {
+		return multiplyScalar(1 / scalar);
 
-// 		return *this-crossVectors( this, v );
+	}
 
-// 	}
+	Vector3& min(Vector3& v) {
 
-// 	crossVectors( a, b ) {
+		this->x = fmin(this->x, v.x);
+		this->y = fmin(this->y, v.y);
+		this->z = fmin(this->z, v.z);
 
-// 		const ax = a.x, ay = a.y, az = a.z;
-// 		const bx = b.x, by = b.y, bz = b.z;
+		return *this;
+	}
 
-// 		this->x = ay * bz - az * by;
-// 		this->y = az * bx - ax * bz;
-// 		this->z = ax * by - ay * bx;
+	Vector3& max(Vector3& v) {
+		this->x = fmax(this->x, v.x);
+		this->y = fmax(this->y, v.y);
+		this->z = fmax(this->z, v.z);
 
-// 		return *this;
+		return *this;
+	}
 
-// 	}
+	Vector3& clamp(Vector3& min,Vector3& max){
+		// assumes min < max, componentwise
 
-// 	projectOnVector( v ) {
+		this->x = fmax(min.x, fmin(max.x, this->x));
+		this->y = fmax(min.y, fmin(max.y, this->y));
+		this->z = fmax(min.z, fmin(max.z, this->z));
 
-// 		const denominator = v.lengthSq();
+		return *this;
+	}
 
-// 		if ( denominator === 0 ) return *this-set( 0, 0, 0 );
+	Vector3& clampScalar(double minVal,double maxVal) {
+		this->x = fmax(minVal, fmin(maxVal, this->x));
+		this->y = fmax(minVal, fmin(maxVal, this->y));
+		this->z = fmax(minVal, fmin(maxVal, this->z));
 
-// 		const scalar = v.dot( this ) / denominator;
+		return *this;
+	}
 
-// 		return *this-copy( v ).multiplyScalar( scalar );
+	Vector3& clampLength(double min,double max) {
+		//length()函数返回的是Vector的长度
+		const T length = length();
 
-// 	}
+		// (length||1)用来保证除数不为0
+		divideScalar(length?length:1);
+		multiplyScalar(fmax(min, fmin(max,length)));
 
-// 	projectOnPlane( planeNormal ) {
+		return *this;
+	}
 
-// 		_vector.copy( this ).projectOnVector( planeNormal );
+	Vector3& floor(){
+		this->x = floor( this->x );
+		this->y = floor( this->y );
+		this->z = floor( this->z );
 
-// 		return *this-sub( _vector );
+		return *this;
+	}
 
-// 	}
+	Vector3& ceil(){
+		this->x = ceil( this->x );
+		this->y = ceil( this->y );
+		this->z = ceil( this->z );
 
-// 	reflect( normal ) {
+		return *this;
+	}
 
-// 		// reflect incident vector off plane orthogonal to normal
-// 		// normal is assumed to have unit length
+	Vector3& round(){
+		this->x = round( this->x );
+		this->y = round( this->y );
+		this->z = round( this->z );
 
-// 		return *this-sub( _vector.copy( normal ).multiplyScalar( 2 * this-dot( normal ) ) );
+		return *this;
+	}
 
-// 	}
+	Vector3& roundToZero(){
+		this->x = ( this->x < 0 ) ? ceil( this->x ) : floor( this->x );
+		this->y = ( this->y < 0 ) ? ceil( this->y ) : floor( this->y );
+		this->z = ( this->z < 0 ) ? ceil( this->z ) : floor( this->z );
 
-// 	angleTo( v ) {
+		return *this;
+	}
 
-// 		const denominator = Math.sqrt( this-lengthSq() * v.lengthSq() );
+	Vector3& negate(){
+		this->x = - this->x;
+		this->y = - this->y;
+		this->z = - this->z;
 
-// 		if ( denominator === 0 ) return Math.PI / 2;
+		return *this;
+	}
 
-// 		const theta = this-dot( v ) / denominator;
+	Vector3& cross(Vector3& v) {
+		return crossVectors(*this, v);
+	}
 
-// 		// clamp, to handle numerical problems
+	Vector3& crossVectors(Vector3& a,Vector3& b){
+		const T ax = a.x, ay = a.y, az = a.z;
+		const T bx = b.x, by = b.y, bz = b.z;
 
-// 		return Math.acos( MathUtils.clamp( theta, - 1, 1 ) );
+		this->x = ay * bz - az * by;
+		this->y = az * bx - ax * bz;
+		this->z = ax * by - ay * bx;
 
-// 	}
+		return *this;
+	}
 
-// 	distanceTo( v ) {
+	Vector3& projectOnVector(Vector3& v) {
+		const T denominator = v.lengthSq();
 
-// 		return Math.sqrt( this-distanceToSquared( v ) );
+		if (denominator == 0) return set(0, 0, 0);
 
-// 	}
+		const double scalar = v.dot(*this) / denominator;
 
-// 	distanceToSquared( v ) {
+		return this->copy(v).multiplyScalar(scalar);
 
-// 		const dx = this->x - v.x, dy = this->y - v.y, dz = this->z - v.z;
+	}
 
-// 		return dx * dx + dy * dy + dz * dz;
+	Vector3& projectOnPlane(Vector3&  planeNormal) {
+		_vector->copy(*this).projectOnVector(planeNormal);
 
-// 	}
+		return sub(_vector);
+	}
 
-// 	manhattanDistanceTo( v ) {
+	Vector3& reflect(Vector3& normal) {
+		// reflect incident vector off plane orthogonal to normal
+		// normal is assumed to have unit length
 
-// 		return Math.abs( this->x - v.x ) + Math.abs( this->y - v.y ) + Math.abs( this->z - v.z );
+		return sub(*_vector.copy(normal).multiplyScalar(2*dot(normal)));
+	}
 
-// 	}
+	double angleTo(Vector3& v){
+		const double denominator = sqrt(this->lengthSq() * v.lengthSq());
+
+		if (denominator == 0) return M_PI / 2;
+
+		const double theta = this->dot(v) / denominator;
+
+		// clamp, to handle numerical problems
+		return acos(clamp(theta, - 1, 1));
+	}
+
+	double distanceTo(Vector3&  v) {
+		return sqrt(this->distanceToSquared(v));
+	}
+
+	double distanceToSquared(Vector3& v){
+		const double dx = this->x - v.x, dy = this->y - v.y, dz = this->z - v.z;
+
+		return dx * dx + dy * dy + dz * dz;
+	}
+
+	double manhattanDistanceTo(Vector3& v){
+		return abs(this->x - v.x) + abs(this->y - v.y) + abs(this->z - v.z);
+	}
 
 // 	setFromSpherical( s ) {
 
@@ -630,37 +473,29 @@ class Vector3 {
 
 // 	}
 
-// 	setFromMatrixPosition( m ) {
+	Vector3& setFromMatrixPosition(Matrix4& m){
+		this->x = m.elements[ 12 ];
+		this->y = m.elements[ 13 ];
+		this->z = m.elements[ 14 ];
 
-// 		const e = m.elements;
+		return *this;
+	}
 
-// 		this->x = e[ 12 ];
-// 		this->y = e[ 13 ];
-// 		this->z = e[ 14 ];
+	Vector3& setFromMatrixScale(Matrix4& m){
+		const double sx = setFromMatrixColumn(m, 0).length();
+		const double sy = setFromMatrixColumn(m, 1).length();
+		const double sz = setFromMatrixColumn(m, 2).length();
 
-// 		return *this;
+		this->x = sx;
+		this->y = sy;
+		this->z = sz;
 
-// 	}
+		return *this;
+	}
 
-// 	setFromMatrixScale( m ) {
-
-// 		const sx = this-setFromMatrixColumn( m, 0 ).length();
-// 		const sy = this-setFromMatrixColumn( m, 1 ).length();
-// 		const sz = this-setFromMatrixColumn( m, 2 ).length();
-
-// 		this->x = sx;
-// 		this->y = sy;
-// 		this->z = sz;
-
-// 		return *this;
-
-// 	}
-
-// 	setFromMatrixColumn( m, index ) {
-
-// 		return *this-fromArray( m.elements, index * 4 );
-
-// 	}
+	Vector3& setFromMatrixColumn(Matrix4& m,int index){
+		return fromArray(m.elements, index * 4);
+	}
 
 // 	setFromMatrix3Column( m, index ) {
 
@@ -678,31 +513,21 @@ class Vector3 {
 
 // 	}
 
-// 	equals( v ) {
+	Vector3& fromArray(T array[], int offset = 0 ) {
+		x = array[ offset ];
+		y = array[ offset + 1 ];
+		z = array[ offset + 2 ];
 
-// 		return ( ( v.x === this->x ) && ( v.y === this->y ) && ( v.z === this->z ) );
+		return *this;
+	}
 
-// 	}
+	double* toArray(double array[],int offset = 0){
+		array[offset] = this->x;
+		array[offset + 1] = this->y;
+		array[offset + 2] = this->z;
 
-// 	fromArray( array, offset = 0 ) {
-
-// 		this->x = array[ offset ];
-// 		this->y = array[ offset + 1 ];
-// 		this->z = array[ offset + 2 ];
-
-// 		return *this;
-
-// 	}
-
-// 	toArray( array = [], offset = 0 ) {
-
-// 		array[ offset ] = this->x;
-// 		array[ offset + 1 ] = this->y;
-// 		array[ offset + 2 ] = this->z;
-
-// 		return array;
-
-// 	}
+		return array;
+	}
 
 // 	fromBufferAttribute( attribute, index, offset ) {
 
@@ -720,49 +545,37 @@ class Vector3 {
 
 // 	}
 
-// 	random() {
+	Vector3& random() {
+		this->x = random_gen<double>();
+		this->y = random_gen<double>();
+		this->z = random_gen<double>();
 
-// 		this->x = Math.random();
-// 		this->y = Math.random();
-// 		this->z = Math.random();
+		return *this;
+	}
 
-// 		return *this;
+	Vector3& randomDirection() {
+		// Derived from https://mathworld.wolfram.com/SpherePointPicking.html
 
-// 	}
+		const double u = (random_gen<double>() - 0.5) * 2;
+		const double t = random_gen<double>() * M_PI * 2;
+		const double f = sqrt(1 - std::pow(u,2));
 
-// 	randomDirection() {
+		this->x = f * cos(t);
+		this->y = f * sin(t);
+		this->z = u;
 
-// 		// Derived from https://mathworld.wolfram.com/SpherePointPicking.html
+		return *this;
+	}
 
-// 		const u = ( Math.random() - 0.5 ) * 2;
-// 		const t = Math.random() * Math.PI * 2;
-// 		const f = Math.sqrt( 1 - u ** 2 );
+	bool equals(Vector3& v){
+		return ( (v.x == this->x) && (v.y == this->y) && (v.z == this->z) );
+	}
 
-// 		this->x = f * Math.cos( t );
-// 		this->y = f * Math.sin( t );
-// 		this->z = u;
-
-// 		return *this;
-
-// 	}
-
-// 	*[ Symbol.iterator ]() {
-
-// 		yield this->x;
-// 		yield this->y;
-// 		yield this->z;
-
-// 	}
-
-// }
-
-// Vector3.prototype.isVector3 = true;
-
-// const _vector = /*@__PURE__*/ new Vector3();
-// const _quaternion = /*@__PURE__*/ new Quaternion();
-
-// export { Vector3 };
-
+    private:
+		std::shared_ptr<Vector3> _vector;
+		std::shared_ptr<Quaternion> _quaternion;		
+        
+};
 
 //设置常用子类型的alias，以方便使用
 // element of type double precision float
@@ -770,4 +583,4 @@ typedef Vector3<double> Vector3d;
 typedef Vector3<float> Vector3f;
 typedef Vector3<unsigned char> Vector3uc;
 
-#endif //vector3_h
+#endif //VECTOR3_H
