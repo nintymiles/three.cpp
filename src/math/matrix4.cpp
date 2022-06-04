@@ -2,15 +2,15 @@
 #include "vector3.h"
 #include "quaternion.h"
 
-Matrix4::Matrix4():_v1(std::make_shared<Vector3d>(new Vector3d())),
+Matrix4::Matrix4():_v1(std::make_shared<Vector3>(new Vector3())),
     _m1(std::make_shared<Matrix4>(new Matrix4())),
-    _zero(std::make_shared<Vector3d>(new Vector3d(0,0,0))),
-    _one(std::make_shared<Vector3d>(new Vector3d(0,0,1))),
-    _x(std::make_shared<Vector3d>(new Vector3d())),
-    _y(std::make_shared<Vector3d>(new Vector3d())),
-    _z(std::make_shared<Vector3d>(new Vector3d())){};
+    _zero(std::make_shared<Vector3>(new Vector3(0,0,0))),
+    _one(std::make_shared<Vector3>(new Vector3(0,0,1))),
+    _x(std::make_shared<Vector3>(new Vector3())),
+    _y(std::make_shared<Vector3>(new Vector3())),
+    _z(std::make_shared<Vector3>(new Vector3())){};
 
-Matrix4& Matrix4::extractBasis(Vector3d& xAxis,Vector3d& yAxis,Vector3d& zAxis){
+Matrix4& Matrix4::extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
     xAxis.setFromMatrixColumn( *this, 0 );
 	yAxis.setFromMatrixColumn( *this, 1 );
 	zAxis.setFromMatrixColumn( *this, 2 );
@@ -18,7 +18,7 @@ Matrix4& Matrix4::extractBasis(Vector3d& xAxis,Vector3d& yAxis,Vector3d& zAxis){
 	return *this;
 }
 
-Matrix4& Matrix4::makeBasis(Vector3d& xAxis,Vector3d& yAxis,Vector3d& zAxis){
+Matrix4& Matrix4::makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
     set(
         xAxis.x, yAxis.x, zAxis.x, 0,
         xAxis.y, yAxis.y, zAxis.y, 0,
@@ -57,7 +57,7 @@ Matrix4& Matrix4::extractRotation(Matrix4 m) {
     return *this;
 }
 
-Matrix4& Matrix4::compose(Vector3d position,Quaternion quaternion,Vector3d scale){
+Matrix4& Matrix4::compose(Vector3 position,Quaternion quaternion,Vector3 scale){
 
     const double x = quaternion.x(), y = quaternion.y(), z = quaternion.z(), w = quaternion.w();
     const double x2 = x + x,	y2 = y + y, z2 = z + z;
@@ -90,7 +90,7 @@ Matrix4& Matrix4::compose(Vector3d position,Quaternion quaternion,Vector3d scale
     return *this;
 }
 
-Matrix4& Matrix4::decompose(Vector3d& position,Quaternion& quaternion,Vector3d& scale){
+Matrix4& Matrix4::decompose(Vector3& position,Quaternion& quaternion,Vector3& scale){
     double sx = (_v1->set(elements[0], elements[1], elements[2])).length();
     const double sy = (_v1->set(elements[4], elements[5], elements[6])).length();
     const double sz =  _v1->set(elements[8], elements[9], elements[10]).length();
@@ -135,7 +135,7 @@ Matrix4& Matrix4::makeRotationFromQuaternion(Quaternion q){
     return compose(*_zero, q, *_one);
 }
 
-Matrix4& Matrix4::lookAt(Vector3d eye,Vector3d target,Vector3d up){
+Matrix4& Matrix4::lookAt(Vector3 eye,Vector3 target,Vector3 up){
     _z->subVectors( eye, target );
 
     if (_z->lengthSq() == 0) {
@@ -170,7 +170,7 @@ Matrix4& Matrix4::lookAt(Vector3d eye,Vector3d target,Vector3d up){
     return *this;
 }
 
-Matrix4& Matrix4::setPosition(Vector3d v) {
+Matrix4& Matrix4::setPosition(Vector3 v) {
     elements[ 12 ] = v.x;
     elements[ 13 ] = v.y;
     elements[ 14 ] = v.z;
@@ -178,7 +178,7 @@ Matrix4& Matrix4::setPosition(Vector3d v) {
     return *this;
 }
 
-Matrix4& Matrix4::scale(Vector3d v) {
+Matrix4& Matrix4::scale(Vector3 v) {
     const double x = v.x, y = v.y, z = v.z;
 
     elements[ 0 ] *= x; elements[ 4 ] *= y; elements[ 8 ] *= z;
@@ -189,7 +189,7 @@ Matrix4& Matrix4::scale(Vector3d v) {
     return *this;
 }
 
-Matrix4& Matrix4::makeRotationAxis(Vector3d axis, double angle) {
+Matrix4& Matrix4::makeRotationAxis(Vector3 axis, double angle) {
 
 		// Based on http://www.gamedev.net/reference/articles/article1199.asp
 		const double c = cos(angle);

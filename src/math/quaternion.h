@@ -12,7 +12,7 @@
 
 auto onChangeCallback = []{};
 
-template <typename T> class Vector3;
+// template <typename T> class Vector3;
 
 class Quaternion{
 private:
@@ -260,7 +260,7 @@ public:
 // 		return this;
 
 // 	}
-	Quaternion& setFromAxisAngle(Vector3<double> axis, double angle);
+	Quaternion& setFromAxisAngle(Vector3 axis, double angle);
 
 	Quaternion& setFromRotationMatrix(Matrix4 m){
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
@@ -309,7 +309,7 @@ public:
 		return *this;
 	}
 
-	Quaternion setFromUnitVectors(Vector3<double> vFrom,Vector3<double> vTo);
+	Quaternion setFromUnitVectors(Vector3 vFrom,Vector3 vTo);
 
 	double angleTo(Quaternion q) {
 		return 2 * acos(abs(clamp<double>(dot(q), - 1, 1)));

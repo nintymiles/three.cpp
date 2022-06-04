@@ -74,9 +74,9 @@ int main(int, char**)
     
 #endif
     
-    Vector3<double> v = Vector3<double>(13,12,11);
+    Vector3 v = Vector3(13,12,11);
     v.getComponent(2);
-    v.multiply(Vector3<double>(25,26,27));
+    v.multiply(Vector3(25,26,27));
     std::cout << "index 0:" << v.getComponent(0) << " index 1:" << v.getComponent(1) << " index 2:" << v.getComponent(2) << std::endl; 
 
     // Create window with graphics context

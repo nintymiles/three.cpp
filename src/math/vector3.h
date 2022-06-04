@@ -1,67 +1,72 @@
-#ifndef vector3_h
-#define vector3_h
+#ifndef VECTOR3_H
+#define VECTOR3_H
 
-#include<exception>
-#include<memory>
+#include <exception>
+#include <memory>
 #include "quaternion.h"
 #include "matrix4.h"
 
-template <typename T> 
-class Vector3 {
+class Vector3{
     public:
         //public data member
-        T x,y,z;
+        double x,y,z;
 
 		Vector3();
-        Vector3(T x,T y,T z):x(x),y(y),z(z){};
+        Vector3(double x,double y,double z):x(x),y(y),z(z){};
         //only constructors take base initializers
-        Vector3& set(T x,T y,T z){
+        Vector3& set(double x,double y,double z){
             this->x = x;
             this->y = y;
             this->z = z;
 
             return *this;
         }
-        Vector3& setScalar(T scalar){
+
+        Vector3& setScalar(double scalar){
             this->x = scalar;
             this->y = scalar;
             this->z = scalar;
 
             return *this;
         }
-        Vector3& setX(T x){
+
+        Vector3& setX(double x){
             this->x = x;
             return *this;
         }
-        Vector3& setY(T y){
+
+        Vector3& setY(double y){
             this->y = y;
             return *this;
         }
-        Vector3& setZ(T z){
+
+        Vector3& setZ(double z){
             this->z = z;
             return *this;
         }
-        Vector3& setComponent(int index, T value){
+
+        Vector3& setComponent(int index, double value){
             switch (index)
             {
             case 0:this->x = value;break;
             case 1:this->y = value;break;
             case 2:this->z = value; break;
-            default:throw std::runtime_error("index is out of range: " + std::to_string(index));break;
+            default:throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
             }
             return *this;
         }
-	    T getComponent(int index) {
+
+	    double getComponent(int index) {
 		    switch ( index ) {
 			case 0: return this->x;
 			case 1: return this->y;
 			case 2: return this->z;
-			default: throw std::runtime_error("index is out of range: " + std::to_string(index));break;
+			default: throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
 		}
 
 	}
 	Vector3 clone() {
-		return new Vector3(this->x,this->y,this->z);
+		return Vector3(this->x,this->y,this->z);
 	}
     
     Vector3& copy(Vector3 v) {
@@ -70,7 +75,7 @@ class Vector3 {
 	}
     //操作符重载，不熟悉
     Vector3& operator+=(const Vector3 rhs){
-        this += rhs;
+        *this += rhs;
         return *this;
     }
     Vector3& addVectors(Vector3 a,Vector3 b) {
@@ -130,7 +135,7 @@ class Vector3 {
 	}
 
     //模版的返回值，可以借助auto实现简化
-	auto dot(Vector3 v) ->T{
+	double dot(Vector3 v){
 		return this->x * v.x + this->y * v.y + this->z * v.z;
 	}
 
@@ -139,22 +144,18 @@ class Vector3 {
 		const auto x = this->x, y = this->y, z = this->z;
 		const double qx = q.x(), qy = q.y(), qz = q.z(), qw = q.w();
 
-		// calculate quat * vector
+		// calculate quadouble * vector
 		const auto ix = qw * x + qy * z - qz * y;
 		const auto iy = qw * y + qz * x - qx * z;
 		const auto iz = qw * z + qx * y - qy * x;
 		const auto iw = - qx * x - qy * y - qz * z;
 
-		// calculate result * inverse quat
+		// calculate resuldouble * inverse quat
 		this->x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
 		this->y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
 		this->z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
 
 		return *this;
-	}
-
-	Vector3& setFromMatrixColumn(Matrix4 m, int index) {
-		return fromArray(m.elements, index * 4);
 	}
 
 // 	applyEuler( euler ) {
@@ -195,7 +196,7 @@ class Vector3 {
 	// }
 
 	Vector3 applyMatrix4(Matrix4 m) {
-		const T x = this->x, y = this->y, z = this->z;
+		const double x = this->x, y = this->y, z = this->z;
 
 		const double w = 1 / (m.elements[ 3 ] * x + m.elements[ 7 ] * y + m.elements[ 11 ] * z + m.elements[ 15 ]);
 
@@ -222,7 +223,7 @@ class Vector3 {
 		// input: THREE.Matrix4 affine matrix
 		// vector interpreted as a direction
 
-		const T x = this->x, y = this->y, z = this->z;
+		const double x = this->x, y = this->y, z = this->z;
 
 		this->x = m.elements[ 0 ] * x + m.elements[ 4 ] * y + m.elements[ 8 ] * z;
 		this->y = m.elements[ 1 ] * x + m.elements[ 5 ] * y + m.elements[ 9 ] * z;
@@ -233,15 +234,15 @@ class Vector3 {
 	}
 
 	// TODO lengthSquared?
-	T lengthSq() {
+	double lengthSq() {
 		return x * x + y * y + z * z;
 	}
 
-	T length() {
+	double length() {
 		return sqrt(lengthSq());
 	}
 
-	T manhattanLength(){
+	double manhattanLength(){
 		return abs( this->x ) + abs( this->y ) + abs( this->z );
 	}
 
@@ -250,9 +251,7 @@ class Vector3 {
 	}
 
 	Vector3& setLength(double length) {
-
-		return *this-normalize().multiplyScalar( length );
-
+		return this->normalize().multiplyScalar( length );
 	}
 
 // 	lerp( v, alpha ) {
@@ -284,7 +283,7 @@ class Vector3 {
 		return *this;
 	}
 
-	Vector3& divideScalar(T scalar) {
+	Vector3& divideScalar(double scalar) {
 		return multiplyScalar(1 / scalar);
 
 	}
@@ -326,7 +325,7 @@ class Vector3 {
 
 	Vector3& clampLength(double min,double max) {
 		//length()函数返回的是Vector的长度
-		const T length = length();
+		const double length = this->length();
 
 		// (length||1)用来保证除数不为0
 		divideScalar(length?length:1);
@@ -336,33 +335,33 @@ class Vector3 {
 	}
 
 	Vector3& floor(){
-		this->x = floor( this->x );
-		this->y = floor( this->y );
-		this->z = floor( this->z );
+		this->x = std::floor( this->x );
+		this->y = std::floor( this->y );
+		this->z = std::floor( this->z );
 
 		return *this;
 	}
 
 	Vector3& ceil(){
-		this->x = ceil( this->x );
-		this->y = ceil( this->y );
-		this->z = ceil( this->z );
+		this->x = std::ceil( this->x );
+		this->y = std::ceil( this->y );
+		this->z = std::ceil( this->z );
 
 		return *this;
 	}
 
 	Vector3& round(){
-		this->x = round( this->x );
-		this->y = round( this->y );
-		this->z = round( this->z );
+		this->x = std::round( this->x );
+		this->y = std::round( this->y );
+		this->z = std::round( this->z );
 
 		return *this;
 	}
 
 	Vector3& roundToZero(){
-		this->x = ( this->x < 0 ) ? ceil( this->x ) : floor( this->x );
-		this->y = ( this->y < 0 ) ? ceil( this->y ) : floor( this->y );
-		this->z = ( this->z < 0 ) ? ceil( this->z ) : floor( this->z );
+		this->x = ( this->x < 0 ) ? std::ceil( this->x ) : std::floor( this->x );
+		this->y = ( this->y < 0 ) ? std::ceil( this->y ) : std::floor( this->y );
+		this->z = ( this->z < 0 ) ? std::ceil( this->z ) : std::floor( this->z );
 
 		return *this;
 	}
@@ -380,8 +379,8 @@ class Vector3 {
 	}
 
 	Vector3& crossVectors(Vector3& a,Vector3& b){
-		const T ax = a.x, ay = a.y, az = a.z;
-		const T bx = b.x, by = b.y, bz = b.z;
+		const double ax = a.x, ay = a.y, az = a.z;
+		const double bx = b.x, by = b.y, bz = b.z;
 
 		this->x = ay * bz - az * by;
 		this->y = az * bx - ax * bz;
@@ -391,7 +390,7 @@ class Vector3 {
 	}
 
 	Vector3& projectOnVector(Vector3& v) {
-		const T denominator = v.lengthSq();
+		const double denominator = v.lengthSq();
 
 		if (denominator == 0) return set(0, 0, 0);
 
@@ -401,17 +400,17 @@ class Vector3 {
 
 	}
 
-	Vector3& projectOnPlane(Vector3&  planeNormal) {
+	Vector3& projectOnPlane(Vector3& planeNormal) {
 		_vector->copy(*this).projectOnVector(planeNormal);
 
-		return sub(_vector);
+		return sub(*_vector);
 	}
 
 	Vector3& reflect(Vector3& normal) {
-		// reflect incident vector off plane orthogonal to normal
-		// normal is assumed to have unit length
+		// reflecdouble incidendouble vector off plane orthogonal to normal
+		// normal is assumed to have unidouble length
 
-		return sub(*_vector.copy(normal).multiplyScalar(2*dot(normal)));
+		return sub(_vector->copy(normal).multiplyScalar(2*dot(normal)));
 	}
 
 	double angleTo(Vector3& v){
@@ -422,7 +421,7 @@ class Vector3 {
 		const double theta = this->dot(v) / denominator;
 
 		// clamp, to handle numerical problems
-		return acos(clamp(theta, - 1, 1));
+		return std::acos( ::clamp<double>(theta, - 1, 1) );
 	}
 
 	double distanceTo(Vector3&  v) {
@@ -513,7 +512,7 @@ class Vector3 {
 
 // 	}
 
-	Vector3& fromArray(T array[], int offset = 0 ) {
+	Vector3& fromArray(double array[], int offset = 0 ) {
 		x = array[ offset ];
 		y = array[ offset + 1 ];
 		z = array[ offset + 2 ];
@@ -576,11 +575,5 @@ class Vector3 {
 		std::shared_ptr<Quaternion> _quaternion;		
         
 };
-
-//设置常用子类型的alias，以方便使用
-// element of type double precision float
-typedef Vector3<double> Vector3d;
-typedef Vector3<float> Vector3f;
-typedef Vector3<unsigned char> Vector3uc;
 
 #endif //VECTOR3_H

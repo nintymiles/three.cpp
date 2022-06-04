@@ -1,7 +1,7 @@
 #include "quaternion.h"
 #include "vector3.h"
 
-Quaternion& Quaternion::setFromAxisAngle(Vector3<double> axis, double angle) {
+Quaternion& Quaternion::setFromAxisAngle(Vector3 axis, double angle) {
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
 		// assumes axis is normalized
 		auto halfAngle = angle / 2;
@@ -17,7 +17,7 @@ Quaternion& Quaternion::setFromAxisAngle(Vector3<double> axis, double angle) {
 		return *this;
 }
 
-Quaternion Quaternion::setFromUnitVectors(Vector3<double> vFrom,Vector3<double> vTo) {
+Quaternion Quaternion::setFromUnitVectors(Vector3 vFrom,Vector3 vTo) {
 		// assumes direction vectors vFrom and vTo are normalized
 
 		double r = vFrom.dot(vTo) + 1;

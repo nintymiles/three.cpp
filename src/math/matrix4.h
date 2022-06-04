@@ -6,8 +6,7 @@
 #include<cmath>
 
 class Quaternion;
-template <typename T> class Vector3;
-typedef Vector3<double> Vector3d;
+class Vector3;
 
 class Matrix4{
     public:
@@ -78,9 +77,9 @@ class Matrix4{
 
 // 	}
 
-	Matrix4& extractBasis(Vector3d& xAxis,Vector3d& yAxis,Vector3d& zAxis);
+	Matrix4& extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 
-	Matrix4& makeBasis(Vector3d& xAxis,Vector3d& yAxis,Vector3d& zAxis);
+	Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 
 	Matrix4& extractRotation(Matrix4 m);
 
@@ -214,7 +213,7 @@ class Matrix4{
 
 	Matrix4& makeRotationFromQuaternion(Quaternion q);
 
-	Matrix4& lookAt(Vector3d eye,Vector3d target,Vector3d up); 
+	Matrix4& lookAt(Vector3 eye,Vector3 target,Vector3 up); 
 
 	Matrix4& multiply(Matrix4 m) {
 		return multiplyMatrices(*this, m);
@@ -330,7 +329,7 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& setPosition(Vector3d v);
+	Matrix4& setPosition(Vector3 v);
 
     Matrix4& setPosition(double x,double y,double z){
         elements[ 12 ] = x;
@@ -382,7 +381,7 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& scale(Vector3d v);
+	Matrix4& scale(Vector3 v);
 
 	double getMaxScaleOnAxis() {
 		const double scaleXSq = elements[ 0 ] * elements[ 0 ] + elements[ 1 ] * elements[ 1 ] + elements[ 2 ] * elements[ 2 ];
@@ -444,7 +443,7 @@ class Matrix4{
 	}
 
     //rotate angle degrees around any axis 
-	Matrix4& makeRotationAxis(Vector3d axis, double angle);
+	Matrix4& makeRotationAxis(Vector3 axis, double angle);
 
 	Matrix4& makeScale(double x,double y,double z){
 		set(
@@ -467,9 +466,9 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& compose(Vector3d position,Quaternion quaternion,Vector3d scale);
+	Matrix4& compose(Vector3 position,Quaternion quaternion,Vector3 scale);
 
-	Matrix4& decompose(Vector3d& position,Quaternion& quaternion,Vector3d& scale);
+	Matrix4& decompose(Vector3& position,Quaternion& quaternion,Vector3& scale);
 
 	Matrix4& makePerspective(double left,double right,double top,double bottom,double near,double far){
 		const double x = 2 * near / ( right - left );
@@ -547,13 +546,13 @@ class Matrix4{
 
 
     private:
-        std::shared_ptr<Vector3d> _v1;
+        std::shared_ptr<Vector3> _v1;
         std::shared_ptr<Matrix4>  _m1;
-        std::shared_ptr<Vector3d> _zero;
-        std::shared_ptr<Vector3d> _one;
-        std::shared_ptr<Vector3d> _x;
-        std::shared_ptr<Vector3d> _y;
-        std::shared_ptr<Vector3d> _z;
+        std::shared_ptr<Vector3> _zero;
+        std::shared_ptr<Vector3> _one;
+        std::shared_ptr<Vector3> _x;
+        std::shared_ptr<Vector3> _y;
+        std::shared_ptr<Vector3> _z;
 
 };
 
