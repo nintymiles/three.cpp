@@ -12,7 +12,11 @@
 
 auto onChangeCallback = []{};
 
+//类模版在对象交叉引用时的前置声明
 // template <typename T> class Vector3;
+// 使用时如模版的实例化声明： Vecotr3<double> v;
+// typedef Vector3<double> Vector3d;
+// 若类模版中有别名定义，则前置声明时此别名也需要在前置声明后重新定义
 
 class Quaternion{
 private:
@@ -171,7 +175,7 @@ public:
 		return Quaternion(_x, _y, _z, _w);
 	}
 
-    Quaternion& copy(Quaternion quaternion) {
+    Quaternion& copy(const Quaternion& quaternion) {
 		_x = quaternion.x();
 		_y = quaternion.y();
 		_z = quaternion.z();
@@ -260,9 +264,9 @@ public:
 // 		return this;
 
 // 	}
-	Quaternion& setFromAxisAngle(Vector3 axis, double angle);
+	Quaternion& setFromAxisAngle(const Vector3& axis, double angle);
 
-	Quaternion& setFromRotationMatrix(Matrix4 m){
+	Quaternion& setFromRotationMatrix(const Matrix4& m){
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 		// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
@@ -309,9 +313,9 @@ public:
 		return *this;
 	}
 
-	Quaternion setFromUnitVectors(Vector3 vFrom,Vector3 vTo);
+	Quaternion& setFromUnitVectors(Vector3& vFrom,Vector3& vTo);
 
-	double angleTo(Quaternion q) {
+	double angleTo(Quaternion& q) {
 		return 2 * acos(abs(clamp<double>(dot(q), - 1, 1)));
 	}
 
@@ -349,7 +353,7 @@ public:
 	}
 
     //dot product
-	double dot(Quaternion v) {
+	double dot(Quaternion& v) {
 		return _x * v._x + _y * v._y + _z * v._z + _w * v._w;
 	}
 
@@ -389,16 +393,16 @@ public:
 		return *this;
 	}
 
-    Quaternion& multiply(Quaternion q) {
+    Quaternion& multiply(Quaternion& q) {
 		return multiplyQuaternions( *this, q );
 	}
 
-	Quaternion& premultiply(Quaternion q) {
+	Quaternion& premultiply(Quaternion& q) {
 		return multiplyQuaternions( q, *this );
 	}
 
     //CPP中直接重载operator*即可
-	Quaternion& multiplyQuaternions(Quaternion a,Quaternion b) {
+	Quaternion& multiplyQuaternions(Quaternion& a,Quaternion& b) {
 
 		// from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm
 		const double qax = a._x, qay = a._y, qaz = a._z, qaw = a._w;
@@ -416,7 +420,7 @@ public:
 
 
 
-    Quaternion& slerp(Quaternion qb, double t) {
+    Quaternion& slerp(Quaternion& qb, double t) {
 		if ( t == 0 ) return *this;
 		if ( t == 1 ) return this->copy(qb);
 
@@ -482,7 +486,7 @@ public:
 		return *this;
 	}
 
-	Quaternion& slerpQuaternions(Quaternion qa,Quaternion qb,double t) {
+	Quaternion& slerpQuaternions(Quaternion& qa,Quaternion& qb,double t) {
 		return copy( qa ).slerp( qb, t );
 	}
 
@@ -510,7 +514,7 @@ public:
 		);
 	}
 
-	bool equals(Quaternion quaternion) {
+	bool equals(Quaternion& quaternion) {
 		return ( quaternion._x == _x ) && ( quaternion._y == _y ) && ( quaternion._z == _z ) && ( quaternion._w == _w );
 	}
 

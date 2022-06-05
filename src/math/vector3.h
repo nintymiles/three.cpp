@@ -74,11 +74,11 @@ class Vector3{
 		return *this;
 	}
     //操作符重载，不熟悉
-    Vector3& operator+=(const Vector3 rhs){
+    Vector3& operator+=(const Vector3& rhs){
         *this += rhs;
         return *this;
     }
-    Vector3& addVectors(Vector3 a,Vector3 b) {
+    Vector3& addVectors(Vector3& a,Vector3& b) {
 		this->x = a.x + b.x;
 		this->y = a.y + b.y;
 		this->z = a.z + b.z;
@@ -86,7 +86,7 @@ class Vector3{
 		return *this;
 	}
 
-    Vector3& addScaledVector(Vector3 v,double s) {
+    Vector3& addScaledVector(Vector3& v,double s) {
 		this->x += v.x * s;
 		this->y += v.y * s;
 		this->z += v.z * s;
@@ -94,7 +94,7 @@ class Vector3{
 		return *this;
 	}
 
-    Vector3& sub(Vector3 v) {
+    Vector3& sub(Vector3& v) {
 		this->x -= v.x;
 		this->y -= v.y;
 		this->z -= v.z;
@@ -102,7 +102,7 @@ class Vector3{
 		return *this;
 	}
 
-	Vector3& subVectors(Vector3 a,Vector3 b) {
+	Vector3& subVectors(Vector3& a,Vector3& b) {
 		this->x = a.x - b.x;
 		this->y = a.y - b.y;
 		this->z = a.z - b.z;
@@ -110,7 +110,7 @@ class Vector3{
 		return *this;
 	}
 
-    Vector3& multiply(Vector3 v) {
+    Vector3& multiply(const Vector3& v) {
 		this->x *= v.x;
 		this->y *= v.y;
 		this->z *= v.z;
@@ -126,7 +126,7 @@ class Vector3{
 		return *this;
 	}
 
-    Vector3& multiplyVectors(Vector3 a,Vector3 b) {
+    Vector3& multiplyVectors(Vector3& a,Vector3& b) {
 		this->x = a.x * b.x;
 		this->y = a.y * b.y;
 		this->z = a.z * b.z;
@@ -135,11 +135,11 @@ class Vector3{
 	}
 
     //模版的返回值，可以借助auto实现简化
-	double dot(Vector3 v){
+	double dot(const Vector3& v){
 		return this->x * v.x + this->y * v.y + this->z * v.z;
 	}
 
-    Vector3& applyQuaternion(Quaternion q) {
+    Vector3& applyQuaternion(Quaternion& q) {
 
 		const auto x = this->x, y = this->y, z = this->z;
 		const double qx = q.x(), qy = q.y(), qz = q.z(), qw = q.w();
@@ -170,7 +170,7 @@ class Vector3{
 
 // 	}
 
-	Vector3& applyAxisAngle(Vector3 axis, double angle) {
+	Vector3& applyAxisAngle(Vector3& axis, double angle) {
 		applyQuaternion( _quaternion->setFromAxisAngle(axis,angle));
 
 		return *this;
@@ -195,7 +195,7 @@ class Vector3{
 
 	// }
 
-	Vector3 applyMatrix4(Matrix4 m) {
+	Vector3 applyMatrix4(Matrix4& m) {
 		const double x = this->x, y = this->y, z = this->z;
 
 		const double w = 1 / (m.elements[ 3 ] * x + m.elements[ 7 ] * y + m.elements[ 11 ] * z + m.elements[ 15 ]);
@@ -219,7 +219,7 @@ class Vector3{
 
 // 	}
 
-	Vector3& transformDirection(Matrix4 m) {
+	Vector3& transformDirection(Matrix4& m) {
 		// input: THREE.Matrix4 affine matrix
 		// vector interpreted as a direction
 
@@ -274,7 +274,7 @@ class Vector3{
 
 // 	}
 
-	Vector3& divide(Vector3 v) {
+	Vector3& divide(Vector3& v) {
 
 		this->x /= v.x;
 		this->y /= v.y;
@@ -424,7 +424,7 @@ class Vector3{
 		return std::acos( ::clamp<double>(theta, - 1, 1) );
 	}
 
-	double distanceTo(Vector3&  v) {
+	double distanceTo(Vector3& v) {
 		return sqrt(this->distanceToSquared(v));
 	}
 

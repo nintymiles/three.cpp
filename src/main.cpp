@@ -23,6 +23,7 @@
 #endif
 
 #include <iostream>
+#include <functional>
 
 #include "NativeTemplate.h"
 #include "math/vector3.h"
@@ -75,8 +76,9 @@ int main(int, char**)
 #endif
     
     Vector3 v = Vector3(13,12,11);
+    Vector3 v2 = Vector3(25,26,27);
     v.getComponent(2);
-    v.multiply(Vector3(25,26,27));
+    v.multiply(/**Vector3(78,197,2345)*/v2);
     std::cout << "index 0:" << v.getComponent(0) << " index 1:" << v.getComponent(1) << " index 2:" << v.getComponent(2) << std::endl; 
 
     // Create window with graphics context

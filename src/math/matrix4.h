@@ -10,13 +10,15 @@ class Vector3;
 
 class Matrix4{
     public:
-        double elements[16] ={
+    
+    double elements[16] ={
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1
         };
-        Matrix4();
+    
+    Matrix4();
 
 	Matrix4& set(double n11,double n12,double n13,double n14, 
                 double n21,double n22,double n23,double n24,
@@ -45,7 +47,7 @@ class Matrix4{
 		return Matrix4().fromArray(elements);
 	}
 
-	Matrix4& copy(Matrix4 m) {
+	Matrix4& copy(Matrix4& m) {
         for(int i=0;i<sizeof(elements)/sizeof(elements[0]);i++){
             elements[i] = m.elements[i];
         }
@@ -53,7 +55,7 @@ class Matrix4{
 		return *this;
 	}
 
-    Matrix4& copyPosition(Matrix4 m) {
+    Matrix4& copyPosition(const Matrix4& m) {
 		elements[ 12 ] = m.elements[ 12 ];
 		elements[ 13 ] = m.elements[ 13 ];
 		elements[ 14 ] = m.elements[ 14 ];
@@ -81,7 +83,7 @@ class Matrix4{
 
 	Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 
-	Matrix4& extractRotation(Matrix4 m);
+	Matrix4& extractRotation(Matrix4& m);
 
 // 	makeRotationFromEuler( euler ) {
 
@@ -211,20 +213,20 @@ class Matrix4{
 
 // 	}
 
-	Matrix4& makeRotationFromQuaternion(Quaternion q);
+	Matrix4& makeRotationFromQuaternion(Quaternion& q);
 
-	Matrix4& lookAt(Vector3 eye,Vector3 target,Vector3 up); 
+	Matrix4& lookAt(Vector3& eye,Vector3& target,Vector3& up); 
 
-	Matrix4& multiply(Matrix4 m) {
+	Matrix4& multiply(Matrix4& m) {
 		return multiplyMatrices(*this, m);
 	}
 
-	Matrix4& premultiply(Matrix4 m){
+	Matrix4& premultiply(Matrix4& m){
 		return multiplyMatrices(m, *this);
 	}
 
     //实现一个operator*更好
-	Matrix4& multiplyMatrices(Matrix4 a,Matrix4 b){
+	Matrix4& multiplyMatrices(Matrix4& a,Matrix4& b){
 		const double a11 = a.elements[ 0 ], a12 = a.elements[ 4 ], a13 = a.elements[ 8 ], a14 = a.elements[ 12 ];
 		const double a21 = a.elements[ 1 ], a22 = a.elements[ 5 ], a23 = a.elements[ 9 ], a24 = a.elements[ 13 ];
 		const double a31 = a.elements[ 2 ], a32 = a.elements[ 6 ], a33 = a.elements[ 10 ], a34 = a.elements[ 14 ];
@@ -329,7 +331,7 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& setPosition(Vector3 v);
+	Matrix4& setPosition(Vector3& v);
 
     Matrix4& setPosition(double x,double y,double z){
         elements[ 12 ] = x;
@@ -381,7 +383,7 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& scale(Vector3 v);
+	Matrix4& scale(Vector3& v);
 
 	double getMaxScaleOnAxis() {
 		const double scaleXSq = elements[ 0 ] * elements[ 0 ] + elements[ 1 ] * elements[ 1 ] + elements[ 2 ] * elements[ 2 ];
@@ -443,7 +445,7 @@ class Matrix4{
 	}
 
     //rotate angle degrees around any axis 
-	Matrix4& makeRotationAxis(Vector3 axis, double angle);
+	Matrix4& makeRotationAxis(Vector3& axis, double angle);
 
 	Matrix4& makeScale(double x,double y,double z){
 		set(
@@ -466,7 +468,7 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& compose(Vector3 position,Quaternion quaternion,Vector3 scale);
+	Matrix4& compose(const Vector3& position,const Quaternion& quaternion,const Vector3& scale);
 
 	Matrix4& decompose(Vector3& position,Quaternion& quaternion,Vector3& scale);
 
@@ -504,7 +506,7 @@ class Matrix4{
 		return *this;
 	}
 
-	bool equals(Matrix4 m) {
+	bool equals(const Matrix4& m) {
 		for (int i = 0; i < 16; i ++) {
 			if (elements[ i ] != m.elements[ i ]) return false;
 		}

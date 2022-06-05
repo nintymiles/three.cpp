@@ -28,7 +28,7 @@ Matrix4& Matrix4::makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
     return *this;
 }
 
-Matrix4& Matrix4::extractRotation(Matrix4 m) {
+Matrix4& Matrix4::extractRotation(Matrix4& m) {
     // this method does not support reflection matrices
     const double scaleX = 1 / _v1->setFromMatrixColumn(m, 0).length();
     const double scaleY = 1 / _v1->setFromMatrixColumn(m, 1).length();
@@ -57,7 +57,7 @@ Matrix4& Matrix4::extractRotation(Matrix4 m) {
     return *this;
 }
 
-Matrix4& Matrix4::compose(Vector3 position,Quaternion quaternion,Vector3 scale){
+Matrix4& Matrix4::compose(const Vector3& position,const Quaternion& quaternion,const Vector3& scale){
 
     const double x = quaternion.x(), y = quaternion.y(), z = quaternion.z(), w = quaternion.w();
     const double x2 = x + x,	y2 = y + y, z2 = z + z;
@@ -131,11 +131,11 @@ Matrix4& Matrix4::decompose(Vector3& position,Quaternion& quaternion,Vector3& sc
     return *this;
 }
 
-Matrix4& Matrix4::makeRotationFromQuaternion(Quaternion q){
+Matrix4& Matrix4::makeRotationFromQuaternion(Quaternion& q){
     return compose(*_zero, q, *_one);
 }
 
-Matrix4& Matrix4::lookAt(Vector3 eye,Vector3 target,Vector3 up){
+Matrix4& Matrix4::lookAt(Vector3& eye,Vector3& target,Vector3& up){
     _z->subVectors( eye, target );
 
     if (_z->lengthSq() == 0) {
@@ -170,7 +170,7 @@ Matrix4& Matrix4::lookAt(Vector3 eye,Vector3 target,Vector3 up){
     return *this;
 }
 
-Matrix4& Matrix4::setPosition(Vector3 v) {
+Matrix4& Matrix4::setPosition(Vector3& v) {
     elements[ 12 ] = v.x;
     elements[ 13 ] = v.y;
     elements[ 14 ] = v.z;
@@ -178,7 +178,7 @@ Matrix4& Matrix4::setPosition(Vector3 v) {
     return *this;
 }
 
-Matrix4& Matrix4::scale(Vector3 v) {
+Matrix4& Matrix4::scale(Vector3& v) {
     const double x = v.x, y = v.y, z = v.z;
 
     elements[ 0 ] *= x; elements[ 4 ] *= y; elements[ 8 ] *= z;
@@ -189,7 +189,7 @@ Matrix4& Matrix4::scale(Vector3 v) {
     return *this;
 }
 
-Matrix4& Matrix4::makeRotationAxis(Vector3 axis, double angle) {
+Matrix4& Matrix4::makeRotationAxis(Vector3& axis, double angle) {
 
 		// Based on http://www.gamedev.net/reference/articles/article1199.asp
 		const double c = cos(angle);
