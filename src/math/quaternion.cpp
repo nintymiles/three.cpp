@@ -50,4 +50,8 @@ Quaternion& Quaternion::setFromUnitVectors(Vector3& vFrom,Vector3& vTo){
 
 		return this->normalize();
 
-} 
+}
+
+Euler& Quaternion::setFromVector3(const Vector3& v,euler_order order) {
+            return set( v.x, v.y, v.z, order );
+        }

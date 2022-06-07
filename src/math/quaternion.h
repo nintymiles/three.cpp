@@ -3,14 +3,14 @@
 
 #include "vector3.h"
 #include "matrix4.h"
+#include "euler.h"
 #include "math_utils.h"
 #include "number.h"
 
 #include <cmath>
 #include <random>
 #include <limits>
-
-auto onChangeCallback = []{};
+#include <functional>
 
 //类模版在对象交叉引用时的前置声明
 // template <typename T> class Vector3;
@@ -19,116 +19,12 @@ auto onChangeCallback = []{};
 // 若类模版中有别名定义，则前置声明时此别名也需要在前置声明后重新定义
 
 class Quaternion{
-private:
-    double _x,_y,_z,_w;
+
 public:
     Quaternion(double x=0,double y=0,double z=0,double w=1):_x(x),_y(y),_z(z),_w(w){};
     ~Quaternion();
 
-    // 	static slerp( qa, qb, qm, t ) {
-    // 		console.warn( 'THREE.Quaternion: Static .slerp() has been deprecated. Use qm.slerpQuaternions( qa, qb, t ) instead.' );
-    // 		return qm.slerpQuaternions( qa, qb, t );
-    // 	}
-    // 	static slerpFlat( dst, dstOffset, src0, srcOffset0, src1, srcOffset1, t ) {
 
-    // 		// fuzz-free, array-based Quaternion SLERP operation
-
-    // 		let x0 = src0[ srcOffset0 + 0 ],
-    // 			y0 = src0[ srcOffset0 + 1 ],
-    // 			z0 = src0[ srcOffset0 + 2 ],
-    // 			w0 = src0[ srcOffset0 + 3 ];
-
-    // 		const x1 = src1[ srcOffset1 + 0 ],
-    // 			y1 = src1[ srcOffset1 + 1 ],
-    // 			z1 = src1[ srcOffset1 + 2 ],
-    // 			w1 = src1[ srcOffset1 + 3 ];
-
-    // 		if ( t === 0 ) {
-
-    // 			dst[ dstOffset + 0 ] = x0;
-    // 			dst[ dstOffset + 1 ] = y0;
-    // 			dst[ dstOffset + 2 ] = z0;
-    // 			dst[ dstOffset + 3 ] = w0;
-    // 			return;
-
-    // 		}
-
-    // 		if ( t === 1 ) {
-
-    // 			dst[ dstOffset + 0 ] = x1;
-    // 			dst[ dstOffset + 1 ] = y1;
-    // 			dst[ dstOffset + 2 ] = z1;
-    // 			dst[ dstOffset + 3 ] = w1;
-    // 			return;
-
-    // 		}
-
-    // 		if ( w0 !== w1 || x0 !== x1 || y0 !== y1 || z0 !== z1 ) {
-
-    // 			let s = 1 - t;
-    // 			const cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1,
-    // 				dir = ( cos >= 0 ? 1 : - 1 ),
-    // 				sqrSin = 1 - cos * cos;
-
-    // 			// Skip the Slerp for tiny steps to avoid numeric problems:
-    // 			if ( sqrSin > Number.EPSILON ) {
-
-    // 				const sin = Math.sqrt( sqrSin ),
-    // 					len = Math.atan2( sin, cos * dir );
-
-    // 				s = Math.sin( s * len ) / sin;
-    // 				t = Math.sin( t * len ) / sin;
-
-    // 			}
-
-    // 			const tDir = t * dir;
-
-    // 			x0 = x0 * s + x1 * tDir;
-    // 			y0 = y0 * s + y1 * tDir;
-    // 			z0 = z0 * s + z1 * tDir;
-    // 			w0 = w0 * s + w1 * tDir;
-
-    // 			// Normalize in case we just did a lerp:
-    // 			if ( s === 1 - t ) {
-
-    // 				const f = 1 / Math.sqrt( x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0 );
-
-    // 				x0 *= f;
-    // 				y0 *= f;
-    // 				z0 *= f;
-    // 				w0 *= f;
-
-    // 			}
-
-    // 		}
-
-    // 		dst[ dstOffset ] = x0;
-    // 		dst[ dstOffset + 1 ] = y0;
-    // 		dst[ dstOffset + 2 ] = z0;
-    // 		dst[ dstOffset + 3 ] = w0;
-
-    // 	}
-
-    // 	static multiplyQuaternionsFlat( dst, dstOffset, src0, srcOffset0, src1, srcOffset1 ) {
-
-    // 		const x0 = src0[ srcOffset0 ];
-    // 		const y0 = src0[ srcOffset0 + 1 ];
-    // 		const z0 = src0[ srcOffset0 + 2 ];
-    // 		const w0 = src0[ srcOffset0 + 3 ];
-
-    // 		const x1 = src1[ srcOffset1 ];
-    // 		const y1 = src1[ srcOffset1 + 1 ];
-    // 		const z1 = src1[ srcOffset1 + 2 ];
-    // 		const w1 = src1[ srcOffset1 + 3 ];
-
-    // 		dst[ dstOffset ] = x0 * w1 + w0 * x1 + y0 * z1 - z0 * y1;
-    // 		dst[ dstOffset + 1 ] = y0 * w1 + w0 * y1 + z0 * x1 - x0 * z1;
-    // 		dst[ dstOffset + 2 ] = z0 * w1 + w0 * z1 + x0 * y1 - y0 * x1;
-    // 		dst[ dstOffset + 3 ] = w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1;
-
-    // 		return dst;
-
-    // 	}
 
     auto x()       -> double&  { return _x; }
     auto x() const -> const double& { return _x;}
@@ -185,85 +81,77 @@ public:
 
 		return *this;
 	}
-// 	setFromEuler( euler, update ) {
 
-// 		if ( ! ( euler && euler.isEuler ) ) {
+	Quaternion& setFromEuler(Euler& euler, bool update) {
+		const double x = euler.x(), y = euler.y(), z = euler.z();
+		const euler_order order = euler.order();
+		// http://www.mathworks.com/matlabcentral/fileexchange/
+		// 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
+		//	content/SpinCalc.m
 
-// 			throw new Error( 'THREE.Quaternion: .setFromEuler() now expects an Euler rotation rather than a Vector3 and order.' );
+		const double c1 = cos( x / 2 );
+		const double c2 = cos( y / 2 );
+		const double c3 = cos( z / 2 );
 
-// 		}
+		const double s1 = sin( x / 2 );
+		const double s2 = sin( y / 2 );
+		const double s3 = sin( z / 2 );
 
-// 		const x = euler._x, y = euler._y, z = euler._z, order = euler._order;
+		switch ( order ) {
 
-// 		// http://www.mathworks.com/matlabcentral/fileexchange/
-// 		// 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
-// 		//	content/SpinCalc.m
+			case XYZ:
+				_x = s1 * c2 * c3 + c1 * s2 * s3;
+				_y = c1 * s2 * c3 - s1 * c2 * s3;
+				_z = c1 * c2 * s3 + s1 * s2 * c3;
+				_w = c1 * c2 * c3 - s1 * s2 * s3;
+				break;
 
-// 		const cos = Math.cos;
-// 		const sin = Math.sin;
+			case YXZ:
+				_x = s1 * c2 * c3 + c1 * s2 * s3;
+				_y = c1 * s2 * c3 - s1 * c2 * s3;
+				_z = c1 * c2 * s3 - s1 * s2 * c3;
+				_w = c1 * c2 * c3 + s1 * s2 * s3;
+				break;
 
-// 		const c1 = cos( x / 2 );
-// 		const c2 = cos( y / 2 );
-// 		const c3 = cos( z / 2 );
+			case ZXY:
+				_x = s1 * c2 * c3 - c1 * s2 * s3;
+				_y = c1 * s2 * c3 + s1 * c2 * s3;
+				_z = c1 * c2 * s3 + s1 * s2 * c3;
+				_w = c1 * c2 * c3 - s1 * s2 * s3;
+				break;
 
-// 		const s1 = sin( x / 2 );
-// 		const s2 = sin( y / 2 );
-// 		const s3 = sin( z / 2 );
+			case ZYX:
+				_x = s1 * c2 * c3 - c1 * s2 * s3;
+				_y = c1 * s2 * c3 + s1 * c2 * s3;
+				_z = c1 * c2 * s3 - s1 * s2 * c3;
+				_w = c1 * c2 * c3 + s1 * s2 * s3;
+				break;
 
-// 		switch ( order ) {
+			case YZX:
+				_x = s1 * c2 * c3 + c1 * s2 * s3;
+				_y = c1 * s2 * c3 + s1 * c2 * s3;
+				_z = c1 * c2 * s3 - s1 * s2 * c3;
+				_w = c1 * c2 * c3 - s1 * s2 * s3;
+				break;
 
-// 			case 'XYZ':
-// 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
-// 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
-// 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
-// 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
-// 				break;
+			case XZY:
+				_x = s1 * c2 * c3 - c1 * s2 * s3;
+				_y = c1 * s2 * c3 - s1 * c2 * s3;
+				_z = c1 * c2 * s3 + s1 * s2 * c3;
+				_w = c1 * c2 * c3 + s1 * s2 * s3;
+				break;
 
-// 			case 'YXZ':
-// 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
-// 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
-// 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
-// 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
-// 				break;
+			default:
+				//console.warn( 'THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order );
+				;
 
-// 			case 'ZXY':
-// 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
-// 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
-// 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
-// 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
-// 				break;
+		}
 
-// 			case 'ZYX':
-// 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
-// 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
-// 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
-// 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
-// 				break;
+		if ( update != false ) onChangeCallback();
 
-// 			case 'YZX':
-// 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
-// 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
-// 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
-// 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
-// 				break;
+		return *this;
+	}
 
-// 			case 'XZY':
-// 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
-// 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
-// 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
-// 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
-// 				break;
-
-// 			default:
-// 				console.warn( 'THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order );
-
-// 		}
-
-// 		if ( update !== false ) this._onChangeCallback();
-
-// 		return this;
-
-// 	}
 	Quaternion& setFromAxisAngle(const Vector3& axis, double angle);
 
 	Quaternion& setFromRotationMatrix(const Matrix4& m){
@@ -552,28 +440,109 @@ public:
 
 // 	}
 
+	//function pointer's definition void(*callback)(void) which already includes declaration's everything 
+	Quaternion& onChange(void(*callback)(void)){
+		onChangeCallback = callback;
+		return *this;
+	}
 
-
+private:
+    double _x,_y,_z,_w;
+	void(*onChangeCallback)(void);
+	//std::function<void(void)> onChangeCallback;
 };
 
 
-
-
-// 	_onChange( callback ) {
-
-// 		this._onChangeCallback = callback;
-
-// 		return this;
-
+// 	static slerp( qa, qb, qm, t ) {
+// 		console.warn( 'THREE.Quaternion: Static .slerp() has been deprecated. Use qm.slerpQuaternions( qa, qb, t ) instead.' );
+// 		return qm.slerpQuaternions( qa, qb, t );
 // 	}
+static void slerpFlat(double dst[],int dstOffset,double src0[],int srcOffset0,double src1[],int srcOffset1,double t){
+	// fuzz-free, array-based Quaternion SLERP operation
+	double
+		x0 = src0[ srcOffset0 + 0 ],
+		y0 = src0[ srcOffset0 + 1 ],
+		z0 = src0[ srcOffset0 + 2 ],
+		w0 = src0[ srcOffset0 + 3 ];
 
+	const double
+		x1 = src1[ srcOffset1 + 0 ],
+		y1 = src1[ srcOffset1 + 1 ],
+		z1 = src1[ srcOffset1 + 2 ],
+		w1 = src1[ srcOffset1 + 3 ];
 
-// 	_onChangeCallback() {}
+	if (t == 0){
+		dst[ dstOffset + 0 ] = x0;
+		dst[ dstOffset + 1 ] = y0;
+		dst[ dstOffset + 2 ] = z0;
+		dst[ dstOffset + 3 ] = w0;
+		return;
+	}
 
-// }
+	if (t == 1) {
+		dst[ dstOffset + 0 ] = x1;
+		dst[ dstOffset + 1 ] = y1;
+		dst[ dstOffset + 2 ] = z1;
+		dst[ dstOffset + 3 ] = w1;
+		return;
+	}
 
-// Quaternion.prototype.isQuaternion = true;
+	if ( w0 != w1 || x0 != x1 || y0 != y1 || z0 != z1 ) {
+		double s = 1 - t;
+		const double cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1,
+					dir = ( cos >= 0 ? 1 : - 1 ),
+					sqrSin = 1 - cos * cos;
 
-// export { Quaternion };
+		// Skip the Slerp for tiny steps to avoid numeric problems:
+		if (sqrSin > Number::EPSILON) {
+			const double sin = sqrt( sqrSin ),
+						len = atan2( sin, cos * dir );
 
-#endif //quaternion_h
+			s = std::sin( s * len ) / sin;
+			t = std::sin( t * len ) / sin;
+		}
+
+		const double tDir = t * dir;
+
+		x0 = x0 * s + x1 * tDir;
+		y0 = y0 * s + y1 * tDir;
+		z0 = z0 * s + z1 * tDir;
+		w0 = w0 * s + w1 * tDir;
+
+		// Normalize in case we just did a lerp:
+		if ( s == 1 - t ) {
+			const double f = 1 / sqrt( x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0 );
+
+			x0 *= f;
+			y0 *= f;
+			z0 *= f;
+			w0 *= f;
+		}
+
+	}
+
+	dst[ dstOffset ] = x0;
+	dst[ dstOffset + 1 ] = y0;
+	dst[ dstOffset + 2 ] = z0;
+	dst[ dstOffset + 3 ] = w0;
+}
+
+static void multiplyQuaternionsFlat(double dst[],int dstOffset,double src0[],int srcOffset0,double src1[],int srcOffset1) {
+
+	const double x0 = src0[ srcOffset0 ];
+	const double y0 = src0[ srcOffset0 + 1 ];
+	const double z0 = src0[ srcOffset0 + 2 ];
+	const double w0 = src0[ srcOffset0 + 3 ];
+
+	const double x1 = src1[ srcOffset1 ];
+	const double y1 = src1[ srcOffset1 + 1 ];
+	const double z1 = src1[ srcOffset1 + 2 ];
+	const double w1 = src1[ srcOffset1 + 3 ];
+
+	dst[ dstOffset ] = x0 * w1 + w0 * x1 + y0 * z1 - z0 * y1;
+	dst[ dstOffset + 1 ] = y0 * w1 + w0 * y1 + z0 * x1 - x0 * z1;
+	dst[ dstOffset + 2 ] = z0 * w1 + w0 * z1 + x0 * y1 - y0 * x1;
+	dst[ dstOffset + 3 ] = w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1;
+}
+
+#endif //QUATERNION_H

@@ -1,3 +1,6 @@
+#ifndef MATH_UTILS_H
+#define MATH_UTILS_H
+
 #include <cmath>
 #include <random>
 
@@ -12,3 +15,7 @@ T random_gen(){
     std::uniform_int_distribution<T> distribution(0,1);
 	return distribution(generator); 
 }
+
+//typedef clamp<double> clampd;
+
+#endif //MATH_UTILS_H
