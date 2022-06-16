@@ -5,6 +5,11 @@
 #include <memory>
 #include "quaternion.h"
 #include "matrix4.h"
+#include "euler.h"
+#include "math_utils.h"
+
+class Quaternion;
+class Euler;
 
 class Vector3{
     public:
@@ -139,42 +144,11 @@ class Vector3{
 		return this->x * v.x + this->y * v.y + this->z * v.z;
 	}
 
-    Vector3& applyQuaternion(Quaternion& q) {
+    Vector3& applyQuaternion(Quaternion& q);
 
-		const auto x = this->x, y = this->y, z = this->z;
-		const double qx = q.x(), qy = q.y(), qz = q.z(), qw = q.w();
+	Vector3& applyEuler(Euler& euler);
 
-		// calculate quadouble * vector
-		const auto ix = qw * x + qy * z - qz * y;
-		const auto iy = qw * y + qz * x - qx * z;
-		const auto iz = qw * z + qx * y - qy * x;
-		const auto iw = - qx * x - qy * y - qz * z;
-
-		// calculate resuldouble * inverse quat
-		this->x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-		this->y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-		this->z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
-
-		return *this;
-	}
-
-// 	applyEuler( euler ) {
-
-// 		if ( ! ( euler && euler.isEuler ) ) {
-
-// 			console.error( 'THREE.Vector3: .applyEuler() now expects an Euler rotation rather than a Vector3 and order.' );
-
-// 		}
-
-// 		return *this-applyQuaternion( _quaternion.setFromEuler( euler ) );
-
-// 	}
-
-	Vector3& applyAxisAngle(Vector3& axis, double angle) {
-		applyQuaternion( _quaternion->setFromAxisAngle(axis,angle));
-
-		return *this;
-	}
+	Vector3& applyAxisAngle(Vector3& axis, double angle);
 
 // 	applyMatrix3( m ) {
 
@@ -502,17 +476,9 @@ class Vector3{
 
 // 	}
 
-// 	setFromEuler( e ) {
+	Vector3& setFromEuler(Euler& e);
 
-// 		this->x = e._x;
-// 		this->y = e._y;
-// 		this->z = e._z;
-
-// 		return *this;
-
-// 	}
-
-	Vector3& fromArray(double array[], int offset = 0 ) {
+	Vector3& fromArray(double array[], int offset = 0) {
 		x = array[ offset ];
 		y = array[ offset + 1 ];
 		z = array[ offset + 2 ];

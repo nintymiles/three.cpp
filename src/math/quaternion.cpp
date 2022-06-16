@@ -52,6 +52,72 @@ Quaternion& Quaternion::setFromUnitVectors(Vector3& vFrom,Vector3& vTo){
 
 }
 
-Euler& Quaternion::setFromVector3(const Vector3& v,euler_order order) {
-            return set( v.x, v.y, v.z, order );
-        }
+Quaternion& Quaternion::setFromEuler(Euler& euler, bool update) {
+	const double x = euler.x(), y = euler.y(), z = euler.z();
+	const euler_order order = euler.order();
+	// http://www.mathworks.com/matlabcentral/fileexchange/
+	// 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
+	//	content/SpinCalc.m
+
+	const double c1 = cos( x / 2 );
+	const double c2 = cos( y / 2 );
+	const double c3 = cos( z / 2 );
+
+	const double s1 = sin( x / 2 );
+	const double s2 = sin( y / 2 );
+	const double s3 = sin( z / 2 );
+
+	switch ( order ) {
+
+		case XYZ:
+			_x = s1 * c2 * c3 + c1 * s2 * s3;
+			_y = c1 * s2 * c3 - s1 * c2 * s3;
+			_z = c1 * c2 * s3 + s1 * s2 * c3;
+			_w = c1 * c2 * c3 - s1 * s2 * s3;
+			break;
+
+		case YXZ:
+			_x = s1 * c2 * c3 + c1 * s2 * s3;
+			_y = c1 * s2 * c3 - s1 * c2 * s3;
+			_z = c1 * c2 * s3 - s1 * s2 * c3;
+			_w = c1 * c2 * c3 + s1 * s2 * s3;
+			break;
+
+		case ZXY:
+			_x = s1 * c2 * c3 - c1 * s2 * s3;
+			_y = c1 * s2 * c3 + s1 * c2 * s3;
+			_z = c1 * c2 * s3 + s1 * s2 * c3;
+			_w = c1 * c2 * c3 - s1 * s2 * s3;
+			break;
+
+		case ZYX:
+			_x = s1 * c2 * c3 - c1 * s2 * s3;
+			_y = c1 * s2 * c3 + s1 * c2 * s3;
+			_z = c1 * c2 * s3 - s1 * s2 * c3;
+			_w = c1 * c2 * c3 + s1 * s2 * s3;
+			break;
+
+		case YZX:
+			_x = s1 * c2 * c3 + c1 * s2 * s3;
+			_y = c1 * s2 * c3 + s1 * c2 * s3;
+			_z = c1 * c2 * s3 - s1 * s2 * c3;
+			_w = c1 * c2 * c3 - s1 * s2 * s3;
+			break;
+
+		case XZY:
+			_x = s1 * c2 * c3 - c1 * s2 * s3;
+			_y = c1 * s2 * c3 - s1 * c2 * s3;
+			_z = c1 * c2 * s3 + s1 * s2 * c3;
+			_w = c1 * c2 * c3 + s1 * s2 * s3;
+			break;
+
+		default:
+			//console.warn( 'THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order );
+			;
+
+	}
+
+	if ( update != false ) onChangeCallback();
+
+	return *this;
+}

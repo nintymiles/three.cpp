@@ -71,6 +71,10 @@ ${ROOT_DIR}/src/002/frustum/base/quat/*.h;${ROOT_DIR}/src/002/frustum/base/quat/
 ${ROOT_DIR}/src/002/frustum/base/tinyobj/*.h;${ROOT_DIR}/src/002/frustum/base/tinyobj/*.cpp;
 ${ROOT_DIR}/src/002/frustum/base/*.h;${ROOT_DIR}/src/002/frustum/base/*.cpp;
 ${ROOT_DIR}/src/002/frustum/*.h;${ROOT_DIR}/src/002/frustum/*.cpp)
+
+file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/math/*.h;${ROOT_DIR}/src/math/*.cpp;
+${ROOT_DIR}/src/core/*.h;${ROOT_DIR}/src/core/*.cpp)
+
 # file(GLOB Camera_Frustum ${ROOT_DIR}/src/002/frustum/base/perfMonitor/*.cpp;
 # ${ROOT_DIR}/src/002/frustum/base/quat/*.cpp;
 # ${ROOT_DIR}/src/002/frustum/base/tinyobj/*.cpp;
@@ -86,7 +90,9 @@ ADD_EXECUTABLE(threecpp ${ROOT_DIR}/src/main.cpp)
 target_sources(threecpp PRIVATE  ${IMGUI_SOURCE} ${Camera_Frustum})
 target_include_directories(threecpp PRIVATE 
 ${ROOT_DIR}/src/imgui
-${ROOT_DIR}/src/imgui/backends 
+${ROOT_DIR}/src/imgui/backends
+#${ROOT_DIR}/src/math
+#${ROOT_DIR}/src/core
 ${ROOT_DIR}/src/002/frustum 
 ${ROOT_DIR}/src/002/frustum/base 
 ${ROOT_DIR}/src/002/frustum/base/quat 
