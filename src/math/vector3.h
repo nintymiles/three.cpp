@@ -470,11 +470,9 @@ class Vector3{
 		return fromArray(m.elements, index * 4);
 	}
 
-// 	setFromMatrix3Column( m, index ) {
-
-// 		return *this-fromArray( m.elements, index * 3 );
-
-// 	}
+	Vector3& setFromMatrix3Column(Matrix3& m,int index) {
+		return fromArray( m.elements, index * 3 );
+	}
 
 	Vector3& setFromEuler(Euler& e);
 
