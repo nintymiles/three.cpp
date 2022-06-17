@@ -1,7 +1,6 @@
 #ifndef MATRIX3_H
 #define MATRIX3_H
 
-#include "vector3.h"
 #include<memory>
 #include<cmath>
 
@@ -51,13 +50,7 @@ class Matrix3{
 		return *this;
 	}
 
-    Matrix3& extractBasis( Vector3& xAxis,Vector3& yAxis,Vector3& zAxis ) {
-		xAxis.setFromMatrix3Column( *this, 0 );
-		yAxis.setFromMatrix3Column( *this, 1 );
-		zAxis.setFromMatrix3Column( *this, 2 );
-
-		return *this;
-	}
+    Matrix3& extractBasis( Vector3& xAxis,Vector3& yAxis,Vector3& zAxis );
 
 	Matrix3& setFromMatrix4( Matrix4& m ) {
 		set(
@@ -119,13 +112,12 @@ class Matrix3{
 	}
 
 	Matrix3& multiplyScalar( double s ) {
-		double te[9];
-		memcpy(te,elements,sizeof(te));
+		// double te[9];
+		// memcpy(te,elements,sizeof(te));
 		//const te = this.elements;
-
-		te[ 0 ] *= s; te[ 3 ] *= s; te[ 6 ] *= s;
-		te[ 1 ] *= s; te[ 4 ] *= s; te[ 7 ] *= s;
-		te[ 2 ] *= s; te[ 5 ] *= s; te[ 8 ] *= s;
+		elements[ 0 ] *= s; elements[ 3 ] *= s; elements[ 6 ] *= s;
+		elements[ 1 ] *= s; elements[ 4 ] *= s; elements[ 7 ] *= s;
+		elements[ 2 ] *= s; elements[ 5 ] *= s; elements[ 8 ] *= s;
 
 		return *this;
 	}
@@ -180,7 +172,6 @@ class Matrix3{
 
 	Matrix3& transpose() {
 		double tmp;
-		//const m = this.elements;
 
 		tmp = elements[ 1 ]; elements[ 1 ] = elements[ 3 ]; elements[ 3 ] = tmp;
 		tmp = elements[ 2 ]; elements[ 2 ] = elements[ 6 ]; elements[ 6 ] = tmp;
@@ -194,7 +185,6 @@ class Matrix3{
 	}
 
 	double* transposeIntoArray( double r[] ) {
-		//const m = this.elements;
 		r[ 0 ] = elements[ 0 ];
 		r[ 1 ] = elements[ 3 ];
 		r[ 2 ] = elements[ 6 ];
@@ -229,7 +219,6 @@ class Matrix3{
 	}
 
 	Matrix3& rotate( double theta ) {
-
 		const double c = cos( theta );
 		const double s = sin( theta );
 
@@ -264,7 +253,6 @@ class Matrix3{
 	}
 
 	Matrix3& fromArray( double array[], int offset = 0 ) {
-
 		for ( int i = 0; i < 9; i ++ ) {
 
 			elements[ i ] = array[ i + offset ];

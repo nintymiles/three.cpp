@@ -1,6 +1,10 @@
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
 
+#ifdef _MSC_VER
+#include<numeric>
+#endif
+ 
 #include <cmath>
 #include <random>
 #include <sstream>

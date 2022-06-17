@@ -1,10 +1,17 @@
 #ifndef VECTOR3_H
 #define VECTOR3_H
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES 
+#include <math.h>
+#endif
+
+#include <cmath>
 #include <exception>
 #include <memory>
 #include "quaternion.h"
 #include "matrix4.h"
+#include "matrix3.h"
 #include "euler.h"
 #include "math_utils.h"
 
@@ -388,7 +395,7 @@ class Vector3{
 	}
 
 	double angleTo(Vector3& v){
-		const double denominator = sqrt(this->lengthSq() * v.lengthSq());
+		const double denominator = std::sqrt(this->lengthSq() * v.lengthSq());
 
 		if (denominator == 0) return M_PI / 2;
 
