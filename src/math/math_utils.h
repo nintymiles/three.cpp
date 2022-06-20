@@ -18,7 +18,8 @@ T clamp(T value, T min, T max) {
 template<typename T>
 T random_gen(){
 	std::default_random_engine generator;
-    std::uniform_int_distribution<T> distribution(0,1);
+    //std::uniform_int_distribution<T> distribution(0,1);
+    std::uniform_real_distribution<T> distribution(0.0, 1.0);
 	return distribution(generator); 
 }
 
