@@ -1,14 +1,11 @@
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
-
-#ifdef _MSC_VER
-#include<numeric>
-#endif
  
 #include <cmath>
 #include <random>
 #include <sstream>
 #include <iostream>
+#include <numeric>
 
 template<typename T>
 T clamp(T value, T min, T max) {
