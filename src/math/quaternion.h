@@ -318,7 +318,7 @@ public:
 
         // CPP random generator mechanism
         std::default_random_engine generator;
-        std::uniform_int_distribution<double> distribution(0,1);
+        std::uniform_real_distribution<double> distribution(0,1);
 		const double u1 = distribution(generator); 
 		const double sqrt1u1 = sqrt( 1 - u1 );
 		const double sqrtu1 = sqrt( u1 );

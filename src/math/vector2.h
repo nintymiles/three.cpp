@@ -212,29 +212,29 @@ class Vector2 {
         }
 
         Vector2& floor() {
-            this->x = floor( this->x );
-            this->y = floor( this->y );
+            this->x = std::floor( this->x );
+            this->y = std::floor( this->y );
 
             return *this;
         }
 
         Vector2& ceil() {
-            this->x = ceil( this->x );
-            this->y = ceil( this->y );
+            this->x = std::ceil( this->x );
+            this->y = std::ceil( this->y );
 
             return *this;
         }
 
         Vector2& round() {
-            this->x = round( this->x );
-            this->y = round( this->y );
+            this->x = std::round( this->x );
+            this->y = std::round( this->y );
 
             return *this;
         }
 
         Vector2& roundToZero() {
-            x = ( x < 0 ) ? ceil( x ) : floor( x );
-            y = ( y < 0 ) ? ceil( y ) : floor( y );
+            x = ( x < 0 ) ? std::ceil( x ) : std::floor( x );
+            y = ( y < 0 ) ? std::ceil( y ) : std::floor( y );
 
             return *this;
         }
@@ -259,18 +259,15 @@ class Vector2 {
         }
 
         Vector2& normalize() {
-            const double len = length;
+            const double len = length();
             return divideScalar( len > 0 ? len : 1 );
         }
 
-        angle() {
-
+        double angle() {
             // computes the angle in radians with respect to the positive x-axis
-
-            const angle = Math.atan2( - this.y, - this.x ) + Math.PI;
+            const double angle = atan2( - this->y, - this->x ) + M_PI;
 
             return angle;
-
         }
 
         double distanceTo( Vector2& v ) {
