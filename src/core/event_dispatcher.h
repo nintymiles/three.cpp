@@ -3,12 +3,13 @@
 #include <string>
 #include <algorithm>
 
+class EventDispatcher;
 /**
  * https://github.com/mrdoob/eventdispatcher.js/
  */
 struct Event{
 	std::string type;
-	Object3D& target;
+	std::shared_ptr<EventDispatcher> target;
 };
 
 

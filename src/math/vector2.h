@@ -294,7 +294,7 @@ class Vector2 {
             return *this;
         }
 
-        Vector2& lerpVectors( Vector2& v1, Vector2& v2, alpha ) {
+        Vector2& lerpVectors( Vector2& v1, Vector2& v2, double alpha ) {
             x = v1.x + ( v2.x - v1.x ) * alpha;
             y = v1.y + ( v2.y - v1.y ) * alpha;
 
@@ -361,7 +361,7 @@ class Vector2 {
 
         // }
 
-}
+};
 
 
 #endif  //VECTOR2_H_

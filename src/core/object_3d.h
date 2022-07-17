@@ -1,7 +1,7 @@
 #include "event_dispatcher.h"
 #include "layers.h"
-#include "math_utils.h"
-#include "vector3.h"
+#include "../math/math_utils.h"
+#include "../math/vector3.h"
 
 #include <string>
 #include <memory>
@@ -9,28 +9,41 @@
 
 static long _object3DId = 0;
 const Event _addedEvent = {type:"added"};
-const Event _removedEvent = {type:"removed"}
+const Event _removedEvent = {type:"removed"};
 typedef std::function<Object3D&> Object3DCallback;
 
 class Object3D:public EventDispatcher{
     private:
-        std::shared_ptr<Quaternion> _q1 = std::make_shared<Quaternion>(new Quaternion());
-        std::shared_ptr<Vector3>    _v1 = std::make_shared<Vector3>(new Vector3());
-        std::shared_ptr<Matrix4>    _m1 = std::make_shared<Matrix4>(new Matrix4()); 
+        //成员之间的数据传递应该尽量使用引用，对象间的数据传递可能才是共享指针的长处所在
+        //std::shared_ptr<Quaternion> _q1 = std::make_shared<Quaternion>(new Quaternion());
+        Quaternion _q1();
+
+        //std::shared_ptr<Vector3>    _v1 = std::make_shared<Vector3>(new Vector3());
+        Vector3 _v1();
+        //std::shared_ptr<Matrix4>    _m1 = std::make_shared<Matrix4>(new Matrix4()); 
+        Matrix4 _m1();
         
-        std::shared_ptr<Vector3>    _target = std::make_shared<Vector3>(new Vector3());
+        //std::shared_ptr<Vector3>    _target = std::make_shared<Vector3>(new Vector3());
+        Vector3 _target();
 
-        std::shared_ptr<Vector3>    _position = std::make_shared<Vector3>(new Vector3());
-        std::shared_ptr<Vector3>    _scale = std::make_shared<Vector3>(new Vector3());
-        std::shared_ptr<Quaternion> _quaternion = std::make_shared<Quaternion>(new Quaternion());
+        //std::shared_ptr<Vector3>    _position = std::make_shared<Vector3>(new Vector3());
+        Vector3 _position();
+        //std::shared_ptr<Vector3>    _scale = std::make_shared<Vector3>(new Vector3());
+        Vector3 _scale();
+        //std::shared_ptr<Quaternion> _quaternion = std::make_shared<Quaternion>(new Quaternion());
+        Quaternion _quaternion();
 
 
-        std::shared_ptr<Vector3>    _xAxis = std::make_shared<Vector3>(new Vector3(1,0,0));
-        std::shared_ptr<Vector3>    _yAxis = std::make_shared<Vector3>(new Vector3(0,1,0));
-        std::shared_ptr<Vector3>    _zAxis = std::make_shared<Vector3>(new Vector3(0,0,1));
+        //std::shared_ptr<Vector3>    _xAxis = std::make_shared<Vector3>(new Vector3(1,0,0));
+        Vector3 _xAxis(1f,0f,0f);
+        //std::shared_ptr<Vector3>    _yAxis = std::make_shared<Vector3>(new Vector3(0,1,0));
+        Vector3 _yAxis(0f,1f,0f);
+        //std::shared_ptr<Vector3>    _zAxis = std::make_shared<Vector3>(new Vector3(0,0,1));
+        Vector3 _zAxis(0f,0f,1f);
 
     public:
         static std::shared_ptr<Vector3> default_up= std::make_shared<Vector3>(new Vector3(0,1,0));
+
         static const bool default_matrix_auto_update = true;
 
         int id = _object3DId++;
@@ -38,14 +51,21 @@ class Object3D:public EventDispatcher{
         std::string name = "";
         std::string type = "Object3D";
         std::shared_ptr<Object3D> parent = std::make_shared<Object3D>(nullptr);
+        //3D对象本身的存储使用智能指针
         std::vector<std::shared_ptr<Object3D>> children;
         
-        std::shared_ptr<Vector3> up = std::make_shared<Vector3>(new Vector3())->copy(*defualt_up);
+        //每个对象的属性不应该以共享数据的方式存在
+        //std::shared_ptr<Vector3> up = std::make_shared<Vector3>(new Vector3())->copy(*defualt_up);
+        Vector3 up(*default_up.x,*default_up.y,*default_up.z);
 
-        std::shared_ptr<Vector3> position = std::make_shared<Vector3>(new Vector3());
-        std::shared_ptr<Eulter> rotation = std::make_shared<Eulter>(new Euler());
-        std::shared_ptr<Quaternion> quaternion = std::make_shared<Quaternion>(new Quaternion());
-        std::shared_ptr<Vector3> scale = std::make_shared<Vector3>(new Vector3(1,1,1));
+        // std::shared_ptr<Vector3> position = std::make_shared<Vector3>(new Vector3());
+        Vector3 position();
+        //std::shared_ptr<Eulter> rotation = std::make_shared<Eulter>(new Euler());
+        Euler rotation();
+        //std::shared_ptr<Quaternion> quaternion = std::make_shared<Quaternion>(new Quaternion());
+        Quaternion quaternion();
+        //std::shared_ptr<Vector3> scale = std::make_shared<Vector3>(new Vector3(1,1,1));
+        Vector3 scale(1,1,1);
 
         std::shared_ptr<Matrix4> modelViewMatrix = std::make_shared<Matrix4>(new Matrix4()); 
         std::shared_ptr<Matrix4> normalMatrix = std::make_shared<Matrix4>(new Matrix4());
@@ -55,7 +75,7 @@ class Object3D:public EventDispatcher{
 
         bool matrixAutoUpdate = default_matrix_auto_update;
         bool matrixWorldNeedsUpdate = false;
-        std::shared_ptr<Layers> layers = std::make_shared<Matrix4>(new Layers());
+        std::shared_ptr<Layers> layers = std::make_shared<Layers>(new Layers());
         bool visible = true;
 
         bool castShadow = false;
@@ -67,7 +87,7 @@ class Object3D:public EventDispatcher{
 
 
 		void onRotationChange() {
-			quaternion->setFromEuler( *rotation, false );
+			quaternion.setFromEuler( rotation, false );
 		}
 
 		void onQuaternionChange() {
