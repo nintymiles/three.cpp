@@ -9,10 +9,8 @@
 #include <cmath>
 #include <exception>
 #include <memory>
-#include "quaternion.h"
 #include "matrix4.h"
 #include "matrix3.h"
-#include "euler.h"
 #include "math_utils.h"
 
 class Quaternion;

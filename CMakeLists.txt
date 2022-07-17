@@ -115,4 +115,6 @@ file(COPY ${SHADERS} ${MODEL_FILES}
 
 # TARGET_LINK_LIBRARIES(threecpp GLESv2;EGL)
 
+add_subdirectory(src)
+
 add_subdirectory(src/examples/simple_triangle)

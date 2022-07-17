@@ -1,7 +1,8 @@
 #include "vector3.h"
+#include "quaternion.h"
 
-Vector3::Vector3():_vector(std::make_shared<Vector3>(new Vector3())),
-                                _quaternion(std::make_shared<Quaternion>(new Quaternion())){}
+Vector3::Vector3():_vector(std::make_shared<Vector3>()),
+                                _quaternion(std::make_shared<Quaternion>()){}
 
 
 Vector3& Vector3::applyQuaternion(Quaternion& q) {

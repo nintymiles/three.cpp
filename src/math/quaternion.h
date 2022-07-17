@@ -23,7 +23,7 @@ class Quaternion{
 
 public:
     Quaternion(double x=0,double y=0,double z=0,double w=1):_x(x),_y(y),_z(z),_w(w){};
-    ~Quaternion();
+    //~Quaternion();
 
 
 
@@ -72,7 +72,7 @@ public:
 		return Quaternion(_x, _y, _z, _w);
 	}
 
-    Quaternion& copy(const Quaternion& quaternion) {
+    Quaternion& copy(Quaternion& quaternion) {
 		_x = quaternion.x();
 		_y = quaternion.y();
 		_z = quaternion.z();
@@ -85,9 +85,9 @@ public:
 
 	Quaternion& setFromEuler(Euler& euler, bool update);
 	
-	Quaternion& setFromAxisAngle(const Vector3& axis, double angle);
+	Quaternion& setFromAxisAngle(Vector3& axis, double angle);
 
-	Quaternion& setFromRotationMatrix(const Matrix4& m){
+	Quaternion& setFromRotationMatrix(Matrix4& m){
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 		// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 

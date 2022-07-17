@@ -556,6 +556,19 @@ class Matrix4{
         std::shared_ptr<Vector3> _y;
         std::shared_ptr<Vector3> _z;
 
+		//      //std::shared_ptr<Vector3> _v1;
+		// Vector3 _v1;
+        // //std::shared_ptr<Matrix4>  _m1;
+		// Matrix4 _m1;
+        // //std::shared_ptr<Vector3> _zero;
+		// Vector3 _zero;
+        // //std::shared_ptr<Vector3> _one;
+		// Vector3 _one;
+        // //std::shared_ptr<Vector3> _x;
+        // //std::shared_ptr<Vector3> _y;
+        // //std::shared_ptr<Vector3> _z;
+		// Vector3 _x,_y,_z;
+
 };
 
 

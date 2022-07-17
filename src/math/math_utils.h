@@ -26,7 +26,7 @@ static std::mt19937                    gen(rd());
 static std::uniform_int_distribution<> dis(0, 15);
 static std::uniform_int_distribution<> dis2(8, 11);
 
-std::string generate_uuid_v4() {
+inline std::string generate_uuid_v4() {
 	std::stringstream ss;
 	int i;
 	ss << std::hex;
@@ -54,7 +54,7 @@ std::string generate_uuid_v4() {
 }
 
 //https://stackoverflow.com/questions/24365331/how-can-i-generate-uuid-in-c-without-using-boost-library
-std::string generate_uuid() {
+inline std::string generate_uuid() {
     static std::random_device dev;
     static std::mt19937 rng(dev());
 
@@ -72,7 +72,7 @@ std::string generate_uuid() {
     return res;
 }
 
-std::string generate_uuid(std::string &seedstring){
+inline std::string generate_uuid(std::string &seedstring){
     auto sum = std::accumulate(seedstring.begin(), seedstring.end(), 0);
 
     std::mt19937                    gen(sum);

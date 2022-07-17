@@ -25,9 +25,8 @@
 #include <iostream>
 #include <functional>
 
-#include "NativeTemplate.h"
-#include "math/vector3.h"
-#include "math/quaternion.h"
+#include "vector3.h"
+#include "quaternion.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -113,8 +112,6 @@ int main(int, char**)
     
     constexpr int fboWidth(800);  
     constexpr int fboHeight(640); 
-
-    GraphicsInit();
     
     GLuint framebuffer;
     GLuint depthRenderbuffer;
@@ -222,7 +219,7 @@ int main(int, char**)
             
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-            GraphicsRender();
+
             
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             

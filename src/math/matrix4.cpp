@@ -2,13 +2,13 @@
 #include "vector3.h"
 #include "quaternion.h"
 
-Matrix4::Matrix4():_v1(std::make_shared<Vector3>(new Vector3())),
-    _m1(std::make_shared<Matrix4>(new Matrix4())),
-    _zero(std::make_shared<Vector3>(new Vector3(0,0,0))),
-    _one(std::make_shared<Vector3>(new Vector3(0,0,1))),
-    _x(std::make_shared<Vector3>(new Vector3())),
-    _y(std::make_shared<Vector3>(new Vector3())),
-    _z(std::make_shared<Vector3>(new Vector3())){};
+Matrix4::Matrix4():_v1(std::make_shared<Vector3>()),
+    _m1(std::make_shared<Matrix4>()),
+    _zero(std::make_shared<Vector3>(0,0,0)),
+    _one(std::make_shared<Vector3>(0,0,1)),
+    _x(std::make_shared<Vector3>()),
+    _y(std::make_shared<Vector3>()),
+    _z(std::make_shared<Vector3>()){};
 
 Matrix4& Matrix4::extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
     xAxis.setFromMatrixColumn( *this, 0 );

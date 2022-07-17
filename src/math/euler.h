@@ -91,7 +91,7 @@ class Euler{
 
         Euler& setFromQuaternion(Quaternion& q,euler_order order,bool update = true);
 
-        Euler& setFromVector3(const Vector3& v,euler_order order);
+        Euler& setFromVector3(Vector3& v,euler_order order);
 
         Euler& reorder(euler_order newOrder);
 

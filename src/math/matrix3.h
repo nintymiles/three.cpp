@@ -6,6 +6,7 @@
 
 class Quaternion;
 class Vector3;
+class Matrix4;
 
 class Matrix3{
     public:
@@ -52,15 +53,7 @@ class Matrix3{
 
     Matrix3& extractBasis( Vector3& xAxis,Vector3& yAxis,Vector3& zAxis );
 
-	Matrix3& setFromMatrix4( Matrix4& m ) {
-		set(
-			m.elements[ 0 ], m.elements[ 4 ], m.elements[ 8 ],
-			m.elements[ 1 ], m.elements[ 5 ], m.elements[ 9 ],
-			m.elements[ 2 ], m.elements[ 6 ], m.elements[ 10 ]
-		);
-
-		return *this;
-	}
+	Matrix3& setFromMatrix4( Matrix4& m );
 
 	Matrix3& multiply( Matrix3& m ) {
 		return multiplyMatrices( *this, m );

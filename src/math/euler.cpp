@@ -4,7 +4,7 @@
 #include "quaternion.h"
 #include "vector3.h"
 
-Euler::Euler():_matrix(std::make_shared<Matrix4>(new Matrix4())),_quaternion(std::make_shared<Quaternion>(new Quaternion())){}
+Euler::Euler():_matrix(std::make_shared<Matrix4>()),_quaternion(std::make_shared<Quaternion>()){}
 
 Euler& Euler::reorder(euler_order newOrder) {
     // WARNING: this discards revolution information -bhouston
@@ -13,7 +13,7 @@ Euler& Euler::reorder(euler_order newOrder) {
     return setFromQuaternion(*_quaternion, newOrder);
 }
 
-Euler& Euler::setFromVector3(const Vector3& v,euler_order order) {
+Euler& Euler::setFromVector3(Vector3& v,euler_order order) {
 	return set( v.x, v.y, v.z, order );
 }
 
