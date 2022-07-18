@@ -85,7 +85,7 @@ ${ROOT_DIR}/src/core/*.h;${ROOT_DIR}/src/core/*.cpp)
 # source_group("Include" ${THREE_HEADER})
 
 # 构建可执行程序
-ADD_EXECUTABLE(threecpp ${ROOT_DIR}/src/main.cpp)
+ADD_EXECUTABLE(threecpp ${ROOT_DIR}/src/002/main_002.cpp)
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
 target_sources(threecpp PRIVATE  ${IMGUI_SOURCE} ${Camera_Frustum})
 target_include_directories(threecpp PRIVATE 
