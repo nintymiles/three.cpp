@@ -1,5 +1,7 @@
 #include "vector3.h"
 #include "quaternion.h"
+#include "matrix3.h"
+#include "buffer_attribute.h"
 
 Vector3::Vector3():_vector(std::make_shared<Vector3>()),
                                 _quaternion(std::make_shared<Quaternion>()){}
@@ -41,4 +43,28 @@ Vector3& Vector3::setFromEuler(Euler& e) {
     this->z = e.z();
 
     return *this;
+}
+
+Vector3& Vector3::fromBufferAttribute(BufferAttribute<double>& attribute,int index){
+    this->x = attribute.getX( index );
+    this->y = attribute.getY( index );
+    this->z = attribute.getZ( index );
+
+    return *this;
+}
+
+
+Vector3& Vector3::applyMatrix3(Matrix3& m) {
+
+    const double x = this->x, y = this->y, z = this->z;
+
+    this->x = m.elements[ 0 ] * x + m.elements[ 3 ] * y + m.elements[ 6 ] * z;
+    this->y = m.elements[ 1 ] * x + m.elements[ 4 ] * y + m.elements[ 7 ] * z;
+    this->z = m.elements[ 2 ] * x + m.elements[ 5 ] * y + m.elements[ 8 ] * z;
+
+    return *this;
+}
+
+Vector3& Vector3::applyNormalMatrix(Matrix3& m) {
+    return applyMatrix3( m ).normalize();
 }

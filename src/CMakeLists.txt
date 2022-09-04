@@ -61,6 +61,7 @@ ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
 target_sources(threelibcpp PRIVATE  ${IMGUI_SOURCE} ${THREECPP_SOURCE})
 target_include_directories(threelibcpp PRIVATE 
+${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math

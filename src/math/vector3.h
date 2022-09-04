@@ -15,6 +15,8 @@
 
 class Quaternion;
 class Euler;
+class Matrix3;
+template <typename T> class BufferAttribute;
 
 class Vector3{
     public:
@@ -88,6 +90,19 @@ class Vector3{
         *this += rhs;
         return *this;
     }
+
+    Vector3& add(Vector3& vec) {
+		return addScaledVector(vec,1);
+	}
+
+	Vector3& addScalar(double s) {
+		this->x += s;
+		this->y += s;
+		this->z += s;
+
+		return *this;
+	}
+
     Vector3& addVectors(Vector3& a,Vector3& b) {
 		this->x = a.x + b.x;
 		this->y = a.y + b.y;
@@ -155,24 +170,9 @@ class Vector3{
 
 	Vector3& applyAxisAngle(Vector3& axis, double angle);
 
-// 	applyMatrix3( m ) {
+	Vector3& applyMatrix3(Matrix3& m);
 
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const e = m.elements;
-
-// 		this->x = e[ 0 ] * x + e[ 3 ] * y + e[ 6 ] * z;
-// 		this->y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ] * z;
-// 		this->z = e[ 2 ] * x + e[ 5 ] * y + e[ 8 ] * z;
-
-// 		return *this;
-
-// 	}
-
-	// applyNormalMatrix( m ) {
-
-	// 	return *this-applyMatrix3( m ).normalize();
-
-	// }
+	Vector3& applyNormalMatrix(Matrix3& m);
 
 	Vector3 applyMatrix4(Matrix4& m) {
 		const double x = this->x, y = this->y, z = this->z;
@@ -497,21 +497,7 @@ class Vector3{
 		return array;
 	}
 
-// 	fromBufferAttribute( attribute, index, offset ) {
-
-// 		if ( offset !== undefined ) {
-
-// 			console.warn( 'THREE.Vector3: offset has been removed from .fromBufferAttribute().' );
-
-// 		}
-
-// 		this->x = attribute.getX( index );
-// 		this->y = attribute.getY( index );
-// 		this->z = attribute.getZ( index );
-
-// 		return *this;
-
-// 	}
+	Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
 
 	Vector3& random() {
 		this->x = random_gen<double>();

@@ -71,7 +71,12 @@
         "unordered_map": "cpp",
         "utility": "cpp",
         "vector": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "cfloat": "cpp",
+        "climits": "cpp",
+        "__memory": "cpp",
+        "__functional_03": "cpp"
     },
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "headFileGuard.type" : "filename"
 }

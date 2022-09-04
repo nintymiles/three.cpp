@@ -1,10 +1,11 @@
-#pragma once
-#ifndef VECTOR2_H_
-#define VECTOR2_H_
+#ifndef SRC_MATH_VECTOR2_H_
+#define SRC_MATH_VECTOR2_H_
 
 #include <stdexcept>
 #include "matrix3.h"
 #include "math_utils.h"
+
+template <typename T> class BufferAttribute;
 
 class Vector2 {
     public:
@@ -60,7 +61,7 @@ class Vector2 {
             switch ( index ) {
                 case 0: this->x = value; break;
                 case 1: this->y = value; break;
-                default: throw std::out_of_range( "index is out of range: " + index );
+                default: throw std::out_of_range( "index is out of range: " + std::to_string(index) );
             }
 
             return *this;
@@ -70,7 +71,7 @@ class Vector2 {
             switch ( index ) {
                 case 0: return this->x;
                 case 1: return this->y;
-                default: throw std::out_of_range( "index is out of range: " + index );
+                default: throw std::out_of_range( "index is out of range: " + std::to_string(index) );
             }
         }
 
@@ -319,20 +320,7 @@ class Vector2 {
             return array;
         }
 
-        // fromBufferAttribute( attribute, index, offset ) {
-
-        //     if ( offset !== undefined ) {
-
-        //         console.warn( 'THREE.Vector2: offset has been removed from .fromBufferAttribute().' );
-
-        //     }
-
-        //     this.x = attribute.getX( index );
-        //     this.y = attribute.getY( index );
-
-        //     return this;
-
-        // }
+        Vector2& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
 
         Vector2& rotateAround( Vector2& center, double angle ) {
 
@@ -363,5 +351,4 @@ class Vector2 {
 
 };
 
-
-#endif  //VECTOR2_H_
+#endif /* SRC_MATH_VECTOR2_H_ */

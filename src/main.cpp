@@ -27,6 +27,11 @@
 
 #include "vector3.h"
 #include "quaternion.h"
+#include "object_3d.h"
+#include "box3.h"
+#include "buffer_attribute.h"
+#include "sphere.h"
+#include "ray.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -73,6 +78,12 @@ int main(int, char**)
     
     
 #endif
+
+    Object3D o;
+    Box3 b;
+    BufferAttribute<double> ba;
+    Sphere s;
+    Ray r;
     
     Vector3 v = Vector3(13,12,11);
     Vector3 v2 = Vector3(25,26,27);

@@ -1,3 +1,5 @@
+#ifndef LAYERS_H
+#define LAYERS_H
 
 struct Layers {
     int mask;
@@ -7,37 +9,37 @@ struct Layers {
 	Layers& set( int channel ) {
 
 		mask = ( 1 << channel | 0 ) >> 0;
-
+		return *this;
 	}
 
 	Layers& enable( int channel ) {
 
 		mask |= 1 << channel | 0;
-
+		return *this;
 	}
 
 	Layers& enableAll() {
 
 		mask = 0xffffffff | 0;
-
+		return *this;
 	}
 
 	Layers& toggle( int channel ) {
 
 		mask ^= 1 << channel | 0;
-
+		return *this;
 	}
 
 	Layers& disable( int channel ) {
 
 		mask &= ~ ( 1 << channel | 0 );
-
+		return *this;
 	}
 
 	Layers& disableAll() {
 
 		mask = 0;
-
+		return *this;
 	}
 
 	bool test( Layers& layers ) {
@@ -53,3 +55,5 @@ struct Layers {
 	}
 
 };
+
+#endif /* LAYERS_H */

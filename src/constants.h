@@ -1,8 +1,11 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
 #include<string>
 
 const std::string REVISION = "139dev";
 enum MOUSE { LEFT = 0, MIDDLE = 1, RIGHT = 2, ROTATE = 0, DOLLY = 1, PAN = 2 };
-enum TOUCH { ROTATE = 0, PAN = 1, DOLLY_PAN = 2, DOLLY_ROTATE = 3 };
+enum TOUCH { TOUCH_ROTATE = 0, TOUCH_PAN = 1, DOLLY_PAN = 2, DOLLY_ROTATE = 3 };
 const int CullFaceNone = 0;
 const int CullFaceBack = 1;
 const int CullFaceFront = 2;
@@ -183,3 +186,5 @@ const std::string GLSL1 = "100";
 const std::string GLSL3 = "300 es";
 
 const int _SRGBAFormat = 1035; // fallback for WebGL 1
+
+#endif /* CONSTANTS_H */
