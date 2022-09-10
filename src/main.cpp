@@ -32,6 +32,9 @@
 #include "buffer_attribute.h"
 #include "sphere.h"
 #include "ray.h"
+#include "camera.h"
+#include "perspective_camera.h"
+#include "orthographic_camera.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -84,6 +87,9 @@ int main(int, char**)
     BufferAttribute<double> ba;
     Sphere s;
     Ray r;
+    Camera c;
+    PerspectiveCamera pc;
+    OrthographicCamera oc;
     
     Vector3 v = Vector3(13,12,11);
     Vector3 v2 = Vector3(25,26,27);

@@ -54,6 +54,7 @@ file(GLOB IMGUI_SOURCE ${ROOT_DIR}/src/imgui/backends/*.h;${ROOT_DIR}/src/imgui/
 
 file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/*.h ${ROOT_DIR}/src/*.cpp;
 ${ROOT_DIR}/src/core/*.h;${ROOT_DIR}/src/core/*.cpp;
+${ROOT_DIR}/src/cameras/*.h;${ROOT_DIR}/src/cameras/*.cpp;
 ${ROOT_DIR}/src/math/*.h;${ROOT_DIR}/src/math/*.cpp)
 
 # 构建可执行程序
@@ -65,6 +66,7 @@ ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math
+${ROOT_DIR}/src/cameras
 ${ROOT_DIR}/src/core)
 
 TARGET_LINK_LIBRARIES(threelibcpp PUBLIC

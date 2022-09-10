@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 
+template<typename T> BufferAttribute;
 using std::vector;
 
 class Box3 {
@@ -121,38 +122,8 @@ class Box3 {
 			return *this;
 		}
 
-	// setFromBufferAttribute( attribute ) {
-
-	// 	let minX = + Infinity;
-	// 	let minY = + Infinity;
-	// 	let minZ = + Infinity;
-
-	// 	let maxX = - Infinity;
-	// 	let maxY = - Infinity;
-	// 	let maxZ = - Infinity;
-
-	// 	for ( let i = 0, l = attribute.count; i < l; i ++ ) {
-
-	// 		const x = attribute.getX( i );
-	// 		const y = attribute.getY( i );
-	// 		const z = attribute.getZ( i );
-
-	// 		if ( x < minX ) minX = x;
-	// 		if ( y < minY ) minY = y;
-	// 		if ( z < minZ ) minZ = z;
-
-	// 		if ( x > maxX ) maxX = x;
-	// 		if ( y > maxY ) maxY = y;
-	// 		if ( z > maxZ ) maxZ = z;
-
-	// 	}
-
-	// 	this.min.set( minX, minY, minZ );
-	// 	this.max.set( maxX, maxY, maxZ );
-
-	// 	return this;
-
-	// }
+		template <typename T>
+		Box3& setFromBufferAttribute( BufferAttribute<T>& attribute ); 
 
         Box3& setFromPoints(std::vector<Vector3>& points) {
             makeEmpty();

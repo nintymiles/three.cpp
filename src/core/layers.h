@@ -1,5 +1,5 @@
-#ifndef LAYERS_H
-#define LAYERS_H
+#ifndef SRC_CORE_LAYERS_H_
+#define SRC_CORE_LAYERS_H_
 
 struct Layers {
     int mask;
@@ -56,4 +56,4 @@ struct Layers {
 
 };
 
-#endif /* LAYERS_H */
+#endif /* SRC_CORE_LAYERS_H_ */

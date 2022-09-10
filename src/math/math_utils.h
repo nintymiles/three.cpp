@@ -7,6 +7,10 @@
 #include <iostream>
 #include <numeric>
 
+
+const double DEG2RAD = M_PI / 180;
+const double RAD2DEG = 180 / M_PI;
+
 template<typename T>
 T clamp(T value, T min, T max) {
 	return fmax(min, fmin(max, value));

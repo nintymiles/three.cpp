@@ -9,6 +9,8 @@
 #include <cmath>
 #include <exception>
 #include <memory>
+#include <sstream>
+
 #include "matrix4.h"
 #include "matrix3.h"
 #include "math_utils.h"
@@ -63,7 +65,7 @@ class Vector3{
             case 0:this->x = value;break;
             case 1:this->y = value;break;
             case 2:this->z = value; break;
-            default:throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
+            default:throw genOutOfRangeError(index);break;
             }
             return *this;
         }
@@ -527,7 +529,13 @@ class Vector3{
 
     private:
 		std::shared_ptr<Vector3> _vector;
-		std::shared_ptr<Quaternion> _quaternion;		
+		std::shared_ptr<Quaternion> _quaternion;
+
+		std::runtime_error genOutOfRangeError(int index){
+			std::stringstream ss;
+			ss << "index is out of range: " << index << std::endl;
+			return std::runtime_error(ss.str());
+		}		
         
 };
 
