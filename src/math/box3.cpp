@@ -5,7 +5,7 @@ std::shared_ptr<Box3> Box3::_box = std::make_shared<Box3>();
 Vector3 Box3::_points[6]= {Vector3(),Vector3(),Vector3(),Vector3(),Vector3(),Vector3()}; 
 
 template <typename T>
-Box3& Box3::setFromBufferAttribute( BufferAttribute<T> attribute ){
+Box3& Box3::setFromBufferAttribute( BufferAttribute<T>& attribute ){
 	double minX = DBL_MAX;
 	double minY = DBL_MAX
 	double minZ = DBL_MAX;

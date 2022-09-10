@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 
-template<typename T> BufferAttribute;
+template<typename T> class BufferAttribute;
 using std::vector;
 
 class Box3 {

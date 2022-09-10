@@ -1,6 +1,11 @@
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
  
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES 
+#include <math.h>
+#endif
+
 #include <cmath>
 #include <random>
 #include <sstream>
