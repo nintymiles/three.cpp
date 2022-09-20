@@ -1,24 +1,36 @@
-#ifndef VECTOR3_H
-#define VECTOR3_H
+#ifndef SRC_MATH_VECTOR3_H_
+#define SRC_MATH_VECTOR3_H_
 
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES 
 #include <math.h>
-#endif
+#endif /* SRC_MATH_VECTOR3_H_ */
 
 #include <cmath>
 #include <exception>
 #include <memory>
 #include <sstream>
+#include <vector>
 
-#include "matrix4.h"
-#include "matrix3.h"
+// #include "matrix4.h"
+// #include "matrix3.h"
 #include "math_utils.h"
 
-class Quaternion;
-class Euler;
-class Matrix3;
-template <typename T> class BufferAttribute;
+// class Quaternion;
+// class Euler;
+// class Matrix3;
+class Matrix4;
+class Vector3;
+//template <typename T> class BufferAttribute;
+
+Vector3& setFromMatrixPosition(Vector3& v,Matrix4& m);
+Vector3& setFromMatrixScale(Vector3& v,Matrix4& m);
+Vector3& applyMatrix4(Vector3& v,Matrix4& m);
+// Vector3& setFromMatrixColumn(Matrix4& m,int index);
+Vector3& setFromMatrixColumn(Vector3& v,Matrix4& m,int index);
+Vector3& transformDirection(Vector3& v,Matrix4& m);
+
+Vector3	lerpVectors( const Vector3& v1, const Vector3& v2, double alpha );
 
 class Vector3{
     public:
@@ -72,121 +84,110 @@ class Vector3{
 
 	    double getComponent(int index) {
 		    switch ( index ) {
-			case 0: return this->x;
-			case 1: return this->y;
-			case 2: return this->z;
-			default: throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
+				case 0: return this->x;
+				case 1: return this->y;
+				case 2: return this->z;
+				default: throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
+			}
 		}
 
-	}
-	Vector3 clone() {
-		return Vector3(this->x,this->y,this->z);
-	}
+		Vector3 clone() {
+			return Vector3(this->x,this->y,this->z);
+		}
     
-    Vector3& copy(Vector3 v) {
-		*this = v;
-		return *this;
-	}
-    //操作符重载，不熟悉
-    Vector3& operator+=(const Vector3& rhs){
-        *this += rhs;
-        return *this;
-    }
+		Vector3& copy(Vector3 v) {
+			*this = v;
+			return *this;
+		}
+		
+		//操作符重载，不熟悉
+		Vector3& operator+=(const Vector3& rhs){
+			*this += rhs;
+			return *this;
+		}
 
-    Vector3& add(Vector3& vec) {
-		return addScaledVector(vec,1);
-	}
+		Vector3& add(Vector3& vec) {
+			return addScaledVector(vec,1);
+		}
 
-	Vector3& addScalar(double s) {
-		this->x += s;
-		this->y += s;
-		this->z += s;
+		Vector3& addScalar(double s) {
+			this->x += s;
+			this->y += s;
+			this->z += s;
 
-		return *this;
-	}
+			return *this;
+		}
 
-    Vector3& addVectors(Vector3& a,Vector3& b) {
-		this->x = a.x + b.x;
-		this->y = a.y + b.y;
-		this->z = a.z + b.z;
+		Vector3& addVectors(Vector3& a,Vector3& b) {
+			this->x = a.x + b.x;
+			this->y = a.y + b.y;
+			this->z = a.z + b.z;
 
-		return *this;
-	}
+			return *this;
+		}
 
-    Vector3& addScaledVector(Vector3& v,double s) {
-		this->x += v.x * s;
-		this->y += v.y * s;
-		this->z += v.z * s;
+		Vector3& addScaledVector(Vector3& v,double s) {
+			this->x += v.x * s;
+			this->y += v.y * s;
+			this->z += v.z * s;
 
-		return *this;
-	}
+			return *this;
+		}
 
-    Vector3& sub(Vector3& v) {
-		this->x -= v.x;
-		this->y -= v.y;
-		this->z -= v.z;
+		Vector3& sub(Vector3& v) {
+			this->x -= v.x;
+			this->y -= v.y;
+			this->z -= v.z;
 
-		return *this;
-	}
+			return *this;
+		}
 
-	Vector3& subVectors(Vector3& a,Vector3& b) {
-		this->x = a.x - b.x;
-		this->y = a.y - b.y;
-		this->z = a.z - b.z;
+		Vector3& subVectors(Vector3& a,Vector3& b) {
+			this->x = a.x - b.x;
+			this->y = a.y - b.y;
+			this->z = a.z - b.z;
 
-		return *this;
-	}
+			return *this;
+		}
 
-    Vector3& multiply(const Vector3& v) {
-		this->x *= v.x;
-		this->y *= v.y;
-		this->z *= v.z;
+		Vector3& multiply(const Vector3& v) {
+			this->x *= v.x;
+			this->y *= v.y;
+			this->z *= v.z;
 
-		return *this;
-	}
+			return *this;
+		}
 
-    Vector3& multiplyScalar(double scalar) {
-		this->x *= scalar;
-		this->y *= scalar;
-		this->z *= scalar;
+		Vector3& multiplyScalar(double scalar) {
+			this->x *= scalar;
+			this->y *= scalar;
+			this->z *= scalar;
 
-		return *this;
-	}
+			return *this;
+		}
 
-    Vector3& multiplyVectors(Vector3& a,Vector3& b) {
-		this->x = a.x * b.x;
-		this->y = a.y * b.y;
-		this->z = a.z * b.z;
+		Vector3& multiplyVectors(Vector3& a,Vector3& b) {
+			this->x = a.x * b.x;
+			this->y = a.y * b.y;
+			this->z = a.z * b.z;
 
-		return *this;
-	}
+			return *this;
+		}
 
-    //模版的返回值，可以借助auto实现简化
-	double dot(const Vector3& v){
-		return this->x * v.x + this->y * v.y + this->z * v.z;
-	}
+		//模版的返回值，可以借助auto实现简化
+		double dot(const Vector3& v){
+			return this->x * v.x + this->y * v.y + this->z * v.z;
+		}
 
-    Vector3& applyQuaternion(Quaternion& q);
+    // Vector3& applyQuaternion(Quaternion& q);
 
-	Vector3& applyEuler(Euler& euler);
+	// Vector3& applyEuler(Euler& euler);
 
-	Vector3& applyAxisAngle(Vector3& axis, double angle);
+// 	Vector3& applyAxisAngle(Vector3& axis, double angle);
 
-	Vector3& applyMatrix3(Matrix3& m);
+// 	Vector3& applyMatrix3(Matrix3& m);
 
-	Vector3& applyNormalMatrix(Matrix3& m);
-
-	Vector3 applyMatrix4(Matrix4& m) {
-		const double x = this->x, y = this->y, z = this->z;
-
-		const double w = 1 / (m.elements[ 3 ] * x + m.elements[ 7 ] * y + m.elements[ 11 ] * z + m.elements[ 15 ]);
-
-		this->x = ( m.elements[ 0 ] * x + m.elements[ 4 ] * y + m.elements[ 8 ] * z + m.elements[ 12 ] ) * w;
-		this->y = ( m.elements[ 1 ] * x + m.elements[ 5 ] * y + m.elements[ 9 ] * z + m.elements[ 13 ] ) * w;
-		this->z = ( m.elements[ 2 ] * x + m.elements[ 6 ] * y + m.elements[ 10 ] * z + m.elements[ 14 ] ) * w;
-
-		return *this;
-	}
+// 	Vector3& applyNormalMatrix(Matrix3& m);
 
 	// Vector3& project(Matrix4 camera) {
 	// 	applyMatrix4(camera.matrixWorldInverse ).applyMatrix4(camera.projectionMatrix);
@@ -194,25 +195,13 @@ class Vector3{
 	// 	return *this;
 	// }
 
-// 	unproject( camera ) {
+// // 	unproject( camera ) {
 
-// 		return *this-applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
+// // 		return *this-applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
 
-// 	}
+// // 	}
 
-	Vector3& transformDirection(Matrix4& m) {
-		// input: THREE.Matrix4 affine matrix
-		// vector interpreted as a direction
 
-		const double x = this->x, y = this->y, z = this->z;
-
-		this->x = m.elements[ 0 ] * x + m.elements[ 4 ] * y + m.elements[ 8 ] * z;
-		this->y = m.elements[ 1 ] * x + m.elements[ 5 ] * y + m.elements[ 9 ] * z;
-		this->z = m.elements[ 2 ] * x + m.elements[ 6 ] * y + m.elements[ 10 ] * z;
-
-		return this->normalize();
-
-	}
 
 	// TODO lengthSquared?
 	double lengthSq() {
@@ -235,25 +224,13 @@ class Vector3{
 		return this->normalize().multiplyScalar( length );
 	}
 
-// 	lerp( v, alpha ) {
+	Vector3& lerp( Vector3& v, double alpha ) {
+		this->x += ( v.x - this->x ) * alpha;
+		this->y += ( v.y - this->y ) * alpha;
+		this->z += ( v.z - this->z ) * alpha;
 
-// 		this->x += ( v.x - this->x ) * alpha;
-// 		this->y += ( v.y - this->y ) * alpha;
-// 		this->z += ( v.z - this->z ) * alpha;
-
-// 		return *this;
-
-// 	}
-
-// 	lerpVectors( v1, v2, alpha ) {
-
-// 		this->x = v1.x + ( v2.x - v1.x ) * alpha;
-// 		this->y = v1.y + ( v2.y - v1.y ) * alpha;
-// 		this->z = v1.z + ( v2.z - v1.z ) * alpha;
-
-// 		return *this;
-
-// 	}
+		return *this;
+	}
 
 	Vector3& divide(Vector3& v) {
 
@@ -443,47 +420,30 @@ class Vector3{
 
 // 	}
 
-// 	setFromCylindricalCoords( radius, theta, y ) {
-
-// 		this->x = radius * Math.sin( theta );
-// 		this->y = y;
-// 		this->z = radius * Math.cos( theta );
-
-// 		return *this;
-
-// 	}
-
-	Vector3& setFromMatrixPosition(Matrix4& m){
-		this->x = m.elements[ 12 ];
-		this->y = m.elements[ 13 ];
-		this->z = m.elements[ 14 ];
+	Vector3& setFromCylindricalCoords( double radius, double theta, double y ) {
+		this->x = radius * sin( theta );
+		this->y = y;
+		this->z = radius * cos( theta );
 
 		return *this;
+
 	}
 
-	Vector3& setFromMatrixScale(Matrix4& m){
-		const double sx = setFromMatrixColumn(m, 0).length();
-		const double sy = setFromMatrixColumn(m, 1).length();
-		const double sz = setFromMatrixColumn(m, 2).length();
+	// Vector3& setFromMatrix3Column(Matrix3& m,int index) {
+	// 	return fromArray( m.elements, index * 3 );
+	// }
 
-		this->x = sx;
-		this->y = sy;
-		this->z = sz;
-
-		return *this;
-	}
-
-	Vector3& setFromMatrixColumn(Matrix4& m,int index){
-		return fromArray(m.elements, index * 4);
-	}
-
-	Vector3& setFromMatrix3Column(Matrix3& m,int index) {
-		return fromArray( m.elements, index * 3 );
-	}
-
-	Vector3& setFromEuler(Euler& e);
+	//Vector3& setFromEuler(Euler& e);
 
 	Vector3& fromArray(double array[], int offset = 0) {
+		x = array[ offset ];
+		y = array[ offset + 1 ];
+		z = array[ offset + 2 ];
+
+		return *this;
+	}
+
+	Vector3& fromArrayVec(std::vector<double> array, int offset = 0) {
 		x = array[ offset ];
 		y = array[ offset + 1 ];
 		z = array[ offset + 2 ];
@@ -499,7 +459,7 @@ class Vector3{
 		return array;
 	}
 
-	Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
+	//Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
 
 	Vector3& random() {
 		this->x = random_gen<double>();
@@ -527,9 +487,9 @@ class Vector3{
 		return ( (v.x == this->x) && (v.y == this->y) && (v.z == this->z) );
 	}
 
-    private:
+    private: 
 		std::shared_ptr<Vector3> _vector;
-		std::shared_ptr<Quaternion> _quaternion;
+		//std::shared_ptr<Quaternion> _quaternion;
 
 		std::runtime_error genOutOfRangeError(int index){
 			std::stringstream ss;

@@ -26,15 +26,16 @@
 #include <functional>
 
 #include "vector3.h"
-#include "quaternion.h"
-#include "object_3d.h"
-#include "box3.h"
-#include "buffer_attribute.h"
-#include "sphere.h"
-#include "ray.h"
-#include "camera.h"
-#include "perspective_camera.h"
-#include "orthographic_camera.h"
+// #include "quaternion.h"
+// #include "object_3d.h"
+// #include "box3.h"
+// #include "buffer_attribute.h"
+// #include "sphere.h"
+// #include "ray.h"
+// #include "camera.h"
+// #include "perspective_camera.h"
+// #include "orthographic_camera.h"
+#include "clock.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -82,20 +83,37 @@ int main(int, char**)
     
 #endif
 
-    Object3D o;
-    Box3 b;
-    BufferAttribute<double> ba;
-    Sphere s;
-    Ray r;
-    Camera c;
-    PerspectiveCamera pc;
-    OrthographicCamera oc;
+    // Object3D o;
+    // Box3 b;
+    // BufferAttribute<double> ba;
+    // Sphere s;
+    // Ray r;
+    // Camera c;
+    // PerspectiveCamera pc;
+    // OrthographicCamera oc;
+    Clock cl;
+    //cl.getDelta();
+
+
+    // cl.getDelta();
+    cl.start();
+    std::cout << "start time: " << cl.startTime << std::endl;
+
+    for(long i=0;i<1000000000;i++){
+        ;
+    }
     
     Vector3 v = Vector3(13,12,11);
     Vector3 v2 = Vector3(25,26,27);
-    v.getComponent(2);
+    // v.getComponent(2);
     v.multiply(/**Vector3(78,197,2345)*/v2);
     std::cout << "index 0:" << v.getComponent(0) << " index 1:" << v.getComponent(1) << " index 2:" << v.getComponent(2) << std::endl; 
+    std::cout << "first delta time = " << cl.getDelta() << std::endl;
+    for(long i=0;i<2000000000;i++){
+        ;
+    }
+    cl.getDelta();
+    std::cout << "elapsed time  = " << cl.elapsedTime << std::endl;
 
     // Create window with graphics context
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
@@ -288,3 +306,5 @@ int main(int, char**)
 
     return 0;
 }
+
+

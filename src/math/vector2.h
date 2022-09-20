@@ -2,10 +2,12 @@
 #define SRC_MATH_VECTOR2_H_
 
 #include <stdexcept>
+#include <vector>
+
 #include "matrix3.h"
 #include "math_utils.h"
 
-template <typename T> class BufferAttribute;
+//template <typename T> class BufferAttribute;
 
 class Vector2 {
     public:
@@ -313,6 +315,13 @@ class Vector2 {
             return *this;
         }
 
+        Vector2& fromArray( std::vector<double> array, int offset = 0 ) {
+            x = array[ offset ];
+            y = array[ offset + 1 ];
+
+            return *this;
+        }
+
         double* toArray( double array[], int offset = 0 ) {
             array[ offset ] = x;
             array[ offset + 1 ] = y;
@@ -320,7 +329,7 @@ class Vector2 {
             return array;
         }
 
-        Vector2& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
+        //Vector2& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
 
         Vector2& rotateAround( Vector2& center, double angle ) {
 

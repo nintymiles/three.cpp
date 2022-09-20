@@ -5,8 +5,8 @@
 #include<memory>
 #include<cmath>
 
-class Quaternion;
-class Vector3;
+// class Quaternion;
+// class Vector3;
 
 class Matrix4{
     public:
@@ -43,9 +43,9 @@ class Matrix4{
         return *this;
     }
 
-	Matrix4 clone(){
-		return Matrix4().fromArray(elements);
-	}
+	// Matrix4 clone(){
+	// 	return Matrix4().fromArray(elements);
+	// }
 
 	Matrix4& copy(Matrix4& m) {
         for(int i=0;i<sizeof(elements)/sizeof(elements[0]);i++){
@@ -79,11 +79,11 @@ class Matrix4{
 
 // 	}
 
-	Matrix4& extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+	// Matrix4& extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 
-	Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+	// Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 
-	Matrix4& extractRotation(Matrix4& m);
+	// Matrix4& extractRotation(Matrix4& m);
 
 // 	makeRotationFromEuler( euler ) {
 
@@ -213,9 +213,9 @@ class Matrix4{
 
 // 	}
 
-	Matrix4& makeRotationFromQuaternion(Quaternion& q);
+	// Matrix4& makeRotationFromQuaternion(Quaternion& q);
 
-	Matrix4& lookAt(Vector3& eye,Vector3& target,Vector3& up); 
+	// Matrix4& lookAt(Vector3& eye,Vector3& target,Vector3& up); 
 
 	Matrix4& multiply(Matrix4& m) {
 		return multiplyMatrices(*this, m);
@@ -444,8 +444,8 @@ class Matrix4{
 		return *this;
 	}
 
-    //rotate angle degrees around any axis 
-	Matrix4& makeRotationAxis(Vector3& axis, double angle);
+    // //rotate angle degrees around any axis 
+	// Matrix4& makeRotationAxis(Vector3& axis, double angle);
 
 	Matrix4& makeScale(double x,double y,double z){
 		set(
@@ -468,9 +468,9 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& compose(const Vector3& position,const Quaternion& quaternion,const Vector3& scale);
+	// Matrix4& compose(const Vector3& position,const Quaternion& quaternion,const Vector3& scale);
 
-	Matrix4& decompose(Vector3& position,Quaternion& quaternion,Vector3& scale);
+	// Matrix4& decompose(Vector3& position,Quaternion& quaternion,Vector3& scale);
 
 	Matrix4& makePerspective(double left,double right,double top,double bottom,double near,double far){
 		const double x = 2 * near / ( right - left );
@@ -547,29 +547,31 @@ class Matrix4{
 
 
 
-    private:
-        std::shared_ptr<Vector3> _v1;
-        std::shared_ptr<Matrix4>  _m1;
-        std::shared_ptr<Vector3> _zero;
-        std::shared_ptr<Vector3> _one;
-        std::shared_ptr<Vector3> _x;
-        std::shared_ptr<Vector3> _y;
-        std::shared_ptr<Vector3> _z;
+    // private:
+    //     std::shared_ptr<Vector3> _v1;
+    //     std::shared_ptr<Matrix4>  _m1;
+    //     std::shared_ptr<Vector3> _zero;
+    //     std::shared_ptr<Vector3> _one;
+    //     std::shared_ptr<Vector3> _x;
+    //     std::shared_ptr<Vector3> _y;
+    //     std::shared_ptr<Vector3> _z;
 
-		//      //std::shared_ptr<Vector3> _v1;
-		// Vector3 _v1;
-        // //std::shared_ptr<Matrix4>  _m1;
-		// Matrix4 _m1;
-        // //std::shared_ptr<Vector3> _zero;
-		// Vector3 _zero;
-        // //std::shared_ptr<Vector3> _one;
-		// Vector3 _one;
-        // //std::shared_ptr<Vector3> _x;
-        // //std::shared_ptr<Vector3> _y;
-        // //std::shared_ptr<Vector3> _z;
-		// Vector3 _x,_y,_z;
+	// 	//      //std::shared_ptr<Vector3> _v1;
+	// 	// Vector3 _v1;
+    //     // //std::shared_ptr<Matrix4>  _m1;
+	// 	// Matrix4 _m1;
+    //     // //std::shared_ptr<Vector3> _zero;
+	// 	// Vector3 _zero;
+    //     // //std::shared_ptr<Vector3> _one;
+	// 	// Vector3 _one;
+    //     // //std::shared_ptr<Vector3> _x;
+    //     // //std::shared_ptr<Vector3> _y;
+    //     // //std::shared_ptr<Vector3> _z;
+	// 	// Vector3 _x,_y,_z;
 
 };
 
+//void extractBasis(Matrix4& matrix4,Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+// Vector3& setFromMatrixColumn(Vector3& v,Matrix4& m,int index);
 
 #endif //MATRIX4_H
