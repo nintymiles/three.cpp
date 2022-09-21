@@ -6,7 +6,16 @@
 #include<cmath>
 
 // class Quaternion;
-// class Vector3;
+class Vector3;
+class Matrix4;
+
+//Matrix4& extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+void extractBasis(Matrix4& matrix4,Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+
+//Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+Matrix4 makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+//Matrix4& extractRotation(Matrix4& m);
+Matrix4 extractRotation(Matrix4& m);
 
 class Matrix4{
     public:
@@ -31,8 +40,8 @@ class Matrix4{
 		elements[ 3 ] = n41; elements[ 7 ] = n42; elements[ 11 ] = n43; elements[ 15 ] = n44;
 
 		return *this;
-
 	}
+
 	Matrix4& identity() {
 		set(
 			1, 0, 0, 0,
@@ -79,11 +88,11 @@ class Matrix4{
 
 // 	}
 
-	// Matrix4& extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+	
 
-	// Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 
-	// Matrix4& extractRotation(Matrix4& m);
+
+	
 
 // 	makeRotationFromEuler( euler ) {
 
@@ -547,14 +556,14 @@ class Matrix4{
 
 
 
-    // private:
-    //     std::shared_ptr<Vector3> _v1;
-    //     std::shared_ptr<Matrix4>  _m1;
-    //     std::shared_ptr<Vector3> _zero;
-    //     std::shared_ptr<Vector3> _one;
-    //     std::shared_ptr<Vector3> _x;
-    //     std::shared_ptr<Vector3> _y;
-    //     std::shared_ptr<Vector3> _z;
+    private:
+        std::shared_ptr<Vector3> _v1;
+        std::shared_ptr<Matrix4>  _m1;
+        std::shared_ptr<Vector3> _zero;
+        std::shared_ptr<Vector3> _one;
+        std::shared_ptr<Vector3> _x;
+        std::shared_ptr<Vector3> _y;
+        std::shared_ptr<Vector3> _z;
 
 	// 	//      //std::shared_ptr<Vector3> _v1;
 	// 	// Vector3 _v1;
@@ -570,8 +579,5 @@ class Matrix4{
 	// 	// Vector3 _x,_y,_z;
 
 };
-
-//void extractBasis(Matrix4& matrix4,Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
-// Vector3& setFromMatrixColumn(Vector3& v,Matrix4& m,int index);
 
 #endif //MATRIX4_H

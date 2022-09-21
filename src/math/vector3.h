@@ -4,7 +4,7 @@
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES 
 #include <math.h>
-#endif /* SRC_MATH_VECTOR3_H_ */
+#endif 
 
 #include <cmath>
 #include <exception>
@@ -16,9 +16,9 @@
 // #include "matrix3.h"
 #include "math_utils.h"
 
-// class Quaternion;
-// class Euler;
-// class Matrix3;
+class Quaternion;
+class Euler;
+class Matrix3;
 class Matrix4;
 class Vector3;
 //template <typename T> class BufferAttribute;
@@ -31,6 +31,23 @@ Vector3& setFromMatrixColumn(Vector3& v,Matrix4& m,int index);
 Vector3& transformDirection(Vector3& v,Matrix4& m);
 
 Vector3	lerpVectors( const Vector3& v1, const Vector3& v2, double alpha );
+
+// Vector3& applyEuler(Euler& euler);
+Vector3& applyEuler(Vector3& v,Euler& euler);
+// Vector3& setFromEuler(Euler& e);
+Vector3& setFromEuler(Vector3& v,Euler& e);
+
+//std::shared_ptr<Quaternion> _quaternion;
+Vector3& applyQuaternion(Vector3& v,Quaternion& q);
+
+//Vector3& applyAxisAngle(Vector3& axis, double angle);
+Vector3& applyAxisAngle(Vector3& v,Vector3& axis, double angle);
+
+// 	Vector3& applyMatrix3(Matrix3& m);
+Vector3& applyMatrix3(Vector3& v,Matrix3& m);
+
+// 	Vector3& applyNormalMatrix(Matrix3& m);
+Vector3& applyNormalMatrix(Vector3& v,Matrix3& m);
 
 class Vector3{
     public:
@@ -178,16 +195,6 @@ class Vector3{
 		double dot(const Vector3& v){
 			return this->x * v.x + this->y * v.y + this->z * v.z;
 		}
-
-    // Vector3& applyQuaternion(Quaternion& q);
-
-	// Vector3& applyEuler(Euler& euler);
-
-// 	Vector3& applyAxisAngle(Vector3& axis, double angle);
-
-// 	Vector3& applyMatrix3(Matrix3& m);
-
-// 	Vector3& applyNormalMatrix(Matrix3& m);
 
 	// Vector3& project(Matrix4 camera) {
 	// 	applyMatrix4(camera.matrixWorldInverse ).applyMatrix4(camera.projectionMatrix);
@@ -433,7 +440,7 @@ class Vector3{
 	// 	return fromArray( m.elements, index * 3 );
 	// }
 
-	//Vector3& setFromEuler(Euler& e);
+	
 
 	Vector3& fromArray(double array[], int offset = 0) {
 		x = array[ offset ];
@@ -489,7 +496,7 @@ class Vector3{
 
     private: 
 		std::shared_ptr<Vector3> _vector;
-		//std::shared_ptr<Quaternion> _quaternion;
+		
 
 		std::runtime_error genOutOfRangeError(int index){
 			std::stringstream ss;
@@ -499,4 +506,4 @@ class Vector3{
         
 };
 
-#endif //VECTOR3_H
+#endif /* SRC_MATH_VECTOR3_H_ */

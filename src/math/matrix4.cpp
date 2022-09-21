@@ -2,6 +2,8 @@
 #include "vector3.h"
 #include "quaternion.h"
 
+static Vector3 _vx = Vector3(0,0,1);
+
 Matrix4::Matrix4():_v1(std::make_shared<Vector3>()),
     _m1(std::make_shared<Matrix4>()),
     _zero(std::make_shared<Vector3>(0,0,0)),
@@ -10,51 +12,13 @@ Matrix4::Matrix4():_v1(std::make_shared<Vector3>()),
     _y(std::make_shared<Vector3>()),
     _z(std::make_shared<Vector3>()){};
 
+
 // Matrix4& Matrix4::extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
 //     setFromMatrixColumn( xAxis,*this, 0 );
 // 	setFromMatrixColumn( yAxis,*this, 1 );
 // 	setFromMatrixColumn( zAxis,*this, 2 );
 
 // 	return *this;
-// }
-
-// Matrix4& Matrix4::makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
-//     set(
-//         xAxis.x, yAxis.x, zAxis.x, 0,
-//         xAxis.y, yAxis.y, zAxis.y, 0,
-//         xAxis.z, yAxis.z, zAxis.z, 0,
-//         0, 0, 0, 1
-//     );
-//     return *this;
-// }
-
-// Matrix4& Matrix4::extractRotation(Matrix4& m) {
-//     // this method does not support reflection matrices
-//     const double scaleX = 1 / setFromMatrixColumn(*_v1, m, 0).length();
-//     const double scaleY = 1 / setFromMatrixColumn(*_v1, m, 1).length();
-//     const double scaleZ = 1 / setFromMatrixColumn(*_v1, m, 2).length();
-
-//     elements[ 0 ] = m.elements[ 0 ] * scaleX;
-//     elements[ 1 ] = m.elements[ 1 ] * scaleX;
-//     elements[ 2 ] = m.elements[ 2 ] * scaleX;
-//     elements[ 3 ] = 0;
-
-//     elements[ 4 ] = m.elements[ 4 ] * scaleY;
-//     elements[ 5 ] = m.elements[ 5 ] * scaleY;
-//     elements[ 6 ] = m.elements[ 6 ] * scaleY;
-//     elements[ 7 ] = 0;
-
-//     elements[ 8 ] = m.elements[ 8 ] * scaleZ;
-//     elements[ 9 ] = m.elements[ 9 ] * scaleZ;
-//     elements[ 10 ] = m.elements[ 10 ] * scaleZ;
-//     elements[ 11 ] = 0;
-
-//     elements[ 12 ] = 0;
-//     elements[ 13 ] = 0;
-//     elements[ 14 ] = 0;
-//     elements[ 15 ] = 1;
-
-//     return *this;
 // }
 
 // Matrix4& Matrix4::compose(const Vector3& position,const Quaternion& quaternion,const Vector3& scale){
@@ -208,12 +172,85 @@ Matrix4::Matrix4():_v1(std::make_shared<Vector3>()),
 // 		return *this;
 // 	}
 
-    // void extractBasis(Matrix4& matrix,Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
-    //     xAxis.setFromMatrixColumn( matrix, 0 );
-    //     yAxis.setFromMatrixColumn( matrix, 1 );
-    //     zAxis.setFromMatrixColumn( matrix, 2 );
-    // }
+//如果Vector3.cpp::setFromMatrixColumn内联则导致此处无法编译
+void extractBasis(Matrix4& matrix,Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
+    setFromMatrixColumn( xAxis, matrix, 0 );
+    setFromMatrixColumn( yAxis, matrix, 1 );
+    setFromMatrixColumn( zAxis, matrix, 2 );
+}
 
-    // Vector3& setFromMatrixColumn(Vector3& v,Matrix4& m,int index){
-	// 	return v.fromArray(m.elements, index * 4);
-	// }
+// Matrix4& Matrix4::makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
+//     set(
+//         xAxis.x, yAxis.x, zAxis.x, 0,
+//         xAxis.y, yAxis.y, zAxis.y, 0,
+//         xAxis.z, yAxis.z, zAxis.z, 0,
+//         0, 0, 0, 1
+//     );
+//     return *this;
+// }
+Matrix4 makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
+    return Matrix4().set(
+        xAxis.x, yAxis.x, zAxis.x, 0,
+        xAxis.y, yAxis.y, zAxis.y, 0,
+        xAxis.z, yAxis.z, zAxis.z, 0,
+        0, 0, 0, 1
+    );
+}
+
+// Matrix4& Matrix4::extractRotation(Matrix4& m) {
+//     // this method does not support reflection matrices
+//     const double scaleX = 1 / setFromMatrixColumn(*_v1, m, 0).length();
+//     const double scaleY = 1 / setFromMatrixColumn(*_v1, m, 1).length();
+//     const double scaleZ = 1 / setFromMatrixColumn(*_v1, m, 2).length();
+
+//     elements[ 0 ] = m.elements[ 0 ] * scaleX;
+//     elements[ 1 ] = m.elements[ 1 ] * scaleX;
+//     elements[ 2 ] = m.elements[ 2 ] * scaleX;
+//     elements[ 3 ] = 0;
+
+//     elements[ 4 ] = m.elements[ 4 ] * scaleY;
+//     elements[ 5 ] = m.elements[ 5 ] * scaleY;
+//     elements[ 6 ] = m.elements[ 6 ] * scaleY;
+//     elements[ 7 ] = 0;
+
+//     elements[ 8 ] = m.elements[ 8 ] * scaleZ;
+//     elements[ 9 ] = m.elements[ 9 ] * scaleZ;
+//     elements[ 10 ] = m.elements[ 10 ] * scaleZ;
+//     elements[ 11 ] = 0;
+
+//     elements[ 12 ] = 0;
+//     elements[ 13 ] = 0;
+//     elements[ 14 ] = 0;
+//     elements[ 15 ] = 1;
+
+//     return *this;
+// }
+Matrix4 extractRotation(Matrix4& m) {
+    Matrix4 matrix{};
+    // this method does not support reflection matrices
+    const double scaleX = 1 / setFromMatrixColumn(_vx, m, 0).length();
+    const double scaleY = 1 / setFromMatrixColumn(_vx, m, 1).length();
+    const double scaleZ = 1 / setFromMatrixColumn(_vx, m, 2).length();
+
+    matrix.elements[ 0 ] = m.elements[ 0 ] * scaleX;
+    matrix.elements[ 1 ] = m.elements[ 1 ] * scaleX;
+    matrix.elements[ 2 ] = m.elements[ 2 ] * scaleX;
+    matrix.elements[ 3 ] = 0;
+
+    matrix.elements[ 4 ] = m.elements[ 4 ] * scaleY;
+    matrix.elements[ 5 ] = m.elements[ 5 ] * scaleY;
+    matrix.elements[ 6 ] = m.elements[ 6 ] * scaleY;
+    matrix.elements[ 7 ] = 0;
+
+    matrix.elements[ 8 ] = m.elements[ 8 ] * scaleZ;
+    matrix.elements[ 9 ] = m.elements[ 9 ] * scaleZ;
+    matrix.elements[ 10 ] = m.elements[ 10 ] * scaleZ;
+    matrix.elements[ 11 ] = 0;
+
+    matrix.elements[ 12 ] = 0;
+    matrix.elements[ 13 ] = 0;
+    matrix.elements[ 14 ] = 0;
+    matrix.elements[ 15 ] = 1;
+
+    return matrix;
+}

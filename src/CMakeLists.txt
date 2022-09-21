@@ -3,7 +3,9 @@
 project (Three_cpp_lib)
 
 file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/math/clock.h;${ROOT_DIR}/src/math/clock.cpp;
-${ROOT_DIR}/src/math/vector3.h;${ROOT_DIR}/src/math/vector3.cpp)
+${ROOT_DIR}/src/math/vector3.h;${ROOT_DIR}/src/math/vector3.cpp;
+${ROOT_DIR}/src/math/matrix4.h;${ROOT_DIR}/src/math/matrix4.cpp;
+${ROOT_DIR}/src/math/quaternion.h;${ROOT_DIR}/src/math/quaternion.cpp)
 
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
@@ -20,4 +22,5 @@ TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   glfw.3.3
   GLESv2
   EGL
+  PRIVATE GSL
 )
