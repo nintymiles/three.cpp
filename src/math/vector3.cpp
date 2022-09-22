@@ -6,8 +6,12 @@
 // #include "buffer_attribute.h"
 
 static Quaternion _quaternion;
+//std::shared_ptr<Vector3> _vector = std::make_shared<Vector3>();
+static Vector3 _vector{};
 
-Vector3::Vector3():_vector(std::make_shared<Vector3>()){}
+//segmentation fault  /Users/rensean/Documents/MyGitWorkspace/three.cpp/build/bin/threelibcpp
+//上述错误出现在默认构造函数尝试以默认初始化的方法初始化自己
+//Vector3::Vector3():_vector(std::make_shared<Vector3>()){}
                                 //,_quaternion(std::make_shared<Quaternion>()){}
 
 
@@ -18,6 +22,19 @@ Vector3::Vector3():_vector(std::make_shared<Vector3>()){}
 
 //     return *this;
 // }
+
+	Vector3& Vector3::projectOnPlane(Vector3& planeNormal) {
+		_vector.copy(*this).projectOnVector(planeNormal);
+
+		return sub(_vector);
+	}
+
+	Vector3& Vector3::reflect(Vector3& normal) {
+		// reflecdouble incidendouble vector off plane orthogonal to normal
+		// normal is assumed to have unidouble length
+
+		return sub(_vector.copy(normal).multiplyScalar(2*dot(normal)));
+	}
 
 inline Vector3& applyMatrix4(Vector3& v,Matrix4& m) {
     const double x = v.x, y = v.y, z = v.z;

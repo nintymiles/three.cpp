@@ -49,12 +49,19 @@ Vector3& applyMatrix3(Vector3& v,Matrix3& m);
 // 	Vector3& applyNormalMatrix(Matrix3& m);
 Vector3& applyNormalMatrix(Vector3& v,Matrix3& m);
 
+
 class Vector3{
     public:
         //public data member
-        double x,y,z;
+		// use in-class initializer
+        double x = 0,y = 0,z = 0;
 
-		Vector3();
+		// explicitly constructor inistializing
+		// Vector3():x(0),y(0),z(0){};
+		
+		// default constructor use in-class initialzier
+		Vector3() = default;
+
         Vector3(double x,double y,double z):x(x),y(y),z(z){};
         //only constructors take base initializers
         Vector3& set(double x,double y,double z){
@@ -365,18 +372,15 @@ class Vector3{
 
 	}
 
-	Vector3& projectOnPlane(Vector3& planeNormal) {
-		_vector->copy(*this).projectOnVector(planeNormal);
+	Vector3& projectOnPlane(Vector3& planeNormal); 
+	// {
+	// 	Vector3 v;
+	// 	v.copy(*this).projectOnVector(planeNormal);
 
-		return sub(*_vector);
-	}
+	// 	return sub(v);
+	// }
 
-	Vector3& reflect(Vector3& normal) {
-		// reflecdouble incidendouble vector off plane orthogonal to normal
-		// normal is assumed to have unidouble length
-
-		return sub(_vector->copy(normal).multiplyScalar(2*dot(normal)));
-	}
+	Vector3& reflect(Vector3& normal);
 
 	double angleTo(Vector3& v){
 		const double denominator = std::sqrt(this->lengthSq() * v.lengthSq());
@@ -495,7 +499,7 @@ class Vector3{
 	}
 
     private: 
-		std::shared_ptr<Vector3> _vector;
+		//std::shared_ptr<Vector3> _vector;
 		
 
 		std::runtime_error genOutOfRangeError(int index){

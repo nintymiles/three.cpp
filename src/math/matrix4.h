@@ -27,7 +27,7 @@ class Matrix4{
 			0, 0, 0, 1
         };
     
-    Matrix4();
+    Matrix4(){};
 
 	Matrix4& set(double n11,double n12,double n13,double n14, 
                 double n21,double n22,double n23,double n24,

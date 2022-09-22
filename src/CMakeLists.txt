@@ -24,3 +24,24 @@ TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   EGL
   PRIVATE GSL
 )
+
+enable_testing()
+
+add_executable(
+  threecpp_test
+  ${ROOT_DIR}/src/test/vector3_test.cpp
+)
+target_link_libraries(
+  threecpp_test
+  GTest::gtest_main
+)
+target_include_directories(threecpp_test PRIVATE 
+${ROOT_DIR}/src
+${ROOT_DIR}/src/imgui
+${ROOT_DIR}/src/imgui/backends
+${ROOT_DIR}/src/math
+${ROOT_DIR}/src/core
+${ROOT_DIR}/src/test)
+
+include(GoogleTest)
+gtest_discover_tests(threecpp_test)
