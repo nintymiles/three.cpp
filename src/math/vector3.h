@@ -12,42 +12,41 @@
 #include <sstream>
 #include <vector>
 
-// #include "matrix4.h"
-// #include "matrix3.h"
 #include "math_utils.h"
+#include "common_utils.h"
 
 class Quaternion;
 class Euler;
 class Matrix3;
 class Matrix4;
 class Vector3;
-//template <typename T> class BufferAttribute;
+template <typename T> class BufferAttribute;
 
-Vector3& setFromMatrixPosition(Vector3& v,Matrix4& m);
-Vector3& setFromMatrixScale(Vector3& v,Matrix4& m);
-Vector3& applyMatrix4(Vector3& v,Matrix4& m);
-// Vector3& setFromMatrixColumn(Matrix4& m,int index);
-Vector3& setFromMatrixColumn(Vector3& v,Matrix4& m,int index);
-Vector3& transformDirection(Vector3& v,Matrix4& m);
+// Vector3& setFromMatrixPosition(Vector3& v,Matrix4& m);
+// Vector3& setFromMatrixScale(Vector3& v,Matrix4& m);
+// Vector3& applyMatrix4(Vector3& v,Matrix4& m);
+// // Vector3& setFromMatrixColumn(Matrix4& m,int index);
+// Vector3& setFromMatrixColumn(Vector3& v,Matrix4& m,int index);
+// Vector3& transformDirection(Vector3& v,Matrix4& m);
 
-Vector3	lerpVectors( const Vector3& v1, const Vector3& v2, double alpha );
+// Vector3	lerpVectors( const Vector3& v1, const Vector3& v2, double alpha );
 
-// Vector3& applyEuler(Euler& euler);
-Vector3& applyEuler(Vector3& v,Euler& euler);
-// Vector3& setFromEuler(Euler& e);
-Vector3& setFromEuler(Vector3& v,Euler& e);
+// // Vector3& applyEuler(Euler& euler);
+// Vector3& applyEuler(Vector3& v,Euler& euler);
+// // Vector3& setFromEuler(Euler& e);
+// Vector3& setFromEuler(Vector3& v,Euler& e);
 
-//std::shared_ptr<Quaternion> _quaternion;
-Vector3& applyQuaternion(Vector3& v,Quaternion& q);
+// //std::shared_ptr<Quaternion> _quaternion;
+// Vector3& applyQuaternion(Vector3& v,Quaternion& q);
 
-//Vector3& applyAxisAngle(Vector3& axis, double angle);
-Vector3& applyAxisAngle(Vector3& v,Vector3& axis, double angle);
+// //Vector3& applyAxisAngle(Vector3& axis, double angle);
+// Vector3& applyAxisAngle(Vector3& v,Vector3& axis, double angle);
 
-// 	Vector3& applyMatrix3(Matrix3& m);
-Vector3& applyMatrix3(Vector3& v,Matrix3& m);
+// // 	Vector3& applyMatrix3(Matrix3& m);
+// Vector3& applyMatrix3(Vector3& v,Matrix3& m);
 
-// 	Vector3& applyNormalMatrix(Matrix3& m);
-Vector3& applyNormalMatrix(Vector3& v,Matrix3& m);
+// // 	Vector3& applyNormalMatrix(Matrix3& m);
+// Vector3& applyNormalMatrix(Vector3& v,Matrix3& m);
 
 
 class Vector3{
@@ -58,7 +57,7 @@ class Vector3{
 
 		// explicitly constructor inistializing
 		// Vector3():x(0),y(0),z(0){};
-		
+
 		// default constructor use in-class initialzier
 		Vector3() = default;
 
@@ -101,7 +100,7 @@ class Vector3{
             case 0:this->x = value;break;
             case 1:this->y = value;break;
             case 2:this->z = value; break;
-            default:throw genOutOfRangeError(index);break;
+            default:throw threecpp::genOutOfRangeError(index);break;
             }
             return *this;
         }
@@ -246,6 +245,14 @@ class Vector3{
 		return *this;
 	}
 
+	Vector3& lerpVectors( const Vector3& v1, const Vector3& v2, double alpha ){
+		const double x = v1.x + ( v2.x - v1.x ) * alpha;
+		const double y = v1.y + ( v2.y - v1.y ) * alpha;
+		const double z = v1.z + ( v2.z - v1.z ) * alpha;
+
+		return this->set(x,y,z);
+	}
+
 	Vector3& divide(Vector3& v) {
 
 		this->x /= v.x;
@@ -372,13 +379,7 @@ class Vector3{
 
 	}
 
-	Vector3& projectOnPlane(Vector3& planeNormal); 
-	// {
-	// 	Vector3 v;
-	// 	v.copy(*this).projectOnVector(planeNormal);
-
-	// 	return sub(v);
-	// }
+	Vector3& projectOnPlane(Vector3& planeNormal);
 
 	Vector3& reflect(Vector3& normal);
 
@@ -470,7 +471,7 @@ class Vector3{
 		return array;
 	}
 
-	//Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
+	Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
 
 	Vector3& random() {
 		this->x = random_gen<double>();
@@ -498,15 +499,31 @@ class Vector3{
 		return ( (v.x == this->x) && (v.y == this->y) && (v.z == this->z) );
 	}
 
-    private: 
-		//std::shared_ptr<Vector3> _vector;
-		
+	Vector3& applyMatrix3(Matrix3& m);
 
-		std::runtime_error genOutOfRangeError(int index){
-			std::stringstream ss;
-			ss << "index is out of range: " << index << std::endl;
-			return std::runtime_error(ss.str());
-		}		
+	Vector3& applyNormalMatrix(Matrix3& m);
+
+	Vector3& applyAxisAngle(Vector3& axis, double angle);
+
+	Vector3& applyQuaternion(Quaternion& q);
+
+	Vector3& applyEuler(Euler& euler);
+
+	Vector3& setFromEuler(Euler& e);
+
+	Vector3& setFromMatrixColumn(Matrix4& m,int index);
+
+	Vector3& setFromMatrixPosition(Matrix4& m);
+	
+	Vector3& setFromMatrixScale(Matrix4& m);
+	
+	Vector3& applyMatrix4(Matrix4& m);
+	
+	Vector3& transformDirection(Matrix4& m);
+
+
+    private: 
+			
         
 };
 

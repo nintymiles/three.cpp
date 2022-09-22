@@ -4,6 +4,7 @@ project (Three_cpp_lib)
 
 file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/math/clock.h;${ROOT_DIR}/src/math/clock.cpp;
 ${ROOT_DIR}/src/math/vector3.h;${ROOT_DIR}/src/math/vector3.cpp;
+${ROOT_DIR}/src/common_utils.h;${ROOT_DIR}/src/common_utils.cpp;
 ${ROOT_DIR}/src/math/matrix4.h;${ROOT_DIR}/src/math/matrix4.cpp;
 ${ROOT_DIR}/src/math/quaternion.h;${ROOT_DIR}/src/math/quaternion.cpp)
 
@@ -35,6 +36,7 @@ target_link_libraries(
   threecpp_test
   GTest::gtest_main
 )
+target_sources(threecpp_test PRIVATE ${THREECPP_SOURCE})
 target_include_directories(threecpp_test PRIVATE 
 ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui

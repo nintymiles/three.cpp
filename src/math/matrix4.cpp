@@ -2,7 +2,7 @@
 #include "vector3.h"
 #include "quaternion.h"
 
-static Vector3 _vx = Vector3();
+static Vector3 _v = Vector3();
 
 // Matrix4::Matrix4():_v1(std::make_shared<Vector3>()),
     // _m1(std::make_shared<Matrix4>()),
@@ -174,9 +174,9 @@ static Vector3 _vx = Vector3();
 
 //如果Vector3.cpp::setFromMatrixColumn内联则导致此处无法编译
 void extractBasis(Matrix4& matrix,Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
-    setFromMatrixColumn( xAxis, matrix, 0 );
-    setFromMatrixColumn( yAxis, matrix, 1 );
-    setFromMatrixColumn( zAxis, matrix, 2 );
+    xAxis.setFromMatrixColumn(  matrix, 0 );
+    yAxis.setFromMatrixColumn(  matrix, 1 );
+    zAxis.setFromMatrixColumn(  matrix, 2 );
 }
 
 // Matrix4& Matrix4::makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
@@ -228,9 +228,9 @@ Matrix4 makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
 Matrix4 extractRotation(Matrix4& m) {
     Matrix4 matrix{};
     // this method does not support reflection matrices
-    const double scaleX = 1 / setFromMatrixColumn(_vx, m, 0).length();
-    const double scaleY = 1 / setFromMatrixColumn(_vx, m, 1).length();
-    const double scaleZ = 1 / setFromMatrixColumn(_vx, m, 2).length();
+    const double scaleX = 1 / _v.setFromMatrixColumn( m, 0).length();
+    const double scaleY = 1 / _v.setFromMatrixColumn( m, 1).length();
+    const double scaleZ = 1 / _v.setFromMatrixColumn( m, 2).length();
 
     matrix.elements[ 0 ] = m.elements[ 0 ] * scaleX;
     matrix.elements[ 1 ] = m.elements[ 1 ] * scaleX;
