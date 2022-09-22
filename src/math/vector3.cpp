@@ -38,6 +38,10 @@ Vector3& Vector3::applyMatrix3(Matrix3& m) {
     return *this;
 }
 
+ Vector3& Vector3::setFromMatrix3Column(Matrix3& m,int index) {
+ 	return fromArray( m.elements, index * 3 );
+ }
+
 Vector3& Vector3::applyAxisAngle(Vector3& axis, double angle) {
     return applyQuaternion(_quaternion.setFromAxisAngle(axis,angle));
 }

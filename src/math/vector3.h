@@ -441,12 +441,6 @@ class Vector3{
 
 	}
 
-	// Vector3& setFromMatrix3Column(Matrix3& m,int index) {
-	// 	return fromArray( m.elements, index * 3 );
-	// }
-
-	
-
 	Vector3& fromArray(double array[], int offset = 0) {
 		x = array[ offset ];
 		y = array[ offset + 1 ];
@@ -498,6 +492,8 @@ class Vector3{
 	bool equals(Vector3& v){
 		return ( (v.x == this->x) && (v.y == this->y) && (v.z == this->z) );
 	}
+
+    Vector3& setFromMatrix3Column(Matrix3& m,int index);
 
 	Vector3& applyMatrix3(Matrix3& m);
 
