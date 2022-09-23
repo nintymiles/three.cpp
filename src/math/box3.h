@@ -9,43 +9,12 @@
 #include <vector>
 
 template<typename T> class BufferAttribute;
+class Object3d;
 using std::vector;
 
 class Box3 {
     private: 
-		//以静态变量方式存在于动态内存中，似乎是一种合理的用法	
-		static std::shared_ptr<Box3> _box;
-		// =  std::make_shared<Box3>();
-
-		// static shared_ptr<Vector3> _vector = make_shared<Vector3>();
-		static Vector3 _vector;
-
-		// triangle centered vertices
-		// static shared_ptr<Vector3> _v0 = make_shared<Vector3>();
-		// static shared_ptr<Vector3> _v1 = make_shared<Vector3>();
-		// static shared_ptr<Vector3> _v2 = make_shared<Vector3>();
-		static Vector3 _v0;
-		static Vector3 _v1;
-		static Vector3 _v2;
-
-		// triangle edge vectors
-		// static shared_ptr<Vector3> _f0 = make_shared<Vector3>();
-		// static shared_ptr<Vector3> _f1 = make_shared<Vector3>();
-		// static shared_ptr<Vector3> _f2 = make_shared<Vector3>();
-		static Vector3 _f0;
-		static Vector3 _f1;
-		static Vector3 _f2;
-
-		// static shared_ptr<Vector3> _center = make_shared<Vector3>();
-		// static shared_ptr<Vector3> _extents = make_shared<Vector3>();
-		// static shared_ptr<Vector3> _triangleNormal = make_shared<Vector3>();
-		// static shared_ptr<Vector3> _testAxis = make_shared<Vector3>();
-		static Vector3 _center;
-		static Vector3 _extents;
-		static Vector3 _triangleNormal;
-		static Vector3 _testAxis;
-
-		static Vector3 _points[6]; 
+		
 
     public:
 		Vector3 min,max;
@@ -145,14 +114,7 @@ class Box3 {
             return *this;
         }
 
-		Box3& setFromCenterAndSize(Vector3& center, Vector3& size) {
-			Vector3 halfSize = _vector.copy( size ).multiplyScalar( 0.5 );
-
-			min.copy( center ).sub( halfSize );
-			max.copy( center ).add( halfSize );
-
-			return *this;
-		}
+		Box3& setFromCenterAndSize(Vector3& center, Vector3& size);
 
 	// setFromObject( object, precise = false ) {
 
@@ -189,9 +151,7 @@ class Box3 {
 		}
 
 		// getCenter( target ) {
-
 		// 	return this.isEmpty() ? target.set( 0, 0, 0 ) : target.addVectors( this.min, this.max ).multiplyScalar( 0.5 );
-
 		// }
 
 		Vector3& getCenter(Vector3& target) {
@@ -224,53 +184,7 @@ class Box3 {
 			return *this;
 		}
 
-		// Box3& expandByObject(Object3d& object, bool precise = false ) {
-		// 	// Computes the world-axis-aligned bounding box of an object (including its children),
-		// 	// accounting for both the object's, and children's, world transforms
-		// 	object.updateWorldMatrix( false, false );
-
-		// 	const geometry = object.geometry;
-
-		// 	if ( geometry !== undefined ) {
-
-		// 		if ( precise && geometry.attributes != undefined && geometry.attributes.position !== undefined ) {
-
-		// 			const position = geometry.attributes.position;
-		// 			for ( let i = 0, l = position.count; i < l; i ++ ) {
-
-		// 				_vector.fromBufferAttribute( position, i ).applyMatrix4( object.matrixWorld );
-		// 				this.expandByPoint( _vector );
-
-		// 			}
-
-		// 		} else {
-
-		// 			if ( geometry.boundingBox === null ) {
-
-		// 				geometry.computeBoundingBox();
-
-		// 			}
-
-		// 			_box.copy( geometry.boundingBox );
-		// 			_box.applyMatrix4( object.matrixWorld );
-
-		// 			this.union( _box );
-
-		// 		}
-
-		// 	}
-
-		// 	const children = object.children;
-
-		// 	for ( let i = 0, l = children.length; i < l; i ++ ) {
-
-		// 		this.expandByObject( children[ i ], precise );
-
-		// 	}
-
-		// 	return this;
-
-		// }
+		//Box3& expandByObject(Object3d& object, bool precise = false );
 
 		bool containsPoint(Vector3& point) {
 			return point.x < min.x || point.x > max.x ||
@@ -415,11 +329,7 @@ class Box3 {
 		}
 
 		//使用静态存储变量做计算的中间媒介，可能存在并发问题
-		double distanceToPoint(Vector3& point) {
-			Vector3& clampedPoint = _vector.copy(point).clamp(min,max);
-
-			return clampedPoint.sub(point).length();
-		}
+		double distanceToPoint(Vector3& point);
 
 	// getBoundingSphere( target ) {
 
@@ -449,26 +359,7 @@ class Box3 {
 			return *this;
 		}
 
-		Box3& applyMatrix4(Matrix4& matrix) {
-
-			// transform of empty box is an empty box.
-			if ( isEmpty() ) return *this;
-
-			// NOTE: I am using a binary pattern to specify all 2^3 combinations below
-			_points[ 0 ].set( min.x, min.y, min.z ).applyMatrix4( matrix ); // 000
-			_points[ 1 ].set( min.x, min.y, max.z ).applyMatrix4( matrix ); // 001
-			_points[ 2 ].set( min.x, max.y, min.z ).applyMatrix4( matrix ); // 010
-			_points[ 3 ].set( min.x, max.y, max.z ).applyMatrix4( matrix ); // 011
-			_points[ 4 ].set( max.x, min.y, min.z ).applyMatrix4( matrix ); // 100
-			_points[ 5 ].set( max.x, min.y, max.z ).applyMatrix4( matrix ); // 101
-			_points[ 6 ].set( max.x, max.y, min.z ).applyMatrix4( matrix ); // 110
-			_points[ 7 ].set( max.x, max.y, max.z ).applyMatrix4( matrix ); // 111
-
-			setFromPoints( _points );
-
-			return *this;
-
-		}
+		Box3& applyMatrix4(Matrix4& matrix);
 
 		Box3& translate(Vector3& offset) {
 			min.add( offset );
@@ -483,27 +374,7 @@ class Box3 {
 
 		}
 
-		static bool satForAxes(double axes[],int length,Vector3& v0,Vector3& v1,Vector3& v2,Vector3& extents) {
-			for ( int i = 0, j = length - 3; i <= j; i += 3 ) {
-
-				_testAxis.fromArray( axes, i );
-				// project the aabb onto the separating axis
-				const double r = extents.x * abs( _testAxis.x ) + extents.y * abs( _testAxis.y ) + extents.z * abs( _testAxis.z );
-				// project all 3 vertices of the triangle onto the separating axis
-				const double p0 = v0.dot( _testAxis );
-				const double p1 = v1.dot( _testAxis );
-				const double p2 = v2.dot( _testAxis );
-				// actual test, basically see if either of the most extreme of the triangle points intersects r
-				if ( fmax( - fmax( p0, fmaxf(p1, p2) ), fmin( p0, fmin(p1, p2) ) ) > r ) {
-					// points of the projected triangle are outside the projected half-length of the aabb
-					// the axis is separating and we can exit
-					return false;
-
-				}
-
-			}
-			return true;
-		}
+		static bool satForAxes(double axes[],int length,Vector3& v0,Vector3& v1,Vector3& v2,Vector3& extents);
 
 };
 
