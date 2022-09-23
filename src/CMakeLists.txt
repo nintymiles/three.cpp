@@ -2,11 +2,17 @@
 # 项目工程名
 project (Three_cpp_lib)
 
-file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/math/clock.h;${ROOT_DIR}/src/math/clock.cpp;
-${ROOT_DIR}/src/math/vector3.h;${ROOT_DIR}/src/math/vector3.cpp;
-${ROOT_DIR}/src/common_utils.h;${ROOT_DIR}/src/common_utils.cpp;
-${ROOT_DIR}/src/math/matrix4.h;${ROOT_DIR}/src/math/matrix4.cpp;
-${ROOT_DIR}/src/math/quaternion.h;${ROOT_DIR}/src/math/quaternion.cpp)
+file(GLOB_RECURSE CORE_SOURCE ${ROOT_DIR}/src/core/*.cpp)
+# file(GLOB_RECURSE CORE_INLINE ./detail/*.inl)
+file(GLOB_RECURSE CORE_HEADER ${ROOT_DIR}/src/core/*.h)
+
+file(GLOB MATH_SOURCE ${ROOT_DIR}/src/math/*.cpp)
+file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h)
+
+source_group("Core" FILES ${CORE_SOURCE})
+source_group("Core" FILES ${CORE_HEADER})
+
+file(GLOB THREECPP_SOURCE ${MATH_HEADER};${MATH_SOURCE})
 
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)

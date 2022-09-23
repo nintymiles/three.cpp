@@ -130,8 +130,6 @@ class Euler{
         //void (*_changeCallBack)(void); //right function (pointer) declaration
         std::function<void (void)> _onChangeCallback;
 
-        std::shared_ptr<Matrix4> _matrix; // = std::make_shared<Matrix4>(new Matrix4());
-        std::shared_ptr<Quaternion> _quaternion; //= std::make_shared<Quaternion>(new Quaternion());
 };
 
 

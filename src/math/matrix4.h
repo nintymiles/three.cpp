@@ -1,20 +1,20 @@
 #ifndef MATRIX4_H
 #define MATRIX4_H
 
-//#include "vector3.h"
 #include<memory>
 #include<cmath>
 
-// class Quaternion;
+class Quaternion;
 class Vector3;
 class Matrix4;
+class Matrix3;
+class Euler;
 
-//Matrix4& extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+
 void extractBasis(Matrix4& matrix4,Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 
-//Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
 Matrix4 makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
-//Matrix4& extractRotation(Matrix4& m);
+
 Matrix4 extractRotation(Matrix4& m);
 
 class Matrix4{
@@ -52,9 +52,9 @@ class Matrix4{
         return *this;
     }
 
-	// Matrix4 clone(){
-	// 	return Matrix4().fromArray(elements);
-	// }
+	Matrix4 clone(){
+		return Matrix4().fromArray(elements);
+	}
 
 	Matrix4& copy(Matrix4& m) {
         for(int i=0;i<sizeof(elements)/sizeof(elements[0]);i++){
@@ -71,160 +71,8 @@ class Matrix4{
 
 		return *this;
 	}
-// 	setFromMatrix3( m ) {
 
-// 		const me = m.elements;
-
-// 		this.set(
-
-// 			me[ 0 ], me[ 3 ], me[ 6 ], 0,
-// 			me[ 1 ], me[ 4 ], me[ 7 ], 0,
-// 			me[ 2 ], me[ 5 ], me[ 8 ], 0,
-// 			0, 0, 0, 1
-
-// 		);
-
-// 		return this;
-
-// 	}
-
-	
-
-
-
-	
-
-// 	makeRotationFromEuler( euler ) {
-
-// 		if ( ! ( euler && euler.isEuler ) ) {
-
-// 			console.error( 'THREE.Matrix4: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.' );
-
-// 		}
-
-// 		const te = this.elements;
-
-// 		const x = euler.x, y = euler.y, z = euler.z;
-// 		const a = Math.cos( x ), b = Math.sin( x );
-// 		const c = Math.cos( y ), d = Math.sin( y );
-// 		const e = Math.cos( z ), f = Math.sin( z );
-
-// 		if ( euler.order === 'XYZ' ) {
-
-// 			const ae = a * e, af = a * f, be = b * e, bf = b * f;
-
-// 			te[ 0 ] = c * e;
-// 			te[ 4 ] = - c * f;
-// 			te[ 8 ] = d;
-
-// 			te[ 1 ] = af + be * d;
-// 			te[ 5 ] = ae - bf * d;
-// 			te[ 9 ] = - b * c;
-
-// 			te[ 2 ] = bf - ae * d;
-// 			te[ 6 ] = be + af * d;
-// 			te[ 10 ] = a * c;
-
-// 		} else if ( euler.order === 'YXZ' ) {
-
-// 			const ce = c * e, cf = c * f, de = d * e, df = d * f;
-
-// 			te[ 0 ] = ce + df * b;
-// 			te[ 4 ] = de * b - cf;
-// 			te[ 8 ] = a * d;
-
-// 			te[ 1 ] = a * f;
-// 			te[ 5 ] = a * e;
-// 			te[ 9 ] = - b;
-
-// 			te[ 2 ] = cf * b - de;
-// 			te[ 6 ] = df + ce * b;
-// 			te[ 10 ] = a * c;
-
-// 		} else if ( euler.order === 'ZXY' ) {
-
-// 			const ce = c * e, cf = c * f, de = d * e, df = d * f;
-
-// 			te[ 0 ] = ce - df * b;
-// 			te[ 4 ] = - a * f;
-// 			te[ 8 ] = de + cf * b;
-
-// 			te[ 1 ] = cf + de * b;
-// 			te[ 5 ] = a * e;
-// 			te[ 9 ] = df - ce * b;
-
-// 			te[ 2 ] = - a * d;
-// 			te[ 6 ] = b;
-// 			te[ 10 ] = a * c;
-
-// 		} else if ( euler.order === 'ZYX' ) {
-
-// 			const ae = a * e, af = a * f, be = b * e, bf = b * f;
-
-// 			te[ 0 ] = c * e;
-// 			te[ 4 ] = be * d - af;
-// 			te[ 8 ] = ae * d + bf;
-
-// 			te[ 1 ] = c * f;
-// 			te[ 5 ] = bf * d + ae;
-// 			te[ 9 ] = af * d - be;
-
-// 			te[ 2 ] = - d;
-// 			te[ 6 ] = b * c;
-// 			te[ 10 ] = a * c;
-
-// 		} else if ( euler.order === 'YZX' ) {
-
-// 			const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-
-// 			te[ 0 ] = c * e;
-// 			te[ 4 ] = bd - ac * f;
-// 			te[ 8 ] = bc * f + ad;
-
-// 			te[ 1 ] = f;
-// 			te[ 5 ] = a * e;
-// 			te[ 9 ] = - b * e;
-
-// 			te[ 2 ] = - d * e;
-// 			te[ 6 ] = ad * f + bc;
-// 			te[ 10 ] = ac - bd * f;
-
-// 		} else if ( euler.order === 'XZY' ) {
-
-// 			const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-
-// 			te[ 0 ] = c * e;
-// 			te[ 4 ] = - f;
-// 			te[ 8 ] = d * e;
-
-// 			te[ 1 ] = ac * f + bd;
-// 			te[ 5 ] = a * e;
-// 			te[ 9 ] = ad * f - bc;
-
-// 			te[ 2 ] = bc * f - ad;
-// 			te[ 6 ] = b * e;
-// 			te[ 10 ] = bd * f + ac;
-
-// 		}
-
-// 		// bottom row
-// 		te[ 3 ] = 0;
-// 		te[ 7 ] = 0;
-// 		te[ 11 ] = 0;
-
-// 		// last column
-// 		te[ 12 ] = 0;
-// 		te[ 13 ] = 0;
-// 		te[ 14 ] = 0;
-// 		te[ 15 ] = 1;
-
-// 		return this;
-
-// 	}
-
-	// Matrix4& makeRotationFromQuaternion(Quaternion& q);
-
-	// Matrix4& lookAt(Vector3& eye,Vector3& target,Vector3& up); 
+	Matrix4& makeRotationFromEuler( Euler& euler );
 
 	Matrix4& multiply(Matrix4& m) {
 		return multiplyMatrices(*this, m);
@@ -453,9 +301,6 @@ class Matrix4{
 		return *this;
 	}
 
-    // //rotate angle degrees around any axis 
-	// Matrix4& makeRotationAxis(Vector3& axis, double angle);
-
 	Matrix4& makeScale(double x,double y,double z){
 		set(
 			x, 0, 0, 0,
@@ -476,10 +321,6 @@ class Matrix4{
 
 		return *this;
 	}
-
-	// Matrix4& compose(const Vector3& position,const Quaternion& quaternion,const Vector3& scale);
-
-	// Matrix4& decompose(Vector3& position,Quaternion& quaternion,Vector3& scale);
 
 	Matrix4& makePerspective(double left,double right,double top,double bottom,double near,double far){
 		const double x = 2 * near / ( right - left );
@@ -554,29 +395,36 @@ class Matrix4{
 		return array;
 	}
 
+	Matrix4& extractRotation(Matrix4& m);
+
+	Matrix4& extractBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+
+	Matrix4& makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis);
+
+	Matrix4& setFromMatrix3( Matrix3& m );
+
+	Matrix4& makeRotationFromQuaternion(Quaternion& q);
+
+	Matrix4& lookAt(Vector3& eye,Vector3& target,Vector3& up);
+
+	Matrix4& compose(const Vector3& position,const Quaternion& quaternion,const Vector3& scale);
+
+	Matrix4& decompose(Vector3& position,Quaternion& quaternion,Vector3& scale);
+
+	//rotate angle degrees around any axis 
+	Matrix4& makeRotationAxis(Vector3& axis, double angle);
 
 
     private:
-        std::shared_ptr<Vector3> _v1;
-        std::shared_ptr<Matrix4>  _m1;
-        std::shared_ptr<Vector3> _zero;
-        std::shared_ptr<Vector3> _one;
-        std::shared_ptr<Vector3> _x;
-        std::shared_ptr<Vector3> _y;
-        std::shared_ptr<Vector3> _z;
+        // std::shared_ptr<Vector3> _v1;
+        // std::shared_ptr<Matrix4>  _m1;
+        // std::shared_ptr<Vector3> _zero;
+        // std::shared_ptr<Vector3> _one;
+        // std::shared_ptr<Vector3> _x;
+        // std::shared_ptr<Vector3> _y;
+        // std::shared_ptr<Vector3> _z;
 
-	// 	//      //std::shared_ptr<Vector3> _v1;
-	// 	// Vector3 _v1;
-    //     // //std::shared_ptr<Matrix4>  _m1;
-	// 	// Matrix4 _m1;
-    //     // //std::shared_ptr<Vector3> _zero;
-	// 	// Vector3 _zero;
-    //     // //std::shared_ptr<Vector3> _one;
-	// 	// Vector3 _one;
-    //     // //std::shared_ptr<Vector3> _x;
-    //     // //std::shared_ptr<Vector3> _y;
-    //     // //std::shared_ptr<Vector3> _z;
-	// 	// Vector3 _x,_y,_z;
+
 
 };
 

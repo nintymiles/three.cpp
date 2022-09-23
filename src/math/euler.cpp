@@ -4,13 +4,18 @@
 #include "quaternion.h"
 #include "vector3.h"
 
-Euler::Euler():_matrix(std::make_shared<Matrix4>()),_quaternion(std::make_shared<Quaternion>()){}
+//Euler::Euler():_matrix(std::make_shared<Matrix4>()),_quaternion(std::make_shared<Quaternion>()){}
+
+// std::shared_ptr<Matrix4> _matrix; // = std::make_shared<Matrix4>(new Matrix4());
+// std::shared_ptr<Quaternion> _quaternion; //= std::make_shared<Quaternion>(new Quaternion());
+Matrix4 _matrix;
+Quaternion _quaternion;
 
 Euler& Euler::reorder(euler_order newOrder) {
     // WARNING: this discards revolution information -bhouston
-    _quaternion->setFromEuler(*this,true);
+    _quaternion.setFromEuler(*this,true);
 
-    return setFromQuaternion(*_quaternion, newOrder);
+    return setFromQuaternion(_quaternion, newOrder);
 }
 
 Euler& Euler::setFromVector3(Vector3& v,euler_order order) {
@@ -18,11 +23,10 @@ Euler& Euler::setFromVector3(Vector3& v,euler_order order) {
 }
 
 Euler& Euler::setFromQuaternion(Quaternion& q,euler_order order,bool update) {
-    _matrix->makeRotationFromQuaternion(q);
+    _matrix.makeRotationFromQuaternion(q);
 
-    return setFromRotationMatrix( *_matrix, order, update );
+    return setFromRotationMatrix( _matrix, order, update );
 }
-
 
 Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) {
     // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
