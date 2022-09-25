@@ -1,5 +1,6 @@
 #include "quaternion.h"
 #include "vector3.h"
+#include "euler.h"
 
 Quaternion& Quaternion::setFromAxisAngle(Vector3& axis, double angle) {
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm

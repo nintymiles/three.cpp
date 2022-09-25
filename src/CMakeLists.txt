@@ -2,6 +2,9 @@
 # 项目工程名
 project (Three_cpp_lib)
 
+file(GLOB TOP_SOURCE ${ROOT_DIR}/src/common_utils.cpp)
+file(GLOB TOP_HEADER ${ROOT_DIR}/src/*.h)
+
 file(GLOB_RECURSE CORE_SOURCE ${ROOT_DIR}/src/core/*.cpp)
 # file(GLOB_RECURSE CORE_INLINE ./detail/*.inl)
 file(GLOB_RECURSE CORE_HEADER ${ROOT_DIR}/src/core/*.h)
@@ -12,7 +15,7 @@ file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h)
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
 
-file(GLOB THREECPP_SOURCE ${MATH_HEADER};${MATH_SOURCE})
+file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE})
 
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
@@ -36,7 +39,8 @@ enable_testing()
 
 add_executable(
   threecpp_test
-  ${ROOT_DIR}/src/test/vector3_test.cpp
+  #${ROOT_DIR}/src/test/vector3_test.cpp;
+  ${ROOT_DIR}/src/test/quaternion_test.cpp
 )
 target_link_libraries(
   threecpp_test

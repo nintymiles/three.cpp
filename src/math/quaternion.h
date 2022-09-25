@@ -3,7 +3,6 @@
 
 #include "vector3.h"
 #include "matrix4.h"
-#include "euler.h"
 #include "math_utils.h"
 #include "number.h"
 
@@ -175,7 +174,7 @@ public:
 
     //dot product
 	double dot(Quaternion& v) {
-		return _x * v._x + _y * v._y + _z * v._z + _w * v._w;
+		return _x * v.x() + _y * v.y() + _z * v.z() + _w * v.w();
 	}
 
     //Square length

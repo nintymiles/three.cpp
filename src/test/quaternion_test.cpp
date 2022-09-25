@@ -1,6 +1,5 @@
-#include "vector3.h"
+#include "quaternion.h"
 #include "constant_test.h"
-#include "common_utils.h"
 
 #include "gtest/gtest.h"
 
@@ -8,18 +7,18 @@ namespace my {
 namespace project {
 namespace {
 
-// The fixture for testing class Vector3.
-class Vector3Test : public ::testing::Test {
+// The fixture for testing class Quaternion.
+class QuaternionTest : public ::testing::Test {
  protected:
   // You can remove any or all of the following functions if their bodies would
   // be empty.
-  Vector3 v;
+  Quaternion q;
 
-  Vector3Test() {
+  QuaternionTest() {
      // You can do set-up work for each test here.
   }
 
-  ~Vector3Test() override {
+  ~QuaternionTest() override {
      // You can do clean-up work that doesn't throw exceptions here.
   }
 
@@ -40,24 +39,31 @@ class Vector3Test : public ::testing::Test {
   // for Foo.
 };
 
-// Tests that the Vector3::Vector3() method.
-TEST_F(Vector3Test, MethodDefaultConstructor) {
+// Tests that the Quaternion::Quaternion() method.
+TEST_F(QuaternionTest, MethodDefaultConstructor) {
   //EXPECT_EQ(v.x, 0);
-  v = Vector3();
-  EXPECT_TRUE(v.x==0 && v.y==0 && v.z==0);
+  q = Quaternion();
+  EXPECT_TRUE(q.x()==0 && q.y()==0 && q.z()==0 && q.w()==1);
 }
 
-// Tests that Vector3 does set.
-TEST_F(Vector3Test, MethodSet) {
-  // Exercises the xyz feature of Vector3.
-  v.set(x,y,z);
-  EXPECT_TRUE(v.x==x && v.y==y && v.z==z);
+// Tests that Quaternion does set.
+TEST_F(QuaternionTest, MethodSet) {
+  // Exercises the xyz feature of Quaternion.
+  q.set(x,y,z,w);
+  EXPECT_TRUE(q.x()==x && q.y()==y && q.z()==z && q.w()==w);
 }
 
-TEST_F(Vector3Test, MethodSetComponent) {
-  // Exercises the xyz feature of Vector3.
-  v.setComponent(2,w);
-  EXPECT_EQ(v.z,w);
+TEST_F(QuaternionTest, MethodDot) {
+  Quaternion a{0,0,0,1};
+	Quaternion b{0,0,0,1};
+
+  std::cout << "a.dot(b)= " << a.dot(b) << std::endl;
+  EXPECT_EQ(a.dot(b),1);
+
+			// a = new Quaternion( 1, 2, 3, 1 );
+			// b = new Quaternion( 3, 2, 1, 1 );
+
+			// assert.ok( a.dot( b ) === 11, 'Passed!' );
 }
 
 
