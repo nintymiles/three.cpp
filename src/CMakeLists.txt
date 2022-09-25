@@ -28,12 +28,27 @@ ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math
 ${ROOT_DIR}/src/core)
 
-TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
+# TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
+#   glfw.3.3
+#   GLESv2
+#   EGL
+#   PRIVATE GSL
+# )
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
+  # "-framework Cocoa"   # not necessary for system library
+  # "-framework CoreGraphics"
   glfw.3.3
   GLESv2
-  EGL
-  PRIVATE GSL
-)
+  EGL)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
+  glfw3
+  libGLESv2.dll.lib
+  libEGL.dll.lib)
+else()
+  message(STATUS "TARGET_LINK_LIBRARIES Configuring on/for ${CMAKE_SYSTEM_NAME}")
+endif()
 
 enable_testing()
 

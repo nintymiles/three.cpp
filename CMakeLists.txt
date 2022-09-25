@@ -10,6 +10,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #   cmake_policy(SET CMP0042 NEW)  # CMake 3.0+ (2.8.12): MacOS "@rpath" in target's install name
 # endif()
 
+if(MSVC)
+  #设置VC输入代码编码格式为utf-8
+  set(CMAKE_C_FLAGS /source-charset:utf-8)
+endif()
+
+
 # 项目工程名
 project (Three.cpp)
 message(STATUS "BINARY dir " ${PROJECT_BINARY_DIR})
@@ -57,6 +63,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   LINK_DIRECTORIES(${ROOT_DIR}/lib/macOS)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   message(STATUS "Configuring on/for Windows")
+  LINK_DIRECTORIES(${ROOT_DIR}/lib/win64)
 else()
   message(STATUS "Configuring on/for ${CMAKE_SYSTEM_NAME}")
 endif()
@@ -121,13 +128,28 @@ ${ROOT_DIR}/src/002/frustum/base/perfMonitor)
 # ${ROOT_DIR}/src/imgui/ PUBLIC
 # ${ROOT_DIR}/src/imgui/backends/ PUBLIC
 # )
-TARGET_LINK_LIBRARIES(threecpp PUBLIC
+# TARGET_LINK_LIBRARIES(threecpp PUBLIC
+#   # "-framework Cocoa"   # not necessary for system library
+#   # "-framework CoreGraphics"
+#   glfw.3.3
+#   GLESv2
+#   EGL
+# )
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  TARGET_LINK_LIBRARIES(threecpp PUBLIC
   # "-framework Cocoa"   # not necessary for system library
   # "-framework CoreGraphics"
   glfw.3.3
   GLESv2
-  EGL
-)
+  EGL)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  TARGET_LINK_LIBRARIES(threecpp PUBLIC
+  glfw3
+  libGLESv2.dll.lib
+  libEGL.dll.lib)
+else()
+  message(STATUS "TARGET_LINK_LIBRARIES Configuring on/for ${CMAKE_SYSTEM_NAME}")
+endif()
 
 file(COPY ${SHADERS} ${MODEL_FILES}
      DESTINATION ${PROJECT_BINARY_DIR}/bin)

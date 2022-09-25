@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <functional>
 
 class Vector3;
 class Vector2;
@@ -256,13 +257,13 @@ class BufferAttribute {
 };
 
 typedef BufferAttribute<int8_t> Int8BufferAttribute;
-typedef BufferAttribute<u_int8_t> Uint8BufferAttribute;
+typedef BufferAttribute<unsigned char> Uint8BufferAttribute;
 
 typedef BufferAttribute<int16_t> Int16BufferAttribute;
-typedef BufferAttribute<u_int16_t> Uint16BufferAttribute;
+typedef BufferAttribute<unsigned int> Uint16BufferAttribute;
 
 typedef BufferAttribute<int32_t> Int32BufferAttribute;
-typedef BufferAttribute<u_int32_t> Uint32BufferAttribute;
+typedef BufferAttribute<unsigned long> Uint32BufferAttribute;
 
 typedef BufferAttribute<float> Float16BufferAttribute;
 typedef BufferAttribute<float> Float32BufferAttribute;
