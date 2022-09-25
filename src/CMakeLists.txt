@@ -2,6 +2,11 @@
 # 项目工程名
 project (Three_cpp_lib)
 
+if(MSVC)
+  #设置VC输入代码编码格式为utf-8
+  set(CMAKE_C_FLAGS /source-charset:utf-8)
+endif()
+
 file(GLOB TOP_SOURCE ${ROOT_DIR}/src/common_utils.cpp)
 file(GLOB TOP_HEADER ${ROOT_DIR}/src/*.h)
 
@@ -27,6 +32,10 @@ ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math
 ${ROOT_DIR}/src/core)
+
+if(MSVC)
+  target_link_options(threelibcpp PUBLIC /DEBUG)
+endif()
 
 # TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
 #   glfw.3.3
@@ -61,7 +70,7 @@ target_link_libraries(
   threecpp_test
   GTest::gtest_main
 )
-target_sources(threecpp_test PRIVATE ${THREECPP_SOURCE})
+target_sources(threecpp_test PRIVATE ${THREECPP_SOURCE} ${ROOT_DIR}/src/test/constant_test.h)
 target_include_directories(threecpp_test PRIVATE 
 ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui

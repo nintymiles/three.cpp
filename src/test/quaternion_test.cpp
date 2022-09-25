@@ -13,6 +13,7 @@ class QuaternionTest : public ::testing::Test {
   // You can remove any or all of the following functions if their bodies would
   // be empty.
   Quaternion q;
+  int fails;
 
   QuaternionTest() {
      // You can do set-up work for each test here.
@@ -28,6 +29,7 @@ class QuaternionTest : public ::testing::Test {
   void SetUp() override {
      // Code here will be called immediately after the constructor (right
      // before each test).
+     fails = 0;
   }
 
   void TearDown() override {
@@ -49,16 +51,19 @@ TEST_F(QuaternionTest, MethodDefaultConstructor) {
 // Tests that Quaternion does set.
 TEST_F(QuaternionTest, MethodSet) {
   // Exercises the xyz feature of Quaternion.
+  q = Quaternion();
   q.set(x,y,z,w);
   EXPECT_TRUE(q.x()==x && q.y()==y && q.z()==z && q.w()==w);
 }
 
 TEST_F(QuaternionTest, MethodDot) {
   Quaternion a{0,0,0,1};
-	Quaternion b{0,0,0,1};
+  Quaternion b{0,0,0,1};
 
   std::cout << "a.dot(b)= " << a.dot(b) << std::endl;
   EXPECT_EQ(a.dot(b),1);
+
+  fails += ::testing::Test::HasFailure();
 
 			// a = new Quaternion( 1, 2, 3, 1 );
 			// b = new Quaternion( 3, 2, 1, 1 );

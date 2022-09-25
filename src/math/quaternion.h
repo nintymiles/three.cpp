@@ -18,6 +18,8 @@
 // 若类模版中有别名定义，则前置声明时此别名也需要在前置声明后重新定义
 class Euler;
 
+typedef void(*OnChangeCallbackType)(void);
+
 class Quaternion{
 
 public:
@@ -63,7 +65,9 @@ public:
         _y = y;
         _z = z;
         _w = w;
-        onChangeCallback();
+        //cpp回调函数判空
+        if(onChangeCallback)
+            onChangeCallback();
         return *this;
     }
 
@@ -380,8 +384,8 @@ public:
 
 private:
     double _x,_y,_z,_w;
-	void(*onChangeCallback)(void);
-	//std::function<void(void)> onChangeCallback;
+	OnChangeCallbackType onChangeCallback = nullptr;
+//	std::function<void(void)> onChangeCallback;
 };
 
 
