@@ -89,6 +89,25 @@ TEST_F(QuaternionTest, MethodNormalizeLengthLengthSq) {
     fails += ::testing::Test::HasFailure();
 }
 
+TEST_F(QuaternionTest,MethodIdentity){
+    q.set( x, y, z, w );
+    q.identity();
+
+    EXPECT_EQ(q.x(),0);
+    EXPECT_EQ(q.y(),0);
+    EXPECT_EQ(q.z(),0);
+    EXPECT_EQ(q.w(),1);
+}
+
+TEST_F(QuaternionTest,MethodInvert){
+    q.set( x, y, z, w );
+    Quaternion a = q.clone().invert();
+
+    EXPECT_EQ(q.x(),-a.x());
+    EXPECT_EQ(q.y(),-a.y());
+    EXPECT_EQ(q.z(),-a.z());
+    EXPECT_EQ(q.w(),a.w());
+}
 
 }  // namespace
 }  // namespace project
