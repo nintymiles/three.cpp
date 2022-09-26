@@ -32,7 +32,8 @@ public:
     auto x() const -> const double& { return _x;}
     Quaternion& setX(double x){
         _x = x;
-        onChangeCallback();
+        if(onChangeCallback)
+            onChangeCallback();
         return *this;
     }
 
@@ -40,7 +41,8 @@ public:
     const double& y() const{return _y;}
     Quaternion& setY(double y){
         _y = y;
-        onChangeCallback();
+        if(onChangeCallback)
+            onChangeCallback();
         return *this;
     }
 
@@ -48,7 +50,8 @@ public:
     const double& z() const{return _z;}
     Quaternion& setZ(double z){
         _z = z;
-        onChangeCallback();
+        if(onChangeCallback)
+            onChangeCallback();
         return *this;
     }
 
@@ -56,7 +59,8 @@ public:
     const double& w() const{return _w;}
     Quaternion& setW(double w){
         _w = w;
-        onChangeCallback();
+        if(onChangeCallback)
+            onChangeCallback();
         return *this;
     }
 
@@ -81,7 +85,8 @@ public:
 		_z = quaternion.z();
 		_w = quaternion.w();
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 	}
@@ -132,7 +137,8 @@ public:
 			_z = 0.25 * s;
 		}
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 	}
@@ -171,7 +177,8 @@ public:
 		_y *= - 1;
 		_z *= - 1;
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 	}
@@ -212,7 +219,8 @@ public:
 
 		}
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 	}
@@ -237,7 +245,8 @@ public:
 		_z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
 		_w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 	}
@@ -290,7 +299,8 @@ public:
 			_z = s * z + t * _z;
 
 			normalize();
-			onChangeCallback();
+			if(onChangeCallback)
+                onChangeCallback();
 
 			return *this;
 		}
@@ -305,7 +315,8 @@ public:
 		_y = ( y * ratioA + _y * ratioB );
 		_z = ( z * ratioA + _z * ratioB );
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 	}
@@ -349,7 +360,8 @@ public:
 		_z = array[ offset + 2 ];
 		_w = array[ offset + 3 ];
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 	}

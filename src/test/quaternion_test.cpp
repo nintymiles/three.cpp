@@ -54,6 +54,8 @@ TEST_F(QuaternionTest, MethodSet) {
   q = Quaternion();
   q.set(x,y,z,w);
   EXPECT_TRUE(q.x()==x && q.y()==y && q.z()==z && q.w()==w);
+  EXPECT_EQ(q.x(),x);
+  EXPECT_EQ(q.w(),w);
 }
 
 TEST_F(QuaternionTest, MethodDot) {
@@ -64,11 +66,27 @@ TEST_F(QuaternionTest, MethodDot) {
   EXPECT_EQ(a.dot(b),1);
 
   fails += ::testing::Test::HasFailure();
+}
 
-			// a = new Quaternion( 1, 2, 3, 1 );
-			// b = new Quaternion( 3, 2, 1, 1 );
+TEST_F(QuaternionTest, MethodNormalizeLengthLengthSq) {
+    q.set(x,y,z,w);
 
-			// assert.ok( a.dot( b ) === 11, 'Passed!' );
+    EXPECT_NE(q.length(),1);
+    EXPECT_NE(q.lengthSq(),1);
+
+    q.normalize();
+    EXPECT_EQ(q.length(),1);
+    EXPECT_EQ(q.lengthSq(),1);
+
+    q.set(0,0,0,0);
+    EXPECT_EQ(q.length(),0);
+    EXPECT_EQ(q.lengthSq(),0);
+
+    q.normalize();
+    EXPECT_EQ(q.lengthSq(),1);
+    EXPECT_EQ(q.length(),1);
+
+    fails += ::testing::Test::HasFailure();
 }
 
 

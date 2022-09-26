@@ -16,12 +16,13 @@
         //     "externalConsole": false,
         //     "MIMode": "lldb"
         // }
-        {
+        { //这个codelldb的配置实际是从利用lldb直接挂载指定可执行程序，而不是从cmake等传递参数指定
             "name": "Launch",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/<my program>",
+            "program": "${workspaceFolder}/build/bin/threelibcpp", 
             "args": ["-arg1", "-arg2"],
         }
     ]
+
 }

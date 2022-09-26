@@ -13,7 +13,8 @@ Quaternion& Quaternion::setFromAxisAngle(Vector3& axis, double angle) {
 		_z = axis.z * s;
 		_w = cos(halfAngle);
 
-		onChangeCallback();
+		if(onChangeCallback)
+            onChangeCallback();
 
 		return *this;
 }
@@ -118,7 +119,9 @@ Quaternion& Quaternion::setFromEuler(Euler& euler, bool update) {
 
 	}
 
-	if ( update != false ) onChangeCallback();
+	if ( update != false )
+        if(onChangeCallback)
+            onChangeCallback();
 
 	return *this;
 }
