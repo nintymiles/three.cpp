@@ -20,8 +20,9 @@
             "name": "Launch",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/threelibcpp", 
+            "program": "${workspaceFolder}/build/bin/threelibcpp",  //编译输出当前和cmake无法联动
             "args": ["-arg1", "-arg2"],
+            "cwd": "${workspaceFolder}"
         }
     ]
 
