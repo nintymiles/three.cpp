@@ -5,9 +5,10 @@
 
 #include "box3.h"
 #include "vector3.h"
+#include "matrix4.h"
 
 Box3 _box;
-Vector3 _v1;
+Vector3 _sphere_v1;
 Vector3 _toFarthestPoint;
 Vector3 _toPoint;
 
@@ -70,8 +71,26 @@ Sphere& Sphere::unionSphere( Sphere& sphere ) {
         _toFarthestPoint.subVectors( sphere.center, center ).normalize().multiplyScalar( sphere.radius );
     }
 
-    expandByPoint( _v1.copy( sphere.center ).add( _toFarthestPoint ) );
-    expandByPoint( _v1.copy( sphere.center ).sub( _toFarthestPoint ) );
+    expandByPoint(_sphere_v1.copy(sphere.center ).add(_toFarthestPoint ) );
+    expandByPoint(_sphere_v1.copy(sphere.center ).sub(_toFarthestPoint ) );
 
     return *this;
 }
+
+bool Sphere::intersectsBox( Box3& box ){
+    return box.intersectsSphere( *this );
+}
+
+Box3& Sphere::getBoundingBox( Box3& target ) {
+    if ( isEmpty() ) {
+        // Empty sphere produces empty bounding box
+        target.makeEmpty();
+        return target;
+    }
+
+    target.set( center, center );
+    target.expandByScalar( radius );
+
+    return target;
+}
+

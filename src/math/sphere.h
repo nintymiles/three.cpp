@@ -1,7 +1,6 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "box3.h"
 #include "vector3.h"
 
 #include <memory>
@@ -9,6 +8,7 @@
 using std::shared_ptr;
 
 class Matrix4;
+class Box3;
 
 class Sphere {
 	public:
@@ -32,7 +32,7 @@ class Sphere {
 			return *this;
 		}
 
-		Sphere& setFromPoints(vector<Vector3>& points, shared_ptr<Vector3> optionalCenter);
+		Sphere& setFromPoints(std::vector<Vector3>& points, shared_ptr<Vector3> optionalCenter);
 
 
 		bool isEmpty() {
@@ -59,11 +59,7 @@ class Sphere {
 			return sphere.center.distanceToSquared( center ) <= ( radiusSum * radiusSum );
 		}
 
-		// intersectsBox( box ) {
-
-		// 	return box.intersectsSphere( this );
-
-		// }
+        bool intersectsBox( Box3& box );
 
 		// intersectsPlane( plane ) {
 
@@ -83,18 +79,7 @@ class Sphere {
 			return target;
 		}
 
-		Box3& getBoundingBox( Box3& target ) {
-			if ( isEmpty() ) {
-				// Empty sphere produces empty bounding box
-				target.makeEmpty();
-				return target;
-			}
-
-			target.set( center, center );
-			target.expandByScalar( radius );
-
-			return target;
-		}
+		Box3& getBoundingBox( Box3& target );
 
 		Sphere& applyMatrix4(Matrix4& matrix);
 

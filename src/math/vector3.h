@@ -12,6 +12,8 @@
 #include <sstream>
 #include <vector>
 
+#include <gsl/gsl>
+
 #include "math_utils.h"
 #include "common_utils.h"
 
@@ -464,6 +466,16 @@ class Vector3{
 
 		return array;
 	}
+
+    gsl::span<double> toSpanArray(gsl::span<double> array,int offset = 0){
+        array[offset] = this->x;
+        array[offset + 1] = this->y;
+        array[offset + 2] = this->z;
+
+        return array;
+    }
+
+
 
 	Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
 

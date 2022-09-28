@@ -1,6 +1,7 @@
 #include "box3.h"
 #include "vector3.h"
 // #include "object_3d.h"
+#include "sphere.h"
 
 //std::shared_ptr<Box3> Box3::_box = std::make_shared<Box3>();
 //source of segment fault
@@ -106,6 +107,14 @@ Box3& Box3::applyMatrix4(Matrix4& matrix) {
 
 	return *this;
 }
+
+bool Box3::intersectsSphere(Sphere& sphere){
+ 	// Find the point on the AABB closest to the sphere center.
+ 	clampPoint( sphere.center, _vector );
+
+ 	// If that point is inside the sphere, the AABB and sphere intersect.
+ 	return _vector.distanceToSquared( sphere.center ) <= ( sphere.radius * sphere.radius );
+ }
 
 // Box3& expandByObject(Object3d& object, bool precise = false ) {
 // 	// Computes the world-axis-aligned bounding box of an object (including its children),

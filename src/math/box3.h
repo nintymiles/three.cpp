@@ -10,6 +10,7 @@
 
 template<typename T> class BufferAttribute;
 class Object3d;
+class Sphere;
 using std::vector;
 
 class Box3 {
@@ -153,7 +154,6 @@ class Box3 {
 		// getCenter( target ) {
 		// 	return this.isEmpty() ? target.set( 0, 0, 0 ) : target.addVectors( this.min, this.max ).multiplyScalar( 0.5 );
 		// }
-
 		Vector3& getCenter(Vector3& target) {
 			//Vector3 zeroVec(0,0,0);
 			return isEmpty() ? target.set(0,0,0) : target.addVectors(min,max).multiplyScalar(0.5);
@@ -216,13 +216,7 @@ class Box3 {
 				box.max.z < min.z || box.min.z > max.z ? false : true;
 		}
 
-		// intersectsSphere( sphere ) {
-		// 	// Find the point on the AABB closest to the sphere center.
-		// 	this.clampPoint( sphere.center, _vector );
-
-		// 	// If that point is inside the sphere, the AABB and sphere intersect.
-		// 	return _vector.distanceToSquared( sphere.center ) <= ( sphere.radius * sphere.radius );
-		// }
+        bool intersectsSphere(Sphere& sphere);
 
 	// intersectsPlane( plane ) {
 

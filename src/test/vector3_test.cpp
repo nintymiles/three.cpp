@@ -4,6 +4,8 @@
 
 #include "gtest/gtest.h"
 
+#include <gsl/gsl>
+
 namespace my {
 namespace project {
 namespace {
@@ -59,6 +61,14 @@ TEST_F(Vector3Test, MethodSetComponent) {
   v.setComponent(2,w);
   EXPECT_EQ(v.z,w);
 }
+
+//TEST_F(Vector3Test, MethodToSpanArray) {
+//    // Exercises the xyz feature of Vector3.
+//    v.set(x,y,z);
+//    gsl::span<double,3> myArray;
+//    v.toSpanArray(myArray);
+//    EXPECT_EQ(myArray[2],z);
+//}
 
 
 }  // namespace
