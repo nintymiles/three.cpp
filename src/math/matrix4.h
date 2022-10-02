@@ -416,7 +416,7 @@ class Matrix4{
 
 
     private:
-        // std::shared_ptr<Vector3> _v1;
+        // std::shared_ptr<Vector3> _triangle_v1;
         // std::shared_ptr<Matrix4>  _m1;
         // std::shared_ptr<Vector3> _zero;
         // std::shared_ptr<Vector3> _one;

@@ -22,9 +22,9 @@ Vector3 _x,_y,_z;
 
 Matrix4& Matrix4::extractRotation(Matrix4& m) {
     // this method does not support reflection matrices
-    const double scaleX = 1 / _v1.setFromMatrixColumn( m, 0).length();
-    const double scaleY = 1 / _v1.setFromMatrixColumn( m, 1).length();
-    const double scaleZ = 1 / _v1.setFromMatrixColumn( m, 2).length();
+    const double scaleX = 1 / _v1.setFromMatrixColumn(m, 0).length();
+    const double scaleY = 1 / _v1.setFromMatrixColumn(m, 1).length();
+    const double scaleZ = 1 / _v1.setFromMatrixColumn(m, 2).length();
 
     elements[ 0 ] = m.elements[ 0 ] * scaleX;
     elements[ 1 ] = m.elements[ 1 ] * scaleX;
@@ -388,9 +388,9 @@ Matrix4 makeBasis(Vector3& xAxis,Vector3& yAxis,Vector3& zAxis){
 Matrix4 extractRotation(Matrix4& m) {
     Matrix4 matrix{};
     // this method does not support reflection matrices
-    const double scaleX = 1 / _v1.setFromMatrixColumn( m, 0).length();
-    const double scaleY = 1 / _v1.setFromMatrixColumn( m, 1).length();
-    const double scaleZ = 1 / _v1.setFromMatrixColumn( m, 2).length();
+    const double scaleX = 1 / _v1.setFromMatrixColumn(m, 0).length();
+    const double scaleY = 1 / _v1.setFromMatrixColumn(m, 1).length();
+    const double scaleZ = 1 / _v1.setFromMatrixColumn(m, 2).length();
 
     matrix.elements[ 0 ] = m.elements[ 0 ] * scaleX;
     matrix.elements[ 1 ] = m.elements[ 1 ] * scaleX;

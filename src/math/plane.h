@@ -114,11 +114,9 @@ struct Plane
     //        return this;
     //    }
 
-    //        equals( plane ) {
-    //
-    //            return plane.normal.equals( this.normal ) && ( plane.constant === this.constant );
-    //
-    //        }
+    bool equals( const Plane& plane ) {
+        return plane.normal.equals( normal ) && ( plane.constant == constant );
+    }
     // bool operator==(Plane &p)
     // {
     //     return normal.equals(p.normal) && constant == p.constant;
@@ -192,10 +190,10 @@ struct Plane
     //        }
 };
 
-bool operator==(const Plane &lhs, const Plane &rhs){
+inline bool operator==(const Plane &lhs, const Plane &rhs){
     return lhs.normal.equals(rhs.normal) && lhs.constant == rhs.constant;
 }
-bool operator!=(const Plane &lhs, const Plane &rhs){
+inline bool operator!=(const Plane &lhs, const Plane &rhs){
     return !(lhs == rhs);
 }
 

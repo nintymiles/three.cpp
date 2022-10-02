@@ -2,6 +2,8 @@
 #include "vector3.h"
 // #include "object_3d.h"
 #include "sphere.h"
+#include "plane.h"
+#include "triangle.h"
 
 //std::shared_ptr<Box3> Box3::_box = std::make_shared<Box3>();
 //source of segment fault
@@ -17,12 +19,12 @@ static Box3 _box;
 static Vector3 _vector;
 
 // triangle centered vertices
-// static shared_ptr<Vector3> _v0 = make_shared<Vector3>();
-// static shared_ptr<Vector3> _v1 = make_shared<Vector3>();
-// static shared_ptr<Vector3> _v2 = make_shared<Vector3>();
-static Vector3 _v0;
-static Vector3 _v1;
-static Vector3 _v2;
+// static shared_ptr<Vector3> _triangle_v0 = make_shared<Vector3>();
+// static shared_ptr<Vector3> _triangle_v1 = make_shared<Vector3>();
+// static shared_ptr<Vector3> _triangle_v2 = make_shared<Vector3>();
+static Vector3 _triangle_v0;
+static Vector3 _triangle_v1;
+static Vector3 _triangle_v2;
 
 // triangle edge vectors
 // static shared_ptr<Vector3> _f0 = make_shared<Vector3>();
@@ -114,6 +116,100 @@ bool Box3::intersectsSphere(Sphere& sphere){
 
  	// If that point is inside the sphere, the AABB and sphere intersect.
  	return _vector.distanceToSquared( sphere.center ) <= ( sphere.radius * sphere.radius );
+ }
+
+ Sphere& Box3::getBoundingSphere( Sphere& target ) {
+ 	target.center = getCenter( target.center );
+ 	target.radius = getSize( _vector ).length() * 0.5;
+
+ 	return target;
+ }
+
+bool Box3::intersectsPlane( const Plane& plane ){
+ 	// We compute the minimum and maximum dot product values. If those values
+ 	// are on the same side (back or front) of the plane, then there is no intersection.
+ 	double min, max;
+
+ 	if ( plane.normal.x > 0 ) {
+ 		min = plane.normal.x * this->min.x;
+ 		max = plane.normal.x * this->max.x;
+ 	} else {
+
+ 		min = plane.normal.x * this->max.x;
+ 		max = plane.normal.x * this->min.x;
+
+ 	}
+
+ 	if ( plane.normal.y > 0 ) {
+
+ 		min += plane.normal.y * this->min.y;
+ 		max += plane.normal.y * this->max.y;
+
+ 	} else {
+
+ 		min += plane.normal.y * this->max.y;
+ 		max += plane.normal.y * this->min.y;
+
+ 	}
+
+ 	if ( plane.normal.z > 0 ) {
+
+ 		min += plane.normal.z * this->min.z;
+ 		max += plane.normal.z * this->max.z;
+
+ 	} else {
+
+ 		min += plane.normal.z * this->max.z;
+ 		max += plane.normal.z * this->min.z;
+
+ 	}
+
+ 	return ( min <= - plane.constant && max >= - plane.constant );
+ }
+
+ bool Box3::intersectsTriangle(Triangle& triangle ) {
+ 	if ( isEmpty() ) {
+ 		return false;
+ 	}
+
+ 	// compute box center and extents
+ 	getCenter( _center );
+ 	_extents.subVectors( max, _center );
+
+ 	// translate triangle to aabb origin
+ 	_triangle_v0.subVectors(triangle.a, _center );
+ 	_triangle_v1.subVectors(triangle.b, _center );
+ 	_triangle_v2.subVectors(triangle.c, _center );
+
+ 	// compute edge vectors for triangle
+ 	_f0.subVectors(_triangle_v1, _triangle_v0 );
+ 	_f1.subVectors(_triangle_v2, _triangle_v1 );
+ 	_f2.subVectors(_triangle_v0, _triangle_v2 );
+
+ 	// test against axes that are given by cross product combinations of the edges of the triangle and the edges of the aabb
+ 	// make an axis testing of each of the 3 sides of the aabb against each of the 3 sides of the triangle = 9 axis of separation
+ 	// axis_ij = u_i x f_j (u0, u1, u2 = face normals of aabb = x,y,z axes vectors since aabb is axis aligned)
+ 	double axes[] = {
+            0, -_f0.z, _f0.y, 0, -_f1.z, _f1.y, 0, -_f2.z, _f2.y,
+            _f0.z, 0, -_f0.x, _f1.z, 0, -_f1.x, _f2.z, 0, -_f2.x,
+            -_f0.y, _f0.x, 0, -_f1.y, _f1.x, 0, -_f2.y, _f2.x, 0
+    };
+ 	if ( ! satForAxes(axes, 27, _triangle_v0, _triangle_v1, _triangle_v2, _extents ) ) {
+ 		return false;
+ 	}
+
+ 	// test 3 face normals from the aabb
+ 	double axes2[] = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+ 	if ( ! satForAxes(axes2, 9, _triangle_v0, _triangle_v1, _triangle_v2, _extents ) ) {
+ 		return false;
+ 	}
+
+ 	// finally testing the face normal of the triangle
+ 	// use already existing triangle edge vectors here
+ 	_triangleNormal.crossVectors( _f0, _f1 );
+ 	double axes3[] = { _triangleNormal.x, _triangleNormal.y, _triangleNormal.z };
+
+ 	return satForAxes(axes3, 3, _triangle_v0, _triangle_v1, _triangle_v2, _extents );
  }
 
 // Box3& expandByObject(Object3d& object, bool precise = false ) {

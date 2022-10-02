@@ -64,6 +64,9 @@ class Vector3{
 		Vector3() = default;
 
         Vector3(double x,double y,double z):x(x),y(y),z(z){};
+
+        Vector3(const Vector3 &v):x(v.x),y(v.y),z(v.z){};
+
         //only constructors take base initializers
         Vector3& set(double x,double y,double z){
             this->x = x;
@@ -115,7 +118,7 @@ class Vector3{
 				default: throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
 			}
 		}
-
+        //deprecated,use copy constructor instead of this
 		Vector3 clone() {
 			return Vector3(this->x,this->y,this->z);
 		}

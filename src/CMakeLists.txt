@@ -58,7 +58,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   glfw3
   libGLESv2.dll.lib
   libEGL.dll.lib
-  private GSL)
+  GSL)
 
 else()
   message(STATUS "TARGET_LINK_LIBRARIES Configuring on/for ${CMAKE_SYSTEM_NAME}")
