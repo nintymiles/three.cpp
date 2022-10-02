@@ -17,7 +17,7 @@ class Matrix3{
 			0, 0, 1
         };
     
-    Matrix3();
+    Matrix3() = default;
 
 	Matrix3& set(double n11,double n12,double n13,
                 double n21,double n22,double n23,
@@ -27,7 +27,6 @@ class Matrix3{
 		elements[ 1 ] = n21; elements[ 4 ] = n22; elements[ 7 ] = n23;
 		elements[ 2 ] = n31; elements[ 5 ] = n32; elements[ 8 ] = n33;
 		
-
 		return *this;
 	}
 	Matrix3& identity() {

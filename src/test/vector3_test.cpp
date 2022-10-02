@@ -62,13 +62,14 @@ TEST_F(Vector3Test, MethodSetComponent) {
   EXPECT_EQ(v.z,w);
 }
 
-//TEST_F(Vector3Test, MethodToSpanArray) {
-//    // Exercises the xyz feature of Vector3.
-//    v.set(x,y,z);
-//    gsl::span<double,3> myArray;
-//    v.toSpanArray(myArray);
-//    EXPECT_EQ(myArray[2],z);
-//}
+TEST_F(Vector3Test, MethodToSpanArray) {
+    // Exercises the xyz feature of Vector3.
+    v.set(x,y,z);
+    double arr[3];
+    gsl::span<double,3> myArray{arr};
+    v.toSpanArray(myArray);
+    EXPECT_EQ(myArray[2],z);
+}
 
 
 }  // namespace

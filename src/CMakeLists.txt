@@ -7,6 +7,8 @@ if(MSVC)
   set(CMAKE_C_FLAGS /source-charset:utf-8)
 endif()
 
+find_package(Microsoft.GSL CONFIG)
+
 file(GLOB TOP_SOURCE ${ROOT_DIR}/src/common_utils.cpp)
 file(GLOB TOP_HEADER ${ROOT_DIR}/src/*.h)
 
@@ -49,25 +51,31 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   # "-framework CoreGraphics"
   glfw.3.3
   GLESv2
-  EGL)
+  EGL
+  PRIVATE GSL)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   glfw3
   libGLESv2.dll.lib
-  libEGL.dll.lib)
+  libEGL.dll.lib
+  private GSL)
+
 else()
   message(STATUS "TARGET_LINK_LIBRARIES Configuring on/for ${CMAKE_SYSTEM_NAME}")
 endif()
 
 enable_testing()
 
+find_package(Microsoft.GSL CONFIG)
+
 add_executable(
   threecpp_test
-  #${ROOT_DIR}/src/test/vector3_test.cpp;
-  ${ROOT_DIR}/src/test/quaternion_test.cpp
+  ${ROOT_DIR}/src/test/vector3_test.cpp;
+  #${ROOT_DIR}/src/test/quaternion_test.cpp
 )
 target_link_libraries(
   threecpp_test
+  GSL
   GTest::gtest_main
 )
 target_sources(threecpp_test PRIVATE ${THREECPP_SOURCE} ${ROOT_DIR}/src/test/constant_test.h)
