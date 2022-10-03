@@ -19,10 +19,16 @@ file(GLOB_RECURSE CORE_HEADER ${ROOT_DIR}/src/core/*.h)
 file(GLOB MATH_SOURCE ${ROOT_DIR}/src/math/*.cpp)
 file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h)
 
+file(GLOB CAMERAS_SOURCE ${ROOT_DIR}/src/cameras/*.cpp)
+file(GLOB CAMERAS_HEADER ${ROOT_DIR}/src/cameras/*.h)
+
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
 
-file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE})
+source_group("Cameras" FILES ${CAMERAS_SOURCE})
+source_group("Cameras" FILES ${CAMERAS_HEADER})
+
+file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE};${CAMERAS_HEADER};${CAMERAS_SOURCE})
 
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)

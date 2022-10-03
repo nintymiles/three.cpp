@@ -5,6 +5,8 @@
 #ifndef THREE_CPP_CYLINDRICAL_H
 #define THREE_CPP_CYLINDRICAL_H
 
+#include <cmath>
+
 /**
  * @author Mugen87 / https://github.com/Mugen87
  *

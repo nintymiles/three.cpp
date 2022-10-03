@@ -52,7 +52,7 @@ class Object3D:public EventDispatcher{
         static const bool default_matrix_auto_update = true;
 
         int id = _object3DId++;
-        std::string uuid = generate_uuid();
+        std::string uuid = MathUtils::generate_uuid();
         std::string name = "";
         std::string type = "Object3D";
         bool isObject3D = true;
@@ -351,7 +351,7 @@ class Object3D:public EventDispatcher{
 
             //for语句只支持单一类型多个变量定义，不支持多类型多变量定义
             //错误：for ( int i = 0, int l = children.size(); i < l; i ++ )
-            for ( int i = 0, l = children.size(); i < l; i ++ ) {
+            for ( size_t i = 0, l = children.size(); i < l; i ++ ) {
                 children[ i ]->traverse( callback );
             }
 
@@ -365,7 +365,7 @@ class Object3D:public EventDispatcher{
 
             callback( *this );
 
-            for ( int i = 0, l = children.size(); i < l; i ++ ) {
+            for ( size_t i = 0, l = children.size(); i < l; i ++ ) {
 
                 children[ i ]->traverseVisible( callback );
 
@@ -412,7 +412,7 @@ class Object3D:public EventDispatcher{
             }
 
             // update children
-            for ( int i = 0, l = children.size(); i < l; i ++ ) {
+            for ( size_t i = 0, l = children.size(); i < l; i ++ ) {
                 children[ i ]->updateMatrixWorld( force );
             }
             return *this;
@@ -436,7 +436,7 @@ class Object3D:public EventDispatcher{
 
             // update children
             if ( updateChildren == true ) {
-                for ( int i = 0, l = children.size(); i < l; i ++ ) {
+                for ( size_t i = 0, l = children.size(); i < l; i ++ ) {
                     children[ i ]->updateWorldMatrix( false, true );
                 }
             }

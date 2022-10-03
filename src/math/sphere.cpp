@@ -21,7 +21,7 @@ Sphere& Sphere::setFromPoints(vector<Vector3>& points, shared_ptr<Vector3> optio
 
     double maxRadiusSq = 0;
 
-    for ( int i = 0, il = points.size(); i < il; i ++ ) {
+    for ( size_t i = 0, il = points.size(); i < il; i ++ ) {
         maxRadiusSq = fmax( maxRadiusSq, center.distanceToSquared( points[ i ] ) );
     }
 

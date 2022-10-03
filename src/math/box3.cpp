@@ -271,8 +271,9 @@ bool Box3::satForAxes(double axes[],int length,Vector3& v0,Vector3& v1,Vector3& 
 		const double p0 = v0.dot( _testAxis );
 		const double p1 = v1.dot( _testAxis );
 		const double p2 = v2.dot( _testAxis );
+        //对于cpp的min/max函数，fmin/fmax为double精度，fminf/fmaxf为float精度
 		// actual test, basically see if either of the most extreme of the triangle points intersects r
-		if ( fmax( - fmax( p0, fmaxf(p1, p2) ), fmin( p0, fmin(p1, p2) ) ) > r ) {
+		if ( fmax( - fmax( p0, fmax(p1, p2) ), fmin( p0, fmin(p1, p2) ) ) > r ) {
 			// points of the projected triangle are outside the projected half-length of the aabb
 			// the axis is separating and we can exit
 			return false;

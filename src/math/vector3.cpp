@@ -3,6 +3,7 @@
 #include "euler.h"
 #include "matrix4.h"
 #include "matrix3.h"
+#include "cameras/camera.h"
 
 // #include "buffer_attribute.h"
 
@@ -135,15 +136,15 @@ Vector3& Vector3::reflect(Vector3& normal) {
     return sub(_vector.copy(normal).multiplyScalar(2*dot(normal)));
 }
 
-//Vector3& Vector3::project(Camera& camera) {
-//    applyMatrix4(camera.matrixWorldInverse ).applyMatrix4(camera.projectionMatrix);
-//
-//    return *this;
-//}
+Vector3& Vector3::project(Camera& camera) {
+    applyMatrix4(camera.matrixWorldInverse ).applyMatrix4(camera.projectionMatrix);
 
-//Vector3& Vector3::unproject(Camera& camera) {
-//    return applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
-//}
+    return *this;
+}
+
+Vector3& Vector3::unproject(Camera& camera) {
+    return applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( *camera.matrixWorld );
+}
 
 
 // inline Vector3& applyMatrix4(Vector3& v,Matrix4& m) {

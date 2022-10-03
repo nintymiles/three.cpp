@@ -100,7 +100,7 @@ class Box3 {
         Box3& setFromPoints(std::vector<Vector3>& points) {
             makeEmpty();
 
-            for ( int i = 0, il = points.size(); i < il; i ++ ) {
+            for ( size_t i = 0, il = points.size(); i < il; i ++ ) {
                 expandByPoint( points[ i ] );
             }
 
@@ -179,7 +179,7 @@ class Box3 {
 			return *this;
 		}
 
-		Box3& expandByScalar(int scalar) {
+		Box3& expandByScalar(double scalar) {
 			min.addScalar( - scalar );
 			max.addScalar( scalar );
 
