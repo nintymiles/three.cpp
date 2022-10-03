@@ -10,6 +10,11 @@
 #include "vector3.h"
 #include "vector2.h"
 #include "plane.h"
+#include "box3.h"
+
+class Triangle;
+bool operator==(const Triangle& lhs,const Triangle& rhs);
+bool operator!=(const Triangle& lhs,const Triangle& rhs);
 
 class Triangle {
 public:
@@ -99,98 +104,15 @@ public:
         return Triangle::isFrontFacing( a, b, c, direction );
     }
 
-//    intersectsBox( box ) {
-//
-//            return box.intersectsTriangle( this );
-//
-//    }
-//
-//    closestPointToPoint( p, target ) {
-//
-//        const a = this.a, b = this.b, c = this.c;
-//        let v, w;
-//
-//        // algorithm thanks to Real-Time Collision Detection by Christer Ericson,
-//        // published by Morgan Kaufmann Publishers, (c) 2005 Elsevier Inc.,
-//        // under the accompanying license; see chapter 5.1.5 for detailed explanation.
-//        // basically, we're distinguishing which of the voronoi regions of the triangle
-//        // the point lies in with the minimum amount of redundant computation.
-//
-//        _vab.subVectors( b, a );
-//        _vac.subVectors( c, a );
-//        _vap.subVectors( p, a );
-//        const d1 = _vab.dot( _vap );
-//        const d2 = _vac.dot( _vap );
-//        if ( d1 <= 0 && d2 <= 0 ) {
-//
-//            // vertex region of A; barycentric coords (1, 0, 0)
-//            return target.copy( a );
-//
-//        }
-//
-//        _vbp.subVectors( p, b );
-//        const d3 = _vab.dot( _vbp );
-//        const d4 = _vac.dot( _vbp );
-//        if ( d3 >= 0 && d4 <= d3 ) {
-//
-//            // vertex region of B; barycentric coords (0, 1, 0)
-//            return target.copy( b );
-//
-//        }
-//
-//        const vc = d1 * d4 - d3 * d2;
-//        if ( vc <= 0 && d1 >= 0 && d3 <= 0 ) {
-//
-//            v = d1 / ( d1 - d3 );
-//            // edge region of AB; barycentric coords (1-v, v, 0)
-//            return target.copy( a ).addScaledVector( _vab, v );
-//
-//        }
-//
-//        _vcp.subVectors( p, c );
-//        const d5 = _vab.dot( _vcp );
-//        const d6 = _vac.dot( _vcp );
-//        if ( d6 >= 0 && d5 <= d6 ) {
-//
-//            // vertex region of C; barycentric coords (0, 0, 1)
-//            return target.copy( c );
-//
-//        }
-//
-//        const vb = d5 * d2 - d1 * d6;
-//        if ( vb <= 0 && d2 >= 0 && d6 <= 0 ) {
-//
-//            w = d2 / ( d2 - d6 );
-//            // edge region of AC; barycentric coords (1-w, 0, w)
-//            return target.copy( a ).addScaledVector( _vac, w );
-//
-//        }
-//
-//        const va = d3 * d6 - d5 * d4;
-//        if ( va <= 0 && ( d4 - d3 ) >= 0 && ( d5 - d6 ) >= 0 ) {
-//
-//            _vbc.subVectors( c, b );
-//            w = ( d4 - d3 ) / ( ( d4 - d3 ) + ( d5 - d6 ) );
-//            // edge region of BC; barycentric coords (0, 1-w, w)
-//            return target.copy( b ).addScaledVector( _vbc, w ); // edge region of BC
-//
-//        }
-//
-//        // face region
-//        const denom = 1 / ( va + vb + vc );
-//        // u = va * denom
-//        v = vb * denom;
-//        w = vc * denom;
-//
-//        return target.copy( a ).addScaledVector( _vab, v ).addScaledVector( _vac, w );
-//
-//    }
-//
-//    equals( triangle ) {
-//
-//            return triangle.a.equals( this.a ) && triangle.b.equals( this.b ) && triangle.c.equals( this.c );
-//
-//    }
+    bool intersectsBox( Box3& box ) {
+        return box.intersectsTriangle( *this );
+    }
+
+    Vector3& closestPointToPoint( Vector3& p,Vector3& target );
+
+    bool equals( Triangle& triangle ) {
+        return *this == triangle;
+    }
 
 };
 

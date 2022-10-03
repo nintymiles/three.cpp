@@ -146,7 +146,7 @@ public:
 	Quaternion& setFromUnitVectors(Vector3& vFrom,Vector3& vTo);
 
 	double angleTo(Quaternion& q) {
-		return 2 * acos(abs(clamp<double>(dot(q), - 1, 1)));
+		return 2 * acos(abs(MathUtils::clamp<double>(dot(q), - 1, 1)));
 	}
 
     //step理解为步距？一个step为角度的倒数

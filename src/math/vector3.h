@@ -16,12 +16,15 @@
 
 #include "math_utils.h"
 #include "common_utils.h"
+#include "spherical.h"
+#include "cylindrical.h"
 
 class Quaternion;
 class Euler;
 class Matrix3;
 class Matrix4;
 class Vector3;
+class Camera;
 template <typename T> class BufferAttribute;
 
 // Vector3& setFromMatrixPosition(Vector3& v,Matrix4& m);
@@ -207,335 +210,324 @@ class Vector3{
 			return this->x * v.x + this->y * v.y + this->z * v.z;
 		}
 
-	// Vector3& project(Matrix4 camera) {
-	// 	applyMatrix4(camera.matrixWorldInverse ).applyMatrix4(camera.projectionMatrix);
-		
-	// 	return *this;
-	// }
+        Vector3& project(Camera& camera);
 
-// // 	unproject( camera ) {
+        Vector3& unproject(Camera& camera);
 
-// // 		return *this-applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
 
-// // 	}
+        // TODO lengthSquared?
+        double lengthSq() {
+            return x * x + y * y + z * z;
+        }
 
+        double length() {
+            return sqrt(lengthSq());
+        }
 
+        double manhattanLength(){
+            return abs( this->x ) + abs( this->y ) + abs( this->z );
+        }
 
-	// TODO lengthSquared?
-	double lengthSq() {
-		return x * x + y * y + z * z;
-	}
+        Vector3& normalize() {
+            return divideScalar(length()?length():1);
+        }
 
-	double length() {
-		return sqrt(lengthSq());
-	}
+        Vector3& setLength(double length) {
+            return this->normalize().multiplyScalar( length );
+        }
 
-	double manhattanLength(){
-		return abs( this->x ) + abs( this->y ) + abs( this->z );
-	}
+        Vector3& lerp( Vector3& v, double alpha ) {
+            this->x += ( v.x - this->x ) * alpha;
+            this->y += ( v.y - this->y ) * alpha;
+            this->z += ( v.z - this->z ) * alpha;
 
-	Vector3& normalize() {
-		return divideScalar(length()?length():1);
-	}
+            return *this;
+        }
 
-	Vector3& setLength(double length) {
-		return this->normalize().multiplyScalar( length );
-	}
+        Vector3& lerpVectors( const Vector3& v1, const Vector3& v2, double alpha ){
+            const double x = v1.x + ( v2.x - v1.x ) * alpha;
+            const double y = v1.y + ( v2.y - v1.y ) * alpha;
+            const double z = v1.z + ( v2.z - v1.z ) * alpha;
 
-	Vector3& lerp( Vector3& v, double alpha ) {
-		this->x += ( v.x - this->x ) * alpha;
-		this->y += ( v.y - this->y ) * alpha;
-		this->z += ( v.z - this->z ) * alpha;
+            return this->set(x,y,z);
+        }
 
-		return *this;
-	}
+        Vector3& divide(Vector3& v) {
 
-	Vector3& lerpVectors( const Vector3& v1, const Vector3& v2, double alpha ){
-		const double x = v1.x + ( v2.x - v1.x ) * alpha;
-		const double y = v1.y + ( v2.y - v1.y ) * alpha;
-		const double z = v1.z + ( v2.z - v1.z ) * alpha;
+            this->x /= v.x;
+            this->y /= v.y;
+            this->z /= v.z;
 
-		return this->set(x,y,z);
-	}
+            return *this;
+        }
 
-	Vector3& divide(Vector3& v) {
+        Vector3& divideScalar(double scalar) {
+            return multiplyScalar(1 / scalar);
 
-		this->x /= v.x;
-		this->y /= v.y;
-		this->z /= v.z;
+        }
 
-		return *this;
-	}
+        Vector3& min(Vector3& v) {
 
-	Vector3& divideScalar(double scalar) {
-		return multiplyScalar(1 / scalar);
+            this->x = fmin(this->x, v.x);
+            this->y = fmin(this->y, v.y);
+            this->z = fmin(this->z, v.z);
 
-	}
+            return *this;
+        }
 
-	Vector3& min(Vector3& v) {
+        Vector3& max(Vector3& v) {
+            this->x = fmax(this->x, v.x);
+            this->y = fmax(this->y, v.y);
+            this->z = fmax(this->z, v.z);
 
-		this->x = fmin(this->x, v.x);
-		this->y = fmin(this->y, v.y);
-		this->z = fmin(this->z, v.z);
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& clamp(Vector3& min,Vector3& max){
+            // assumes min < max, componentwise
 
-	Vector3& max(Vector3& v) {
-		this->x = fmax(this->x, v.x);
-		this->y = fmax(this->y, v.y);
-		this->z = fmax(this->z, v.z);
+            this->x = fmax(min.x, fmin(max.x, this->x));
+            this->y = fmax(min.y, fmin(max.y, this->y));
+            this->z = fmax(min.z, fmin(max.z, this->z));
 
-		return *this;
-	}
+            return *this;
+        }
 
-	Vector3& clamp(Vector3& min,Vector3& max){
-		// assumes min < max, componentwise
+        Vector3& clampScalar(double minVal,double maxVal) {
+            this->x = fmax(minVal, fmin(maxVal, this->x));
+            this->y = fmax(minVal, fmin(maxVal, this->y));
+            this->z = fmax(minVal, fmin(maxVal, this->z));
 
-		this->x = fmax(min.x, fmin(max.x, this->x));
-		this->y = fmax(min.y, fmin(max.y, this->y));
-		this->z = fmax(min.z, fmin(max.z, this->z));
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& clampLength(double min,double max) {
+            //length()函数返回的是Vector的长度
+            const double length = this->length();
 
-	Vector3& clampScalar(double minVal,double maxVal) {
-		this->x = fmax(minVal, fmin(maxVal, this->x));
-		this->y = fmax(minVal, fmin(maxVal, this->y));
-		this->z = fmax(minVal, fmin(maxVal, this->z));
+            // (length||1)用来保证除数不为0
+            divideScalar(length?length:1);
+            multiplyScalar(fmax(min, fmin(max,length)));
 
-		return *this;
-	}
+            return *this;
+        }
 
-	Vector3& clampLength(double min,double max) {
-		//length()函数返回的是Vector的长度
-		const double length = this->length();
+        Vector3& floor(){
+            this->x = std::floor( this->x );
+            this->y = std::floor( this->y );
+            this->z = std::floor( this->z );
 
-		// (length||1)用来保证除数不为0
-		divideScalar(length?length:1);
-		multiplyScalar(fmax(min, fmin(max,length)));
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& ceil(){
+            this->x = std::ceil( this->x );
+            this->y = std::ceil( this->y );
+            this->z = std::ceil( this->z );
 
-	Vector3& floor(){
-		this->x = std::floor( this->x );
-		this->y = std::floor( this->y );
-		this->z = std::floor( this->z );
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& round(){
+            this->x = std::round( this->x );
+            this->y = std::round( this->y );
+            this->z = std::round( this->z );
 
-	Vector3& ceil(){
-		this->x = std::ceil( this->x );
-		this->y = std::ceil( this->y );
-		this->z = std::ceil( this->z );
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& roundToZero(){
+            this->x = ( this->x < 0 ) ? std::ceil( this->x ) : std::floor( this->x );
+            this->y = ( this->y < 0 ) ? std::ceil( this->y ) : std::floor( this->y );
+            this->z = ( this->z < 0 ) ? std::ceil( this->z ) : std::floor( this->z );
 
-	Vector3& round(){
-		this->x = std::round( this->x );
-		this->y = std::round( this->y );
-		this->z = std::round( this->z );
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& negate(){
+            this->x = - this->x;
+            this->y = - this->y;
+            this->z = - this->z;
 
-	Vector3& roundToZero(){
-		this->x = ( this->x < 0 ) ? std::ceil( this->x ) : std::floor( this->x );
-		this->y = ( this->y < 0 ) ? std::ceil( this->y ) : std::floor( this->y );
-		this->z = ( this->z < 0 ) ? std::ceil( this->z ) : std::floor( this->z );
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& cross(Vector3& v) {
+            return crossVectors(*this, v);
+        }
 
-	Vector3& negate(){
-		this->x = - this->x;
-		this->y = - this->y;
-		this->z = - this->z;
+        Vector3& crossVectors(Vector3& a,Vector3& b){
+            const double ax = a.x, ay = a.y, az = a.z;
+            const double bx = b.x, by = b.y, bz = b.z;
 
-		return *this;
-	}
+            this->x = ay * bz - az * by;
+            this->y = az * bx - ax * bz;
+            this->z = ax * by - ay * bx;
 
-	Vector3& cross(Vector3& v) {
-		return crossVectors(*this, v);
-	}
+            return *this;
+        }
 
-	Vector3& crossVectors(Vector3& a,Vector3& b){
-		const double ax = a.x, ay = a.y, az = a.z;
-		const double bx = b.x, by = b.y, bz = b.z;
+        Vector3& projectOnVector(Vector3& v) {
+            const double denominator = v.lengthSq();
 
-		this->x = ay * bz - az * by;
-		this->y = az * bx - ax * bz;
-		this->z = ax * by - ay * bx;
+            if (denominator == 0) return set(0, 0, 0);
 
-		return *this;
-	}
+            const double scalar = v.dot(*this) / denominator;
 
-	Vector3& projectOnVector(Vector3& v) {
-		const double denominator = v.lengthSq();
+            return this->copy(v).multiplyScalar(scalar);
 
-		if (denominator == 0) return set(0, 0, 0);
+        }
 
-		const double scalar = v.dot(*this) / denominator;
+        Vector3& projectOnPlane(Vector3& planeNormal);
 
-		return this->copy(v).multiplyScalar(scalar);
+        Vector3& reflect(Vector3& normal);
 
-	}
+        double angleTo(Vector3& v){
+            const double denominator = std::sqrt(this->lengthSq() * v.lengthSq());
 
-	Vector3& projectOnPlane(Vector3& planeNormal);
+            if (denominator == 0) return M_PI / 2;
 
-	Vector3& reflect(Vector3& normal);
+            const double theta = this->dot(v) / denominator;
 
-	double angleTo(Vector3& v){
-		const double denominator = std::sqrt(this->lengthSq() * v.lengthSq());
+            // clamp, to handle numerical problems
+            return std::acos( MathUtils::clamp<double>(theta, - 1, 1) );
+        }
 
-		if (denominator == 0) return M_PI / 2;
+        double distanceTo(Vector3& v) {
+            return sqrt(this->distanceToSquared(v));
+        }
 
-		const double theta = this->dot(v) / denominator;
+        double distanceToSquared(Vector3& v){
+            const double dx = this->x - v.x, dy = this->y - v.y, dz = this->z - v.z;
 
-		// clamp, to handle numerical problems
-		return std::acos( ::clamp<double>(theta, - 1, 1) );
-	}
+            return dx * dx + dy * dy + dz * dz;
+        }
 
-	double distanceTo(Vector3& v) {
-		return sqrt(this->distanceToSquared(v));
-	}
+        double manhattanDistanceTo(Vector3& v){
+            return abs(this->x - v.x) + abs(this->y - v.y) + abs(this->z - v.z);
+        }
 
-	double distanceToSquared(Vector3& v){
-		const double dx = this->x - v.x, dy = this->y - v.y, dz = this->z - v.z;
+        Vector3& setFromSpherical( Spherical& s ) {
+            return setFromSphericalCoords( s.radius, s.phi, s.theta );
+        }
 
-		return dx * dx + dy * dy + dz * dz;
-	}
+        Vector3& setFromSphericalCoords( double radius, double phi, double theta ) {
+            const double sinPhiRadius = sin( phi ) * radius;
 
-	double manhattanDistanceTo(Vector3& v){
-		return abs(this->x - v.x) + abs(this->y - v.y) + abs(this->z - v.z);
-	}
+            this->x = sinPhiRadius * sin( theta );
+            this->y = cos( phi ) * radius;
+            this->z = sinPhiRadius * cos( theta );
 
-// 	setFromSpherical( s ) {
+            return *this;
+        }
 
-// 		return *this-setFromSphericalCoords( s.radius, s.phi, s.theta );
+        Vector3& setFromCylindrical( Cylindrical& c ) {
+            return setFromCylindricalCoords( c.radius, c.theta, c.y );
+        }
 
-// 	}
+        Vector3& setFromCylindricalCoords( double radius, double theta, double y ) {
+            this->x = radius * sin( theta );
+            this->y = y;
+            this->z = radius * cos( theta );
 
-// 	setFromSphericalCoords( radius, phi, theta ) {
+            return *this;
+        }
 
-// 		const sinPhiRadius = Math.sin( phi ) * radius;
+        Vector3& fromArray(double array[], int offset = 0) {
+            x = array[ offset ];
+            y = array[ offset + 1 ];
+            z = array[ offset + 2 ];
 
-// 		this->x = sinPhiRadius * Math.sin( theta );
-// 		this->y = Math.cos( phi ) * radius;
-// 		this->z = sinPhiRadius * Math.cos( theta );
+            return *this;
+        }
 
-// 		return *this;
+        Vector3& fromArrayVec(std::vector<double> array, int offset = 0) {
+            x = array[ offset ];
+            y = array[ offset + 1 ];
+            z = array[ offset + 2 ];
 
-// 	}
+            return *this;
+        }
 
-// 	setFromCylindrical( c ) {
+        double* toArray(double array[],int offset = 0){
+            array[offset] = this->x;
+            array[offset + 1] = this->y;
+            array[offset + 2] = this->z;
 
-// 		return *this-setFromCylindricalCoords( c.radius, c.theta, c.y );
+            return array;
+        }
 
-// 	}
+        gsl::span<double> toSpanArray(gsl::span<double> array,int offset = 0){
+            array[offset] = this->x;
+            array[offset + 1] = this->y;
+            array[offset + 2] = this->z;
 
-	Vector3& setFromCylindricalCoords( double radius, double theta, double y ) {
-		this->x = radius * sin( theta );
-		this->y = y;
-		this->z = radius * cos( theta );
+            return array;
+        }
 
-		return *this;
+        Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
 
-	}
+        Vector3& random() {
+            this->x = MathUtils::random_gen<double>();
+            this->y = MathUtils::random_gen<double>();
+            this->z = MathUtils::random_gen<double>();
 
-	Vector3& fromArray(double array[], int offset = 0) {
-		x = array[ offset ];
-		y = array[ offset + 1 ];
-		z = array[ offset + 2 ];
+            return *this;
+        }
 
-		return *this;
-	}
+        Vector3& randomDirection() {
+            // Derived from https://mathworld.wolfram.com/SpherePointPicking.html
 
-	Vector3& fromArrayVec(std::vector<double> array, int offset = 0) {
-		x = array[ offset ];
-		y = array[ offset + 1 ];
-		z = array[ offset + 2 ];
+            const double u = (MathUtils::random_gen<double>() - 0.5) * 2;
+            const double t = MathUtils::random_gen<double>() * M_PI * 2;
+            const double f = sqrt(1 - std::pow(u,2));
 
-		return *this;
-	}
+            this->x = f * cos(t);
+            this->y = f * sin(t);
+            this->z = u;
 
-	double* toArray(double array[],int offset = 0){
-		array[offset] = this->x;
-		array[offset + 1] = this->y;
-		array[offset + 2] = this->z;
+            return *this;
+        }
 
-		return array;
-	}
+        bool equals(const Vector3& v) const{
+            return ( (v.x == this->x) && (v.y == this->y) && (v.z == this->z) );
+        }
 
-    gsl::span<double> toSpanArray(gsl::span<double> array,int offset = 0){
-        array[offset] = this->x;
-        array[offset + 1] = this->y;
-        array[offset + 2] = this->z;
+        Vector3& setFromMatrix3Column(Matrix3& m,int index);
 
-        return array;
-    }
+        Vector3& applyMatrix3(Matrix3& m);
 
+        Vector3& applyNormalMatrix(Matrix3& m);
 
+        Vector3& applyAxisAngle(Vector3& axis, double angle);
 
-	Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
+        Vector3& applyQuaternion(Quaternion& q);
 
-	Vector3& random() {
-		this->x = random_gen<double>();
-		this->y = random_gen<double>();
-		this->z = random_gen<double>();
+        Vector3& applyEuler(Euler& euler);
 
-		return *this;
-	}
+        Vector3& setFromEuler(Euler& e);
 
-	Vector3& randomDirection() {
-		// Derived from https://mathworld.wolfram.com/SpherePointPicking.html
+        Vector3& setFromMatrixColumn(Matrix4& m,int index);
 
-		const double u = (random_gen<double>() - 0.5) * 2;
-		const double t = random_gen<double>() * M_PI * 2;
-		const double f = sqrt(1 - std::pow(u,2));
+        Vector3& setFromMatrixPosition(Matrix4& m);
 
-		this->x = f * cos(t);
-		this->y = f * sin(t);
-		this->z = u;
+        Vector3& setFromMatrixScale(Matrix4& m);
 
-		return *this;
-	}
+        Vector3& applyMatrix4(Matrix4& m);
 
-	bool equals(const Vector3& v) const{
-		return ( (v.x == this->x) && (v.y == this->y) && (v.z == this->z) );
-	}
-
-    Vector3& setFromMatrix3Column(Matrix3& m,int index);
-
-	Vector3& applyMatrix3(Matrix3& m);
-
-	Vector3& applyNormalMatrix(Matrix3& m);
-
-	Vector3& applyAxisAngle(Vector3& axis, double angle);
-
-	Vector3& applyQuaternion(Quaternion& q);
-
-	Vector3& applyEuler(Euler& euler);
-
-	Vector3& setFromEuler(Euler& e);
-
-	Vector3& setFromMatrixColumn(Matrix4& m,int index);
-
-	Vector3& setFromMatrixPosition(Matrix4& m);
-	
-	Vector3& setFromMatrixScale(Matrix4& m);
-	
-	Vector3& applyMatrix4(Matrix4& m);
-	
-	Vector3& transformDirection(Matrix4& m);
+        Vector3& transformDirection(Matrix4& m);
 
 
     private: 
 			
         
 };
+
+inline bool operator==(const Vector3& lhs,const Vector3& rhs){
+    return ( (lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) );
+}
+inline bool operator!=(const Vector3& lhs,const Vector3& rhs){
+    return !(lhs==rhs);
+}
 
 #endif /* SRC_MATH_VECTOR3_H_ */

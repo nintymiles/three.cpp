@@ -11,7 +11,7 @@
 template<typename T> class BufferAttribute;
 class Object3d;
 class Sphere;
-class Plane;
+struct Plane;
 class Triangle;
 using std::vector;
 
@@ -41,7 +41,7 @@ class Box3 {
             double maxY = DBL_MIN;
             double maxZ = DBL_MIN;
 
-            for ( int i = 0, l = vec.size(); i < l; i += 3 ) {
+            for ( size_t i = 0, l = vec.size(); i < l; i += 3 ) {
 
                 const double x = vec[ i ];
                 const double y = vec[ i + 1 ];
@@ -179,7 +179,7 @@ class Box3 {
 			return *this;
 		}
 
-		Box3& expandByScalar(unsigned scalar) {
+		Box3& expandByScalar(int scalar) {
 			min.addScalar( - scalar );
 			max.addScalar( scalar );
 

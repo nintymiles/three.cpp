@@ -38,7 +38,7 @@ Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) 
     switch ( order ) {
 
         case XYZ:
-            _y = asin( clamp<double>( m13, - 1, 1 ) );
+            _y = asin( MathUtils::clamp<double>( m13, - 1, 1 ) );
 
             if ( abs( m13 ) < 0.9999999 ) {
                 _x = atan2( - m23, m33 );
@@ -50,7 +50,7 @@ Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) 
 
             break;
         case YXZ:
-            _x = asin( - clamp<double>( m23, - 1, 1 ) );
+            _x = asin( - MathUtils::clamp<double>( m23, - 1, 1 ) );
 
             if ( abs( m23 ) < 0.9999999 ) {
                 _y = atan2( m13, m33 );
@@ -63,7 +63,7 @@ Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) 
 
             break;
         case ZXY:
-            _x = asin( clamp<double>( m32, - 1, 1 ) );
+            _x = asin( MathUtils::clamp<double>( m32, - 1, 1 ) );
 
             if ( abs( m32 ) < 0.9999999 ) {
                 _y = atan2( - m31, m33 );
@@ -76,7 +76,7 @@ Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) 
             break;
         case ZYX:
 
-            _y = asin( - clamp<double>( m31, - 1, 1 ) );
+            _y = asin( - MathUtils::clamp<double>( m31, - 1, 1 ) );
 
             if ( abs( m31 ) < 0.9999999 ) {
                 _x = atan2( m32, m33 );
@@ -88,7 +88,7 @@ Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) 
 
             break;
         case YZX:
-            _z = asin( clamp<double>( m21, - 1, 1 ) );
+            _z = asin( MathUtils::clamp<double>( m21, - 1, 1 ) );
 
             if ( abs( m21 ) < 0.9999999 ) {
                 _x = atan2( - m23, m22 );
@@ -102,7 +102,7 @@ Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) 
             break;
         case XZY:
 
-            _z = asin( - clamp<double>( m12, - 1, 1 ) );
+            _z = asin( - MathUtils::clamp<double>( m12, - 1, 1 ) );
 
             if ( abs( m12 ) < 0.9999999 ) {
                 _x = atan2( m32, m22 );

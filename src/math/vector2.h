@@ -345,8 +345,8 @@ class Vector2 {
         }
 
         Vector2& random() {
-            x = random_gen<double>();
-            y = random_gen<double>();
+            x = MathUtils::random_gen<double>();
+            y = MathUtils::random_gen<double>();
 
             return *this;
         }
