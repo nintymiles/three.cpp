@@ -7,11 +7,14 @@
 #endif
 
 #include <cmath>
-#include<limits>
+#include <limits>
 namespace Number{
     //when for const error: in-class initializer for static data member of type 'const double' requires 'constexpr' specifier [-Wstatic-float-init]
     constexpr double EPSILON = std::numeric_limits<double>::epsilon();
     constexpr double PI = M_PI;
+
+    constexpr double MAX = std::numeric_limits<double>::max();
+    constexpr double MIN = std::numeric_limits<double>::min();
 };
 
 

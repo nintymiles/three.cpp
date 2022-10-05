@@ -1,9 +1,9 @@
 //
-// Created by Willie on 2022/10/3.
+// Created by SeanRen on 2022/10/3.
 //
 
-#ifndef THREE_CPP_SPHERICAL_H
-#define THREE_CPP_SPHERICAL_H
+#ifndef THREE_CPP_Spherical_H
+#define THREE_CPP_Spherical_H
 
 #include "number.h"
 #include "math_utils.h"
@@ -23,9 +23,9 @@ class Spherical{
 public:
     double radius,phi,theta;
 
-    Spherical(double radius = 1.0,double phi = 0,double theta = 0):radius(radius),phi(phi),theta(theta){};
+    Spherical(double radius = 1.0, double phi = 0, double theta = 0): radius(radius), phi(phi), theta(theta){};
 
-    Spherical& set( double radius, double phi, double theta ) {
+    Spherical& set(double radius, double phi, double theta ) {
         this->radius = radius;
         this->phi = phi;
         this->theta = theta;
@@ -41,9 +41,9 @@ public:
         return *this;
     }
 
-    Spherical& setFromVector3 ( Vector3& v );
+    Spherical& setFromVector3 (Vector3& v );
 
-    Spherical& setFromCartesianCoords ( double x, double y, double z ) {
+    Spherical& setFromCartesianCoords (double x, double y, double z ) {
         radius = sqrt( x * x + y * y + z * z );
 
         if ( radius == 0 ) {
@@ -80,4 +80,4 @@ public:
 
 
 
-#endif //THREE_CPP_SPHERICAL_H
+#endif //THREE_CPP_Spherical_H

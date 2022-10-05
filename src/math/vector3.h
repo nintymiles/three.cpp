@@ -407,7 +407,7 @@ class Vector3{
             return abs(this->x - v.x) + abs(this->y - v.y) + abs(this->z - v.z);
         }
 
-        Vector3& setFromSpherical( Spherical& s ) {
+        Vector3& setFromSpherical(Spherical& s ) {
             return setFromSphericalCoords( s.radius, s.phi, s.theta );
         }
 

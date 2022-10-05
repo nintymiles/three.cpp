@@ -8,6 +8,7 @@
 #include "constants.h"
 #include <map>
 #include <string>
+#include <cmath>
 
 class Color;
 
