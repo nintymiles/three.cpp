@@ -41,8 +41,11 @@ ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math
 ${ROOT_DIR}/src/core)
 
+#MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
 if(MSVC)
   target_link_options(threelibcpp PUBLIC /DEBUG)
+  # 和上一个选项应该是等效的
+  # set_property(TARGET threelibcpp APPEND PROPERTY LINK_FLAGS "/NODEFAULTLIB:MSVCRT")
 endif()
 
 # TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
@@ -76,7 +79,8 @@ find_package(Microsoft.GSL CONFIG)
 
 add_executable(
   threecpp_test
-  ${ROOT_DIR}/src/test/vector3_test.cpp;
+  ${ROOT_DIR}/src/test/color_test.cpp;
+  #${ROOT_DIR}/src/test/vector3_test.cpp;
   #${ROOT_DIR}/src/test/quaternion_test.cpp
 )
 target_link_libraries(

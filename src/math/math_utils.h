@@ -19,7 +19,15 @@ namespace MathUtils {
 
     template<typename T>
     T clamp(T value, T min, T max) {
-        return fmax(min, fmin(max, value));
+        return (T)fmax(min, fmin(max, value));
+    }
+
+    //cpp中，运算符%不能用于float和double类型
+    // compute euclidean modulo of m % n
+    // https://en.wikipedia.org/wiki/Modulo_operation
+    template<typename T>
+    T euclideanModulo( T n, T m ) {
+        return fmod( ((fmod(n,m)) + m) , m );
     }
 
     template<typename T>

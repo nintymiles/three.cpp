@@ -1,6 +1,7 @@
 #include "vector3.h"
 #include "constant_test.h"
 #include "common_utils.h"
+#include "quaternion.h"
 
 #include "gtest/gtest.h"
 
@@ -69,6 +70,24 @@ TEST_F(Vector3Test, MethodToSpanArray) {
     gsl::span<double,3> myArray{arr};
     v.toSpanArray(myArray);
     EXPECT_EQ(myArray[2],z);
+}
+
+TEST_F(Vector3Test, MethodMultiply) {
+    Vector3 v = Vector3(13,12,11);
+    Vector3 v2 = Vector3(25,26,27);
+    v.multiply(v2);
+    EXPECT_EQ(v.x,325);
+    EXPECT_EQ(v.y,312);
+    EXPECT_EQ(v.z,297);
+}
+
+TEST_F(Vector3Test, MethodApplyQuaternion) {
+    Vector3 v = Vector3(13,12,11);
+    Quaternion q(0.1,0.2,0.1,1);
+    v.applyQuaternion(q);
+    EXPECT_FLOAT_EQ(v.x,15.18);
+    EXPECT_FLOAT_EQ(v.y,13.6);
+    EXPECT_FLOAT_EQ(v.z,8.5);
 }
 
 
