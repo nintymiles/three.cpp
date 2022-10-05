@@ -106,14 +106,6 @@ int main(int, char**)
         ;
     }
     
-    Vector3 v = Vector3(13,12,11);
-    Vector3 v2 = Vector3(25,26,27);
-    // v.getComponent(2);
-    v.multiply(/**Vector3(78,197,2345)*/v2);
-    std::cout << "index 0:" << v.getComponent(0) << " index 1:" << v.getComponent(1) << " index 2:" << v.getComponent(2) << std::endl; 
-    Quaternion q(0.1,0.2,0.1,1);
-    v.applyQuaternion(q);
-    std::cout << "index 0:" << v.getComponent(0) << " index 1:" << v.getComponent(1) << " index 2:" << v.getComponent(2) << std::endl; 
     std::cout << "first delta time = " << cl.getDelta() << std::endl;
     for(long i=0;i<2000000000;i++){
         ;

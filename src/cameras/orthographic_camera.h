@@ -92,8 +92,8 @@ class OrthographicCamera : Camera {
 
             }
 
-            projectionMatrix.makeOrthographic( left, right, top, bottom, near, far );
-            projectionMatrixInverse.copy( projectionMatrix ).invert();
+            projectionMatrix->makeOrthographic( left, right, top, bottom, near, far );
+            projectionMatrixInverse->copy( *projectionMatrix ).invert();
 
             return *this;
         }

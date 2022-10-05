@@ -5,20 +5,22 @@
 #include "object_3d.h"
 
 #include <string>
+#include <memory>
 
 using std::string;
 class Camera:public Object3D {
     public:
         string type;
-        Matrix4 matrixWorldInverse;
-        Matrix4 projectionMatrix;
-        Matrix4 projectionMatrixInverse;
+    std::shared_ptr<Matrix4> matrixWorldInverse;
+    std::shared_ptr<Matrix4> projectionMatrix;
+    std::shared_ptr<Matrix4> projectionMatrixInverse;
+
 
         //默认情况，父类默认构造器被默认调用，若调用其他构造器，则在类初始化列表中调用对应构造器。
         Camera():type("Camera"),
-                matrixWorldInverse(Matrix4()),
-                projectionMatrix(Matrix4()),
-                projectionMatrixInverse(Matrix4()){}
+                matrixWorldInverse(std::make_shared<Matrix4>()),
+                projectionMatrix(std::make_shared<Matrix4>()),
+                projectionMatrixInverse(std::make_shared<Matrix4>()){}
 
         Camera(const Camera& camera):type(camera.type),
                 matrixWorldInverse(camera.matrixWorldInverse),
@@ -54,13 +56,13 @@ class Camera:public Object3D {
             //派生类对象中，父类被重载的函数直接用范围操作符调用
             Object3D::updateMatrixWorld( force );
 
-            this->matrixWorldInverse.copy( *matrixWorld ).invert();
+            this->matrixWorldInverse->copy( *matrixWorld ).invert();
             return *this;
         }
 
         Camera& updateWorldMatrix( bool updateParents, bool updateChildren ) {
             Object3D::updateWorldMatrix( updateParents, updateChildren );
-            this->matrixWorldInverse.copy( *matrixWorld ).invert();
+            this->matrixWorldInverse->copy( *matrixWorld ).invert();
 
             return *this;
         }

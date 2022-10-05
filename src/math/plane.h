@@ -17,15 +17,15 @@ struct Plane
 
     Plane(Vector3 normal = Vector3(1, 0, 0), double constant = 0) : normal(normal), constant(constant){};
 
-    //        copy( plane ) {
-    //
-    //            this.normal.copy( plane.normal );
-    //            this.constant = plane.constant;
-    //
-    //            return this;
-    //
-    //        }
+
     Plane(const Plane &p) : normal(p.normal), constant(p.constant){};
+
+    Plane& copy( const Plane& plane ) {
+        normal.copy( plane.normal );
+        constant = plane.constant;
+
+        return *this;
+    }
 
     Plane &set(Vector3 &n, double c)
     {

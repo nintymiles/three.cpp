@@ -35,7 +35,7 @@ class PerspectiveCamera : Camera {
             /** see {@link http://www.bobatkins.com/photography/technical/field_of_view.html} */
             const double vExtentSlope = 0.5 * getFilmHeight() / focalLength;
 
-            fov = RAD2DEG * 2 * atan( vExtentSlope );
+            fov = MathUtils::RAD2DEG * 2 * atan( vExtentSlope );
             updateProjectionMatrix();
 
             return *this;
@@ -45,14 +45,14 @@ class PerspectiveCamera : Camera {
          * Calculates the focal length from the current .fov and .filmGauge.
          */
         double getFocalLength() {
-            const double vExtentSlope = tan( DEG2RAD * 0.5 * fov );
+            const double vExtentSlope = tan( MathUtils::DEG2RAD * 0.5 * fov );
 
             return 0.5 * getFilmHeight() / vExtentSlope;
         }
 
         double getEffectiveFOV() {
-            return RAD2DEG * 2 * atan(
-                tan( DEG2RAD * 0.5 * fov ) / zoom );
+            return MathUtils::RAD2DEG * 2 * atan(
+                tan( MathUtils::DEG2RAD * 0.5 * fov ) / zoom );
         }
 
         double getFilmWidth() {
@@ -141,7 +141,7 @@ class PerspectiveCamera : Camera {
 
         PerspectiveCamera& updateProjectionMatrix() {
             const double near = this->near;
-            double top = near * tan( DEG2RAD * 0.5 * fov ) / zoom;
+            double top = near * tan( MathUtils::DEG2RAD * 0.5 * fov ) / zoom;
             double height = 2 * top;
             double width = aspect * height;
             double left = - 0.5 * width;
@@ -160,8 +160,8 @@ class PerspectiveCamera : Camera {
             const double skew = filmOffset;
             if ( skew != 0 ) left += near * skew / getFilmWidth();
 
-            projectionMatrix.makePerspective( left, left + width, top, top - height, near, far );
-            projectionMatrixInverse.copy( projectionMatrix ).invert();
+            projectionMatrix->makePerspective( left, left + width, top, top - height, near, far );
+            projectionMatrixInverse->copy( *projectionMatrix ).invert();
 
             return *this;
         }
