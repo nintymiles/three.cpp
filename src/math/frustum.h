@@ -11,12 +11,13 @@
 #include "matrix4.h"
 
 class Frustum {
-private:
+public:
     Plane planes[6];
 
     //可在构造函数初始化列表中初始化数组
     Frustum(Plane p0 = Plane(),Plane p1 = Plane(),Plane p2 = Plane(),Plane p3 = Plane(),Plane p4 = Plane(),Plane p5 = Plane()):planes{p0,p1,p2,p3,p4,p5}{};
 
+    Frustum(const Frustum& f):planes{f.planes[0],f.planes[1],f.planes[2],f.planes[3],f.planes[4],f.planes[5]}{}
 
     Frustum& set( Plane p0, Plane p1, Plane p2, Plane p3, Plane p4, Plane p5 ) {
         planes[ 0 ].copy( p0 );
@@ -54,19 +55,7 @@ private:
         return *this;
     }
 
-
-
-
-};
-
-
-//class Frustum {
-//
-
-
-
-
-//    intersectsObject( object ) {
+//    bool intersectsObject( object ) {
 //
 //            const geometry = object.geometry;
 //
@@ -77,7 +66,7 @@ private:
 //            return this.intersectsSphere( _sphere );
 //
 //    }
-//
+
 //    intersectsSprite( sprite ) {
 //
 //            _sphere.center.set( 0, 0, 0 );
@@ -87,80 +76,43 @@ private:
 //            return this.intersectsSphere( _sphere );
 //
 //    }
-//
-//    intersectsSphere( sphere ) {
-//
-//            const planes = this.planes;
-//            const center = sphere.center;
-//            const negRadius = - sphere.radius;
-//
-//            for ( let i = 0; i < 6; i ++ ) {
-//
-//                const distance = planes[ i ].distanceToPoint( center );
-//
-//                if ( distance < negRadius ) {
-//
-//                    return false;
-//
-//                }
-//
-//            }
-//
-//            return true;
-//
-//    }
-//
-//    intersectsBox( box ) {
-//
-//            const planes = this.planes;
-//
-//            for ( let i = 0; i < 6; i ++ ) {
-//
-//                const plane = planes[ i ];
-//
-//                // corner at max distance
-//
-//                _vector.x = plane.normal.x > 0 ? box.max.x : box.min.x;
-//                _vector.y = plane.normal.y > 0 ? box.max.y : box.min.y;
-//                _vector.z = plane.normal.z > 0 ? box.max.z : box.min.z;
-//
-//                if ( plane.distanceToPoint( _vector ) < 0 ) {
-//
-//                    return false;
-//
-//                }
-//
-//            }
-//
-//            return true;
-//
-//    }
-//
-//    containsPoint( point ) {
-//
-//            const planes = this.planes;
-//
-//            for ( let i = 0; i < 6; i ++ ) {
-//
-//                if ( planes[ i ].distanceToPoint( point ) < 0 ) {
-//
-//                    return false;
-//
-//                }
-//
-//            }
-//
-//            return true;
-//
-//    }
-//
-//    clone() {
-//
-//        return new this.constructor().copy( this );
-//
-//    }
-//
-//}
+
+    bool intersectsSphere( Sphere& sphere ) {
+        //可以使用指针赋值，实现数组的别名（引用）
+        //Plane* planes = this->planes;
+        //数组的引用
+        Plane (&planes)[6] = this->planes;
+        //gsl::span<Plane> planes = gsl::span<Plane>(this->planes);
+        Vector3& center = sphere.center;
+        const double negRadius = - sphere.radius;
+
+        for ( int i = 0; i < 6; i ++ ) {
+            const double distance = planes[ i ].distanceToPoint( center );
+
+            if ( distance < negRadius ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool intersectsBox( Box3& box );
+
+    bool containsPoint( Vector3& point ) {
+        Plane* planes = this->planes;
+
+        for ( int i = 0; i < 6; i ++ ) {
+            if ( planes[ i ].distanceToPoint( point ) < 0 ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+};
 
 
 

@@ -79,7 +79,8 @@ find_package(Microsoft.GSL CONFIG)
 
 add_executable(
   threecpp_test
-  ${ROOT_DIR}/src/test/color_test.cpp;
+  ${ROOT_DIR}/src/test/frustum_test.cpp;
+  #${ROOT_DIR}/src/test/color_test.cpp;
   #${ROOT_DIR}/src/test/vector3_test.cpp;
   #${ROOT_DIR}/src/test/quaternion_test.cpp
 )
