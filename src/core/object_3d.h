@@ -319,6 +319,44 @@ class Object3D:public EventDispatcher{
             }
             return *this;
         }
+
+        Object3D& copy( Object3D& source, bool recursive = true ) {
+            this->name = source.name;
+
+            this->up->copy( *source.up );
+            this->position->copy( *source.position );
+//            this.rotation.order = source.rotation.order;
+//            this.quaternion.copy( source.quaternion );
+//            this.scale.copy( source.scale );
+//
+//            this.matrix.copy( source.matrix );
+//            this.matrixWorld.copy( source.matrixWorld );
+//
+//            this.matrixAutoUpdate = source.matrixAutoUpdate;
+//            this.matrixWorldNeedsUpdate = source.matrixWorldNeedsUpdate;
+//
+//            this.matrixWorldAutoUpdate = source.matrixWorldAutoUpdate;
+//
+//            this.layers.mask = source.layers.mask;
+//            this.visible = source.visible;
+//
+//            this.castShadow = source.castShadow;
+//            this.receiveShadow = source.receiveShadow;
+//
+//            this.frustumCulled = source.frustumCulled;
+//            this.renderOrder = source.renderOrder;
+//
+//            this.userData = JSON.parse( JSON.stringify( source.userData ) );
+//
+            if ( recursive == true ) {
+                for ( size_t i = 0; i < source.children.size(); i ++ ) {
+                    std::shared_ptr<Object3D> child = source.children[ i ];
+                    add(child);
+                }
+
+            }
+            return *this;
+        }
         
 
 };

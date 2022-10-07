@@ -32,18 +32,16 @@ class Camera:public Object3D {
         //     return new this.constructor().copy( this );
         // }
 
-        // copy( source, recursive ) {
+         Camera& copy( Camera& source, bool recursive ) {
+             Object3D::copy( source, recursive );
 
-        //     super.copy( source, recursive );
+             matrixWorldInverse->copy( *source.matrixWorldInverse );
 
-        //     this.matrixWorldInverse.copy( source.matrixWorldInverse );
+             projectionMatrix->copy(* source.projectionMatrix );
+             projectionMatrixInverse->copy( *source.projectionMatrixInverse );
 
-        //     this.projectionMatrix.copy( source.projectionMatrix );
-        //     this.projectionMatrixInverse.copy( source.projectionMatrixInverse );
-
-        //     return this;
-
-        // }
+             return *this;
+         }
 
         Vector3& getWorldDirection( Vector3& target ) {
             this->updateWorldMatrix( true, false );
