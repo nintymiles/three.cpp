@@ -17,25 +17,8 @@
 #include <vector>
 #include <map>
 #include <memory>
-#include <type_traits>
+#include <cmath>
 
-
-
-
-static int _id = 0;
-
-// const _m1 = /*@__PURE__*/ new Matrix4();
-// const _obj = /*@__PURE__*/ new Object3D();
-// const _offset = /*@__PURE__*/ new Vector3();
-// const _box = /*@__PURE__*/ new Box3();
-// const _boxMorphTargets = /*@__PURE__*/ new Box3();
-// const _vector = /*@__PURE__*/ new Vector3();
-Matrix4 _m1;
-Object3D _obj;
-Vector3 _offset;
-Box3 _box;
-Box3 _boxMorphTargets;
-Vector3 _vector;
 
 using std::string;
 using std::vector;
@@ -45,6 +28,7 @@ using std::shared_ptr;
 template <typename T1,typename T2>
 class BufferGeometry : EventDispatcher {
     private:
+        static int _id;
 
     public:
         bool isBufferGeometry{true};
@@ -58,57 +42,58 @@ class BufferGeometry : EventDispatcher {
         bool morphTargetsRelative;
 
         shared_ptr<Box3> boundingBox;
-        shared_ptr<SphboundingSphere;
-        vector<GeometryGroup> groups;
+        shared_ptr<Sphere> boundingSphere;
+        vector<threecpp::GeometryGroup> groups;
         threecpp::Range drawRange;
 
-        BufferGeometry():uuid(generate_uuid()),name(""),
+        // constructor() {
+
+        // 	super();
+
+        // 	Object.defineProperty( this, 'id', { value: _id ++ } );
+
+        // 	this.uuid = MathUtils.generateUUID();
+
+        // 	this.name = '';
+        // 	this.type = 'BufferGeometry';
+
+        // 	this.index = null;
+        // 	this.attributes = {};
+
+        // 	this.morphAttributes = {};
+        // 	this.morphTargetsRelative = false;
+
+        // 	this.groups = [];
+
+        // 	this.boundingBox = null;
+        // 	this.boundingSphere = null;
+
+        // 	this.drawRange = { start: 0, count: Infinity };
+
+        // 	this.userData = {};
+
+        // }
+        BufferGeometry():uuid(MathUtils::generate_uuid()),name(""),id(_id++),
                             type("BufferGeometry"),index(nullptr),
                             attributes({}),morphAttributes({}),
                             morphTargetsRelative(false),groups({}),
                             boundingBox(nullptr),boundingSphere(nullptr),
                             drawRange({0,INT32_MAX}){}
 
-	// constructor() {
 
-	// 	super();
-
-	// 	Object.defineProperty( this, 'id', { value: _id ++ } );
-
-	// 	this.uuid = MathUtils.generateUUID();
-
-	// 	this.name = '';
-	// 	this.type = 'BufferGeometry';
-
-	// 	this.index = null;
-	// 	this.attributes = {};
-
-	// 	this.morphAttributes = {};
-	// 	this.morphTargetsRelative = false;
-
-	// 	this.groups = [];
-
-	// 	this.boundingBox = null;
-	// 	this.boundingSphere = null;
-
-	// 	this.drawRange = { start: 0, count: Infinity };
-
-	// 	this.userData = {};
-
-	// }
 
         shared_ptr<vector<T1>> getIndex() {
             return index;
         }
 
         BufferGeometry& setIndex( BufferAttribute<T1>& indexData ) {
-            index = std::make_shared<BufferAttribute<T1>)(indexData);
+            index = std::make_shared<BufferAttribute<T1>>(indexData);
             return *this;
         }
 
         BufferGeometry& setRawIndex( vector<T1>& indexRawData ) {
             BufferAttribute<T1> baIndex = BufferAttribute<T1>(indexRawData,1);
-            index = std::make_shared<BufferAttribute<T1>(baIndex);
+            index = std::make_shared<BufferAttribute<T1>>(baIndex);
             return *this;
         }
 
@@ -172,237 +157,38 @@ class BufferGeometry : EventDispatcher {
 				tangent->needsUpdate = true;
 			}
 
-			if ( boundingBox != null ) {
+			if ( boundingBox != nullptr ) {
 				computeBoundingBox();
 			}
 
-			if ( boundingSphere != null ) {
+			if ( boundingSphere != nullptr ) {
 				computeBoundingSphere();
 			}
 
 			return *this;
 		}
 
-		BufferGeometry& applyQuaternion( Quaternion& q ) {
-			_m1.makeRotationFromQuaternion( q );
-			applyMatrix4( _m1 );
+		BufferGeometry& applyQuaternion( Quaternion& q );
 
-			return *this;
-		}
+		BufferGeometry& rotateX( double angle );
 
-		BufferGeometry& rotateX( double angle ) {
-			// rotate geometry around world x-axis
-			_m1.makeRotationX( angle );
-			applyMatrix4( _m1 );
+		BufferGeometry& rotateY( double angle );
 
-			return *this;
-		}
+		BufferGeometry& rotateZ( double angle );
 
-		BufferGeometry& rotateY( double angle ) {
-			// rotate geometry around world y-axis
-			_m1.makeRotationY( angle );
-			applyMatrix4( _m1 );
+		BufferGeometry& translate( double x, double y, double z );
 
-			return *this;
-		}
+		BufferGeometry& scale( double x, double y, double z );
 
-		BufferGeometry& rotateZ( double angle ) {
-			// rotate geometry around world z-axis
-			_m1.makeRotationZ( angle );
-			applyMatrix4( _m1 );
+		BufferGeometry& lookAt( Vector3& vector );
 
-			return *this;
-		}
+		BufferGeometry& center();
 
-		BufferGeometry& translate( double x, double y, double z ) {
-			// translate geometry
-			_m1.makeTranslation( x, y, z );
-			applyMatrix4( _m1 );
+		BufferGeometry& setFromPoints( vector<Vector3> points );
 
-			return *this;
-		}
+		BufferGeometry& computeBoundingBox();
 
-		BufferGeometry& scale( double x, double y, double z ) {
-			// scale geometry
-			_m1.makeScale( x, y, z );
-			applyMatrix4( _m1 );
-
-			return *this;
-		}
-
-		BufferGeometry& lookAt( Vector3& vector ) {
-			_obj.lookAt( vector );
-			_obj.updateMatrix();
-
-			applyMatrix4( _obj.matrix );
-
-			return *this;
-		}
-
-		BufferGeometry& center() {
-			computeBoundingBox();
-			//due to previous calling,it is impossible for boundingBox==nullptr
-			boundingBox->getCenter( _offset ).negate();
-			translate( _offset.x, _offset.y, _offset.z );
-
-			return *this;
-		}
-
-		BufferGeometry& setFromPoints( vector<Vector3> points ) {
-			vector<T2> positionData;
-
-			for ( int i = 0, l = points.size; i < l; i ++ ) {
-				Vector3 point = points[ i ];
-				position.push_back( point.x, point.y, point.z || 0 );
-			}
-
-			setAttribute( "position", BufferAttribute<T2>( positionData, 3 ) );
-
-			return *this;
-		}
-
-		BufferGeometry& computeBoundingBox() {
-
-			if ( boundingBox == nullptr ) {
-				boundingBox = std::make_shared<Box3>();
-			}
-
-			BufferAttribute<T2> position = attributes["position"];
-			BufferAttribute<T2> morphAttributesPosition = morphAttributes["position"];
-
-			// if ( position && position.isGLBufferAttribute ) {
-
-			// 	console.error( 'THREE.BufferGeometry.computeBoundingBox(): GLBufferAttribute requires a manual bounding box. Alternatively set "mesh.frustumCulled" to "false".', this );
-
-			// 	this.boundingBox.set(
-			// 		new Vector3( - Infinity, - Infinity, - Infinity ),
-			// 		new Vector3( + Infinity, + Infinity, + Infinity )
-			// 	);
-
-			// 	return;
-
-			// }
-
-			if ( position != nullptr ) {
-				boundingBox->setFromBufferAttribute( position );
-
-				// process morph attributes if present
-				if ( morphAttributesPosition ) {
-
-					for ( int i = 0, il = morphAttributesPosition.size(); i < il; i ++ ) {
-
-						auto morphAttribute = morphAttributesPosition[ i ].second;
-						_box.setFromBufferAttribute( morphAttribute );
-
-						if ( morphTargetsRelative ) {
-							_vector.addVectors( boundingBox->min, _box.min );
-							boundingBox->expandByPoint( _vector );
-
-							_vector.addVectors( boundingBox->max, _box.max );
-							boundingBox->expandByPoint( _vector );
-						} else {
-							boundingBox->expandByPoint( _box.min );
-							boundingBox->expandByPoint( _box.max );
-						}
-					}
-				}
-
-			} else {
-				boundingBox->makeEmpty();
-			}
-
-			return *this;
-		}
-
-		BufferGeometry& computeBoundingSphere() {
-			if ( boundingSphere == nullptr ) {
-				boundingSphere = std::shared_ptr<Sphere>();
-			}
-
-			const position = attributes["position"];
-			const morphAttributesPosition = morphAttributes["position"];
-
-			// if ( position && position.isGLBufferAttribute ) {
-			// 	console.error( 'THREE.BufferGeometry.computeBoundingSphere(): GLBufferAttribute requires a manual bounding sphere. Alternatively set "mesh.frustumCulled" to "false".', this );
-			// 	this.boundingSphere.set( new Vector3(), Infinity );
-			// 	return;
-			// }
-
-			if ( position ) {
-
-				// first, find the center of the bounding sphere
-
-				const center = this.boundingSphere.center;
-
-				_box.setFromBufferAttribute( position );
-
-				// process morph attributes if present
-
-				if ( morphAttributesPosition ) {
-
-					for ( let i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
-
-						const morphAttribute = morphAttributesPosition[ i ];
-						_boxMorphTargets.setFromBufferAttribute( morphAttribute );
-
-						if ( this.morphTargetsRelative ) {
-
-							_vector.addVectors( _box.min, _boxMorphTargets.min );
-							_box.expandByPoint( _vector );
-
-							_vector.addVectors( _box.max, _boxMorphTargets.max );
-							_box.expandByPoint( _vector );
-
-						} else {
-
-							_box.expandByPoint( _boxMorphTargets.min );
-							_box.expandByPoint( _boxMorphTargets.max );
-
-						}
-
-					}
-
-				}
-
-				_box.getCenter( center );
-
-				// second, try to find a boundingSphere with a radius smaller than the
-				// boundingSphere of the boundingBox: sqrt(3) smaller in the best case
-
-				let maxRadiusSq = 0;
-
-				for ( let i = 0, il = position.count; i < il; i ++ ) {
-
-					_vector.fromBufferAttribute( position, i );
-
-					maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( _vector ) );
-
-				}
-
-				// process morph attributes if present
-				if ( morphAttributesPosition ) {
-					for ( let i = 0, il = morphAttributesPosition.size(); i < il; i ++ ) {
-
-						auto morphAttribute = morphAttributesPosition[ i ].second;
-						bool morphTargetsRelative = morphTargetsRelative;
-
-						for ( int j = 0, jl = morphAttribute.count; j < jl; j ++ ) {
-
-							_vector.fromBufferAttribute( morphAttribute, j );
-
-							if ( morphTargetsRelative ) {
-								_offset.fromBufferAttribute( position, j );
-								_vector.add( _offset );
-							}
-
-							maxRadiusSq = fmax( maxRadiusSq, center.distanceToSquared( _vector ) );
-						}
-					}
-				}
-				boundingSphere->radius = sqrt( maxRadiusSq );
-			}
-
-		}
+		BufferGeometry& computeBoundingSphere();
 
 		BufferGeometry& computeTangents() {
 			// based on http://www.terathon.com/code/tangent.html
@@ -428,23 +214,23 @@ class BufferGeometry : EventDispatcher {
 
 			vector<Vector3> tangents = getAttribute( "tangent" )->array;
 
-			vector<Vector3> tan1 = [], tan2 = [];
+			vector<Vector3> tan1 = {}, tan2 = {};
 
 			for ( int i = 0; i < nVertices; i ++ ) {
 				tan1[ i ] = Vector3();
 				tan2[ i ] = Vector3();
 			}
 
-			Vector3 vA(),
-				    vB(),
-				    vC();  
+			Vector3 vA,
+				    vB,
+				    vC;
 
-			Vector2	uvA(),
-				    uvB(),
-				    uvC();
+			Vector2	uvA,
+				    uvB,
+				    uvC;
 
-			Vector3	sdir(),
-				    tdir();
+			Vector3	sdir,
+				    tdir;
 
 			struct HandleTriangle{
 				void operator()(int a,int b,int c){
@@ -452,9 +238,9 @@ class BufferGeometry : EventDispatcher {
 					vB.fromArrayVec( positions, b * 3 );
 					vC.fromArrayVec( positions, c * 3 );
 
-					uvA.fromArrayVec( uvs, a * 2 );
-					uvB.fromArrayVec( uvs, b * 2 );
-					uvC.fromArrayVec( uvs, c * 2 );
+					uvA.fromArray( uvs, a * 2 );
+					uvB.fromArray( uvs, b * 2 );
+					uvC.fromArray( uvs, c * 2 );
 
 					vB.sub( vA );
 					vC.sub( vA );
@@ -465,7 +251,7 @@ class BufferGeometry : EventDispatcher {
 					const double r = 1.0 / ( uvB.x * uvC.y - uvC.x * uvB.y );
 
 					// silently ignore degenerate uv triangles having coincident or colinear vertices
-					if ( ! std::is_floating_point( r ) ) return;
+					if ( !isfinite(r)  ) return;
 
 					sdir.copy( vB ).multiplyScalar( uvC.y ).addScaledVector( vC, - uvB.y ).multiplyScalar( r );
 					tdir.copy( vC ).multiplyScalar( uvB.x ).addScaledVector( vB, - uvC.x ).multiplyScalar( r );
@@ -481,15 +267,15 @@ class BufferGeometry : EventDispatcher {
 			};
 
 			if ( groups.size() == 0 ) {
-				groups = [ {
+				groups = { {
 					0,
 					indices.length
-				} ];
+				} };
 			}
 
 			for ( int i = 0, il = groups.size(); i < il; ++ i ) {
 
-				GeometryGroup group = groups[ i ];
+				threecpp::GeometryGroup group = groups[ i ];
 
 				int start = group.start;
 				int count = group.count;
@@ -503,7 +289,7 @@ class BufferGeometry : EventDispatcher {
 				}
 			}
 
-			Vector3 tmp(), tmp2(),n(), n2();
+			Vector3 tmp, tmp2,n, n2;
 
 			struct HandleVertex{
 				void operator()(int v){
@@ -530,7 +316,7 @@ class BufferGeometry : EventDispatcher {
 
 			for ( int i = 0, il = groups.size(); i < il; ++ i ) {
 
-				Geometry group = groups[ i ];
+				threecpp::GeometryGroup group = groups[ i ];
 
 				const int start = group.start;
 				const int count = group.count;
@@ -560,16 +346,16 @@ class BufferGeometry : EventDispatcher {
 					}
 				}
 
-				Vector3 pA(), pB(), pC();
-				Vector3 nA(), nB(), nC();
-				Vector3 cb(), ab();
+				Vector3 pA, pB, pC;
+				Vector3 nA, nB, nC;
+				Vector3 cb, ab;
 
 				// indexed elements
 				if ( index ) {
 					for ( int i = 0, il = index->count; i < il; i += 3 ) {
 						T1 vA = index.getX( i + 0 );
-						T2 vB = index.getX( i + 1 );
-						T3 vC = index.getX( i + 2 );
+						T1 vB = index.getX( i + 1 );
+						T1 vC = index.getX( i + 2 );
 
 						pA.fromBufferAttribute( positionAttribute, vA );
 						pB.fromBufferAttribute( positionAttribute, vB );
@@ -618,8 +404,8 @@ class BufferGeometry : EventDispatcher {
 		BufferGeometry& merge( BufferGeometry& geometry, int offset ) {
 			if ( offset == 0 ) {
 				throw std::runtime_error(
-					"THREECPP.BufferGeometry.merge(): Overwriting original geometry, starting at offset=0. "
-					+ "Use BufferGeometryUtils.mergeBufferGeometries() for lossless merge."
+					"THREECPP.BufferGeometry.merge(): Overwriting original geometry, starting at offset=0. \n"
+					 "Use BufferGeometryUtils.mergeBufferGeometries() for lossless merge."
 				);
 			}
 
@@ -643,15 +429,7 @@ class BufferGeometry : EventDispatcher {
 			return *this;
 		}
 
-		BufferGeometry& normalizeNormals() {
-			shared_ptr<BufferAttribute<T2>> normals = attributes["normal"];
-
-			for ( int i = 0, il = normals->count; i < il; i ++ ) {
-				_vector.fromBufferAttribute( *normals, i );
-				_vector.normalize();
-				normals->setXYZ( i, _vector.x, _vector.y, _vector.z );
-			}
-		}
+		BufferGeometry& normalizeNormals();
 
 		// BufferAttribute& toNonIndexed() {
 		// 	struct ConvertBufferAttribute{

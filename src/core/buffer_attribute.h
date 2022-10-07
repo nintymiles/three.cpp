@@ -34,8 +34,6 @@ class BufferAttribute {
 
 		static Vector3 _vector();
 		static Vector2 _vector2();
-        
-
 
     public:
         vector<T> arrayVec;
