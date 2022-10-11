@@ -11,9 +11,9 @@ using std::string;
 class Camera:public Object3D {
     public:
         string type;
-    std::shared_ptr<Matrix4> matrixWorldInverse;
-    std::shared_ptr<Matrix4> projectionMatrix;
-    std::shared_ptr<Matrix4> projectionMatrixInverse;
+        std::shared_ptr<Matrix4> matrixWorldInverse;
+        std::shared_ptr<Matrix4> projectionMatrix;
+        std::shared_ptr<Matrix4> projectionMatrixInverse;
 
 
         //默认情况，父类默认构造器被默认调用，若调用其他构造器，则在类初始化列表中调用对应构造器。
@@ -65,6 +65,9 @@ class Camera:public Object3D {
             return *this;
         }
 
+        virtual bool isPerspectiveCamera();
+
+        virtual bool isOrthographicCamera();
 
 
 };

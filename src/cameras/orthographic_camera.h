@@ -8,7 +8,7 @@
 
 using std::string;
 using std::shared_ptr;
-class OrthographicCamera : Camera {
+class OrthographicCamera : public Camera {
     public:
         string type{"OrthographicCamera"};
 

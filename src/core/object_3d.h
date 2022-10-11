@@ -19,8 +19,6 @@ typedef std::function<void(Object3D&)> Object3DCallback;
 class Quaternion;
 
 class Object3D:public EventDispatcher{
-    private:
-
     public:
         static std::shared_ptr<Vector3> default_up;
 

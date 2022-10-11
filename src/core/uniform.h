@@ -14,6 +14,6 @@ class Uniform {
             return Uniform(*this);
         }
 
-}
+};
 
 #endif /* SRC_CORE_UNIFORM_H_ */

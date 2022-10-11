@@ -9,12 +9,12 @@
 
 using std::shared_ptr;
 class PerspectiveCamera : Camera {
-    private:
+    public:
         string type{"PerspectiveCamera"};
         double fov,zoom=1,near,far,focus=10,aspect,filmGauge,filmOffset;
         shared_ptr<ViewOffset> view;
 
-    public:
+    //public:
         PerspectiveCamera(double fov = 50,double aspect = 1,double near = 0.1,double far = 2000)
                                 :fov(fov),zoom(1),near(near),far(far),focus(10),aspect(aspect),filmGauge(35),filmOffset(0){
             updateProjectionMatrix();
