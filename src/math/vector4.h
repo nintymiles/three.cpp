@@ -549,9 +549,9 @@ class Vector4 {
 
 // 	projectOnPlane( planeNormal ) {
 
-// 		_vector.copy( this ).projectOnVector( planeNormal );
+// 		_buffer_attribute_vector.copy( this ).projectOnVector( planeNormal );
 
-// 		return *this-sub( _vector );
+// 		return *this-sub( _buffer_attribute_vector );
 
 // 	}
 
@@ -560,7 +560,7 @@ class Vector4 {
 // 		// reflect incident vector off plane orthogonal to normal
 // 		// normal is assumed to have unit length
 
-// 		return *this-sub( _vector.copy( normal ).multiplyScalar( 2 * this-dot( normal ) ) );
+// 		return *this-sub( _buffer_attribute_vector.copy( normal ).multiplyScalar( 2 * this-dot( normal ) ) );
 
 // 	}
 
@@ -760,7 +760,7 @@ class Vector4 {
 
 // Vector4.prototype.isVector4 = true;
 
-// const _vector = /*@__PURE__*/ new Vector4();
+// const _buffer_attribute_vector = /*@__PURE__*/ new Vector4();
 // const _quaternion = /*@__PURE__*/ new Quaternion();
 
 // export { Vector4 };

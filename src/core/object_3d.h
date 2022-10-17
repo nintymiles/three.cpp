@@ -4,6 +4,8 @@
 #include "layers.h"
 #include "math_utils.h"
 #include "vector3.h"
+#include "euler.h"
+#include "quaternion.h"
 
 #include <string>
 #include <memory>
@@ -11,8 +13,7 @@
 #include <algorithm>
 
 static long _object3DId = 0;
-Event _addedEvent = {"added"};
-Event _removedEvent = {"removed"};
+
 class Object3D;
 typedef std::function<void(Object3D&)> Object3DCallback;
 
@@ -20,6 +21,8 @@ class Quaternion;
 
 class Object3D:public EventDispatcher{
     public:
+        Event _addedEvent = {"added"};
+        Event _removedEvent = {"removed"};
         static std::shared_ptr<Vector3> default_up;
 
         static const bool default_matrix_auto_update = true;
@@ -33,8 +36,10 @@ class Object3D:public EventDispatcher{
         std::shared_ptr<Object3D> parent;
         //3D对象本身的存储使用智能指针
         std::vector<std::shared_ptr<Object3D>> children;
-        
-        std::shared_ptr<Vector3> up = std::make_shared<Vector3>(Vector3().copy(*default_up));
+
+        //这种声明方式导致内存泄漏,不支持copy构造函数？依赖了default_up静态变量？
+        //std::shared_ptr<Vector3> up = std::make_shared<Vector3>(*default_up);
+        std::shared_ptr<Vector3> up = std::make_shared<Vector3>(0,1,0);
         //Vector3 up(default_up->x,default_up->y,default_up->z);
 
         std::shared_ptr<Vector3> position = std::make_shared<Vector3>();
@@ -46,7 +51,7 @@ class Object3D:public EventDispatcher{
         std::shared_ptr<Vector3> scale = std::make_shared<Vector3>(1,1,1);
         //Vector3 scale(1,1,1);
 
-        std::shared_ptr<Matrix4> modelViewMatrix = std::make_shared<Matrix4>(); 
+        std::shared_ptr<Matrix4> modelViewMatrix = std::make_shared<Matrix4>();
         std::shared_ptr<Matrix4> normalMatrix = std::make_shared<Matrix4>();
 
         std::shared_ptr<Matrix4> matrix = std::make_shared<Matrix4>();
@@ -83,7 +88,7 @@ class Object3D:public EventDispatcher{
         virtual std::string getClassType(){return type;}
 
         Object3D& applyMatrix4( Matrix4& matrix ) {
-            if(matrixAutoUpdate) 
+            if(matrixAutoUpdate)
                 updateMatrix();
 
             this->matrix->premultiply( matrix );
@@ -124,7 +129,7 @@ class Object3D:public EventDispatcher{
 
             return *this;
         }
-    
+
     	Object3D& rotateOnAxis( Vector3& axis,double angle );
 
         Object3D& rotateOnWorldAxis( Vector3& axis, double angle );
@@ -169,7 +174,7 @@ class Object3D:public EventDispatcher{
                 children.push_back( objectPtr );
 
                 objectPtr->dispatchEvent( _addedEvent );
-            } 
+            }
 
             return *this;
         }

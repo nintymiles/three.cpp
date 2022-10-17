@@ -4,15 +4,18 @@
 #include "object_3d.h"
 #include "quaternion.h"
 
+//Event _addedEvent = {"added"};
+//Event _removedEvent = {"removed"};
+
 //成员之间的数据传递应该尽量使用引用，引用可以理解为stack上指针。
 //shared_ptr只是一种内存使用方式，heap上分配。但是不影响其所搭载的数据被stack上对象使用。
 std::shared_ptr<Quaternion> _q1 = std::make_shared<Quaternion>();
 //Quaternion _q1();
 
-std::shared_ptr<Vector3>    _v1 = std::make_shared<Vector3>();
-//Vector3 _v1();
-std::shared_ptr<Matrix4>    _m1 = std::make_shared<Matrix4>();
-// Matrix4 _m1();
+std::shared_ptr<Vector3>    _object3d_v1 = std::make_shared<Vector3>();
+//Vector3 _object3d_v1();
+std::shared_ptr<Matrix4>    _object3d_m1 = std::make_shared<Matrix4>();
+// Matrix4 _object3d_m1();
 
 std::shared_ptr<Vector3>    _target = std::make_shared<Vector3>();
 //Vector3 _target();
@@ -21,8 +24,8 @@ std::shared_ptr<Vector3>    _position = std::make_shared<Vector3>();
 //Vector3 _position();
 std::shared_ptr<Vector3>    _scale = std::make_shared<Vector3>();
 //Vector3 _scale();
-std::shared_ptr<Quaternion> _quaternion = std::make_shared<Quaternion>();
-//Quaternion _quaternion();
+std::shared_ptr<Quaternion> _object3d_quaternion = std::make_shared<Quaternion>();
+//Quaternion _object3d_quaternion();
 
 
 std::shared_ptr<Vector3>    _xAxis = std::make_shared<Vector3>(1,0,0);
@@ -76,9 +79,9 @@ Object3D& Object3D::rotateZ( double angle ) {
 Object3D& Object3D::translateOnAxis( Vector3& axis, double distance ) {
     // translate object by distance along axis in object space
     // axis is assumed to be normalized
-    _v1->copy( axis ).applyQuaternion( *quaternion );
+    _object3d_v1->copy( axis ).applyQuaternion( *quaternion );
 
-    position->add(_v1->multiplyScalar( distance ));
+    position->add(_object3d_v1->multiplyScalar( distance ));
 
     return *this;
 }
@@ -102,7 +105,7 @@ Object3D& Object3D::translateZ( double distance ) {
 }
 
 Object3D& Object3D::worldToLocal( Vector3& vector ) {
-    vector.applyMatrix4( _m1->copy( *matrixWorld ).invert() );
+    vector.applyMatrix4( _object3d_m1->copy( *matrixWorld ).invert() );
 
     return *this;
 }
@@ -120,17 +123,17 @@ Object3D& Object3D::lookAt( double x,double y,double z ) {
 
     //if object is an instance of camera or light
     if ( this->getClassType()=="Camera" || this->getClassType()=="Light" ) {
-        _m1->lookAt( *_position, *_target, *up );
+        _object3d_m1->lookAt( *_position, *_target, *up );
     } else {
-        _m1->lookAt( *_target, *_position, *up );
+        _object3d_m1->lookAt( *_target, *_position, *up );
     }
 
-    quaternion->setFromRotationMatrix( *_m1 );
+    quaternion->setFromRotationMatrix( *_object3d_m1 );
 
     if ( parent ) {
 
-        _m1->extractRotation( *(parent->matrixWorld) );
-        _q1->setFromRotationMatrix( *_m1 );
+        _object3d_m1->extractRotation( *(parent->matrixWorld) );
+        _q1->setFromRotationMatrix( *_object3d_m1 );
         quaternion->premultiply( _q1->invert() );
 
     }
@@ -152,7 +155,7 @@ Vector3 Object3D::getWorldScale() {
     updateWorldMatrix( true, false );
 
     Vector3 target;
-    matrixWorld->decompose( *_position, *_quaternion, target );
+    matrixWorld->decompose( *_position, *_object3d_quaternion, target );
 
     return target;
 }

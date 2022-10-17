@@ -214,7 +214,7 @@ class BufferGeometry : EventDispatcher {
 				setAttribute( "tangent", std::make_shared<BufferAttribute<float>>(vector<float>(4*nVertices),4));
 			}
 
-			vector<Vector3> tangents = getAttribute( "tangent" )->array;
+			vector<T2> tangents = getAttribute( "tangent" )->arrayVec;
 
 			vector<Vector3> tan1 = {}, tan2 = {};
 
@@ -324,9 +324,9 @@ class BufferGeometry : EventDispatcher {
 				const int count = group.count;
 
 				for ( int j = start, jl = start + count; j < jl; j += 3 ) {
-					HandleVertex( indices[ j + 1 ] );
-					HandleVertex( indices[ j + 2 ] );
-					HandleVertex( indices[ j + 0 ] );
+					HandleVertex( (int)indices[ j + 1 ] );
+					HandleVertex( (int)indices[ j + 2 ] );
+					HandleVertex( (int)indices[ j + 0 ] );
 				}
 			}
 
@@ -336,11 +336,11 @@ class BufferGeometry : EventDispatcher {
 			shared_ptr<BufferAttribute<T2>> positionAttribute = getAttribute( "position" );
 
 			if ( positionAttribute != nullptr ) {
-				BufferAttribute<T2>  normalAttribute = getAttribute( 'normal' );
+				BufferAttribute<T2>  normalAttribute = getAttribute( "normal" );
 
 				if ( normalAttribute == nullptr ) {
 					normalAttribute = std::make_shared<BufferAttribute<T2>>(vector<float>(positionAttribute->count*3),3);//new BufferAttribute( new Float32Array( positionAttribute.count * 3 ), 3 );
-					setAttribute( 'normal', normalAttribute );
+					setAttribute( "normal", normalAttribute );
 				} else {
 					// reset existing normals to zero
 					for ( int i = 0, il = normalAttribute->count; i < il; i ++ ) {

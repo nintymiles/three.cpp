@@ -15,8 +15,8 @@
 
 static Box3 _box;
 
-// static shared_ptr<Vector3> _vector = make_shared<Vector3>();
-static Vector3 _vector;
+// static shared_ptr<Vector3> _box3_vector = make_shared<Vector3>();
+static Vector3 _box3_vector;
 
 // triangle centered vertices
 // static shared_ptr<Vector3> _triangle_v0 = make_shared<Vector3>();
@@ -77,7 +77,7 @@ Box3& Box3::setFromBufferAttribute( BufferAttribute<T>& attribute ){
 }
 
 Box3& Box3::setFromCenterAndSize(Vector3& center, Vector3& size) {
-	Vector3 halfSize = _vector.copy( size ).multiplyScalar( 0.5 );
+	Vector3 halfSize = _box3_vector.copy(size ).multiplyScalar(0.5 );
 
 	min.copy( center ).sub( halfSize );
 	max.copy( center ).add( halfSize );
@@ -86,7 +86,7 @@ Box3& Box3::setFromCenterAndSize(Vector3& center, Vector3& size) {
 }
 
 double Box3::distanceToPoint(Vector3& point) {
-	Vector3& clampedPoint = _vector.copy(point).clamp(min,max);
+	Vector3& clampedPoint = _box3_vector.copy(point).clamp(min, max);
 
 	return clampedPoint.sub(point).length();
 }
@@ -112,15 +112,15 @@ Box3& Box3::applyMatrix4(Matrix4& matrix) {
 
 bool Box3::intersectsSphere(Sphere& sphere){
  	// Find the point on the AABB closest to the sphere center.
- 	clampPoint( sphere.center, _vector );
+ 	clampPoint(sphere.center, _box3_vector );
 
  	// If that point is inside the sphere, the AABB and sphere intersect.
- 	return _vector.distanceToSquared( sphere.center ) <= ( sphere.radius * sphere.radius );
+ 	return _box3_vector.distanceToSquared(sphere.center ) <= ( sphere.radius * sphere.radius );
  }
 
  Sphere& Box3::getBoundingSphere( Sphere& target ) {
  	target.center = getCenter( target.center );
- 	target.radius = getSize( _vector ).length() * 0.5;
+ 	target.radius = getSize(_box3_vector ).length() * 0.5;
 
  	return target;
  }
@@ -226,8 +226,8 @@ bool Box3::intersectsPlane( const Plane& plane ){
 // 			const position = geometry.attributes.position;
 // 			for ( let i = 0, l = position.count; i < l; i ++ ) {
 
-// 				_vector.fromBufferAttribute( position, i ).applyMatrix4( object.matrixWorld );
-// 				this.expandByPoint( _vector );
+// 				_box3_vector.fromBufferAttribute( position, i ).applyMatrix4( object.matrixWorld );
+// 				this.expandByPoint( _box3_vector );
 
 // 			}
 

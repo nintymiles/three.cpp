@@ -7,11 +7,11 @@
 #include "vector3.h"
 
 Vector3 _vector1;
-Vector3 _vector2;
+Vector3 _plane_vector;
 Matrix3 _normalMatrix;
 
 Plane& Plane::setFromCoplanarPoints( Vector3& a, Vector3& b, Vector3& c ) {
-    Vector3 newNormal = _vector1.subVectors( c, b ).cross( _vector2.subVectors( a, b ) ).normalize();
+    Vector3 newNormal = _vector1.subVectors( c, b ).cross(_plane_vector.subVectors(a, b ) ).normalize();
 
     // Q: should an error be thrown if normal is zero (e.g. degenerate plane)?
     setFromNormalAndCoplanarPoint( newNormal, a );

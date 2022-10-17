@@ -7,7 +7,7 @@
 #include "matrix3.h"
 #include "math_utils.h"
 
-//template <typename T> class BufferAttribute;
+template <typename T> class BufferAttribute;
 
 class Vector2 {
     public:
@@ -329,7 +329,8 @@ class Vector2 {
             return array;
         }
 
-        //Vector2& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
+        template<typename T>
+        Vector2& fromBufferAttribute(BufferAttribute<T>& attribute,int index);
 
         Vector2& rotateAround( Vector2& center, double angle ) {
 

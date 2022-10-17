@@ -6,7 +6,7 @@
 
 class Ray {
 	private:
-		// const _vector = /*@__PURE__*/ new Vector3();
+		// const _buffer_attribute_vector = /*@__PURE__*/ new Vector3();
 		// const _segCenter = /*@__PURE__*/ new Vector3();
 		// const _segDir = /*@__PURE__*/ new Vector3();
 		// const _diff = /*@__PURE__*/ new Vector3();

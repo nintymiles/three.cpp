@@ -4,113 +4,119 @@
 #include "vector3.h"
 #include "vector4.h"
 
-Vector3 _vector;
-Vector2 _vector2;
+#include "matrix4.h"
+#include "matrix3.h"
 
-// BufferAttribute& BufferAttribute::copyVector2sArray(vector<Vector2> vectors) {
-//             const vector<T> array = arrayVec;
-//             int offset = 0;
+Vector3 _buffer_attribute_vector{};
+Vector2 _buffer_attribute_vector2{};
 
-//             for (int i = 0, l = vectors.size(); i < l; i ++ ) {
-//                 Vector2 vector = vectors[ i ];
+//模版类成员函数的定义实现方式
+template<typename T>
+BufferAttribute<T>& BufferAttribute<T>::copyVector2sArray(std::vector<Vector2> vectors) {
+     std::vector<T> array = arrayVec;
+     int offset = 0;
 
-//                 array[ offset ++ ] = vector.x;
-//                 array[ offset ++ ] = vector.y;
-//             }
+     for (int i = 0, l = vectors.size(); i < l; i ++ ) {
+         Vector2 vector = vectors[ i ];
 
-//             return *this;
-//         }
+         array[ offset ++ ] = vector.x;
+         array[ offset ++ ] = vector.y;
+     }
 
-// BufferAttribute& BufferAttribute::copyVector3sArray(vector<Vector3> vectors) {
-// 	const vector<T> array = arrayVec;
-// 	int offset = 0;
+     return *this;
+}
 
-// 	for ( int i = 0, l = vectors.size(); i < l; i ++ ) {
+template<typename T>
+BufferAttribute<T>& BufferAttribute<T>::copyVector3sArray(vector<Vector3> vectors) {
+ 	const vector<T> array = arrayVec;
+ 	int offset = 0;
 
-// 		Vector3 vector = vectors[ i ];
+ 	for ( int i = 0, l = vectors.size(); i < l; i ++ ) {
 
-// 		array[ offset ++ ] = vector.x;
-// 		array[ offset ++ ] = vector.y;
-// 		array[ offset ++ ] = vector.z;
-// 	}
+ 		Vector3 vector = vectors[ i ];
 
-// 	return *this;
-// }
+ 		array[ offset ++ ] = vector.x;
+ 		array[ offset ++ ] = vector.y;
+ 		array[ offset ++ ] = vector.z;
+ 	}
 
-// BufferAttribute& BufferAttribute::copyVector4sArray(vector<Vector4d> vectors) {
-// 	const vector<T> array = arrayVec;
-// 	int offset = 0;
+ 	return *this;
+}
 
-// 	for ( int i = 0, l = vectors.size(); i < l; i ++ ) {
+template<typename T>
+BufferAttribute<T>& BufferAttribute<T>::copyVector4sArray(vector<Vector4d> vectors) {
+ 	const vector<T> array = arrayVec;
+ 	int offset = 0;
 
-// 		Vector4d vector = vectors[ i ];
+ 	for ( int i = 0, l = vectors.size(); i < l; i ++ ) {
 
-// 		array[ offset ++ ] = vector.x;
-// 		array[ offset ++ ] = vector.y;
-// 		array[ offset ++ ] = vector.z;
-// 		array[ offset ++ ] = vector.w;
-// 	}
+ 		Vector4d vector = vectors[ i ];
 
-// 	return *this;
-// }
+ 		array[ offset ++ ] = vector.x;
+ 		array[ offset ++ ] = vector.y;
+ 		array[ offset ++ ] = vector.z;
+ 		array[ offset ++ ] = vector.w;
+ 	}
 
+ 	return *this;
+}
 
-// BufferAttribute& BufferAttribute::applyMatrix3(Matrix3& m) {
-// 	if ( itemSize == 2 ) {
+template<typename T>
+BufferAttribute<T>& BufferAttribute<T>::applyMatrix3(Matrix3& m) {
+ 	if ( itemSize == 2 ) {
+ 		for ( int i = 0, l = this->count; i < l; i ++ ) {
+ 			_buffer_attribute_vector2.fromBufferAttribute(*this, i );
+ 			_buffer_attribute_vector2.applyMatrix3(m );
 
-// 		for ( int i = 0, l = this->count; i < l; i ++ ) {
-// 			_vector2.fromBufferAttribute( *this, i );
-// 			_vector2.applyMatrix3( m );
+ 			setXY(i, _buffer_attribute_vector2.x, _buffer_attribute_vector2.y );
+ 		}
 
-// 			setXY( i, _vector2.x, _vector2.y );
-// 		}
+ 	} else if ( itemSize == 3 ) {
 
-// 	} else if ( itemSize == 3 ) {
+ 		for ( int i = 0, l = this->count; i < l; i ++ ) {
+ 			_buffer_attribute_vector.fromBufferAttribute(*this, i );
+ 			_buffer_attribute_vector.applyMatrix3(m );
 
-// 		for ( int i = 0, l = this->count; i < l; i ++ ) {
-// 			_vector.fromBufferAttribute( *this, i );
-// 			_vector.applyMatrix3( m );
+ 			setXYZ(i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z );
+ 		}
 
-// 			setXYZ( i, _vector.x, _vector.y, _vector.z );
-// 		}
+ 	}
 
-// 	}
+ 	return *this;
+}
 
-// 	return *this;
-// }
-
-
+//
 // BufferAttribute& BufferAttribute::applyMatrix4(Matrix4& m) {
 // 	for ( int i = 0, l = this->count; i < l; i ++ ) {
-
-// 		_vector.fromBufferAttribute( this, i );
-// 		_vector.applyMatrix4( m );
-
-// 		setXYZ( i, _vector.x, _vector.y, _vector.z );
+//
+// 		_buffer_attribute_vector.fromBufferAttribute( this, i );
+// 		_buffer_attribute_vector.applyMatrix4( m );
+//
+// 		setXYZ( i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z );
 // 	}
-
+//
 // 	return *this;
 // }
-
+//
 // BufferAttribute& BufferAttribute::applyNormalMatrix(Matrix4& m) {
-
+//
 // 	for ( int i = 0, l = this->count; i < l; i ++ ) {
-// 		_vector.fromBufferAttribute( *this, i );
-// 		_vector.applyMatrix4( m ).normalize();
-
-// 		setXYZ( i, _vector.x, _vector.y, _vector.z );
+// 		_buffer_attribute_vector.fromBufferAttribute( *this, i );
+// 		_buffer_attribute_vector.applyMatrix4( m ).normalize();
+//
+// 		setXYZ( i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z );
 // 	}
-
+//
 // 	return *this;
 // }
-
+//
 // BufferAttribute& BufferAttribute::transformDirection(Matrix4& m){
-
+//
 // 	for ( int i = 0, l = this->count; i < l; i ++ ) {
-// 		_vector.fromBufferAttribute( this, i );
-// 		_vector.transformDirection( m );
-
-// 		setXYZ( i, _vector.x, _vector.y, _vector.z );
+// 		_buffer_attribute_vector.fromBufferAttribute( this, i );
+// 		_buffer_attribute_vector.transformDirection( m );
+//
+// 		setXYZ( i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z );
 // 	}
 
 // 	return *this;
