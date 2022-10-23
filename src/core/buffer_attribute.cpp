@@ -85,39 +85,41 @@ BufferAttribute<T>& BufferAttribute<T>::applyMatrix3(Matrix3& m) {
  	return *this;
 }
 
-//
-// BufferAttribute& BufferAttribute::applyMatrix4(Matrix4& m) {
-// 	for ( int i = 0, l = this->count; i < l; i ++ ) {
-//
-// 		_buffer_attribute_vector.fromBufferAttribute( this, i );
-// 		_buffer_attribute_vector.applyMatrix4( m );
-//
-// 		setXYZ( i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z );
-// 	}
-//
-// 	return *this;
-// }
-//
-// BufferAttribute& BufferAttribute::applyNormalMatrix(Matrix4& m) {
-//
-// 	for ( int i = 0, l = this->count; i < l; i ++ ) {
-// 		_buffer_attribute_vector.fromBufferAttribute( *this, i );
-// 		_buffer_attribute_vector.applyMatrix4( m ).normalize();
-//
-// 		setXYZ( i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z );
-// 	}
-//
-// 	return *this;
-// }
-//
-// BufferAttribute& BufferAttribute::transformDirection(Matrix4& m){
-//
-// 	for ( int i = 0, l = this->count; i < l; i ++ ) {
-// 		_buffer_attribute_vector.fromBufferAttribute( this, i );
-// 		_buffer_attribute_vector.transformDirection( m );
-//
-// 		setXYZ( i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z );
-// 	}
+template<typename T>
+BufferAttribute<T>& BufferAttribute<T>::applyMatrix4(Matrix4 &m) {
+    for (int i = 0, l = this->count; i < l; i++) {
 
-// 	return *this;
-// }
+        _buffer_attribute_vector.fromBufferAttribute(this, i);
+        _buffer_attribute_vector.applyMatrix4(m);
+
+        setXYZ(i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z);
+    }
+
+    return *this;
+}
+
+template<typename T>
+BufferAttribute<T>& BufferAttribute<T>::applyNormalMatrix(Matrix4 &m) {
+
+    for (int i = 0, l = this->count; i < l; i++) {
+        _buffer_attribute_vector.fromBufferAttribute(*this, i);
+        _buffer_attribute_vector.applyMatrix4(m).normalize();
+
+        setXYZ(i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z);
+    }
+
+    return *this;
+}
+
+template<typename T>
+BufferAttribute<T>& BufferAttribute<T>::transformDirection(Matrix4 &m) {
+
+    for (int i = 0, l = this->count; i < l; i++) {
+        _buffer_attribute_vector.fromBufferAttribute(this, i);
+        _buffer_attribute_vector.transformDirection(m);
+
+        setXYZ(i, _buffer_attribute_vector.x, _buffer_attribute_vector.y, _buffer_attribute_vector.z);
+    }
+
+    return *this;
+}

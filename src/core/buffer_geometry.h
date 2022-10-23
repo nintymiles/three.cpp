@@ -433,122 +433,122 @@ class BufferGeometry : EventDispatcher {
 
 		BufferGeometry& normalizeNormals();
 
-		// BufferAttribute& toNonIndexed() {
-		// 	struct ConvertBufferAttribute{
-		// 		BufferAttribute<T2> operator()(BufferAttribute<T2>& attribute,BufferAttribute<T1> indices) {
-		// 			vector<T2>& array = attribute.arrayVec;
-		// 			int itemSize = attribute.itemSize;
-		// 			bool normalized = attribute.normalized;
+//		 BufferAttribute& toNonIndexed() {
+//		 	struct ConvertBufferAttribute{
+//		 		BufferAttribute<T2> operator()(BufferAttribute<T2>& attribute,BufferAttribute<T1> indices) {
+//		 			vector<T2>& array = attribute.arrayVec;
+//		 			int itemSize = attribute.itemSize;
+//		 			bool normalized = attribute.normalized;
+//
+//		 			vector<T2> array2 = vector<T2>( indices.length * itemSize );
+//
+//		 			int index = 0, index2 = 0;
+//
+//		 			for ( int i = 0, l = indices.count; i < l; i ++ ) {
+//		 				// if ( attribute.isInterleavedBufferAttribute ) {
+//		 				// 	index = indices[ i ] * attribute.data.stride + attribute.offset;
+//		 				// } else {
+//		 					index = indices[ i ] * itemSize;
+//		 				// }
+//
+//		 				for ( int j = 0; j < itemSize; j ++ ) {
+//		 					array2[ index2 ++ ] = array[ index ++ ];
+//		 				}
+//
+//		 			}
+//
+//		 			return BufferAttribute<T2>( array2, itemSize, normalized );
+//		 		}
+//		 	};
 
-		// 			vector<T2> array2 = vector<T2>( indices.length * itemSize );
+		 	// function convertBufferAttribute( attribute, indices ) {
 
-		// 			int index = 0, index2 = 0;
+		 	// 	const array = attribute.array;
+		 	// 	const itemSize = attribute.itemSize;
+		 	// 	const normalized = attribute.normalized;
 
-		// 			for ( int i = 0, l = indices.count; i < l; i ++ ) {
-		// 				// if ( attribute.isInterleavedBufferAttribute ) {
-		// 				// 	index = indices[ i ] * attribute.data.stride + attribute.offset;
-		// 				// } else {
-		// 					index = indices[ i ] * itemSize;
-		// 				// }
+		 	// 	const array2 = new array.constructor( indices.length * itemSize );
 
-		// 				for ( int j = 0; j < itemSize; j ++ ) {
-		// 					array2[ index2 ++ ] = array[ index ++ ];
-		// 				}
+		 	// 	let index = 0, index2 = 0;
 
-		// 			}
+		 	// 	for ( let i = 0, l = indices.length; i < l; i ++ ) {
 
-		// 			return BufferAttribute<T2>( array2, itemSize, normalized );
-		// 		}
-		// 	};
+		 	// 		if ( attribute.isInterleavedBufferAttribute ) {
 
-		// 	// function convertBufferAttribute( attribute, indices ) {
+		 	// 			index = indices[ i ] * attribute.data.stride + attribute.offset;
 
-		// 	// 	const array = attribute.array;
-		// 	// 	const itemSize = attribute.itemSize;
-		// 	// 	const normalized = attribute.normalized;
+		 	// 		} else {
 
-		// 	// 	const array2 = new array.constructor( indices.length * itemSize );
+		 	// 			index = indices[ i ] * itemSize;
 
-		// 	// 	let index = 0, index2 = 0;
+		 	// 		}
 
-		// 	// 	for ( let i = 0, l = indices.length; i < l; i ++ ) {
+		 	// 		for ( let j = 0; j < itemSize; j ++ ) {
 
-		// 	// 		if ( attribute.isInterleavedBufferAttribute ) {
+		 	// 			array2[ index2 ++ ] = array[ index ++ ];
 
-		// 	// 			index = indices[ i ] * attribute.data.stride + attribute.offset;
+		 	// 		}
 
-		// 	// 		} else {
+		 	// 	}
 
-		// 	// 			index = indices[ i ] * itemSize;
+		 	// 	return new BufferAttribute( array2, itemSize, normalized );
 
-		// 	// 		}
+		 	// }
 
-		// 	// 		for ( let j = 0; j < itemSize; j ++ ) {
+		 	//
 
-		// 	// 			array2[ index2 ++ ] = array[ index ++ ];
-
-		// 	// 		}
-
-		// 	// 	}
-
-		// 	// 	return new BufferAttribute( array2, itemSize, normalized );
-
-		// 	// }
-
-		// 	//
-
-		// 	if ( index == nullptr ) {
-		// 		throw std::runtime_error( "THREECPP.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed." );
-		// 	}
-
-		// 	BufferGeometry geometry2 = new BufferGeometry();
-
-		// 	vector<T1> indices = index->arrayVec;
-		// 	// attributes
-
-		// 	for ( auto attr : attributes ) {
-		// 		shared_ptr<BufferAttribute<T2>> attribute = attributes[ attr.first ];
-
-		// 		<BufferAttribute<T2>> newAttribute = ConvertBufferAttribute( attribute, indices );
-
-		// 		geometry2.setAttribute( name, newAttribute );
-		// 	}
-
-		// 	// morph attributes
-		// 	for ( auto& morphAttr : morphAttributes ) {
-
-		// 		shared_ptr<BufferAttribute<T2>> morphAttribute = morphAttributes[ morphAttr.first ]; // morphAttribute: array of Float32BufferAttributes
-
-		// 		for ( int i = 0, il = morphAttribute->count; i < il; i ++ ) {
-
-		// 			const attribute = morphAttribute->arrayVec[ i ];
-
-		// 			const newAttribute = convertBufferAttribute( attribute, indices );
-
-		// 			morphArray.push( newAttribute );
-
-		// 		}
-
-		// 		geometry2.morphAttributes[ name ] = morphArray;
-
-		// 	}
-
-		// 	geometry2.morphTargetsRelative = this.morphTargetsRelative;
-
-		// 	// groups
-
-		// 	const groups = this.groups;
-
-		// 	for ( let i = 0, l = groups.length; i < l; i ++ ) {
-
-		// 		const group = groups[ i ];
-		// 		geometry2.addGroup( group.start, group.count, group.materialIndex );
-
-		// 	}
-
-		// 	return geometry2;
-
-		// }
+//		 	if ( index == nullptr ) {
+//		 		throw std::runtime_error( "THREECPP.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed." );
+//		 	}
+//
+//		 	BufferGeometry geometry2 = new BufferGeometry();
+//
+//		 	vector<T1> indices = index->arrayVec;
+//		 	// attributes
+//
+//		 	for ( auto attr : attributes ) {
+//		 		shared_ptr<BufferAttribute<T2>> attribute = attributes[ attr.first ];
+//
+//		 		<BufferAttribute<T2>> newAttribute = ConvertBufferAttribute( attribute, indices );
+//
+//		 		geometry2.setAttribute( name, newAttribute );
+//		 	}
+//
+//		 	// morph attributes
+//		 	for ( auto& morphAttr : morphAttributes ) {
+//
+//		 		shared_ptr<BufferAttribute<T2>> morphAttribute = morphAttributes[ morphAttr.first ]; // morphAttribute: array of Float32BufferAttributes
+//
+//		 		for ( int i = 0, il = morphAttribute->count; i < il; i ++ ) {
+//
+//		 			const attribute = morphAttribute->arrayVec[ i ];
+//
+//		 			const newAttribute = convertBufferAttribute( attribute, indices );
+//
+//		 			morphArray.push( newAttribute );
+//
+//		 		}
+//
+//		 		geometry2.morphAttributes[ name ] = morphArray;
+//
+//		 	}
+//
+//		 	geometry2.morphTargetsRelative = this.morphTargetsRelative;
+//
+//		 	// groups
+//
+//		 	const groups = this.groups;
+//
+//		 	for ( let i = 0, l = groups.length; i < l; i ++ ) {
+//
+//		 		const group = groups[ i ];
+//		 		geometry2.addGroup( group.start, group.count, group.materialIndex );
+//
+//		 	}
+//
+//		 	return geometry2;
+//
+//		 }
 
 	// toJSON() {
 

@@ -71,23 +71,28 @@ class BufferAttribute {
 
 	// }
 
-    BufferAttribute &
-    needsUpdate(bool updateFlag) {
+    BufferAttribute(const BufferAttribute& ba):name(ba.name),arrayVec(ba.arrayVec),itemSize(ba.itemSize),
+                                                count(ba.count),normalized(ba.normalized),
+                                                updateRange(ba.updateRange),usage(ba.usage){}
+
+    BufferAttribute clone(){
+        return *this;
+    }
+
+    BufferAttribute& needsUpdate(bool updateFlag) {
         if (updateFlag)
             version++;
 
         return *this;
     }
 
-    BufferAttribute &
-    setUsage(int usageValue) {
+    BufferAttribute& setUsage(int usageValue) {
         usage = usageValue;
 
         return *this;
     }
 
-    BufferAttribute &
-    copy(BufferAttribute &source) {
+    BufferAttribute& copy(const BufferAttribute& source) {
         name = source.name;
         arrayVec = source.arrayVec;
         itemSize = source.itemSize;
@@ -244,15 +249,13 @@ class BufferAttribute {
         return *this;
     }
 
-//	 	BufferAttribute& onUpload(uploadCallback callback) {
-//	 		onUploadCallback = callback;
-//
-//	 		return *this;
-//	 	}
-//
-//	 	BufferAttribute clone() {
-//	 		return BufferAttribute(arrayVec,itemSize);
-//	 	}
+    BufferAttribute& onUpload(uploadCallback callback) {
+        onUploadCallback = callback;
+
+        return *this;
+    }
+
+
 
 		// toJSON() {
 

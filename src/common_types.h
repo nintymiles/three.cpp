@@ -6,6 +6,8 @@ namespace threecpp {
 struct Range{
     int start;
     int count;
+
+    //Range(const Range& r):start(r.start),count(r.count){};
 };
 
 

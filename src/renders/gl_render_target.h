@@ -55,7 +55,7 @@ public:
     }
 
     GlRenderTarget& dispose() {
-        dispatchEvent( { type: 'dispose' } );
+        dispatchEvent({type: "dispose"});
         return *this;
     }
 
