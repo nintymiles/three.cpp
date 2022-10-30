@@ -17,6 +17,11 @@ struct GeometryGroup{
     int materialIndex;
 };
 
+union UniformValue{
+    int i;
+    double d;
+};
+
 
 
 

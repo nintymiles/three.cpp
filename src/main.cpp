@@ -250,11 +250,9 @@ int main(int, char**)
             static float f = 0.0f;
             static int counter = 0;
             
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+            //glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-
-            
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            //glBindFramebuffer(GL_FRAMEBUFFER, 0);
             
             ImGui::Begin("OpenGL");                          // Create a window called "Hello, world!" and append into it.
             ImGui::SetWindowSize(ImVec2(fboWidth, fboHeight+60));

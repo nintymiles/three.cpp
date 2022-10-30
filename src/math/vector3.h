@@ -121,6 +121,25 @@ class Vector3{
 				default: throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
 			}
 		}
+
+        double& operator[](int n) {
+            switch ( n ) {
+                case 0: return this->x;
+                case 1: return this->y;
+                case 2: return this->z;
+                default: throw std::runtime_error("index is oudouble of range: " + std::to_string(n));break;
+            }
+        }
+        const double& operator[](int n) const {
+//            switch ( n ) {
+//                case 0: return this->x;
+//                case 1: return this->y;
+//                case 2: return this->z;
+//                default: throw std::runtime_error("index is oudouble of range: " + std::to_string(n));break;
+//            }
+            return operator[](n);
+        }
+
         //deprecated,use copy constructor instead of this
 		Vector3 clone() {
 			return Vector3(this->x,this->y,this->z);

@@ -7,6 +7,7 @@
 
 #include "material.h"
 #include "../renders/shaders/shaders_constant.h"
+#include "common_types.h"
 
 //import { Material } from './Material.js';
 //import { cloneUniforms } from '../renderers/shaders/UniformsUtils.js';
@@ -15,6 +16,7 @@
 
 
 #include <string>
+#include <map>
 
 class ShaderMaterial : public Material{
 public:
@@ -26,6 +28,28 @@ public:
     double lineWidth = 1;
     bool wireFrame = false;
     double wireLineWidth = 1;
+
+    bool fog = false; // set to use scene fog
+    bool lights = false; // set to use scene lights
+    bool clipping = false; // set to use user-defined clipping planes
+
+    std::string glslVersion = "";
+
+    std::map<std::string,int> defines;
+    std::map<std::string,threecpp::UniformValue> uniforms;
+
+    std::map<std::string,bool> extensions = {{"derivatives",false},{"fragDepth",false},{"drawBuffers",false},{"shaderTextureLOD",false}};
+
+    // When rendered geometry doesn't include these attributes but the material does,
+    // use these default values in WebGL. This avoids errors when buffer data is missing.
+    std::map<std::string,std::vector<int>> defaultAttributeValues = {
+        {"color", { 1, 1, 1 }},
+        {"uv", { 0, 0 }},
+        {"uv2", { 0, 0 }}
+    };
+
+    std::string index0AttributeName;
+    bool uniformsNeedUpdate = false;
 };
 
 
@@ -37,30 +61,6 @@ public:
 //    this.defines = {};
 //    this.uniforms = {};
 
-//    this.fog = false; // set to use scene fog
-//    this.lights = false; // set to use scene lights
-//    this.clipping = false; // set to use user-defined clipping planes
-//
-//    this.extensions = {
-//        derivatives: false, // set to use derivatives
-//        fragDepth: false, // set to use fragment depth values
-//            drawBuffers: false, // set to use draw buffers
-//            shaderTextureLOD: false // set to use shader texture LOD
-//    };
-//
-//    // When rendered geometry doesn't include these attributes but the material does,
-//    // use these default values in WebGL. This avoids errors when buffer data is missing.
-//    this.defaultAttributeValues = {
-//        'color': [ 1, 1, 1 ],
-//        'uv': [ 0, 0 ],
-//        'uv2': [ 0, 0 ]
-//    };
-//
-//    this.index0AttributeName = undefined;
-//    this.uniformsNeedUpdate = false;
-//
-//    this.glslVersion = null;
-//
 //    if ( parameters !== undefined ) {
 //
 //        if ( parameters.attributes !== undefined ) {
