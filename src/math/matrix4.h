@@ -3,6 +3,7 @@
 
 #include<memory>
 #include<cmath>
+#include "math_utils.h"
 
 class Quaternion;
 class Vector3;
@@ -338,6 +339,15 @@ class Matrix4{
 
 		return *this;
 	}
+
+    Matrix4& makePerspective(double fov,double aspect,double near,double far){
+        const double top = near * tan( MathUtils::DEG2RAD * 0.5 * fov );
+        const double height = 2 * top;
+        const double width = aspect * height;
+        const double left = - 0.5 * width;
+
+        return makePerspective(left,left+width,top,top-height,near,far);
+    }
 
 	Matrix4& makeOrthographic(double left,double right,double top,double bottom,double near,double far){
 		const double w = 1.0 / ( right - left );
