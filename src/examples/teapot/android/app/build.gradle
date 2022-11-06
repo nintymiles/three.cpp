@@ -4,10 +4,12 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.3"
-    ndkVersion "21.4.7075529"
+    //ndkVersion "25.1.8937393"
+    ndkVersion "23.1.7779620"
     defaultConfig {
         applicationId "imgui.example.android"
         minSdkVersion 23
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -20,9 +22,12 @@ android {
         }
     }
 
+    //注意gradle借助cmake构建native代码时，需要借助sdk内置的cmake，应该从sdkmanager中下载指定版本，然后在下方指定版本号，默认好像为3.10.2
     externalNativeBuild {
         cmake {
             path "../../CMakeLists.txt"
+            version "3.22.1"
+            //version "3.10.2"
         }
     }
 }

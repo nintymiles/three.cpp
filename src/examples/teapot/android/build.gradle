@@ -6,7 +6,9 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        //之前'com.android.tools.build:gradle:4.1.0'指定了android gradle plugin的版本
+        //这个版本中内置的cmake工具配置默认调用3.10.2版本，且不支持3.12+x版本的cmake，导致native构建报错
+        classpath 'com.android.tools.build:gradle:7.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
     }

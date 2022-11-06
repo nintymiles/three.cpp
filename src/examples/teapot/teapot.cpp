@@ -25,26 +25,26 @@ static const std::vector<std::pair<const char*, GLuint>> faces {
 
 const char* vtxShader =
 #ifdef GL_PROFILE_GL3
-"#version 120\n"
+"#version  300 es\n"
 #else
-"#version 100\n"
+"#version 300 es\n"
 #endif
-"attribute vec3 g_Position;\n"
-"attribute vec3 g_TexCoord0;\n"
-"attribute vec3 g_Tangent;\n"
-"attribute vec3 g_Binormal;\n"
-"attribute vec3 g_Normal;\n"
+"in vec3 g_Position;\n"
+"in vec3 g_TexCoord0;\n"
+"in vec3 g_Tangent;\n"
+"in vec3 g_Binormal;\n"
+"in vec3 g_Normal;\n"
 "\n"
 "uniform mat4 world;\n"
 "uniform mat4 worldInverseTranspose;\n"
 "uniform mat4 worldViewProj;\n"
 "uniform mat4 viewInverse;\n"
 "\n"
-"varying vec2 texCoord;\n"
-"varying vec3 worldEyeVec;\n"
-"varying vec3 worldNormal;\n"
-"varying vec3 worldTangent;\n"
-"varying vec3 worldBinorm;\n"
+"out vec2 texCoord;\n"
+"out vec3 worldEyeVec;\n"
+"out vec3 worldNormal;\n"
+"out vec3 worldTangent;\n"
+"out vec3 worldBinorm;\n"
 "\n"
 "void main() {\n"
 "  gl_Position = worldViewProj * vec4(g_Position, 1.0);\n"
@@ -59,23 +59,25 @@ const char* vtxShader =
 
 const char* fragShader =
 #ifdef GL_PROFILE_GL3
-"#version 120\n"
+"#version  300 es\n"
 #else
-"#version 100\n"
+"#version  300 es\n"
 "precision mediump float;\n"
 #endif
 "const float bumpHeight = 0.5;\n"
 "uniform sampler2D normalSampler;\n"
 "uniform samplerCube envSampler;\n"
 "\n"
-"varying vec2 texCoord;\n"
-"varying vec3 worldEyeVec;\n"
-"varying vec3 worldNormal;\n"
-"varying vec3 worldTangent;\n"
-"varying vec3 worldBinorm;\n"
+"in vec2 texCoord;\n"
+"in vec3 worldEyeVec;\n"
+"in vec3 worldNormal;\n"
+"in vec3 worldTangent;\n"
+"in vec3 worldBinorm;\n"
+"// the outputing fragment color\n"
+"layout(location = 0) out vec4 fragColor;\n"
 "\n"
 "void main() {\n"
-"  vec2 bump = (texture2D(normalSampler, texCoord.xy).xy * 2.0 - 1.0) * bumpHeight;\n"
+"  vec2 bump = (texture(normalSampler, texCoord.xy).xy * 2.0 - 1.0) * bumpHeight;\n"
 "  vec3 normal = normalize(worldNormal);\n"
 "  vec3 tangent = normalize(worldTangent);\n"
 "  vec3 binormal = normalize(worldBinorm);\n"
@@ -83,8 +85,8 @@ const char* fragShader =
 "  nb = normalize(nb);\n"
 "  vec3 worldEye = normalize(worldEyeVec);\n"
 "  vec3 lookup = reflect(worldEye, nb);\n"
-"  vec4 color = textureCube(envSampler, lookup);\n"
-"  gl_FragColor = color;\n"
+"  vec4 color = texture(envSampler, lookup);\n"
+"  fragColor = color;\n"
 "}";
 
 Teapot::Teapot() : num_vertices(0), num_indices(0), ibo(0), vbo(0), tex_skybox(0),

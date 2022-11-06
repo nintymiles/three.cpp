@@ -56,6 +56,7 @@ endif()
 #   EGL
 #   PRIVATE GSL
 # )
+# 如果以FetchContent方式引用GSL，则需要添加'PRIVATE GSL'到traget_link_libraries
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   # "-framework Cocoa"   # not necessary for system library
@@ -64,7 +65,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   GLESv2
   EGL
   PRIVATE GSL)
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries
   TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   glfw3
   libGLESv2.dll.lib

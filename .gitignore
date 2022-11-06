@@ -3,3 +3,4 @@ build/**
 cmake-build-debug-visual-studio/**
 cmake-build-debug/**
 .idea/**
+cmake-build-debug-event-trace/**

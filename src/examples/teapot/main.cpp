@@ -186,32 +186,44 @@ void tick()
         ImGui::End();
     }
 
-//    {
-//        ImGui::Begin("Teapot controls");
-//        ImGui::SliderFloat("Teapot rotation", &teapotRotation, 0, 2 * M_PI);
-//        ImGui::Checkbox("Rotate synchronously", &rotateSync);
-//        ImGui::Text("Zoom value: %f", teapot.zoomValue());
-//        ImGui::End();
-//    }
-//
-//
-//    // Rendering
-//    glViewport(0, 0, (int) ImGui::GetIO().DisplaySize.x, (int) ImGui::GetIO().DisplaySize.y);
-//    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//    teapot.rotateTo(teapotRotation);
-//    if (rotateSync)
-//        teapot.rotateCameraTo(teapotRotation);
-//
-//    if (!ImGui::IsMouseHoveringAnyWindow())
-//    {
-//        if (std::abs(deltaZoom) > 0.001f)
-//            teapot.zoomBy(deltaZoom);
-//        if ((deltaX != 0) || (deltaY != 0))
-//            teapot.rotateCameraBy(deltaX * 0.005f, deltaY * 0.005f);
-//    }
-//    teapot.draw();
+    //Log(LOG_INFO) << "Entering main loop";
+
+    bool done = false;
+    float teapotRotation = 0;
+    bool rotateSync = false;
+    int deltaX = 0, deltaY = 0;
+    float deltaZoom = 1.0f;
+
+    Teapot teapot;
+    teapot.init();
+
+    {
+        ImGui::Begin("Teapot controls");
+        ImGui::SliderFloat("Teapot rotation", &teapotRotation, 0, 2 * M_PI);
+        ImGui::Checkbox("Rotate synchronously", &rotateSync);
+        ImGui::Text("Zoom value: %f", teapot.zoomValue());
+        ImGui::End();
+    }
+
+
+
+    // Rendering
+    glViewport(0, 0, (int) ImGui::GetIO().DisplaySize.x, (int) ImGui::GetIO().DisplaySize.y);
+    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    teapot.rotateTo(teapotRotation);
+    if (rotateSync)
+        teapot.rotateCameraTo(teapotRotation);
+
+    if (!ImGui::IsWindowHovered())
+    {
+        if (std::abs(deltaZoom) > 0.001f)
+            teapot.zoomBy(deltaZoom);
+        if ((deltaX != 0) || (deltaY != 0))
+            teapot.rotateCameraBy(deltaX * 0.005f, deltaY * 0.005f);
+    }
+    teapot.draw();
 //    ImGui::Render();
 
     // Rendering
