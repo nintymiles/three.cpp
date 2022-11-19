@@ -22,7 +22,8 @@ static char                 g_LogTag[] = "ImGuiExample";
 // Forward declarations of helper functions
 static int ShowSoftKeyboardInput();
 static int PollUnicodeChars();
-static int GetAssetData(const char* filename, void** out_data);
+//static int GetAssetData(const char* filename, void** out_data);
+static int GetAssetData(const char* filename, std::vector<uint8_t>& buf);
 
 void init(struct android_app* app)
 {
@@ -189,13 +190,13 @@ void tick()
     //Log(LOG_INFO) << "Entering main loop";
 
     bool done = false;
-    float teapotRotation = 0;
-    bool rotateSync = false;
+    float teapotRotation = 30;
+    bool rotateSync = true;
     int deltaX = 0, deltaY = 0;
     float deltaZoom = 1.0f;
 
     Teapot teapot;
-    teapot.init();
+    teapot.init(g_App);
 
     {
         ImGui::Begin("Teapot controls");
@@ -204,6 +205,10 @@ void tick()
         ImGui::Text("Zoom value: %f", teapot.zoomValue());
         ImGui::End();
     }
+
+//    std::vector<uint8_t> buf;
+//    char * fileName = "skybox-negx.jpg";
+//    GetAssetData(fileName,buf);
 
 
 
@@ -394,15 +399,17 @@ static int PollUnicodeChars()
 }
 
 // Helper to retrieve data placed into the assets/ directory (android/app/src/main/assets)
-static int GetAssetData(const char* filename, void** outData)
+static int GetAssetData(const char* filename, std::vector<uint8_t>& buf)
 {
     int num_bytes = 0;
     AAsset* asset_descriptor = AAssetManager_open(g_App->activity->assetManager, filename, AASSET_MODE_BUFFER);
     if (asset_descriptor)
     {
         num_bytes = AAsset_getLength(asset_descriptor);
-        *outData = IM_ALLOC(num_bytes);
-        int64_t num_bytes_read = AAsset_read(asset_descriptor, *outData, num_bytes);
+
+        buf.resize(num_bytes);
+        int64_t num_bytes_read = AAsset_read(asset_descriptor, buf.data(), buf.size());
+
         AAsset_close(asset_descriptor);
         IM_ASSERT(num_bytes_read == num_bytes);
     }

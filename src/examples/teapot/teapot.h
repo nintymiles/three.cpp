@@ -8,6 +8,12 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 
+#ifdef __ANDROID__
+#include <android_native_app_glue.h>
+#include <android/asset_manager.h>
+#include <vector>
+#endif
+
 #include "vector3.h"
 #include "matrix4.h"
 
@@ -15,7 +21,11 @@ class Teapot {
 public:
     Teapot();
     ~Teapot();
+#ifdef __ANDROID__
+    bool init(struct android_app* app);
+#else
     bool init();
+#endif
     void draw();
     void rotateBy(float angleX, float angleY);
     void rotateTo(float angleX);
@@ -23,6 +33,9 @@ public:
     void rotateCameraTo(float angleX);
     void zoomBy(float zoomFactor);
     float zoomValue();
+#ifdef __ANDROID__
+    static int GetAssetData(const char* filename, std::vector<uint8_t>& buf);
+#endif
 
 private:
     struct vtxData {

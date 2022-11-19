@@ -12,7 +12,13 @@
 //#include <string>
 #include "logger.h"
 
+
+
+
+#define GL_PROFILE_GL3
+
 GLuint Teapot::g_vao = 0;
+static struct android_app*  g_App = NULL;
 
 static const std::vector<std::pair<const char*, GLuint>> faces {
         {"skybox-negx.jpg", GL_TEXTURE_CUBE_MAP_NEGATIVE_X},
@@ -25,7 +31,7 @@ static const std::vector<std::pair<const char*, GLuint>> faces {
 
 const char* vtxShader =
 #ifdef GL_PROFILE_GL3
-"#version  300 es\n"
+"#version 300 es\n"
 #else
 "#version 300 es\n"
 #endif
@@ -60,6 +66,7 @@ const char* vtxShader =
 const char* fragShader =
 #ifdef GL_PROFILE_GL3
 "#version  300 es\n"
+"precision mediump float;\n"
 #else
 "#version  300 es\n"
 "precision mediump float;\n"
@@ -139,8 +146,15 @@ static const char* errorToStr(GLenum error)
     }
 }
 
+#ifdef __ANDROID__
+bool Teapot::init(struct android_app* app)
+{
+    g_App = app;
+#else
 bool Teapot::init()
 {
+#endif
+
     if (g_vao == 0)
     {
         glGenVertexArrays(1, &g_vao);
@@ -181,7 +195,14 @@ bool Teapot::init()
     for(const auto& face: faces)
     {
         int x, y, channels;
+        //auto data = stbi_load(face.first, &x, &y, &channels, 0);
+#ifdef __ANDROID__
+        std::vector<uint8_t> fileData;
+        Teapot::GetAssetData(face.first,fileData);
+        auto data = stbi_load_from_memory(fileData.data(),fileData.size(), &x, &y, &channels, 0);
+#else
         auto data = stbi_load(face.first, &x, &y, &channels, 0);
+#endif
         if (data == NULL)
         {
             Log(LOG_ERROR) << "Could not load " << face.first;
@@ -200,7 +221,14 @@ bool Teapot::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     {
         int x, y, channels;
+        //auto data = stbi_load("bump.jpg", &x, &y, &channels, 0);
+#ifdef __ANDROID__
+        std::vector<uint8_t> bumpData;
+        Teapot::GetAssetData("bump.jpg",bumpData);
+        auto data = stbi_load_from_memory(bumpData.data(),bumpData.size(), &x, &y, &channels, 0);
+#else
         auto data = stbi_load("bump.jpg", &x, &y, &channels, 0);
+#endif
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         stbi_image_free(data);
     }
@@ -237,6 +265,26 @@ bool Teapot::init()
 
     return true;
 }
+
+#ifdef __ANDROID__
+// Helper to retrieve data placed into the assets/ directory (android/app/src/main/assets)
+int Teapot::GetAssetData(const char* filename, std::vector<uint8_t>& buf)
+{
+    int num_bytes = 0;
+    AAsset* asset_descriptor = AAssetManager_open(g_App->activity->assetManager, filename, AASSET_MODE_BUFFER);
+    if (asset_descriptor)
+    {
+        num_bytes = AAsset_getLength(asset_descriptor);
+
+        buf.resize(num_bytes);
+        int64_t num_bytes_read = AAsset_read(asset_descriptor, buf.data(), buf.size());
+
+        AAsset_close(asset_descriptor);
+        //IM_ASSERT(num_bytes_read == num_bytes);
+    }
+    return num_bytes;
+}
+#endif
 
 float Teapot::zoomValue() {return zoom;}
 
@@ -295,15 +343,15 @@ void Teapot::draw()
 
     //cameraPos = (glm::rotate(Matrix4(1.0f), rotX, Vector3(0.0f, 1.0f, 0.0f)) * glm::rotate(glm::mat4(1.0f), rotY, Vector3(0.0f, 0.0f, 1.0f)) * glm::vec4(cameraPos, 1.0f));
 
-    Matrix4 projection = Matrix4().makePerspective(MathUtils::DEG2RAD * (45.0f / zoom), aspect, 10.0f, 500.0f);
+    Matrix4 projection = Matrix4().makePerspective(MathUtils::DEG2RAD * (65.0f / zoom), aspect, 20.0f, 500.0f);
 
-    Vector3 target{0,0,0},up{0.0f, 1.0f, 0.0f};
+    Vector3 target{10,-200,-100},up{0.0f, 1.0f, 0.0f};
     Matrix4 view = Matrix4().lookAt(cameraPos, target, up);
     /*Matrix4 model = glm::rotate(glm::translate(glm::mat4(1.0f), Vector3(0.0f, -10.0f, 0.0f)),
                                   -(GLfloat)M_PI_2,
                                   Vector3(1.0f, 0.0f, 0.0f)); */
     Matrix4 model{};
-    model.makeTranslation(0.0f, -20.0f, 0.0f);
+    model.makeTranslation(10.0f, -200.0f, -100.0f);
     model.makeRotationZ(rotY);
     model.makeRotationY(-rotX);
     model.makeRotationX(Number::PI/2);
