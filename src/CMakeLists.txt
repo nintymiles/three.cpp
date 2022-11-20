@@ -22,6 +22,9 @@ file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h)
 file(GLOB CAMERAS_SOURCE ${ROOT_DIR}/src/cameras/*.cpp)
 file(GLOB CAMERAS_HEADER ${ROOT_DIR}/src/cameras/*.h)
 
+file(GLOB LIGHTS_SOURCE ${ROOT_DIR}/src/lights/*.cpp)
+file(GLOB LIGHTS_HEADER ${ROOT_DIR}/src/lights/*.h)
+
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
 
@@ -30,7 +33,8 @@ source_group("Cameras" FILES ${CAMERAS_HEADER})
 
 file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE};
         ${CAMERAS_HEADER};${CAMERAS_SOURCE};
-        ${CORE_SOURCE};${CORE_HEADER})
+        ${CORE_SOURCE};${CORE_HEADER};
+        ${LIGHTS_SOURCE};${LIGHTS_HEADER})
 
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
