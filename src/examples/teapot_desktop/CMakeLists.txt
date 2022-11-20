@@ -50,9 +50,9 @@ ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/examples/teapot)
 
-TARGET_LINK_LIBRARIES(teapot_desktop PUBLIC
-  glfw.3.3
-  GLESv2
-  EGL
-  GSL
-)
+#TARGET_LINK_LIBRARIES(teapot_desktop PUBLIC
+#  glfw.3.3
+#  GLESv2
+#  EGL
+#  GSL
+#)

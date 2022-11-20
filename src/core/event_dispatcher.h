@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <memory>
 
 class EventDispatcher;
 /**
