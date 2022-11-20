@@ -6,6 +6,8 @@
 #define THREE_CPP_OPENGL_PROGRAM_H
 
 class OpenGLProgramParameters{
+public:
+    bool isWebGL2 = true; //OpenGLES3.0
 
 };
 
