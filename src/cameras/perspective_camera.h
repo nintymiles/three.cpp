@@ -8,7 +8,7 @@
 #include <memory>
 
 using std::shared_ptr;
-class PerspectiveCamera : Camera {
+class PerspectiveCamera : public Camera {
     public:
         string type{"PerspectiveCamera"};
         double fov,zoom=1,near,far,focus=10,aspect,filmGauge,filmOffset;

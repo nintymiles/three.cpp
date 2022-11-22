@@ -14,6 +14,7 @@
 #include "light.h"
 
 #include <map>
+#include <memory>
 
 //const _projScreenMatrix = /*@__PURE__*/ new Matrix4();
 //const _lightPositionWorld = /*@__PURE__*/ new Vector3();
@@ -24,7 +25,7 @@ Matrix4 _lightShadow_projScreenMatrix;
 
 class LightShadow{
 public:
-    Camera camera;
+    std::shared_ptr<Camera> camera;
 
     double bias = 0;
     double normalBias = 0;
@@ -46,6 +47,9 @@ public:
     int _viewportCount = 1;
     Vector4d _viewports[1] = {Vector4d{0,0,1,1}};
 
+    //if you intend to use dynamic child class,of course pointer type is appropriate
+    LightShadow(std::shared_ptr<Camera> camera):camera(camera){}
+
     int getViewportCount() {
         return _viewportCount;
     }
@@ -56,7 +60,7 @@ public:
 
     LightShadow& updateMatrices( Light &light ) {
 
-        const Camera& shadowCamera = this->camera;
+        const Camera& shadowCamera = *(this->camera);
         const Matrix4& shadowMatrix = this->matrix;
 
         _lightShadow_lightPositionWorld.setFromMatrixPosition( *light.matrixWorld );
