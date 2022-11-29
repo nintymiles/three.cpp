@@ -88,14 +88,4 @@ public:
 };
 
 
-
-//class PointLightShadow extends LightShadow {
-
-
-
-//}
-//
-//export { PointLightShadow };
-
-
 #endif //THREE_CPP_POINT_LIGHT_SHADOW_H

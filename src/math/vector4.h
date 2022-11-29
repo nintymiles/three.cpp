@@ -224,6 +224,10 @@ class Vector4 {
 		return *this;
 	}
 
+    bool equals( Vector4 &v ) {
+ 		return ( ( v.x == this->x ) && ( v.y == this->y ) && ( v.z == this->z ) && ( v.z == this->w ) );
+ 	}
+
 
     private:
         
