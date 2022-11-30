@@ -43,7 +43,6 @@ public:
         }
 
         ColorBuffer &setClear(double r, double g, double b, double a, bool premultipliedAlpha) {
-
             if (premultipliedAlpha == true) {
 
                 r *= a;
@@ -72,6 +71,7 @@ public:
     };
 
     class DepthBuffer {
+    public:
         bool locked = false;
 
         bool currentDepthMask = false;
@@ -160,6 +160,7 @@ public:
     };
 
     class StencilBuffer{
+    public:
         bool locked = false;
 
         int currentStencilMask;
@@ -256,20 +257,20 @@ public:
     std::map<GLenum ,GLuint> currentBoundFramebuffers = {};
 //    let currentDrawbuffers = new WeakMap();
 //    let defaultDrawbuffers = [];
-//
-//    let currentProgram = null;
-//
+
+    bool currentProgram = 0;
+
     bool currentBlendingEnabled = false;
-//    let currentBlending = null;
-//    let currentBlendEquation = null;
-//    let currentBlendSrc = null;
-//    let currentBlendDst = null;
-//    let currentBlendEquationAlpha = null;
-//    let currentBlendSrcAlpha = null;
-//    let currentBlendDstAlpha = null;
+    bool currentBlending = false;
+    bool currentBlendEquation = -1;
+    bool currentBlendSrc = -1;
+    bool currentBlendDst = -1;
+    int currentBlendEquationAlpha = -1;
+    int currentBlendSrcAlpha = -1;
+    int currentBlendDstAlpha = -1;
     bool currentPremultipledAlpha = false;
 
-//    let currentFlipSided = null;
+    bool currentFlipSided = false;
     int currentCullFace;
 
     double currentLineWidth;
@@ -458,19 +459,17 @@ public:
 //
 //    }
 
-    bool useProgram( GLuint program ) {
+    GLState &useProgram( GLuint program ) {
         if ( currentProgram != program ) {
-
             glUseProgram( program );
             currentProgram = program;
-
-            return true;
+            //return true;
         }
-
-        return false;
+        //return false;
+        return *this;
     }
 
-    const std::map<int,GLenum>  equationToGL = {
+    std::map<int,GLenum>  equationToGL = {
         { AddEquation , GL_FUNC_ADD},
         { SubtractEquation , GL_FUNC_SUBTRACT},
         { ReverseSubtractEquation , GL_FUNC_REVERSE_SUBTRACT},
@@ -478,7 +477,7 @@ public:
         { MaxEquation , GL_MAX}
     };
 
-    const std::map<int,GLenum> factorToGL = {
+    std::map<int,GLenum> factorToGL = {
         { ZeroFactor, GL_ZERO},
         { OneFactor , GL_ONE},
         { SrcColorFactor , GL_SRC_COLOR},
@@ -492,140 +491,125 @@ public:
         { OneMinusDstAlphaFactor , GL_ONE_MINUS_DST_ALPHA}
     };
 
-//    function setBlending( blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha, premultipliedAlpha ) {
-//
-//        if ( blending === NoBlending ) {
-//
-//            if ( currentBlendingEnabled === true ) {
-//
-//                disable( glBlend );
-//                currentBlendingEnabled = false;
-//
-//            }
-//
-//            return;
-//
-//        }
-//
-//        if ( currentBlendingEnabled === false ) {
-//
-//            enable( glBlend );
-//            currentBlendingEnabled = true;
-//
-//        }
-//
-//        if ( blending !== CustomBlending ) {
-//
-//            if ( blending !== currentBlending || premultipliedAlpha !== currentPremultipledAlpha ) {
-//
-//                if ( currentBlendEquation !== AddEquation || currentBlendEquationAlpha !== AddEquation ) {
-//
-//                    glBlendEquation( gl.FUNC_ADD );
-//
-//                    currentBlendEquation = AddEquation;
-//                    currentBlendEquationAlpha = AddEquation;
-//
-//                }
-//
-//                if ( premultipliedAlpha ) {
-//
-//                    switch ( blending ) {
-//
-//                        case NormalBlending:
-//                            glBlendFuncSeparate( gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA );
-//                            break;
-//
-//                        case AdditiveBlending:
-//                            glBlendFunc( gl.ONE, gl.ONE );
-//                            break;
-//
-//                        case SubtractiveBlending:
-//                            glBlendFuncSeparate( gl.ZERO, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE );
-//                            break;
-//
-//                        case MultiplyBlending:
-//                            glBlendFuncSeparate( gl.ZERO, gl.SRC_COLOR, gl.ZERO, gl.SRC_ALPHA );
-//                            break;
-//
-//                        default:
-//                            console.error( 'THREE.WebGLState: Invalid blending: ', blending );
-//                            break;
-//
-//                    }
-//
-//                } else {
-//
-//                    switch ( blending ) {
-//
-//                        case NormalBlending:
-//                            glBlendFuncSeparate( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA );
-//                            break;
-//
-//                        case AdditiveBlending:
-//                            glBlendFunc( gl.SRC_ALPHA, gl.ONE );
-//                            break;
-//
-//                        case SubtractiveBlending:
-//                            glBlendFuncSeparate( gl.ZERO, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE );
-//                            break;
-//
-//                        case MultiplyBlending:
-//                            glBlendFunc( gl.ZERO, gl.SRC_COLOR );
-//                            break;
-//
-//                        default:
-//                            console.error( 'THREE.WebGLState: Invalid blending: ', blending );
-//                            break;
-//
-//                    }
-//
-//                }
-//
-//                currentBlendSrc = null;
-//                currentBlendDst = null;
-//                currentBlendSrcAlpha = null;
-//                currentBlendDstAlpha = null;
-//
-//                currentBlending = blending;
-//                currentPremultipledAlpha = premultipliedAlpha;
-//
-//            }
-//
-//            return;
-//
-//        }
-//
-//        // custom blending
-//
-//        blendEquationAlpha = blendEquationAlpha || blendEquation;
-//        blendSrcAlpha = blendSrcAlpha || blendSrc;
-//        blendDstAlpha = blendDstAlpha || blendDst;
-//
-//        if ( blendEquation !== currentBlendEquation || blendEquationAlpha !== currentBlendEquationAlpha ) {
-//
-//            glBlendEquationSeparate( equationToGL[ blendEquation ], equationToGL[ blendEquationAlpha ] );
-//
-//            currentBlendEquation = blendEquation;
-//            currentBlendEquationAlpha = blendEquationAlpha;
-//
-//        }
-//
-//        if ( blendSrc !== currentBlendSrc || blendDst !== currentBlendDst || blendSrcAlpha !== currentBlendSrcAlpha || blendDstAlpha !== currentBlendDstAlpha ) {
-//
-//            glBlendFuncSeparate( factorToGL[ blendSrc ], factorToGL[ blendDst ], factorToGL[ blendSrcAlpha ], factorToGL[ blendDstAlpha ] );
-//
-//            currentBlendSrc = blendSrc;
-//            currentBlendDst = blendDst;
-//            currentBlendSrcAlpha = blendSrcAlpha;
-//            currentBlendDstAlpha = blendDstAlpha;
-//
-//        }
-//
-//        currentBlending = blending;
-//        currentPremultipledAlpha = null;
-//
-//    }
-//
+    GLState &setBlending( int blending, int blendEquation, int blendSrc, int blendDst, int blendEquationAlpha, int blendSrcAlpha, int blendDstAlpha, bool premultipliedAlpha ) {
+        if ( blending == NoBlending ) {
+            if ( currentBlendingEnabled == true ) {
+                disable( GL_BLEND );
+                currentBlendingEnabled = false;
+            }
+            return *this;
+        }
+
+        if ( currentBlendingEnabled == false ) {
+            enable( GL_BLEND );
+            currentBlendingEnabled = true;
+        }
+
+        if ( blending != CustomBlending ) {
+            if ( blending != currentBlending || premultipliedAlpha != currentPremultipledAlpha ) {
+
+                if ( currentBlendEquation != AddEquation || currentBlendEquationAlpha != AddEquation ) {
+
+                    glBlendEquation( GL_FUNC_ADD );
+
+                    currentBlendEquation = AddEquation;
+                    currentBlendEquationAlpha = AddEquation;
+                }
+
+                if ( premultipliedAlpha ) {
+                    switch ( blending ) {
+                        case NormalBlending:
+                            glBlendFuncSeparate( GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+                            break;
+
+                        case AdditiveBlending:
+                            glBlendFunc( GL_ONE, GL_ONE );
+                            break;
+
+                        case SubtractiveBlending:
+                            glBlendFuncSeparate( GL_ZERO, GL_ONE_MINUS_SRC_COLOR, GL_ZERO, GL_ONE );
+                            break;
+
+                        case MultiplyBlending:
+                            glBlendFuncSeparate( GL_ZERO, GL_SRC_COLOR, GL_ZERO, GL_SRC_ALPHA );
+                            break;
+
+                        default:
+                            //console.error( 'THREE.WebGLState: Invalid blending: ', blending );
+                            break;
+
+                    }
+
+                } else {
+                    switch ( blending ) {
+                        case NormalBlending:
+                            glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+                            break;
+
+                        case AdditiveBlending:
+                            glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+                            break;
+
+                        case SubtractiveBlending:
+                            glBlendFuncSeparate( GL_ZERO, GL_ONE_MINUS_SRC_COLOR, GL_ZERO, GL_ONE );
+                            break;
+
+                        case MultiplyBlending:
+                            glBlendFunc( GL_ZERO, GL_SRC_COLOR );
+                            break;
+
+                        default:
+                            //console.error( 'THREE.WebGLState: Invalid blending: ', blending );
+                            break;
+
+                    }
+
+                }
+
+                currentBlendSrc = -1;
+                currentBlendDst = -1;
+                currentBlendSrcAlpha = -1;
+                currentBlendDstAlpha = -1;
+
+                currentBlending = blending;
+                currentPremultipledAlpha = premultipliedAlpha;
+
+            }
+
+            return *this;
+        }
+
+        // custom blending
+
+        blendEquationAlpha = blendEquationAlpha || blendEquation;
+        blendSrcAlpha = blendSrcAlpha || blendSrc;
+        blendDstAlpha = blendDstAlpha || blendDst;
+
+        if ( blendEquation != currentBlendEquation || blendEquationAlpha != currentBlendEquationAlpha ) {
+
+            glBlendEquationSeparate( equationToGL[blendEquation], equationToGL[blendEquationAlpha] );
+
+            currentBlendEquation = blendEquation;
+            currentBlendEquationAlpha = blendEquationAlpha;
+        }
+
+        if ( blendSrc != currentBlendSrc || blendDst != currentBlendDst || blendSrcAlpha != currentBlendSrcAlpha || blendDstAlpha != currentBlendDstAlpha ) {
+
+            glBlendFuncSeparate( factorToGL[ blendSrc ], factorToGL[ blendDst ], factorToGL[ blendSrcAlpha ], factorToGL[ blendDstAlpha ] );
+
+            currentBlendSrc = blendSrc;
+            currentBlendDst = blendDst;
+            currentBlendSrcAlpha = blendSrcAlpha;
+            currentBlendDstAlpha = blendDstAlpha;
+
+        }
+
+        currentBlending = blending;
+        currentPremultipledAlpha = false;
+
+        return *this;
+    }
+
 //    function setMaterial( material, frontFaceCW ) {
 //
 //        material.side === DoubleSide
@@ -665,26 +649,19 @@ public:
 //    }
 //
 //    //
-//
-//    function setFlipSided( flipSided ) {
-//
-//        if ( currentFlipSided !== flipSided ) {
-//
-//            if ( flipSided ) {
-//
-//                gl.frontFace( gl.CW );
-//
-//            } else {
-//
-//                gl.frontFace( gl.CCW );
-//
-//            }
-//
-//            currentFlipSided = flipSided;
-//
-//        }
-//
-//    }
+
+    GLState &setFlipSided( bool flipSided ) {
+        if ( currentFlipSided != flipSided ) {
+
+            if ( flipSided ) {
+                glFrontFace( GL_CW );
+            } else {
+                glFrontFace( GL_CCW );
+            }
+            currentFlipSided = flipSided;
+        }
+        return *this;
+    }
 
     GLState &setCullFace( int cullFace ) {
         if ( cullFace != CullFaceNone ) {
@@ -886,19 +863,12 @@ public:
 //    }
 //
 //    function texImage3D() {
-//
 //        try {
-//
 //            gl.texImage3D.apply( gl, arguments );
-//
 //        } catch ( error ) {
-//
 //            console.error( 'THREE.WebGLState:', error );
-//
 //        }
-//
 //    }
-//
     //
 
     GLState &scissor( Vector4d scissor ) {
@@ -971,7 +941,7 @@ public:
 
         enabledCapabilities = {};
 
-        currentTextureSlot = null;
+        currentTextureSlot = -1;
         currentBoundTextures = {};
 
         currentBoundFramebuffers = {};
@@ -981,22 +951,22 @@ public:
         GLuint currentProgram = 0;
 
         currentBlendingEnabled = false;
-        currentBlending = null;
-        currentBlendEquation = null;
-        currentBlendSrc = null;
-        currentBlendDst = null;
-        currentBlendEquationAlpha = null;
-        currentBlendSrcAlpha = null;
-        currentBlendDstAlpha = null;
+        currentBlending = -1;
+        currentBlendEquation = -1;
+        currentBlendSrc = -1;
+        currentBlendDst = -1;
+        currentBlendEquationAlpha = -1;
+        currentBlendSrcAlpha = -1;
+        currentBlendDstAlpha = -1;
         currentPremultipledAlpha = false;
 
-        currentFlipSided = null;
-        currentCullFace = null;
+        currentFlipSided = -1;
+        currentCullFace = -1;
 
-        currentLineWidth = null;
+        currentLineWidth = -1;
 
-        currentPolygonOffsetFactor = null;
-        currentPolygonOffsetUnits = null;
+        currentPolygonOffsetFactor = -1;
+        currentPolygonOffsetUnits = -1;
 
         currentScissor.set( 0, 0, gl.canvas.width, gl.canvas.height );
         currentViewport.set( 0, 0, gl.canvas.width, gl.canvas.height );
