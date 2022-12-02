@@ -7,6 +7,7 @@
 
 #include "vector4.h"
 #include "constants.h"
+#include "common_types.h"
 
 #include <map>
 #include <GLES3/gl3.h>
@@ -15,6 +16,8 @@ struct BoundTexture{
     GLenum type;
     GLuint texture;
 };
+
+const threecpp::GLViewPort defaultViewPort{0,0,640,480};
 
 class GLState {
 public:
@@ -934,8 +937,8 @@ public:
 
         glLineWidth( 1 );
 
-        glScissor( 0, 0, gl.canvas.width, gl.canvas.height );
-        glViewport( 0, 0, gl.canvas.width, gl.canvas.height );
+        glScissor( 0, 0, defaultViewPort.width, defaultViewPort.height );
+        glViewport( 0, 0, defaultViewPort.width, defaultViewPort.height );
 
         // reset internals
 
@@ -945,8 +948,8 @@ public:
         currentBoundTextures = {};
 
         currentBoundFramebuffers = {};
-        currentDrawbuffers = new WeakMap();
-        defaultDrawbuffers = [];
+//        currentDrawbuffers = new WeakMap();
+//        defaultDrawbuffers = [];
 
         GLuint currentProgram = 0;
 
@@ -968,8 +971,8 @@ public:
         currentPolygonOffsetFactor = -1;
         currentPolygonOffsetUnits = -1;
 
-        currentScissor.set( 0, 0, gl.canvas.width, gl.canvas.height );
-        currentViewport.set( 0, 0, gl.canvas.width, gl.canvas.height );
+        currentScissor.set( 0, 0, defaultViewPort.width, defaultViewPort.height );
+        currentViewport.set( 0, 0, defaultViewPort.width, defaultViewPort.height );
 
         colorBuffer.reset();
         depthBuffer.reset();
