@@ -26,11 +26,15 @@ struct RenderOptions{
 */
 class GlRenderTarget:EventDispatcher{
 public:
-    double width,height,depth;
+    bool isGLRenderTarget = true;
+    double width,height,depth = 1;
     RenderOptions* options;
+    Vector4d viewport,scissor;
+    bool scissorTest=false;
     //viewport,scissor,texture,depthBuffer,stencilBuffer
 
-    GlRenderTarget(double height,double width,RenderOptions* options):height(height),width(width), options(options){};
+    GlRenderTarget(double height,double width,RenderOptions* options):height(height),width(width),
+                        viewport(0,0,width,height),scissor(0,0,width,height),options(options){};
 
 
     GlRenderTarget &setSize(double width, double height, double depth = 1) {
