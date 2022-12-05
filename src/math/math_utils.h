@@ -125,6 +125,11 @@ namespace MathUtils {
         return ss.str();
     }
 
+    // Random float from <-range/2, range/2> interval
+    float randFloatSpread( float range ) {
+        return range * ( 0.5 - random_gen<float>() );
+    }
+
     //模板函数的别名如何设置
     //typedef clamp<double> clampd;
     //using clampd = double clamp<double>(double,double,double);
