@@ -40,8 +40,8 @@ public:
 //    },
     BoxGeometry(double width = 1,double height = 1, double depth = 1,
                 int widthSegments = 1,int heightSegments = 1,int depthSegments = 1): type("BoxGeometry"){
-        this->parameters = {{"width",width},{"height",height},{"depth",depth},
-            {"widthSegments",widthSegments},{"heightSegments",heightSegments},{"depthSegments",depthSegments}};
+        this->parameters = {{"width",{width}},{"height",{height}},{"depth",{depth}},
+            {"widthSegments",{.i=widthSegments}},{"heightSegments",{.i=heightSegments}},{"depthSegments",{.i=depthSegments}}};
         //父级节点应该有一个统一的parameter storage变量
         //this->parameters
 //        widthSegments = floor( widthSegments );
@@ -57,8 +57,8 @@ public:
         buildPlane( 'x', 'y', 'z', - 1, - 1, width, height, - depth, widthSegments, heightSegments, 5 ); // nz
 
         // build geometry
-        BufferAttribute<int> indcesBuf{indices,(int)indices.size()};
-        this->setIndex( indcesBuf );
+        BufferAttribute<int> indicesBuf{indices,(int)indices.size()};
+        this->setIndex( indicesBuf );
         Float64BufferAttribute positionBuf{vertices,3};
         this->setAttribute( "position", std::make_shared<Float64BufferAttribute>(positionBuf) );
         Float64BufferAttribute normalBuf{normals,3};
