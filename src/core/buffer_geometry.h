@@ -46,7 +46,7 @@ class BufferGeometry : EventDispatcher {
         vector<threecpp::GeometryGroup> groups;
         threecpp::Range drawRange;
         //use map<string,double> as parameters storage type
-        std::map<std::string,double> parameters;
+        std::map<std::string,threecpp::GeometryValue> parameters;
 
         // constructor() {
 
