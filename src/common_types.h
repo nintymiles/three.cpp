@@ -17,9 +17,14 @@ struct GeometryGroup{
     int materialIndex;
 };
 
-union UniformValue{
-    int i;
+union GeometryValue{
     double d;
+    int i;
+};
+
+union UniformValue{
+    double d;
+    int i;
 };
 
 struct GLViewPort
