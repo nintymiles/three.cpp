@@ -7,19 +7,26 @@
 
 #include "object_3d.h"
 
-class Scene: public Object3D{
-public:
+#include "color.h"
+#include "fog.h"
+#include "materials/material.h"
+
+struct Scene: public Object3D{
     bool isScene = true;
     std::string type = "Scene";
     bool autoUpdate = true; // checked by the renderer
 
 //    this.background = null;
+    std::shared_ptr<Color> background;
 //    this.environment = null;
 //    this.fog = null;
-//
-//    this.overrideMaterial = null;
+    std::shared_ptr<Fog> fog;
 
-    Scene() = default;
+//    this.overrideMaterial = null;
+    std::shared_ptr<Material> overrideMaterial;
+
+    Scene(std::shared_ptr<Color> background,std::shared_ptr<Fog> fog,std::shared_ptr<Material> overrideMaterial,bool autoUpdate)
+                                :background(background),fog(fog),overrideMaterial(overrideMaterial),autoUpdate(autoUpdate){}
 
 
 };

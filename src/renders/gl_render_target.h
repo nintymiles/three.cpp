@@ -24,7 +24,7 @@ struct RenderOptions{
  * Texture parameters for an auto-generated target texture
  * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
 */
-class GlRenderTarget:EventDispatcher{
+class GLRenderTarget:EventDispatcher{
 public:
     bool isGLRenderTarget = true;
     double width,height,depth = 1;
@@ -33,11 +33,11 @@ public:
     bool scissorTest=false;
     //viewport,scissor,texture,depthBuffer,stencilBuffer
 
-    GlRenderTarget(double height,double width,RenderOptions* options):height(height),width(width),
+    GLRenderTarget(double height,double width,RenderOptions* options):height(height),width(width),
                         viewport(0,0,width,height),scissor(0,0,width,height),options(options){};
 
 
-    GlRenderTarget &setSize(double width, double height, double depth = 1) {
+    GLRenderTarget &setSize(double width, double height, double depth = 1) {
 
         if (this->width != width || this->height != height || this->depth != depth) {
 
@@ -58,7 +58,7 @@ public:
         return *this;
     }
 
-    GlRenderTarget& dispose() {
+    GLRenderTarget& dispose() {
         dispatchEvent({type: "dispose"});
         return *this;
     }
