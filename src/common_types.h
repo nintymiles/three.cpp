@@ -37,6 +37,10 @@ struct GLViewPort
     GLViewPort(float x,float y,float width,float height):x(x),y(y),width(width),height(height){};
 };
 
+enum class LightType{
+    Light,DirectionalLight,SpotLight,PointLight,HemisphereLight,RectAreaLight
+};
+
 
 
 

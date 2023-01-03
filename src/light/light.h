@@ -7,13 +7,14 @@
 
 #include "object_3d.h"
 #include "color.h"
+#include "common_types.h"
 
 #include <string>
 
 class Light:public Object3D{
     public:
         bool isLight = true;
-        std::string type = "Light";
+        threecpp::LightType type = threecpp::LightType::Light;
         Color color;
         double intensity = 1.0;
 

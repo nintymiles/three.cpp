@@ -25,16 +25,23 @@ file(GLOB CAMERAS_HEADER ${ROOT_DIR}/src/cameras/*.h)
 file(GLOB LIGHTS_SOURCE ${ROOT_DIR}/src/lights/*.cpp)
 file(GLOB LIGHTS_HEADER ${ROOT_DIR}/src/lights/*.h)
 
+file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/opengl/opengl_capabilities.cpp)
+file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/opengl/opengl_capabilities.h)
+
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
 
 source_group("Cameras" FILES ${CAMERAS_SOURCE})
 source_group("Cameras" FILES ${CAMERAS_HEADER})
 
+source_group("Renders" FILES ${RENDERS_SOURCE})
+source_group("Renders" FILES ${RENDERS_HEADER})
+
 file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE};
         ${CAMERAS_HEADER};${CAMERAS_SOURCE};
         ${CORE_SOURCE};${CORE_HEADER};
-        ${LIGHTS_SOURCE};${LIGHTS_HEADER})
+        ${LIGHTS_SOURCE};${LIGHTS_HEADER};
+        ${RENDERS_SOURCE};${RENDERS_HEADER})
 
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
@@ -45,7 +52,8 @@ ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math
-${ROOT_DIR}/src/core)
+${ROOT_DIR}/src/core
+${ROOT_DIR}/src/renders/opengl)
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
 if(MSVC)

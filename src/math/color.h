@@ -56,7 +56,7 @@ public:
     double r=1,g=1,b=1;
     bool isColor = true;
 
-    Color()=default;
+    //olor()=default;
 
     Color(double r=1,double g=1,double b=1):r(r),g(g),b(b){};
 

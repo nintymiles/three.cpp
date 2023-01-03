@@ -14,6 +14,7 @@ public:
   int maxAnisotropy;
   bool isGLES3 = true;
   bool logarithmicDepthBuffer;
+  bool drawBuffers = true;
 
   int maxTextures,maxVertexTextures,maxTextureSize,maxCubemapSize,
         maxAttributes,maxVertexUniforms,maxVaryings,maxFragmentUniforms,maxSamples;
@@ -25,7 +26,6 @@ public:
 
 //            if ( glGetShaderPrecisionFormat( GL_VERTEX_SHADER, GL_FLOAT ).precision > 0 &&
 //                glGetShaderPrecisionFormat( GL_FRAGMENT_SHADER, GL_FLOAT ).precision > 0 ) {
-
                 return "highp";
 
 //            }

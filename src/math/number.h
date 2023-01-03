@@ -15,6 +15,9 @@ namespace Number{
 
     constexpr double MAX = std::numeric_limits<double>::max();
     constexpr double MIN = std::numeric_limits<double>::min();
+
+    constexpr int MAX_INT = std::numeric_limits<int>::max();
+    constexpr int MIN_INT = std::numeric_limits<int>::min();
 };
 
 

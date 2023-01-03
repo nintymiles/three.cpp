@@ -13,7 +13,9 @@
 #include "vector3.h"
 #include "scenes/scene.h"
 #include "gl_render_target.h"
+#include "cameras/camera.h"
 //#include ""
+
 
 class GLRender {
 public:
@@ -39,6 +41,15 @@ public:
     // tone mapping
     bool toneMapping = NoToneMapping;
     int toneMappingExposure = 1.0;
+
+
+    let currentRenderList = null;
+    let currentRenderState = null;
+
+    // render() can be called from within a callback triggered by another render.
+    // We track this so that the nested render call gets its list and state isolated from the parent render call.
+    const renderListStack = [];
+    const renderStateStack = [];
 
 
 
@@ -89,6 +100,147 @@ public:
 
 
 
+
+    }
+
+    //rendering
+    void render(Scene & scene,Camera& camera){
+
+            if ( camera.isCamera != true ) {
+                std::cout << "THREECPP.GLRenderer.render: camera is not an instance of THREE.Camera." << std::endl;
+                return;
+            }
+
+            if ( _isContextLost == true ) return;
+
+            // update scene graph
+            if ( scene.autoUpdate == true ) scene.updateMatrixWorld(true);
+
+            // update camera matrices and frustum
+            if ( camera.parent == nullptr ) camera.updateMatrixWorld(true);
+
+//            if ( xr.enabled == true && xr.isPresenting == true ) {
+//                if ( xr.cameraAutoUpdate == true ) xr.updateCamera( camera );
+//
+//                camera = xr.getCamera(); // use XR camera for rendering
+//            }
+
+
+//            if ( scene.isScene == true ) scene.onBeforeRender( _this, scene, camera, _currentRenderTarget );
+
+            currentRenderState = renderStates.get( scene, renderStateStack.length );
+            currentRenderState.init();
+
+            renderStateStack.push( currentRenderState );
+
+            _projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
+            _frustum.setFromProjectionMatrix( _projScreenMatrix );
+
+            _localClippingEnabled = this.localClippingEnabled;
+            _clippingEnabled = clipping.init( this.clippingPlanes, _localClippingEnabled, camera );
+
+            currentRenderList = renderLists.get( scene, renderListStack.length );
+            currentRenderList.init();
+
+            renderListStack.push( currentRenderList );
+
+            projectObject( scene, camera, 0, _this.sortObjects );
+
+            currentRenderList.finish();
+
+            if ( _this.sortObjects === true ) {
+
+                currentRenderList.sort( _opaqueSort, _transparentSort );
+
+            }
+
+            //
+
+            if ( _clippingEnabled === true ) clipping.beginShadows();
+
+            const shadowsArray = currentRenderState.state.shadowsArray;
+
+            shadowMap.render( shadowsArray, scene, camera );
+
+            if ( _clippingEnabled === true ) clipping.endShadows();
+
+            //
+
+            if ( this.info.autoReset === true ) this.info.reset();
+
+            //
+
+            background.render( currentRenderList, scene );
+
+            // render scene
+
+            currentRenderState.setupLights( _this.physicallyCorrectLights );
+
+            if ( camera.isArrayCamera ) {
+
+                const cameras = camera.cameras;
+
+                for ( let i = 0, l = cameras.length; i < l; i ++ ) {
+
+                    const camera2 = cameras[ i ];
+
+                    renderScene( currentRenderList, scene, camera2, camera2.viewport );
+
+                }
+
+            } else {
+
+                renderScene( currentRenderList, scene, camera );
+
+            }
+
+            //
+
+            if ( _currentRenderTarget !== null ) {
+
+                // resolve multisample renderbuffers to a single-sample texture if necessary
+
+                textures.updateMultisampleRenderTarget( _currentRenderTarget );
+
+                // Generate mipmap if we're using any kind of mipmap filtering
+
+                textures.updateRenderTargetMipmap( _currentRenderTarget );
+
+            }
+
+            //
+
+            if ( scene.isScene === true ) scene.onAfterRender( _this, scene, camera );
+
+            // _gl.finish();
+
+            bindingStates.resetDefaultState();
+            _currentMaterialId = - 1;
+            _currentCamera = null;
+
+            renderStateStack.pop();
+
+            if ( renderStateStack.length > 0 ) {
+
+                currentRenderState = renderStateStack[ renderStateStack.length - 1 ];
+
+            } else {
+
+                currentRenderState = null;
+
+            }
+
+            renderListStack.pop();
+
+            if ( renderListStack.length > 0 ) {
+
+                currentRenderList = renderListStack[ renderListStack.length - 1 ];
+
+            } else {
+
+                currentRenderList = null;
+
+            }
     }
 
 private:
