@@ -12,28 +12,44 @@
 
 class PointLight : public Light {
 public:
-    std::string type = "PointLight";
+    //std::string type = "PointLight";
     bool isPointLight = true;
 
-    double distance = distance;
-    int decay = 1; // for physically correct lights, should be 2.
-
-    PointLightShadow shadow;
 
     PointLight( Color &color, double intensity, double distance = 0, double decay = 1 ):
-        Light(color,intensity),decay(decay),distance(distance){}
+        Light(color,intensity),_decay(decay),_distance(distance){}
 
     double power(){
         // compute the light's luminous power (in lumens) from its intensity (in candela)
         // for an isotropic light source, luminous power (lm) = 4 π luminous intensity (cd)
-        return intensity * 4 * Number::PI;
+        return _intensity * 4 * Number::PI;
     }
 
     PointLight& power(double power){
         // set the light's intensity (in candela) from the desired luminous power (in lumens)
-        this->intensity = power / ( 4 * Number::PI );
+        _intensity = power / ( 4 * Number::PI );
         return *this;
     }
+
+    LightType type() const override{
+        return _type;
+    }
+
+    double distance() const override{
+        return _distance;
+    }
+
+    std::shared_ptr<LightShadow> shadow() override {
+        return _shadow;
+    }
+
+
+
+private:
+    LightType _type = LightType::PointLight;
+    double _distance = 0.0;
+    int _decay = 1; // for physically correct lights, should be 2.
+    std::shared_ptr<LightShadow> _shadow = std::make_shared<PointLightShadow>();
 
 //    dispose() {
 //

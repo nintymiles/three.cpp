@@ -38,7 +38,7 @@ struct GLViewPort
 };
 
 enum class LightType{
-    Light,DirectionalLight,SpotLight,PointLight,HemisphereLight,RectAreaLight
+    Light,DirectionalLight,SpotLight,PointLight,AmbientLight,LightProbe,HemisphereLight,RectAreaLight
 };
 
 

@@ -50,6 +50,8 @@ public:
     //if you intend to use dynamic child class,of course pointer type is appropriate
     LightShadow(std::shared_ptr<Camera> camera):camera(camera){}
 
+    virtual bool isDirectionalLightShadow(){return  false;}
+
     int getViewportCount() {
         return _viewportCount;
     }

@@ -61,7 +61,7 @@ public:
         PerspectiveCamera &camera = *dynamic_pointer_cast<PerspectiveCamera>(this->camera);//dynamic_cast<std::shared_ptr<PerspectiveCamera>>(this->camera);
         Matrix4 &shadowMatrix = this->matrix;
 
-        const double far = std::dynamic_pointer_cast<PointLight>(light)->distance || camera.far;
+        const double far = light->distance() || camera.far;
 
         if ( far != camera.far ) {
             camera.far = far;

@@ -8,19 +8,41 @@
 #include "object_3d.h"
 #include "color.h"
 #include "common_types.h"
+#include "point_light_shadow.h"
 
 #include <string>
 
 class Light:public Object3D{
     public:
-        bool isLight = true;
-        threecpp::LightType type = threecpp::LightType::Light;
+        using LightType = threecpp::LightType;
+
         Color color;
-        double intensity = 1.0;
 
-        Light(Color color,double intensity = 1.0):color(color),intensity(intensity){}
+        Light(Color color,double intensity = 1.0):color(color),_intensity(intensity){}
 
-        Light(const Light &light):color(light.color),intensity(light.intensity){}
+        Light(const Light &light):color(light.color),_intensity(light.intensity()){}
+
+        bool isLight() const{return _isLight;}
+
+        void intensity(double intensity){_intensity=intensity;}
+
+        virtual LightType type() const {return _type;}
+
+        virtual double intensity() const {return _intensity;}
+
+        virtual double distance() const {}
+
+        virtual std::shared_ptr<LightShadow> shadow();
+
+        virtual bool isAmbientLight() const {};
+
+        virtual bool isLightProbe() const {};
+
+    protected:
+        bool _isLight = true;
+        LightType _type = LightType::Light;
+        double _intensity = 1.0;
+
 
 };
 

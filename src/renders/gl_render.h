@@ -13,13 +13,14 @@
 #include "vector3.h"
 #include "scenes/scene.h"
 #include "gl_render_target.h"
+#include "gl_state.h"
 #include "cameras/camera.h"
 //#include ""
 
 
 class GLRender {
 public:
-    // clearing
+    // clearing options
     bool autoClear = true;
     bool autoClearColor = true;
     bool autoClearDepth = true;
@@ -40,18 +41,23 @@ public:
 
     // tone mapping
     bool toneMapping = NoToneMapping;
-    int toneMappingExposure = 1.0;
+    float toneMappingExposure = 1.0;
 
 
-    let currentRenderList = null;
-    let currentRenderState = null;
+//    let currentRenderList = null;
+//    let currentRenderState = null;
+    std::vector<GLState> currentRenderState;
+
 
     // render() can be called from within a callback triggered by another render.
     // We track this so that the nested render call gets its list and state isolated from the parent render call.
-    const renderListStack = [];
-    const renderStateStack = [];
+//    const renderListStack = [];
+//    const renderStateStack = [];
 
-
+    // debug configuration container
+    struct RenderDebug{
+        bool checkShaderErrors = true;
+    } debug;
 
 
     GLRender(){
@@ -97,8 +103,6 @@ public:
 //             */
 //            checkShaderErrors: true
 //        };
-
-
 
 
     }
