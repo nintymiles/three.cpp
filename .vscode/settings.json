@@ -97,7 +97,11 @@
         "set": "cpp",
         "thread": "cpp",
         "unordered_set": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "multi_span": "cpp",
+        "span": "cpp",
+        "span_ext": "cpp",
+        "string_span": "cpp"
     },
     "latex-workshop.view.pdf.viewer": "tab",
     "latex-workshop.latex.clean.subfolder.enabled": true,

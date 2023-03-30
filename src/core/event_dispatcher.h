@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <memory>
 
-class EventDispatcher;
+#include "event_listener.h";
 /**
  * https://github.com/mrdoob/eventdispatcher.js/
  */
@@ -21,35 +21,35 @@ struct Event{
 
 
 class EventDispatcher {
-    std::map<std::string,std::vector<Event>> _listeners = {};
+    std::map<std::string,std::vector<EventListener*>> _listeners = {};
     //std::vector<Event> _listeners = {};
 	public:
 		EventDispatcher(){};
 
-		void addEventListener( std::string type,Event listener ) {
-			std::vector<Event>& events = _listeners[ type ];
-			auto findResult = std::find(begin(events),end(events),listener);
+		void addEventListener( std::string type,EventListener* listener ) {
+			std::vector<EventListener*>& listeners = _listeners[ type ];
+			auto findResult = std::find(begin(listeners),end(listeners),listener);
 
-			if(findResult!=std::end(events)){
+			if(findResult!=std::end(listeners)){
 				events.push_back( listener );
 			}
 		}
 
-		bool hasEventListener( std::string type,Event listener ) {
-			std::vector<Event>& events = _listeners[ type ];
-			auto findResult = std::find(begin(events),end(events),listener);
+		bool hasEventListener( std::string type,EventListener* listener ) {
+			std::vector<EventListener*>& listeners = _listeners[ type ];
+			auto findResult = std::find(begin(listeners),end(listeners),listener);
 
-			return findResult!=std::end(events) ;
+			return findResult!=std::end(listeners) ;
 
 		}
 
-		void removeEventListener( std::string type, Event listener ) {
-			std::vector<Event>& events = _listeners[ type ];
+		void removeEventListener( std::string type, EventListener* listener ) {
+			std::vector<EventListener*>& listeners = _listeners[ type ];
 			if(events.size() == 0) return;
 			
-			auto findResult = std::find(begin(events),end(events),listener);
+			auto findResult = std::find(begin(listeners),end(listeners),listener);
 
-			if(findResult!=std::end(events)){
+			if(findResult!=std::end(listeners)){
 				events.erase(findResult);
 			}
 
