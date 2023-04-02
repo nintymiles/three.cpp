@@ -16,11 +16,11 @@ class Light:public Object3D{
     public:
         using LightType = threecpp::LightType;
 
-        Color color;
+        Light(Color color,double intensity = 1.0):_color(color),_intensity(intensity){}
 
-        Light(Color color,double intensity = 1.0):color(color),_intensity(intensity){}
+        Light(const Light &light):_color(light.color()),_intensity(light.intensity()){}
 
-        Light(const Light &light):color(light.color),_intensity(light.intensity()){}
+        Color color() const{return _color;}
 
         bool isLight() const{return _isLight;}
 
@@ -36,12 +36,15 @@ class Light:public Object3D{
 
         virtual bool isAmbientLight() const {};
 
+        virtual bool isDirectionalLight() const {};
+
         virtual bool isLightProbe() const {};
 
     protected:
         bool _isLight = true;
         LightType _type = LightType::Light;
         double _intensity = 1.0;
+        Color _color;
 
 
 };

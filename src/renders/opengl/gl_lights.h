@@ -24,7 +24,7 @@ public:
         }
         std::map<std::string,std::any> uniforms;
 
-        switch( light.type ) {
+        switch( light.type() ) {
             case threecpp::LightType::Light:
                 uniforms = {
                     {"direction", Vector3()},
@@ -90,7 +90,7 @@ public:
         }
         std::map<std::string,std::any> uniforms;
 
-        switch( light.type ) {
+        switch( light.type() ) {
 
             case threecpp::LightType::DirectionalLight:
                 uniforms = {
@@ -199,11 +199,11 @@ class GLLights{
 
             std::shared_ptr<Light> light = lights[ i ];
 
-            Color& color = light->color;
+            Color& color = light->color();
             double intensity = light->intensity();
             double distance = light->distance();
 
-            const shadowMap = ( light->shadow() && light->shadow().map ) ? light.shadow.map.texture : null;
+            const shadowMap = ( light->shadow() && light->shadow().map ) ? light->shadow().map.texture : null;
 
             if ( light->isLight() && light->isAmbientLight() ) {
 
@@ -211,7 +211,7 @@ class GLLights{
                 g += color.g * intensity * scaleFactor;
                 b += color.b * intensity * scaleFactor;
 
-            } else if ( light.isLightProbe ) {
+            } else if ( light->isLightProbe() ) {
 
                 for ( int j = 0; j < 9; j ++ ) {
 
@@ -219,15 +219,15 @@ class GLLights{
 
                 }
 
-            } else if ( light.isDirectionalLight ) {
+            } else if ( light->isDirectionalLight() ) {
 
                 const uniforms = cache.get( light );
 
-                uniforms.color.copy( light.color ).multiplyScalar( light.intensity * scaleFactor );
+                uniforms.color.copy( light->color() ).multiplyScalar( light->intensity() * scaleFactor );
 
-                if ( light.castShadow ) {
+                if ( light->castShadow ) {
 
-                    const shadow = light.shadow;
+                    std::shared_ptr<LightShadow> shadow = light->shadow();
 
                     const shadowUniforms = shadowCache.get( light );
 
