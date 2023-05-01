@@ -8,31 +8,31 @@ struct IndexValue{
     int bytesPerElement;
 };
 
-class WebGLIndexedBufferRenderer{
+class OpenGLIndexedBufferRenderer{
 private:
     GLenum mode;
     GLenum type;
     int bytesPerElement;
 
 public:
-    WebGLIndexedBufferRenderer& setMode(GLenum modeVal){
+    OpenGLIndexedBufferRenderer& setMode(GLenum modeVal){
         mode = modeVal;
         return *this;
     }
 
-    WebGLIndexedBufferRenderer& setIndex(IndexValue& indexValue){
+    OpenGLIndexedBufferRenderer& setIndex(IndexValue& indexValue){
         type = indexValue.type;
         bytesPerElement = indexValue.bytesPerElement;
         return *this;
     }
 
-    WebGLIndexedBufferRenderer& render(int start,int count){
+    OpenGLIndexedBufferRenderer& render(int start,int count){
         glDrawElements(mode,count,GL_UNSIGNED_BYTE, nullptr);
         return *this;
     }
 
 
-    WebGLIndexedBufferRenderer& renderInstances(int start,int count,int instanceCount){
+    OpenGLIndexedBufferRenderer& renderInstances(int start,int count,int instanceCount){
         glDrawElementsInstanced(mode,count,GL_UNSIGNED_BYTE, nullptr,instanceCount);
         return *this;
     }
