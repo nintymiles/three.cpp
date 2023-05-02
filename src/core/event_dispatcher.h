@@ -10,6 +10,8 @@
 /**
  * https://github.com/mrdoob/eventdispatcher.js/
  */
+class EventDispatcher;
+
 struct Event{
 	std::string type;
 	std::shared_ptr<EventDispatcher> target;
