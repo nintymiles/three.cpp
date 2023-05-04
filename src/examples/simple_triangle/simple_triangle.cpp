@@ -347,8 +347,8 @@ int main(int, char**)
             glBindVertexArray(0);
             
             glUseProgram(shaderProgram);
-                    glBindVertexArray(VAO);
-                    glDrawArrays(GL_TRIANGLES, 0, 3);
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
 
             //ImDrawList::AddCallback(graphicsEngine->render(),nullptr);
             
