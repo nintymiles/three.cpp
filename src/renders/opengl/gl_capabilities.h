@@ -9,7 +9,7 @@
 #include <map>
 #include <GLES3/gl3.h>
 
-class OpenGLCapabilities{
+class GLCapabilities{
 public:
   int maxAnisotropy;
   bool isGLES3 = true;
@@ -47,7 +47,7 @@ public:
         return "lowp";
     }
 
-    OpenGLCapabilities(std::map<std::string,std::string> parameters){
+    GLCapabilities(std::map<std::string,std::string> parameters){
 
         std::string precision = parameters.find("precision")!=end(parameters)?parameters.at("precesion"):"highp";
 
@@ -96,7 +96,7 @@ public:
 
 };
 
-//static const OpenGLCapabilities instance{{}};
+//static const GLCapabilities instance{{}};
 
 
 

@@ -1,6 +1,8 @@
 #ifndef SRC_COMMON_TYPES_H_
 #define SRC_COMMON_TYPES_H_
 
+#include <GLES3/gl3.h>
+
 namespace threecpp {
 
 struct Range{
@@ -25,6 +27,12 @@ union GeometryValue{
 union UniformValue{
     double d;
     int i;
+};
+
+struct GLVertexAttribute{
+    GLenum type;
+    GLint location;
+    GLint locationSize;
 };
 
 struct GLViewPort

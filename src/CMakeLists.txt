@@ -98,7 +98,7 @@ add_executable(
   #${ROOT_DIR}/src/test/color_test.cpp;
   #${ROOT_DIR}/src/test/vector3_test.cpp;
   #${ROOT_DIR}/src/test/quaternion_test.cpp
-)
+        renders/opengl/gl_info.h utils/string_utils.h utils/string_utils.cpp)
 target_link_libraries(
   threecpp_test
   GSL
