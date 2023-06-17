@@ -15,6 +15,7 @@
 #include "common_types.h"
 #include "../utils/string_utils.h"
 #include "../utils/string_format.h"
+#include "shaders/shader_chunk/shder_chunk.h"
 
 /**
  * all kinds of shader parameters
@@ -254,6 +255,42 @@ std::map<std::string,threecpp::GLVertexAttribute> fetchAttributeLocations( GLint
     }
 
     return attributes;
+}
+
+std::string resolveIncludes( std::string shaderStr ) {
+    using std::regex;
+    using std::sregex_iterator;
+    using std::string;
+    using std::smatch;
+    using std::regex_search;
+
+    regex pattern("^[ \\t]*#include +<([\\w\\d./]+)>");
+//    smatch result_match;
+//    if(std::regex_search(text,result_match,pattern))
+//        std::cout << result_match.str(0) << " || " << result_match.str(1) << endl;
+//    else
+//        std::cout << "not found" << std::endl;
+//    //std::cout << '\n' << regex_replace(text, pattern, "[$&]") << '\n';
+
+    string replacedStr=shaderStr;
+    for (sregex_iterator it(text.begin(), text.end(), pattern), end_it;
+         it != end_it; ++it){
+        smatch m = *it;
+        if(m[1].matched){
+            std::cout << m.position() << " || " << m.str(1) << endl;
+            std::string::size_type pos{};
+            pos = replacedStr.find(m.str(),0);
+            if(pos!=replacedStr.npos){
+                replacedStr.replace(pos,m.str().size(),ShaderChunk[m.str(1)]);
+            }
+        }else{
+            std::cout << "not found" << std::endl;
+        }
+
+    }
+    std::cout << replacedStr << std::endl;
+
+    return replacedStr;
 }
 
 
