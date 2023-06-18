@@ -1,9 +1,9 @@
 //
-// Created by Willie on 2023/6/17.
+// Created by Willie on 2023/6/18.
 //
 
-#ifndef THREE_CPP_BEGIN_VERTEX_GLSL_H
-#define THREE_CPP_BEGIN_VERTEX_GLSL_H
+#ifndef THREE_CPP_ALPHATEST_PARS_FRAGMENT_GLSL_H
+#define THREE_CPP_ALPHATEST_PARS_FRAGMENT_GLSL_H
 
 namespace shader_chunk {
 
@@ -16,4 +16,5 @@ char* alphatest_pars_fragment = R""""(
 
 }
 
-#endif //THREE_CPP_BEGIN_VERTEX_GLSL_H
+
+#endif //THREE_CPP_ALPHATEST_PARS_FRAGMENT_GLSL_H

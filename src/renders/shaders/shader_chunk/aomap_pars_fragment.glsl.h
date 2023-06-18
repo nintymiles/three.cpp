@@ -2,8 +2,8 @@
 // Created by Willie on 2023/6/17.
 //
 
-#ifndef THREE_CPP_BEGIN_VERTEX_GLSL_H
-#define THREE_CPP_BEGIN_VERTEX_GLSL_H
+#ifndef THREE_CPP_AOMAP_PAR_FRAGMENT_GLSL_H
+#define THREE_CPP_AOMAP_PAR_FRAGMENT_GLSL_H
 
 namespace shader_chunk {
 
@@ -19,4 +19,4 @@ char* aomap_pars_fragment = R""""(
 
 }
 
-#endif //THREE_CPP_BEGIN_VERTEX_GLSL_H
+#endif //THREE_CPP_AOMAP_PAR_FRAGMENT_GLSL_H
