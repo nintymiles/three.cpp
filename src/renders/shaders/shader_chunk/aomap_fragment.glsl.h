@@ -1,5 +1,5 @@
 //
-// Created by Willie on 2023/6/18.
+// Created by SeanR on 2023/6/18.
 //
 
 #ifndef THREE_CPP_AOMAP_FRAGMENT_GLSL_H

@@ -1,5 +1,5 @@
 //
-// Created by Willie on 2023/6/17.
+// Created by SeanR on 2023/6/17.
 //
 
 #ifndef THREE_CPP_BEGIN_VERTEX_GLSL_H
