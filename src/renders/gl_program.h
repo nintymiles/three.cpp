@@ -7,15 +7,18 @@
 
 #include <GLES3/gl3.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 #include <string>
 #include <algorithm>
 #include <map>
+#include <regex>
+#include <iostream>
 
 #include "constants.h"
 #include "common_types.h"
 #include "../utils/string_utils.h"
-#include "../utils/string_format.h"
-#include "shaders/shader_chunk/shder_chunk.h"
+//#include "../utils/string_format.h"
+#include "shaders/shader_chunk.h"
 
 /**
  * all kinds of shader parameters
@@ -84,7 +87,8 @@ std::string handleSource(std::string str,int errorLine){
 
     for(int i = from;i < to;i++){
         int lineNo = i + 1;
-        auto fmtLineStr = string_format::format("{0}{1}: {2}",lineNo==errorLine?">":" ",lineNo,lines[i]);
+        //auto fmtLineStr = string_format::format("{0}{1}: {2}",lineNo==errorLine?">":" ",lineNo,lines[i]);
+        auto fmtLineStr = fmt::format("{0}{1}: {2}",lineNo==errorLine?">":" ",lineNo,lines[i]);
         lines2.push_back(fmtLineStr);
     }
     return string_utils::join(lines2);
@@ -129,7 +133,7 @@ std::string getShaderErrors(GLint shader,std::string type){
         glGetShaderiv( shader, GL_SHADER_SOURCE_LENGTH, &len );
         std::string source( static_cast<size_t>( len + 1 ), '\0' );
         glGetShaderSource( shader, len+1, nullptr, &source[0] );
-        std::regex pattern("/ERROR: 0:(\\d+)/");
+        std::regex pattern("ERROR: 0:(\\d+)");
         std::smatch errorMatches;
         if(std::regex_search(errMsgStr,errorMatches,pattern)){
             std::string errorLine = errorMatches.str();
@@ -273,25 +277,71 @@ std::string resolveIncludes( std::string shaderStr ) {
 //    //std::cout << '\n' << regex_replace(text, pattern, "[$&]") << '\n';
 
     string replacedStr=shaderStr;
-    for (sregex_iterator it(text.begin(), text.end(), pattern), end_it;
+    for (sregex_iterator it(shaderStr.begin(), shaderStr.end(), pattern), end_it;
          it != end_it; ++it){
         smatch m = *it;
         if(m[1].matched){
-            std::cout << m.position() << " || " << m.str(1) << endl;
-            std::string::size_type pos{};
+            //std::cout << m.position() << " || " << m.str(1) << std::endl;
+            spdlog::debug("{0} || {1}",m.position(),m.str(1));
+            string::size_type pos{};
             pos = replacedStr.find(m.str(),0);
             if(pos!=replacedStr.npos){
                 replacedStr.replace(pos,m.str().size(),ShaderChunk[m.str(1)]);
             }
         }else{
-            std::cout << "not found" << std::endl;
+            //std::cout << "not found" << std::endl;
+            spdlog::warn("not found");
         }
 
     }
-    std::cout << replacedStr << std::endl;
+    //std::cout << replacedStr << std::endl;
+    spdlog::debug("combined shader string ===== {}",replacedStr);
 
     return replacedStr;
 }
+
+// Unroll Loops
+std::string unrollLoops( std::string shaderStr ) {
+    using std::regex;
+    using std::sregex_iterator;
+    using std::regex_replace;
+    using std::smatch;
+    using std::string;
+
+    regex pattern("#pragma unroll_loop_start\\s+for\\s*\\(\\s*int\\s+i\\s*=\\s*(\\d+)\\s*;\\s*i\\s*<\\s*(\\d+)\\s*;\\s*i\\s*\\+\\+\\s*\\)\\s*{([\\s\\S]+?)}\\s+#pragma unroll_loop_end");
+    string replacedStr = shaderStr;
+    for (sregex_iterator it(shaderStr.begin(), shaderStr.end(), pattern), end_it;
+         it != end_it; ++it){
+        smatch m = *it;
+        if(m[1].matched){
+            spdlog::debug("{0} || {1}",m.position(),m.str(1));
+            string::size_type pos{};
+            pos = replacedStr.find(m.str(),0);
+            if(pos!=replacedStr.npos){
+                replacedStr.replace(pos,m.str().size(),ShaderChunk[m.str(1)]);
+            }
+        }else{
+            spdlog::warn("not found");
+        }
+
+    }
+    //return string.replace( unrollLoopPattern, loopReplacer );
+    return replacedStr;
+}
+
+//function loopReplacer( match, start, end, snippet ) {
+//
+//    let string = '';
+//
+//    for ( let i = parseInt( start ); i < parseInt( end ); i ++ ) {
+//
+//        string += snippet
+//                          .replace( /\[\s*i\s*\]/g, '[ ' + i + ' ]' )
+//        .replace( /UNROLLED_LOOP_INDEX/g, i );
+//    }
+//
+//    return string;
+//}
 
 
 
