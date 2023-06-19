@@ -495,7 +495,9 @@ std::tuple<float,float,float> generateCubeUVSize( const GLProgramParameters& par
 }
 
 
+class GLProgram{
 
+};
 
 
 
