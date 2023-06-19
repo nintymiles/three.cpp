@@ -13,6 +13,8 @@
 #include <map>
 #include <regex>
 #include <iostream>
+#include <tuple>
+#include <cmath>
 
 #include "constants.h"
 #include "common_types.h"
@@ -32,7 +34,8 @@ struct GLProgramParameters{
     bool useFog=false,fog=false,fogExp2=false;
     bool map = false;
     bool matcap=false;
-    bool envMap = false,envMapCubeUVHeight=false;
+    bool envMap = false;
+    double envMapCubeUVHeight;
     bool lightMap = false;
     bool aoMap = false;
     bool emissivMap = false;
@@ -82,6 +85,7 @@ struct GLProgramParameters{
 
     int shadowMapType;
     int envMapMode;
+    int combine;
 
 };
 
@@ -451,6 +455,43 @@ std::string generateEnvMapModeDefine( const GLProgramParameters& parameters ) {
     }
 
     return envMapModeDefine;
+}
+
+
+std::string generateEnvMapBlendingDefine( const GLProgramParameters& parameters ) {
+    using std::string;
+    string envMapBlendingDefine = "ENVMAP_BLENDING_NONE";
+
+    if ( parameters.envMap ) {
+
+        switch ( parameters.combine ) {
+            case MultiplyOperation:
+                envMapBlendingDefine = "ENVMAP_BLENDING_MULTIPLY";
+                break;
+            case MixOperation:
+                envMapBlendingDefine = "ENVMAP_BLENDING_MIX";
+                break;
+            case AddOperation:
+                envMapBlendingDefine = "ENVMAP_BLENDING_ADD";
+                break;
+        }
+
+    }
+
+    return envMapBlendingDefine;
+}
+
+std::tuple<float,float,float> generateCubeUVSize( const GLProgramParameters& parameters ) {
+    using std::tuple;
+    double imageHeight = parameters.envMapCubeUVHeight;
+
+    if ( imageHeight == 0 ) return tuple<double,double,double>{0,0,0};
+
+    double maxMip = std::log2( imageHeight ) - 2;
+    double texelHeight = 1.0 / imageHeight;
+    double texelWidth = 1.0 / ( 3 * std::max<double>( std::pow( 2, maxMip ), 7 * 16 ) );
+
+    return { texelWidth, texelHeight, maxMip };
 }
 
 
