@@ -70,7 +70,18 @@ struct GLProgramParameters{
 
     std::string glslVersion;
     std::string shaderID;
+    std::string precision;
 
+    int numSpotLightShadows,numSpotLightMaps,numSpotLightShadowsWithMaps,numSpotLights;
+
+    int numDirLights,numDirLightShadows;
+    int numRectAreaLights,numHemiLights;
+    int numPointLightShadows,numPointLights;
+
+    int numClippingPlanes,numClipIntersection;
+
+    int shadowMapType;
+    int envMapMode;
 
 };
 
@@ -261,6 +272,37 @@ std::map<std::string,threecpp::GLVertexAttribute> fetchAttributeLocations( GLint
     return attributes;
 }
 
+//string replace function reference:
+//https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string
+std::string replaceLightNums( std::string string, GLProgramParameters parameters ) {
+    using std::to_string;
+
+    int numSpotLightCoords = parameters.numSpotLightShadows + parameters.numSpotLightMaps - parameters.numSpotLightShadowsWithMaps;
+
+    string = std::regex_replace(string, std::regex("/NUM_DIR_LIGHTS/g"), to_string(parameters.numDirLights));
+    string = std::regex_replace(string, std::regex("/NUM_SPOT_LIGHTS/g"), to_string(parameters.numSpotLights));
+    string = std::regex_replace(string, std::regex("/NUM_SPOT_LIGHT_MAPS/g"), to_string(parameters.numSpotLightMaps));
+    string = std::regex_replace(string, std::regex("/NUM_SPOT_LIGHT_COORDS/g"), to_string(numSpotLightCoords));
+    string = std::regex_replace(string, std::regex("/NUM_RECT_AREA_LIGHTS/g"), to_string(parameters.numRectAreaLights));
+    string = std::regex_replace(string, std::regex("/NUM_POINT_LIGHTS/g"), to_string(parameters.numPointLights));
+    string = std::regex_replace(string, std::regex("/NUM_HEMI_LIGHTS/g"), to_string(parameters.numHemiLights));
+    string = std::regex_replace(string, std::regex("/NUM_DIR_LIGHT_SHADOWS/g"), to_string(parameters.numDirLightShadows));
+    string = std::regex_replace(string, std::regex("/NUM_SPOT_LIGHT_SHADOWS_WITH_MAPS/g"), to_string(parameters.numSpotLightShadowsWithMaps));
+    string = std::regex_replace(string, std::regex("/NUM_SPOT_LIGHT_SHADOWS/g"), to_string(parameters.numSpotLightShadows));
+    string = std::regex_replace(string, std::regex("/NUM_POINT_LIGHT_SHADOWS/g"), to_string(parameters.numPointLightShadows));
+
+    return string;
+}
+
+std::string  replaceClippingPlaneNums( std::string string, GLProgramParameters parameters ) {
+    using std::to_string;
+
+    string = std::regex_replace(string, std::regex("/NUM_CLIPPING_PLANES/g"), to_string(parameters.numClippingPlanes));
+    string = std::regex_replace(string, std::regex("/UNION_CLIPPING_PLANES/g"), to_string(parameters.numClippingPlanes - parameters.numClipIntersection));
+
+    return string;
+}
+
 std::string resolveIncludes( std::string shaderStr ) {
     using std::regex;
     using std::sregex_iterator;
@@ -342,6 +384,78 @@ std::string unrollLoops( std::string shaderStr ) {
 //
 //    return string;
 //}
+
+std::string generatePrecision( const GLProgramParameters& parameters ) {
+    using std::string;
+
+    string precisionstring = "precision " + parameters.precision + " float;\\nprecision"  + parameters.precision + " int;";
+
+    if ( parameters.precision == "highp" ) {
+        precisionstring += "\\n#define HIGH_PRECISION";
+    } else if ( parameters.precision == "mediump" ) {
+        precisionstring += "\\n#define MEDIUM_PRECISION";
+
+    } else if ( parameters.precision == "lowp" ) {
+        precisionstring += "\\n#define LOW_PRECISION";
+    }
+
+    return precisionstring;
+}
+
+std::string generateShadowMapTypeDefine( const GLProgramParameters& parameters ) {
+    using std::string;
+    string shadowMapTypeDefine = "SHADOWMAP_TYPE_BASIC";
+
+    if ( parameters.shadowMapType == PCFShadowMap ) {
+        shadowMapTypeDefine = "SHADOWMAP_TYPE_PCF";
+    } else if ( parameters.shadowMapType == PCFSoftShadowMap ) {
+        shadowMapTypeDefine = "SHADOWMAP_TYPE_PCF_SOFT";
+    } else if ( parameters.shadowMapType == VSMShadowMap ) {
+        shadowMapTypeDefine = "SHADOWMAP_TYPE_VSM";
+    }
+
+    return shadowMapTypeDefine;
+}
+
+std::string generateEnvMapTypeDefine( const GLProgramParameters& parameters ) {
+    using std::string;
+    string envMapTypeDefine = "ENVMAP_TYPE_CUBE";
+
+    if ( parameters.envMap ) {
+
+        switch ( parameters.envMapMode ) {
+            case CubeReflectionMapping:
+            case CubeRefractionMapping:
+                envMapTypeDefine = 'ENVMAP_TYPE_CUBE';
+                break;
+            case CubeUVReflectionMapping:
+                envMapTypeDefine = 'ENVMAP_TYPE_CUBE_UV';
+                break;
+        }
+
+    }
+
+    return envMapTypeDefine;
+}
+
+std::string generateEnvMapModeDefine( const GLProgramParameters& parameters ) {
+    using std::string;
+    string envMapModeDefine = "ENVMAP_MODE_REFLECTION";
+
+    if ( parameters.envMap ) {
+        switch ( parameters.envMapMode ) {
+            case CubeRefractionMapping:
+                envMapModeDefine = "ENVMAP_MODE_REFRACTION";
+                break;
+        }
+    }
+
+    return envMapModeDefine;
+}
+
+
+
+
 
 
 
