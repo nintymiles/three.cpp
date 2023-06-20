@@ -21,6 +21,7 @@
 #include "../utils/string_utils.h"
 //#include "../utils/string_format.h"
 #include "shaders/shader_chunk.h"
+#include "gl_renderer.h"
 
 /**
  * all kinds of shader parameters
@@ -38,7 +39,7 @@ struct GLProgramParameters{
     double envMapCubeUVHeight;
     bool lightMap = false;
     bool aoMap = false;
-    bool emissivMap = false;
+    bool emissiveMap = false;
     bool bumpMap=false;
     bool normalMap=false,objectSpaceNormalMap=false,tangentSpaceNormalMap=false;
     bool clearcoat=false,clearcoatMap=false,clearcoatRoughnessMap=false,clearcoatNormalMap=false;
@@ -53,7 +54,7 @@ struct GLProgramParameters{
     bool thicknessMap;
     bool decodeVideoTexturev;
     bool vertexTangents,vertexColors,vertexAlphas,vertexUvs,uvsVertexOnly;
-    bool gradientMap;
+    bool gradientMap,displacementMap;
     bool flatShading;
     bool doubleSided,flipSided;
     bool shadowMapEnabled;
@@ -67,13 +68,17 @@ struct GLProgramParameters{
     bool dithering;
     bool opaque;
     bool useDepthPacking;
+    bool skinning;
 
     bool extensionDerivatives,extensionFragDepth,extensionDrawBuffers,extensionShaderTextureLOD;
     bool rendererExtensionDrawBuffers,rendererExtensionShaderTextureLod;
+    bool isRawShaderMaterial;
 
     std::string glslVersion;
     std::string shaderID;
     std::string precision;
+    std::string vertexShader,fragmentShader;
+    std::string shaderName;
 
     int numSpotLightShadows,numSpotLightMaps,numSpotLightShadowsWithMaps,numSpotLights;
 
@@ -86,6 +91,16 @@ struct GLProgramParameters{
     int shadowMapType;
     int envMapMode;
     int combine;
+    int morphTargetsCount,morphTextureStride;
+
+    bool morphTargets,morphNormals,morphColors;
+    bool sizeAttenuation,decodeVideoTexture;
+
+    int outputEncoding;
+    int depthPacking;
+
+
+    std::map<std::string,std::string> defines;
 
 };
 
@@ -496,7 +511,374 @@ std::tuple<float,float,float> generateCubeUVSize( const GLProgramParameters& par
 
 
 class GLProgram{
+public:
+    GLProgram()=delete;
+    GLProgram(const GLRenderer& renderer,const std::string& cacheKey,const GLProgramParameters& parameters):cacheKey(cacheKey){};
 
+private:
+    void init(const GLProgramParameters& parameters){
+        auto shaderSourcePair = generateShaderGLSL(parameters);
+        program = glCreateProgram();
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        vertexShader
+    }
+
+    std::pair<std::string,std::string> generateShaderGLSL(const GLProgramParameters& parameters){
+        using std::map,std::string,std::vector;
+        using std::tuple;
+
+        map<string,string> defines = parameters.defines;
+
+        string vertexShader = parameters.vertexShader;
+        string fragmentShader = parameters.fragmentShader;
+
+        string shadowMapTypeDefine = generateShadowMapTypeDefine( parameters );
+        string envMapTypeDefine = generateEnvMapTypeDefine( parameters );
+        string envMapModeDefine = generateEnvMapModeDefine( parameters );
+        string envMapBlendingDefine = generateEnvMapBlendingDefine( parameters );
+        tuple<double,double,double> envMapCubeUVSize = generateCubeUVSize( parameters );
+
+        string customExtensions = parameters.isGLES3 ? "" : generateExtensions( parameters );
+
+        string customDefines = generateDefines( defines );
+
+        //const program = gl.createProgram();
+
+        string prefixVertex, prefixFragment;
+        string versionString = parameters.glslVersion!="" ? "#version " + parameters.glslVersion + "\\n" : "";
+
+        if ( parameters.isRawShaderMaterial ) {
+
+            //prefixVertex = [customDefines].filter( filterEmptyLine ).join( '\n' );
+            prefixVertex = customDefines;
+
+            if ( prefixVertex.size() > 0 ) {
+                prefixVertex += "\n";
+            }
+
+//            prefixFragment = [
+//
+//                    customExtensions,
+//                    customDefines
+//
+//            ].filter( filterEmptyLine ).join( '\n' );
+            if(customDefines!="" && customExtensions!="")
+                prefixFragment = customExtensions + "\\n" + customDefines;
+
+            if ( prefixFragment.size() > 0 ) {
+                prefixFragment += "\\n";
+            }
+
+        } else {
+            vector<string> prefixVertexVec{
+                        generatePrecision( parameters ),
+                        "#define SHADER_NAME " + parameters.shaderName,
+                        customDefines,
+                        parameters.instancing ? "#define USE_INSTANCING" : "",
+                        parameters.instancingColor ? "#define USE_INSTANCING_COLOR" : "",
+                        parameters.supportsVertexTextures ? "#define VERTEX_TEXTURES" : "",
+                        ( parameters.useFog && parameters.fog ) ? "#define USE_FOG" : "",
+                        ( parameters.useFog && parameters.fogExp2 ) ? "#define FOG_EXP2" : "",
+                        parameters.map ? "#define USE_MAP" : "",
+                        parameters.envMap ? "#define " + envMapModeDefine : "",
+                        parameters.lightMap ? "#define USE_LIGHTMAP" : "",
+                        parameters.aoMap ? "#define USE_AOMAP" : "",
+                        parameters.emissiveMap ? "#define USE_EMISSIVEMAP" : "",
+                        parameters.bumpMap ? "#define USE_BUMPMAP" : "",
+                        parameters.normalMap ? "#define USE_NORMALMAP" : "",
+                        ( parameters.normalMap && parameters.objectSpaceNormalMap ) ? "#define OBJECTSPACE_NORMALMAP" : "",
+                        ( parameters.normalMap && parameters.tangentSpaceNormalMap ) ? "#define TANGENTSPACE_NORMALMAP" : "",
+
+                        parameters.clearcoatMap ? "#define USE_CLEARCOATMAP" : "",
+                        parameters.clearcoatRoughnessMap ? "#define USE_CLEARCOAT_ROUGHNESSMAP" : "",
+                        parameters.clearcoatNormalMap ? "#define USE_CLEARCOAT_NORMALMAP" : "",
+
+                        parameters.iridescenceMap ? "#define USE_IRIDESCENCEMAP" : "",
+                        parameters.iridescenceThicknessMap ? "#define USE_IRIDESCENCE_THICKNESSMAP" : "",
+
+                        parameters.displacementMap && parameters.supportsVertexTextures ? "#define USE_DISPLACEMENTMAP" : "",
+
+                        parameters.specularMap ? "#define USE_SPECULARMAP" : "",
+                        parameters.specularIntensityMap ? "#define USE_SPECULARINTENSITYMAP" : "",
+                        parameters.specularColorMap ? "#define USE_SPECULARCOLORMAP" : "",
+
+                        parameters.roughnessMap ? "#define USE_ROUGHNESSMAP" : "",
+                        parameters.metalnessMap ? "#define USE_METALNESSMAP" : "",
+                        parameters.alphaMap ? "#define USE_ALPHAMAP" : "",
+
+                        parameters.transmission ? "#define USE_TRANSMISSION" : "",
+                        parameters.transmissionMap ? "#define USE_TRANSMISSIONMAP" : "",
+                        parameters.thicknessMap ? "#define USE_THICKNESSMAP" : "",
+
+                        parameters.sheenColorMap ? "#define USE_SHEENCOLORMAP" : "",
+                        parameters.sheenRoughnessMap ? "#define USE_SHEENROUGHNESSMAP" : "",
+
+                        parameters.vertexTangents ? "#define USE_TANGENT" : "",
+                        parameters.vertexColors ? "#define USE_COLOR" : "",
+                        parameters.vertexAlphas ? "#define USE_COLOR_ALPHA" : "",
+                        parameters.vertexUvs ? "#define USE_UV" : "",
+                        parameters.uvsVertexOnly ? "#define UVS_VERTEX_ONLY" : "",
+
+                        parameters.flatShading ? "#define FLAT_SHADED" : "",
+
+                        parameters.skinning ? "#define USE_SKINNING" : "",
+
+                        parameters.morphTargets ? "#define USE_MORPHTARGETS" : "",
+                        parameters.morphNormals && parameters.flatShading == false ? "#define USE_MORPHNORMALS" : "",
+                        ( parameters.morphColors && parameters.isGLES3 ) ? "#define USE_MORPHCOLORS" : "",
+                        ( parameters.morphTargetsCount > 0 && parameters.isGLES3 ) ? "#define MORPHTARGETS_TEXTURE" : "",
+                        ( parameters.morphTargetsCount > 0 && parameters.isGLES3 ) ? "#define MORPHTARGETS_TEXTURE_STRIDE " + parameters.morphTextureStride : "",
+                        ( parameters.morphTargetsCount > 0 && parameters.isGLES3 ) ? "#define MORPHTARGETS_COUNT " + parameters.morphTargetsCount : "",
+                        parameters.doubleSided ? "#define DOUBLE_SIDED" : "",
+                        parameters.flipSided ? "#define FLIP_SIDED" : "",
+
+                        parameters.shadowMapEnabled ? "#define USE_SHADOWMAP" : "",
+                        parameters.shadowMapEnabled ? "#define " + shadowMapTypeDefine : "",
+
+                        parameters.sizeAttenuation ? "#define USE_SIZEATTENUATION" : "",
+
+                        parameters.logarithmicDepthBuffer ? "#define USE_LOGDEPTHBUF" : "",
+                        ( parameters.logarithmicDepthBuffer && parameters.rendererExtensionFragDepth ) ? "#define USE_LOGDEPTHBUF_EXT" : "",
+
+                        "uniform mat4 modelMatrix;",
+                        "uniform mat4 modelViewMatrix;",
+                        "uniform mat4 projectionMatrix;",
+                        "uniform mat4 viewMatrix;",
+                        "uniform mat3 normalMatrix;",
+                        "uniform vec3 cameraPosition;",
+                        "uniform bool isOrthographic;",
+
+                        "#ifdef USE_INSTANCING",
+
+                        "	attribute mat4 instanceMatrix;",
+
+                        "#endif",
+
+                        "#ifdef USE_INSTANCING_COLOR",
+
+                        "	attribute vec3 instanceColor;",
+
+                        "#endif",
+
+                        "attribute vec3 position;",
+                        "attribute vec3 normal;",
+                        "attribute vec2 uv;",
+
+                        "#ifdef USE_TANGENT",
+
+                        "	attribute vec4 tangent;",
+
+                        "#endif",
+
+                        "#if defined( USE_COLOR_ALPHA )",
+
+                        "	attribute vec4 color;",
+
+                        "#elif defined( USE_COLOR )",
+
+                        "	attribute vec3 color;",
+
+                        "#endif",
+
+                        "#if ( defined( USE_MORPHTARGETS ) && ! defined( MORPHTARGETS_TEXTURE ) )",
+
+                        "	attribute vec3 morphTarget0;",
+                        "	attribute vec3 morphTarget1;",
+                        "	attribute vec3 morphTarget2;",
+                        "	attribute vec3 morphTarget3;",
+
+                        "	#ifdef USE_MORPHNORMALS",
+
+                        "		attribute vec3 morphNormal0;",
+                        "		attribute vec3 morphNormal1;",
+                        "		attribute vec3 morphNormal2;",
+                        "		attribute vec3 morphNormal3;",
+
+                        "	#else",
+
+                        "		attribute vec3 morphTarget4;",
+                        "		attribute vec3 morphTarget5;",
+                        "		attribute vec3 morphTarget6;",
+                        "		attribute vec3 morphTarget7;",
+
+                        "	#endif",
+
+                        "#endif",
+
+                        "#ifdef USE_SKINNING",
+
+                        "	attribute vec4 skinIndex;",
+                        "	attribute vec4 skinWeight;",
+
+                        "#endif",
+
+                        "\\n"
+
+                        };
+
+
+            prefixVertex = string_utils::join(prefixVertexVec,"\\n");
+
+            vector<string> prefixFragmentVec{
+                    customExtensions,
+
+                    generatePrecision( parameters ),
+
+                    "#define SHADER_NAME " + parameters.shaderName,
+
+                    customDefines,
+
+                    ( parameters.useFog && parameters.fog ) ? "#define USE_FOG" : "",
+                    ( parameters.useFog && parameters.fogExp2 ) ? "#define FOG_EXP2" : "",
+
+                    parameters.map ? "#define USE_MAP" : "",
+                    parameters.matcap ? "#define USE_MATCAP" : "",
+                    parameters.envMap ? "#define USE_ENVMAP" : "",
+                    parameters.envMap ? "#define " + envMapTypeDefine : "",
+                    parameters.envMap ? "#define " + envMapModeDefine : "",
+                    parameters.envMap ? "#define " + envMapBlendingDefine : "",
+
+                    parameters.envMapCubeUVHeight ? fmt::format("#define CUBEUV_TEXEL_WIDTH {}" , std::get<0>(envMapCubeUVSize)) : "",
+                    parameters.envMapCubeUVHeight ? fmt::format("#define CUBEUV_TEXEL_HEIGHT {}" , std::get<1>(envMapCubeUVSize)) : "",
+                    parameters.envMapCubeUVHeight ? fmt::format("#define CUBEUV_MAX_MIP {}.0" , std::get<2>(envMapCubeUVSize)) : "",
+                    parameters.lightMap ? "#define USE_LIGHTMAP" : "",
+                    parameters.aoMap ? "#define USE_AOMAP" : "",
+                    parameters.emissiveMap ? "#define USE_EMISSIVEMAP" : "",
+                    parameters.bumpMap ? "#define USE_BUMPMAP" : "",
+                    parameters.normalMap ? "#define USE_NORMALMAP" : "",
+                    ( parameters.normalMap && parameters.objectSpaceNormalMap ) ? "#define OBJECTSPACE_NORMALMAP" : "",
+                    ( parameters.normalMap && parameters.tangentSpaceNormalMap ) ? "#define TANGENTSPACE_NORMALMAP" : "",
+
+                    parameters.clearcoat ? "#define USE_CLEARCOAT" : "",
+                    parameters.clearcoatMap ? "#define USE_CLEARCOATMAP" : "",
+                    parameters.clearcoatRoughnessMap ? "#define USE_CLEARCOAT_ROUGHNESSMAP" : "",
+                    parameters.clearcoatNormalMap ? "#define USE_CLEARCOAT_NORMALMAP" : "",
+
+                    parameters.iridescence ? "#define USE_IRIDESCENCE" : "",
+                    parameters.iridescenceMap ? "#define USE_IRIDESCENCEMAP" : "",
+                    parameters.iridescenceThicknessMap ? "#define USE_IRIDESCENCE_THICKNESSMAP" : "",
+
+                    parameters.specularMap ? "#define USE_SPECULARMAP" : "",
+                    parameters.specularIntensityMap ? "#define USE_SPECULARINTENSITYMAP" : "",
+                    parameters.specularColorMap ? "#define USE_SPECULARCOLORMAP" : "",
+                    parameters.roughnessMap ? "#define USE_ROUGHNESSMAP" : "",
+                    parameters.metalnessMap ? "#define USE_METALNESSMAP" : "",
+
+                    parameters.alphaMap ? "#define USE_ALPHAMAP" : "",
+                    parameters.alphaTest ? "#define USE_ALPHATEST" : "",
+
+                    parameters.sheen ? "#define USE_SHEEN" : "",
+                    parameters.sheenColorMap ? "#define USE_SHEENCOLORMAP" : "",
+                    parameters.sheenRoughnessMap ? "#define USE_SHEENROUGHNESSMAP" : "",
+
+                    parameters.transmission ? "#define USE_TRANSMISSION" : "",
+                    parameters.transmissionMap ? "#define USE_TRANSMISSIONMAP" : "",
+                    parameters.thicknessMap ? "#define USE_THICKNESSMAP" : "",
+
+                    parameters.decodeVideoTexture ? "#define DECODE_VIDEO_TEXTURE" : "",
+
+                    parameters.vertexTangents ? "#define USE_TANGENT" : "",
+                    parameters.vertexColors || parameters.instancingColor ? "#define USE_COLOR" : "",
+                    parameters.vertexAlphas ? "#define USE_COLOR_ALPHA" : "",
+                    parameters.vertexUvs ? "#define USE_UV" : "",
+                    parameters.uvsVertexOnly ? "#define UVS_VERTEX_ONLY" : "",
+
+                    parameters.gradientMap ? "#define USE_GRADIENTMAP" : "",
+
+                    parameters.flatShading ? "#define FLAT_SHADED" : "",
+
+                    parameters.doubleSided ? "#define DOUBLE_SIDED" : "",
+                    parameters.flipSided ? "#define FLIP_SIDED" : "",
+
+                    parameters.shadowMapEnabled ? "#define USE_SHADOWMAP" : "",
+                    parameters.shadowMapEnabled ? "#define " + shadowMapTypeDefine : "",
+
+                    parameters.premultipliedAlpha ? "#define PREMULTIPLIED_ALPHA" : "",
+
+                    parameters.physicallyCorrectLights ? "#define PHYSICALLY_CORRECT_LIGHTS" : "",
+
+                    parameters.logarithmicDepthBuffer ? "#define USE_LOGDEPTHBUF" : "",
+                    ( parameters.logarithmicDepthBuffer && parameters.rendererExtensionFragDepth ) ? "#define USE_LOGDEPTHBUF_EXT" : "",
+
+                    "uniform mat4 viewMatrix;",
+                    "uniform vec3 cameraPosition;",
+                    "uniform bool isOrthographic;",
+
+                    ( parameters.toneMapping != NoToneMapping ) ? "#define TONE_MAPPING" : "",
+                    ( parameters.toneMapping != NoToneMapping ) ? ShaderChunk[ "tonemapping_pars_fragment" ] : "", // this code is required here because it is used by the toneMapping() function defined below
+                    ( parameters.toneMapping != NoToneMapping ) ? getToneMappingFunction( "toneMapping", parameters.toneMapping ) : "",
+
+                    parameters.dithering ? "#define DITHERING" : "",
+                    parameters.opaque ? "#define OPAQUE" : "",
+
+                    ShaderChunk[ "encodings_pars_fragment" ], // this code is required here because it is used by the various encoding/decoding function defined below
+                    getTexelEncodingFunction( "linearToOutputTexel", parameters.outputEncoding ),
+
+                    parameters.useDepthPacking ? "#define DEPTH_PACKING " + parameters.depthPacking : "",
+
+                    "\\n"
+            };
+            prefixFragment = string_utils::join(prefixFragmentVec,"\\n");
+
+        }
+
+        vertexShader = resolveIncludes( vertexShader );
+        vertexShader = replaceLightNums( vertexShader, parameters );
+        vertexShader = replaceClippingPlaneNums( vertexShader, parameters );
+
+        fragmentShader = resolveIncludes( fragmentShader );
+        fragmentShader = replaceLightNums( fragmentShader, parameters );
+        fragmentShader = replaceClippingPlaneNums( fragmentShader, parameters );
+
+        vertexShader = unrollLoops( vertexShader );
+        fragmentShader = unrollLoops( fragmentShader );
+
+        if ( parameters.isGLES3 && parameters.isRawShaderMaterial != true ) {
+            // GLSL 3.0 conversion for built-in materials and ShaderMaterial
+            versionString = "#version 300 es\\n";
+
+            vector<string> prefixVertexVecHere{
+                    "precision mediump sampler2DArray;",
+                    "#define attribute in",
+                    "#define varying out",
+                    "#define texture2D texture"
+            };
+            prefixVertex = string_utils::join(prefixVertexVecHere,"\n") + "\\n" + prefixVertex;
+
+            vector<string> prefixFragmentVecHere{
+                    "#define varying in",
+                    (parameters.glslVersion == GLSL3) ? "" : "layout(location = 0) out highp vec4 pc_fragColor;",
+                    (parameters.glslVersion == GLSL3) ? "" : "#define gl_FragColor pc_fragColor",
+                    "#define gl_FragDepthEXT gl_FragDepth",
+                    "#define texture2D texture",
+                    "#define textureCube texture",
+                    "#define texture2DProj textureProj",
+                    "#define texture2DLodEXT textureLod",
+                    "#define texture2DProjLodEXT textureProjLod",
+                    "#define textureCubeLodEXT textureLod",
+                    "#define texture2DGradEXT textureGrad",
+                    "#define texture2DProjGradEXT textureProjGrad",
+                    "#define textureCubeGradEXT textureGrad"
+            };
+
+            prefixFragment = string_utils::join(prefixFragmentVecHere,"\\n") + "\\n" + prefixFragment;
+        }
+
+        std::string vertexGlsl = versionString + prefixVertex + vertexShader;
+        std::string fragmentGlsl = versionString + prefixFragment + fragmentShader;
+
+        return std::make_pair(vertexGlsl,fragmentGlsl);
+    }
+
+private:
+    std::string name;
+    int id = programIdCount ++;
+    int usedTimes = 1;
+    std::string cacheKey;
+    GLint program;
+    GLint vertexShader;
+    GLint fragmentShader;
 };
 
 

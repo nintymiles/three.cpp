@@ -2,8 +2,8 @@
 // Created by SeanR on 2022/12/7.
 //
 
-#ifndef THREE_CPP_SRC_RENDERS_GL_RENDER_H
-#define THREE_CPP_SRC_RENDERS_GL_RENDER_H
+#ifndef THREE_CPP_SRC_RENDERS_GL_RENDERER_H
+#define THREE_CPP_SRC_RENDERS_GL_RENDERER_H
 
 #include "constants.h"
 #include "vector4.h"
@@ -18,7 +18,7 @@
 //#include ""
 
 
-class GLRender {
+class GLRenderer {
 public:
     // clearing options
     bool autoClear = true;
@@ -132,119 +132,119 @@ public:
 
 //            if ( scene.isScene == true ) scene.onBeforeRender( _this, scene, camera, _currentRenderTarget );
 
-            currentRenderState = renderStates.get( scene, renderStateStack.length );
-            currentRenderState.init();
-
-            renderStateStack.push( currentRenderState );
-
-            _projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
-            _frustum.setFromProjectionMatrix( _projScreenMatrix );
-
-            _localClippingEnabled = this.localClippingEnabled;
-            _clippingEnabled = clipping.init( this.clippingPlanes, _localClippingEnabled, camera );
-
-            currentRenderList = renderLists.get( scene, renderListStack.length );
-            currentRenderList.init();
-
-            renderListStack.push( currentRenderList );
-
-            projectObject( scene, camera, 0, _this.sortObjects );
-
-            currentRenderList.finish();
-
-            if ( _this.sortObjects === true ) {
-
-                currentRenderList.sort( _opaqueSort, _transparentSort );
-
-            }
-
-            //
-
-            if ( _clippingEnabled === true ) clipping.beginShadows();
-
-            const shadowsArray = currentRenderState.state.shadowsArray;
-
-            shadowMap.render( shadowsArray, scene, camera );
-
-            if ( _clippingEnabled === true ) clipping.endShadows();
-
-            //
-
-            if ( this.info.autoReset === true ) this.info.reset();
-
-            //
-
-            background.render( currentRenderList, scene );
-
-            // render scene
-
-            currentRenderState.setupLights( _this.physicallyCorrectLights );
-
-            if ( camera.isArrayCamera ) {
-
-                const cameras = camera.cameras;
-
-                for ( let i = 0, l = cameras.length; i < l; i ++ ) {
-
-                    const camera2 = cameras[ i ];
-
-                    renderScene( currentRenderList, scene, camera2, camera2.viewport );
-
-                }
-
-            } else {
-
-                renderScene( currentRenderList, scene, camera );
-
-            }
-
-            //
-
-            if ( _currentRenderTarget !== null ) {
-
-                // resolve multisample renderbuffers to a single-sample texture if necessary
-
-                textures.updateMultisampleRenderTarget( _currentRenderTarget );
-
-                // Generate mipmap if we're using any kind of mipmap filtering
-
-                textures.updateRenderTargetMipmap( _currentRenderTarget );
-
-            }
-
-            //
-
-            if ( scene.isScene === true ) scene.onAfterRender( _this, scene, camera );
-
-            // _gl.finish();
-
-            bindingStates.resetDefaultState();
-            _currentMaterialId = - 1;
-            _currentCamera = null;
-
-            renderStateStack.pop();
-
-            if ( renderStateStack.length > 0 ) {
-
-                currentRenderState = renderStateStack[ renderStateStack.length - 1 ];
-
-            } else {
-
-                currentRenderState = null;
-
-            }
-
-            renderListStack.pop();
-
-            if ( renderListStack.length > 0 ) {
-
-                currentRenderList = renderListStack[ renderListStack.length - 1 ];
-
-            } else {
-
-                currentRenderList = null;
-
-            }
+//            currentRenderState = renderStates.get( scene, renderStateStack.length );
+//            currentRenderState.init();
+//
+//            renderStateStack.push( currentRenderState );
+//
+//            _projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
+//            _frustum.setFromProjectionMatrix( _projScreenMatrix );
+//
+//            _localClippingEnabled = this.localClippingEnabled;
+//            _clippingEnabled = clipping.init( this.clippingPlanes, _localClippingEnabled, camera );
+//
+//            currentRenderList = renderLists.get( scene, renderListStack.length );
+//            currentRenderList.init();
+//
+//            renderListStack.push( currentRenderList );
+//
+//            projectObject( scene, camera, 0, _this.sortObjects );
+//
+//            currentRenderList.finish();
+//
+//            if ( _this.sortObjects === true ) {
+//
+//                currentRenderList.sort( _opaqueSort, _transparentSort );
+//
+//            }
+//
+//            //
+//
+//            if ( _clippingEnabled === true ) clipping.beginShadows();
+//
+//            const shadowsArray = currentRenderState.state.shadowsArray;
+//
+//            shadowMap.render( shadowsArray, scene, camera );
+//
+//            if ( _clippingEnabled === true ) clipping.endShadows();
+//
+//            //
+//
+//            if ( this.info.autoReset === true ) this.info.reset();
+//
+//            //
+//
+//            background.render( currentRenderList, scene );
+//
+//            // render scene
+//
+//            currentRenderState.setupLights( _this.physicallyCorrectLights );
+//
+//            if ( camera.isArrayCamera ) {
+//
+//                const cameras = camera.cameras;
+//
+//                for ( let i = 0, l = cameras.length; i < l; i ++ ) {
+//
+//                    const camera2 = cameras[ i ];
+//
+//                    renderScene( currentRenderList, scene, camera2, camera2.viewport );
+//
+//                }
+//
+//            } else {
+//
+//                renderScene( currentRenderList, scene, camera );
+//
+//            }
+//
+//            //
+//
+//            if ( _currentRenderTarget !== null ) {
+//
+//                // resolve multisample renderbuffers to a single-sample texture if necessary
+//
+//                textures.updateMultisampleRenderTarget( _currentRenderTarget );
+//
+//                // Generate mipmap if we're using any kind of mipmap filtering
+//
+//                textures.updateRenderTargetMipmap( _currentRenderTarget );
+//
+//            }
+//
+//            //
+//
+//            if ( scene.isScene === true ) scene.onAfterRender( _this, scene, camera );
+//
+//            // _gl.finish();
+//
+//            bindingStates.resetDefaultState();
+//            _currentMaterialId = - 1;
+//            _currentCamera = null;
+//
+//            renderStateStack.pop();
+//
+//            if ( renderStateStack.length > 0 ) {
+//
+//                currentRenderState = renderStateStack[ renderStateStack.length - 1 ];
+//
+//            } else {
+//
+//                currentRenderState = null;
+//
+//            }
+//
+//            renderListStack.pop();
+//
+//            if ( renderListStack.length > 0 ) {
+//
+//                currentRenderList = renderListStack[ renderListStack.length - 1 ];
+//
+//            } else {
+//
+//                currentRenderList = null;
+//
+//            }
     }
 
 private:
@@ -305,4 +305,4 @@ private:
 };
 
 
-#endif //THREE_CPP_SRC_RENDERS_GL_RENDER_H
+#endif //THREE_CPP_SRC_RENDERS_GL_RENDERER_H
