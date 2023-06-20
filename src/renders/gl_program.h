@@ -520,8 +520,42 @@ private:
         auto shaderSourcePair = generateShaderGLSL(parameters);
         program = glCreateProgram();
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+        auto vertexShaderSrc = shaderSourcePair.first;
+        if(!compileShader(vertexShader,vertexShaderSrc.c_str(),vertexShaderSrc.size()))
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        vertexShader
+
+    }
+
+    //basic shader compiling method
+    //note here，debug mehtod and non-debug method，also note memory handling
+    bool compileShader(GLuint shaderHandle,const GLchar *source, const int32_t iSize) {
+        if (source == NULL || iSize <= 0) return false;
+
+        glShaderSource(shaderHandle, 1, &source, &iSize);  // Not specifying 3rd parameter
+        // (size) could be troublesome..
+
+        glCompileShader(shaderHandle);
+
+#if defined(DEBUG)
+        GLint logLength;
+    glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH, &logLength);
+    if (logLength > 0) {
+        GLchar *log = (GLchar *)malloc(logLength);
+        glGetShaderInfoLog(shaderHandle, logLength, &logLength, log);
+        printf("Shader compile log:\n%s", log);
+        free(log);
+    }
+#endif
+
+        GLint status;
+        glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, &status);
+        if (status == 0) {
+            glDeleteShader(shaderHandle);
+            return false;
+        }
+
+        return true;
     }
 
     std::pair<std::string,std::string> generateShaderGLSL(const GLProgramParameters& parameters){
