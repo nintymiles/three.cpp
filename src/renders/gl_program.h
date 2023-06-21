@@ -101,6 +101,7 @@ struct GLProgramParameters{
 
 
     std::map<std::string,std::string> defines;
+    std::string index0AttributeName;
 
 };
 
@@ -522,11 +523,32 @@ private:
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
         auto vertexShaderSrc = shaderSourcePair.first;
-        if(!compileShader(vertexShader,vertexShaderSrc.c_str(),vertexShaderSrc.size()))
+        if(!compileShader(vertexShader,vertexShaderSrc))
+            spdlog::error("vertex shader can't be compiled, shader source: \\n {}",vertexShaderSrc);
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+        auto fragmentShaderSrc = shaderSourcePair.second;
+        if(!compileShader(fragmentShader,fragmentShaderSrc))
+            spdlog::error("fragment shader can't be compiled, shader source: \\n {}",fragmentShaderSrc);
+
+        glAttachShader(program,vertexShader);
+        glAttachShader(program,fragmentShader);
+
+        // Force a particular attribute to index 0.
+        if ( parameters.index0AttributeName != "" ) {
+            glBindAttribLocation( program, 0, parameters.index0AttributeName.c_str() );
+        } else if ( parameters.morphTargets == true ) {
+            // programs with morphTargets displace position out of attribute 0
+            glBindAttribLocation( program, 0, "position" );
+        }
+
+        glLinkProgram( program );
 
     }
 
+    bool compileShader(GLuint shaderHandle,std::string shaderSource){
+        return compileShader(shaderHandle,shaderSource.c_str(),shaderSource.size());
+    }
     //basic shader compiling method
     //note here，debug mehtod and non-debug method，also note memory handling
     bool compileShader(GLuint shaderHandle,const GLchar *source, const int32_t iSize) {
@@ -539,13 +561,13 @@ private:
 
 #if defined(DEBUG)
         GLint logLength;
-    glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH, &logLength);
-    if (logLength > 0) {
-        GLchar *log = (GLchar *)malloc(logLength);
-        glGetShaderInfoLog(shaderHandle, logLength, &logLength, log);
-        printf("Shader compile log:\n%s", log);
-        free(log);
-    }
+        glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength > 0) {
+            GLchar *log = (GLchar *)malloc(logLength);
+            glGetShaderInfoLog(shaderHandle, logLength, &logLength, log);
+            printf("Shader compile log:\n%s", log);
+            free(log);
+        }
 #endif
 
         GLint status;
