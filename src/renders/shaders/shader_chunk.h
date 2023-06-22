@@ -24,6 +24,21 @@
 #include "shader_chunk/clearcoat_pars_fragment.glsl.h"
 #include "shader_chunk/clipping_planes_fragment.glsl.h"
 #include "shader_chunk/clipping_planes_pars_fragment.glsl.h"
+#include "shader_chunk/clipping_planes_pars_vertex.glsl.h"
+#include "shader_chunk/clipping_planes_vertex.glsl.h"
+#include "shader_chunk/color_fragment.glsl.h"
+#include "shader_chunk/color_vertex.glsl.h"
+#include "shader_chunk/color_pars_fragment.glsl.h"
+#include "shader_chunk/color_pars_vertex.glsl.h"
+#include "shader_chunk/cube_uv_reflection_fragment.glsl.h"
+#include "shader_chunk/default_fragment.glsl.h"
+#include "shader_chunk/default_vertex.glsl.h"
+#include "shader_chunk/defaultnormal_vertex.glsl.h"
+#include "shader_chunk/displacementmap_pars_vertex.glsl.h"
+#include "shader_chunk/displacementmap_vertex.glsl.h"
+#include "shader_chunk/dithering_fragment.glsl.h"
+
+
 
 std::map<std::string,std::string> ShaderChunk = {
         {"alphamap_fragment",shader_chunk::alphamap_fragment},
@@ -42,6 +57,23 @@ std::map<std::string,std::string> ShaderChunk = {
         {"clearcoat_pars_fragment",shader_chunk::clearcoat_pars_fragment},
         {"clipping_planes_fragment",shader_chunk::clipping_planes_fragment},
         {"clipping_planes_pars_fragment",shader_chunk::clipping_planes_pars_fragment},
+        {"clipping_planes_pars_vertex",shader_chunk::clipping_planes_pars_vertex},
+        {"clipping_planes_vertex",shader_chunk::clipping_planes_vertex},
+        {"color_fragment",shader_chunk::color_fragment},
+        {"color_vertex",shader_chunk::color_vertex},
+        {"color_pars_fragment",shader_chunk::color_pars_fragment},
+        {"color_pars_vertex",shader_chunk::color_pars_vertex},
+        {"cube_uv_reflection_fragment",shader_chunk::cube_uv_reflection_fragment},
+        {"default_fragment",shader_chunk::default_fragment},
+        {"default_vertex",shader_chunk::default_vertex},
+        {"defaultnormal_vertex",shader_chunk::defaultnormal_vertex},
+        {"displacementmap_pars_vertex",shader_chunk::displacementmap_pars_vertex},
+        {"displacementmap_vertex",shader_chunk::displacementmap_vertex},
+        {"dithering_fragment",shader_chunk::dithering_fragment},
+        {"common",shader_chunk::common},
+        {"common",shader_chunk::common},
+        {"common",shader_chunk::common},
+        {"common",shader_chunk::common},
 };
 
 
