@@ -37,6 +37,11 @@
 #include "shader_chunk/displacementmap_pars_vertex.glsl.h"
 #include "shader_chunk/displacementmap_vertex.glsl.h"
 #include "shader_chunk/dithering_fragment.glsl.h"
+#include "shader_chunk/dithering_pars_fragment.glsl.h"
+#include "shader_chunk/emissivemap_fragment.glsl.h"
+#include "shader_chunk/emissivemap_pars_fragment.glsl.h"
+#include "shader_chunk/encodings_fragment.glsl.h"
+#include "shader_chunk/encodings_pars_fragment.glsl.h"
 
 
 
@@ -70,6 +75,16 @@ std::map<std::string,std::string> ShaderChunk = {
         {"displacementmap_pars_vertex",shader_chunk::displacementmap_pars_vertex},
         {"displacementmap_vertex",shader_chunk::displacementmap_vertex},
         {"dithering_fragment",shader_chunk::dithering_fragment},
+        {"dithering_pars_fragment",shader_chunk::dithering_pars_fragment},
+        {"emissivemap_fragment",shader_chunk::emissivemap_fragment},
+        {"emissivemap_pars_fragment",shader_chunk::emissivemap_pars_fragment},
+        {"encodings_fragment",shader_chunk::encodings_fragment},
+        {"encodings_pars_fragment",shader_chunk::encodings_pars_fragment},
+        {"common",shader_chunk::common},
+        {"common",shader_chunk::common},
+        {"common",shader_chunk::common},
+        {"common",shader_chunk::common},
+        {"common",shader_chunk::common},
         {"common",shader_chunk::common},
         {"common",shader_chunk::common},
         {"common",shader_chunk::common},
