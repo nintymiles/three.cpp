@@ -27,6 +27,13 @@ union GeometryValue{
 union UniformValue{
     double d;
     int i;
+    unsigned u;
+};
+
+struct GLActiveInfo{
+    char* name;
+    GLint size;
+    GLenum type;
 };
 
 struct GLVertexAttribute{

@@ -22,6 +22,7 @@
 //#include "../utils/string_format.h"
 #include "shaders/shader_chunk.h"
 #include "gl_renderer.h"
+#include "opengl/gl_uniforms.h"
 
 /**
  * all kinds of shader parameters
@@ -254,7 +255,7 @@ std::string generateDefines( std::map<std::string,std::string> defines ) {
 }
 
 //https://stackoverflow.com/questions/440144/in-opengl-is-there-a-way-to-get-a-list-of-all-uniforms-attribs-used-by-a-shade
-std::map<std::string,threecpp::GLVertexAttribute> fetchAttributeLocations( GLint program ) {
+std::shared_ptr<std::map<std::string,threecpp::GLVertexAttribute>> fetchAttributeLocations( GLint program ) {
     std::map<std::string,threecpp::GLVertexAttribute> attributes{};
 
     GLint maxAttribNameLength = 0;
@@ -289,7 +290,7 @@ std::map<std::string,threecpp::GLVertexAttribute> fetchAttributeLocations( GLint
         attributes[name] = {type:type,location:attributeLocation,locationSize:locationSize};
     }
 
-    return attributes;
+    return std::shared_ptr<std::map<std::string,threecpp::GLVertexAttribute>>(&attributes);
 }
 
 //string replace function reference:
@@ -515,6 +516,9 @@ class GLProgram{
 public:
     GLProgram()=delete;
     GLProgram(const GLRenderer& renderer,const std::string& cacheKey,const GLProgramParameters& parameters):cacheKey(cacheKey){};
+    ~GLProgram(){
+        glDeleteProgram(program);
+    }
 
 private:
     void init(const GLProgramParameters& parameters){
@@ -927,6 +931,21 @@ private:
         return std::make_pair(vertexGlsl,fragmentGlsl);
     }
 
+    std::shared_ptr<GLUniforms> getUniforms(){
+        if(cachedUniforms== nullptr){
+            cachedUniforms = std::make_shared<GLUniforms>(program);
+        }
+        return cachedUniforms;
+    }
+
+    std::shared_ptr<std::map<std::string,threecpp::GLVertexAttribute>> getAttributes(){
+        if(cachedAttributes== nullptr){
+            cachedAttributes = fetchAttributeLocations(program);
+        }
+        return cachedAttributes;
+    }
+
+
 private:
     std::string name;
     int id = programIdCount ++;
@@ -935,6 +954,8 @@ private:
     GLint program;
     GLint vertexShader;
     GLint fragmentShader;
+    std::shared_ptr<GLUniforms> cachedUniforms;
+    std::shared_ptr<std::map<std::string,threecpp::GLVertexAttribute>> cachedAttributes;
 };
 
 
