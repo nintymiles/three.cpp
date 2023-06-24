@@ -42,7 +42,24 @@
 #include "shader_chunk/emissivemap_pars_fragment.glsl.h"
 #include "shader_chunk/encodings_fragment.glsl.h"
 #include "shader_chunk/encodings_pars_fragment.glsl.h"
-
+#include "shader_chunk/envmap_fragment.glsl.h"
+#include "shader_chunk/envmap_common_pars_fragment.glsl.h"
+#include "shader_chunk/envmap_pars_fragment.glsl.h"
+#include "shader_chunk/envmap_pars_vertex.glsl.h"
+#include "shader_chunk/envmap_physical_pars_fragment.glsl.h"
+#include "shader_chunk/envmap_vertex.glsl.h"
+#include "shader_chunk/fog_fragment.glsl.h"
+#include "shader_chunk/fog_vertex.glsl.h"
+#include "shader_chunk/fog_pars_fragment.glsl.h"
+#include "shader_chunk/fog_pars_vertex.glsl.h"
+#include "shader_chunk/gradientmap_pars_fragment.glsl.h"
+#include "shader_chunk/iridescence_fragment.glsl.h"
+#include "shader_chunk/iridescence_pars_fragment.glsl.h"
+#include "shader_chunk/lightmap_fragment.glsl.h"
+#include "shader_chunk/lightmap_pars_fragment.glsl.h"
+#include "shader_chunk/lights_fragment_begin.glsl.h"
+#include "shader_chunk/lights_fragment_end.glsl.h"
+#include "shader_chunk/lights_fragment_maps.glsl.h"
 
 
 std::map<std::string,std::string> ShaderChunk = {
@@ -80,15 +97,28 @@ std::map<std::string,std::string> ShaderChunk = {
         {"emissivemap_pars_fragment",shader_chunk::emissivemap_pars_fragment},
         {"encodings_fragment",shader_chunk::encodings_fragment},
         {"encodings_pars_fragment",shader_chunk::encodings_pars_fragment},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
-        {"common",shader_chunk::common},
+        {"envmap_common_pars_fragment",shader_chunk::envmap_common_pars_fragment},
+        {"envmap_fragment",shader_chunk::envmap_fragment},
+        {"envmap_pars_fragment",shader_chunk::envmap_pars_fragment},
+        {"envmap_pars_vertex",shader_chunk::envmap_pars_vertex},
+        {"envmap_physical_pars_fragment",shader_chunk::envmap_physical_pars_fragment},
+        {"envmap_vertex",shader_chunk::envmap_vertex},
+        {"fog_fragment",shader_chunk::fog_fragment},
+        {"fog_vertex",shader_chunk::fog_vertex},
+        {"fog_pars_fragment",shader_chunk::fog_pars_fragment},
+        {"fog_pars_vertex",shader_chunk::fog_pars_vertex},
+        {"gradientmap_pars_fragment",shader_chunk::gradientmap_pars_fragment},
+        {"iridescence_fragment",shader_chunk::iridescence_fragment},
+        {"iridescence_pars_fragment",shader_chunk::iridescence_pars_fragment},
+        {"lightmap_fragment",shader_chunk::lightmap_fragment},
+        {"lightmap_pars_fragment",shader_chunk::lightmap_pars_fragment},
+        {"lights_fragment_begin",shader_chunk::lights_fragment_begin},
+        {"lights_fragment_end",shader_chunk::lights_fragment_end},
+        {"lights_fragment_maps",shader_chunk::lights_fragment_maps},
+        {"fog_fragment",shader_chunk::fog_fragment},
+        {"fog_fragment",shader_chunk::fog_fragment},
+
+
 };
 
 
