@@ -17,6 +17,13 @@
 #include "cameras/camera.h"
 //#include ""
 
+struct GLRendererParameter{
+    bool depth = true,stencil = true,antialias = false,
+            premultipliedAlpha = true,preserveDrawingBuffer =  false, failIfMajorPerformanceCaveat = false;
+
+    bool alpha = false;
+    std::string powerPreference = "default";
+};
 
 class GLRenderer {
 public:
@@ -60,24 +67,23 @@ public:
     } debug;
 
 
-    GLRender(){
-//        _depth = parameters.depth !== undefined ? parameters.depth : true,
-//        _stencil = parameters.stencil !== undefined ? parameters.stencil : true,
-//        _antialias = parameters.antialias !== undefined ? parameters.antialias : false,
-//        _premultipliedAlpha = parameters.premultipliedAlpha !== undefined ? parameters.premultipliedAlpha : true,
-//        _preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false,
-//        _powerPreference = parameters.powerPreference !== undefined ? parameters.powerPreference : 'default',
-//        _failIfMajorPerformanceCaveat = parameters.failIfMajorPerformanceCaveat !== undefined ? parameters.failIfMajorPerformanceCaveat : false;
+    GLRenderer(const GLRendererParameter& parameters){
+        _depth = parameters.depth ;
+        _stencil = parameters.stencil ;
+        _antialias = parameters.antialias ;
+        _premultipliedAlpha = parameters.premultipliedAlpha ;
+        _preserveDrawingBuffer = parameters.preserveDrawingBuffer ;
+        //_powerPreference = parameters.powerPreference ;
+        _failIfMajorPerformanceCaveat = parameters.failIfMajorPerformanceCaveat ;
 
 //        let _alpha;
-//
 //        if ( parameters.context !== undefined ) {
 //
 //            _alpha = _context.getContextAttributes().alpha;
 //
 //        } else {
 //
-//            _alpha = parameters.alpha !== undefined ? parameters.alpha : false;
+//            _alpha = parameters.alpha ;
 //
 //        }
 //
@@ -246,6 +252,140 @@ public:
 //
 //            }
     }
+    GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, geometry, Material& material, Object3D& object, group ) {
+
+        //if ( scene == nullptr ) scene = _emptyScene; // renderBufferDirect second parameter used to be fog (could be null)
+
+        const frontFaceCW = ( object.isMesh && object.matrixWorld->determinant() < 0 );
+
+        const program = setProgram( camera, scene, geometry, material, object );
+
+        state.setMaterial( material, frontFaceCW );
+
+        //
+
+        let index = geometry.index;
+        let rangeFactor = 1;
+
+        if ( material.wireframe === true ) {
+
+            index = geometries.getWireframeAttribute( geometry );
+            rangeFactor = 2;
+
+        }
+
+        //
+
+        const drawRange = geometry.drawRange;
+        const position = geometry.attributes.position;
+
+        let drawStart = drawRange.start * rangeFactor;
+        let drawEnd = ( drawRange.start + drawRange.count ) * rangeFactor;
+
+        if ( group !== null ) {
+
+            drawStart = Math.max( drawStart, group.start * rangeFactor );
+            drawEnd = Math.min( drawEnd, ( group.start + group.count ) * rangeFactor );
+
+        }
+
+        if ( index !== null ) {
+
+            drawStart = Math.max( drawStart, 0 );
+            drawEnd = Math.min( drawEnd, index.count );
+
+        } else if ( position !== undefined && position !== null ) {
+
+            drawStart = Math.max( drawStart, 0 );
+            drawEnd = Math.min( drawEnd, position.count );
+
+        }
+
+        const drawCount = drawEnd - drawStart;
+
+        if ( drawCount < 0 || drawCount === Infinity ) return;
+
+        //
+
+        bindingStates.setup( object, material, program, geometry, index );
+
+        let attribute;
+        let renderer = bufferRenderer;
+
+        if ( index !== null ) {
+
+            attribute = attributes.get( index );
+
+            renderer = indexedBufferRenderer;
+            renderer.setIndex( attribute );
+
+        }
+
+        //
+
+        if ( object.isMesh ) {
+
+            if ( material.wireframe === true ) {
+
+                state.setLineWidth( material.wireframeLinewidth * getTargetPixelRatio() );
+                renderer.setMode( _gl.LINES );
+
+            } else {
+
+                renderer.setMode( _gl.TRIANGLES );
+
+            }
+
+        } else if ( object.isLine ) {
+
+            let lineWidth = material.linewidth;
+
+            if ( lineWidth === undefined ) lineWidth = 1; // Not using Line*Material
+
+            state.setLineWidth( lineWidth * getTargetPixelRatio() );
+
+            if ( object.isLineSegments ) {
+
+                renderer.setMode( _gl.LINES );
+
+            } else if ( object.isLineLoop ) {
+
+                renderer.setMode( _gl.LINE_LOOP );
+
+            } else {
+
+                renderer.setMode( _gl.LINE_STRIP );
+
+            }
+
+        } else if ( object.isPoints ) {
+
+            renderer.setMode( _gl.POINTS );
+
+        } else if ( object.isSprite ) {
+
+            renderer.setMode( _gl.TRIANGLES );
+
+        }
+
+        if ( object.isInstancedMesh ) {
+
+            renderer.renderInstances( drawStart, drawCount, object.count );
+
+        } else if ( geometry.isInstancedBufferGeometry ) {
+
+            const maxInstanceCount = geometry._maxInstanceCount !== undefined ? geometry._maxInstanceCount : Infinity;
+            const instanceCount = Math.min( geometry.instanceCount, maxInstanceCount );
+
+            renderer.renderInstances( drawStart, drawCount, instanceCount );
+
+        } else {
+
+            renderer.render( drawStart, drawCount );
+
+        }
+
+    };
 
 private:
     bool _depth,_stencil,_antialias,_premultipliedAlpha,_preserveDrawingBuffer,_powerPreference,_failIfMajorPerformanceCaveat;
