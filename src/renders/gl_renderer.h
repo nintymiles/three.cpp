@@ -15,7 +15,9 @@
 #include "gl_render_target.h"
 #include "gl_state.h"
 #include "cameras/camera.h"
-//#include ""
+#include "gl_buffer_renderer.h"
+
+#include <algorithm>
 
 struct GLRendererParameter{
     bool depth = true,stencil = true,antialias = false,
@@ -253,9 +255,7 @@ public:
 //            }
     }
     GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, geometry, Material& material, Object3D& object, group ) {
-
         //if ( scene == nullptr ) scene = _emptyScene; // renderBufferDirect second parameter used to be fog (could be null)
-
         const frontFaceCW = ( object.isMesh && object.matrixWorld->determinant() < 0 );
 
         const program = setProgram( camera, scene, geometry, material, object );
@@ -263,11 +263,10 @@ public:
         state.setMaterial( material, frontFaceCW );
 
         //
-
         let index = geometry.index;
-        let rangeFactor = 1;
+        int rangeFactor = 1;
 
-        if ( material.wireframe === true ) {
+        if ( material.wireframe == true ) {
 
             index = geometries.getWireframeAttribute( geometry );
             rangeFactor = 2;
@@ -275,44 +274,38 @@ public:
         }
 
         //
-
         const drawRange = geometry.drawRange;
         const position = geometry.attributes.position;
 
         let drawStart = drawRange.start * rangeFactor;
         let drawEnd = ( drawRange.start + drawRange.count ) * rangeFactor;
 
-        if ( group !== null ) {
-
-            drawStart = Math.max( drawStart, group.start * rangeFactor );
-            drawEnd = Math.min( drawEnd, ( group.start + group.count ) * rangeFactor );
-
-        }
-
-        if ( index !== null ) {
-
-            drawStart = Math.max( drawStart, 0 );
-            drawEnd = Math.min( drawEnd, index.count );
-
-        } else if ( position !== undefined && position !== null ) {
-
-            drawStart = Math.max( drawStart, 0 );
-            drawEnd = Math.min( drawEnd, position.count );
+        if ( group != null ) {
+            drawStart = std::max<int>( drawStart, group.start * rangeFactor );
+            drawEnd = std::min<int>( drawEnd, ( group.start + group.count ) * rangeFactor );
 
         }
 
-        const drawCount = drawEnd - drawStart;
+        if ( index != null ) {
+            drawStart = std::max<int>( drawStart, 0 );
+            drawEnd = std::min<int>( drawEnd, index.count );
 
-        if ( drawCount < 0 || drawCount === Infinity ) return;
+        } else if ( position != undefined && position != null ) {
+            drawStart = std::max<int>( drawStart, 0 );
+            drawEnd = std::min<int>( drawEnd, position.count );
 
+        }
+
+        int drawCount = drawEnd - drawStart;
+
+        if ( drawCount < 0 || drawCount == Infinity ) return;
         //
-
         bindingStates.setup( object, material, program, geometry, index );
 
         let attribute;
-        let renderer = bufferRenderer;
+        std::make_shared<GLBufferRenderer> renderer = bufferRenderer;
 
-        if ( index !== null ) {
+        if ( index != null ) {
 
             attribute = attributes.get( index );
 
@@ -322,25 +315,19 @@ public:
         }
 
         //
-
         if ( object.isMesh ) {
 
-            if ( material.wireframe === true ) {
-
+            if ( material.wireframe == true ) {
                 state.setLineWidth( material.wireframeLinewidth * getTargetPixelRatio() );
                 renderer.setMode( _gl.LINES );
-
             } else {
-
                 renderer.setMode( _gl.TRIANGLES );
-
             }
 
         } else if ( object.isLine ) {
-
             let lineWidth = material.linewidth;
 
-            if ( lineWidth === undefined ) lineWidth = 1; // Not using Line*Material
+            if ( lineWidth == undefined ) lineWidth = 1; // Not using Line*Material
 
             state.setLineWidth( lineWidth * getTargetPixelRatio() );
 
@@ -359,33 +346,30 @@ public:
             }
 
         } else if ( object.isPoints ) {
-
             renderer.setMode( _gl.POINTS );
-
         } else if ( object.isSprite ) {
-
             renderer.setMode( _gl.TRIANGLES );
-
         }
 
         if ( object.isInstancedMesh ) {
-
             renderer.renderInstances( drawStart, drawCount, object.count );
-
         } else if ( geometry.isInstancedBufferGeometry ) {
-
-            const maxInstanceCount = geometry._maxInstanceCount !== undefined ? geometry._maxInstanceCount : Infinity;
+            const maxInstanceCount = geometry._maxInstanceCount != undefined ? geometry._maxInstanceCount : Infinity;
             const instanceCount = Math.min( geometry.instanceCount, maxInstanceCount );
 
             renderer.renderInstances( drawStart, drawCount, instanceCount );
-
         } else {
-
             renderer.render( drawStart, drawCount );
-
         }
 
     };
+
+    GLRenderer& initGLContext(){
+        glInfo = std::make_shared<GLInfo>();
+        bufferRenderer = std::make_shared<GLBufferRenderer>(glInfo);
+
+        return *this;
+    }
 
 private:
     bool _depth,_stencil,_antialias,_premultipliedAlpha,_preserveDrawingBuffer,_powerPreference,_failIfMajorPerformanceCaveat;
@@ -434,6 +418,9 @@ private:
     Vector3 _vector3;
 
     GLRenderTarget* _currentRenderTarget;
+    std::shared_ptr<GLBufferRenderer> bufferRenderer;
+    std::shared_ptr<GLInfo> glInfo;
+
 
     //struct 包含有成员函数后，不适用于指定初始化，通常需要构造函数
     Scene _emptyScene{nullptr,nullptr,nullptr,true };
