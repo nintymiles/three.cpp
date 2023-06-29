@@ -11,7 +11,7 @@
 
 class LightProbe : public Light {
 public:
-    LightProbe(Color &color, double intensity):
+    LightProbe(ColorSptr color, double intensity):
         Light(color,intensity){}
 
 
@@ -29,6 +29,8 @@ private:
     bool _isLightProbe = true;
 
 };
+
+using LightProbeSptr = std::shared_ptr<LightProbe>;
 
 
 #endif //THREE_CPP_LIGHT_PROBE_H

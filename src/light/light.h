@@ -16,11 +16,11 @@ class Light:public Object3D{
     public:
         using LightType = threecpp::LightType;
 
-        Light(Color color,double intensity = 1.0):_color(color),_intensity(intensity){}
+        Light(ColorSptr color,double intensity = 1.0):_color(color),_intensity(intensity){}
 
         Light(const Light &light):_color(light.color()),_intensity(light.intensity()){}
 
-        Color color() const{return _color;}
+        ColorSptr color() const{return _color;}
 
         bool isLight() const{return _isLight;}
 
@@ -32,7 +32,7 @@ class Light:public Object3D{
 
         virtual double distance() const {}
 
-        virtual std::shared_ptr<LightShadow> shadow();
+        virtual LightShadowSptr shadow();
 
         virtual bool isAmbientLight() const {};
 
@@ -44,7 +44,7 @@ class Light:public Object3D{
         bool _isLight = true;
         LightType _type = LightType::Light;
         double _intensity = 1.0;
-        Color _color;
+        ColorSptr _color;
 
 
 };

@@ -114,6 +114,8 @@ public:
 
 };
 
+using LightShadowSptr = std::shared_ptr<LightShadow>;
+
 //class LightShadow {
 //
 //    constructor( camera ) {

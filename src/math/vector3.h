@@ -549,4 +549,6 @@ inline bool operator!=(const Vector3& lhs,const Vector3& rhs){
     return !(lhs==rhs);
 }
 
+using Vector3Sptr = std::shared_ptr<Vector3>;
+
 #endif /* SRC_MATH_VECTOR3_H_ */

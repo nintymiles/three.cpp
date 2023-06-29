@@ -29,7 +29,7 @@ class GLRenderState{
     }
 
     void setupLights( bool physicallyCorrectLights ) {
-        lights.( lightsArray, physicallyCorrectLights );
+        lights.setup( lightsArray, physicallyCorrectLights );
     }
 
 //    function setupLightsView( camera ) {

@@ -237,6 +237,11 @@ public:
 
 };
 
+//所有较大对象先皆用shared_ptr,以type alias简化。根据情形辅以unique_ptr。
+//针对小型对象，则以值传递为主
+//对象内传递，则以reference为主
+using ColorSptr = std::shared_ptr<Color>;
+
 
 // 使用variant作为参数，variant是C++17的元素
 //    set( value ) {

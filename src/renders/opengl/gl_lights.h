@@ -6,6 +6,7 @@
 #define THREE_CPP_SRC_RENDERS_OPENGL_GL_LIGHTS_H
 
 #include "light/light.h"
+#include "light/light_probe.h"
 #include "color.h"
 #include "vector2.h"
 
@@ -137,6 +138,7 @@ int shadowCastingLightsFirst( Light& lightA,Light& lightB ) {
 }
 
 class GLLights{
+public:
     UniformsCache *cache = new UniformsCache();
     ShadowUniformsCache shadowCache;
 
@@ -196,31 +198,29 @@ class GLLights{
         const double scaleFactor = ( physicallyCorrectLights != true ) ? Number::PI : 1;
 
         for ( int i = 0, l = lights.size(); i < l; i ++ ) {
-
             std::shared_ptr<Light> light = lights[ i ];
 
-            Color& color = light->color();
+            ColorSptr color = light->color();
             double intensity = light->intensity();
             double distance = light->distance();
 
-            const shadowMap = ( light->shadow() && light->shadow().map ) ? light->shadow().map.texture : null;
+            //todo:
+            //std::map<std::string,double> shadowMap = ( light->shadow() && light->shadow()->map.find("texture")!= light->shadow()->map.end() ) ? light->shadow()->map.texture : null;
 
             if ( light->isLight() && light->isAmbientLight() ) {
 
-                r += color.r * intensity * scaleFactor;
-                g += color.g * intensity * scaleFactor;
-                b += color.b * intensity * scaleFactor;
+                r += color->r * intensity * scaleFactor;
+                g += color->g * intensity * scaleFactor;
+                b += color->b * intensity * scaleFactor;
 
             } else if ( light->isLightProbe() ) {
-
+                //https://stackoverflow.com/questions/23795265/dynamic-cast-across-a-shared-ptr
+                LightProbeSptr lightProbe = std::dynamic_pointer_cast<LightProbe>(light);
                 for ( int j = 0; j < 9; j ++ ) {
-
-                    state.probe[ j ].addScaledVector( light.sh.coefficients[ j ], intensity );
-
+                    state.probe[ j ].addScaledVector( lightProbe->sh.coefficients[ j ], intensity );
                 }
 
             } else if ( light->isDirectionalLight() ) {
-
                 const uniforms = cache.get( light );
 
                 uniforms.color.copy( light->color() ).multiplyScalar( light->intensity() * scaleFactor );

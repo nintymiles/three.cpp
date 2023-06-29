@@ -254,6 +254,7 @@ public:
 //
 //            }
     }
+
     GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, geometry, Material& material, Object3D& object, group ) {
         //if ( scene == nullptr ) scene = _emptyScene; // renderBufferDirect second parameter used to be fog (could be null)
         const frontFaceCW = ( object.isMesh && object.matrixWorld->determinant() < 0 );
