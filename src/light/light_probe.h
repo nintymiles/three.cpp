@@ -7,6 +7,7 @@
 
 #include "light.h"
 #include "color.h"
+#include "spherical_harmonics3.h"
 #include <string>
 
 class LightProbe : public Light {
@@ -19,6 +20,10 @@ public:
         return _type;
     }
 
+    SphericalHarmonics3Sptr sh(){
+        return _sh;
+    }
+
     bool isLightProbe() const override{
         return _isLightProbe;
     }
@@ -27,6 +32,8 @@ public:
 private:
     LightType _type = LightType::LightProbe;
     bool _isLightProbe = true;
+    SphericalHarmonics3Sptr _sh;
+
 
 };
 

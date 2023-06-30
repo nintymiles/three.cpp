@@ -234,6 +234,26 @@ public:
 //    }
 
 
+    Color& multiplyScalar( double s ) {
+            this->r *= s;
+            this->g *= s;
+            this->b *= s;
+
+            return *this;
+    }
+
+
+    Color& multiply( const Color& color ) {
+
+            this->r *= color.r;
+            this->g *= color.g;
+            this->b *= color.b;
+
+            return *this;
+    }
+
+
+
 
 };
 
@@ -458,27 +478,8 @@ using ColorSptr = std::shared_ptr<Color>;
 //            return this;
 //
 //    }
-//
-//    multiply( color ) {
-//
-//            this.r *= color.r;
-//            this.g *= color.g;
-//            this.b *= color.b;
-//
-//            return this;
-//
-//    }
-//
-//    multiplyScalar( s ) {
-//
-//            this.r *= s;
-//            this.g *= s;
-//            this.b *= s;
-//
-//            return this;
-//
-//    }
-//
+
+
 //    lerp( color, alpha ) {
 //
 //        this.r += ( color.r - this.r ) * alpha;

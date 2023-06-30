@@ -191,4 +191,6 @@ public:
     std::vector<Vector3Sptr> coefficients{};
 };
 
+using SphericalHarmonics3Sptr = std::shared_ptr<SphericalHarmonics3>;
+
 #endif //THREE_CPP_SPHERICAL_HARMONICS3_H
