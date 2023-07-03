@@ -11,6 +11,7 @@
 #include <cmath>
 
 class Color;
+struct rgb_components;
 
 inline double SRGBToLinear( double c ) {
     return ( c < 0.04045 ) ? c * 0.0773993808 : pow( c * 0.9478672986 + 0.0521327014, 2.4 );
@@ -44,14 +45,17 @@ public:
 //        //cout << 'THREE.ColorManagement: .workingColorSpace is readonly.' << endl;
 //    }
 
-    static Color& convert(Color& c,std::string sourceColorSpace,std::string targetColorSpace);
+    static rgb_components& convert(rgb_components& rc,std::string sourceColorSpace,std::string targetColorSpace);
 
-    static Color& fromWorkingColorSpace( Color& color, std::string targetColorSpace ) {
-        return convert( color, workingColorSpace(), targetColorSpace );
+    static Color& fromWorkingColorSpace( Color& c, std::string targetColorSpace );
+    static Color& toWorkingColorSpace( Color& c, std::string sourceColorSpace );
+
+    static rgb_components& fromWorkingColorSpace( rgb_components& rc, std::string targetColorSpace ) {
+        return convert( rc, workingColorSpace(), targetColorSpace );
     }
 
-    static Color& toWorkingColorSpace( Color& color, std::string sourceColorSpace ) {
-        return convert( color, sourceColorSpace, workingColorSpace() );
+    static rgb_components& toWorkingColorSpace( rgb_components& rc, std::string sourceColorSpace ) {
+        return convert( rc, sourceColorSpace, workingColorSpace() );
     }
 
 };

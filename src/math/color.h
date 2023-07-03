@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <bitset>
+#include <algorithm>
 
 #include "constants.h"
 #include "math_utils.h"
@@ -43,22 +44,29 @@
 //{"springgreen", 0x00FF7F}, {"steelblue", 0x4682B4}, {"tan", 0xD2B48C}, {"teal", 0x008080}, {"thistle", 0xD8BFD8}, {"tomato", 0xFF6347}, {"turquoise", 0x40E0D0},
 //{"violet", 0xEE82EE}, {"wheat", 0xF5DEB3}, {"white", 0xFFFFFF}, {"whitesmoke", 0xF5F5F5}, {"yellow", 0xFFFF00}, {"yellowgreen", 0x9ACD32 }};
 
-struct rgb{double r,g,b;};
-struct hsl{double h,s,l;};
+struct rgb_components{int r,g,b;};
+struct hsl_components{double h,s,l;};
 
+
+rgb_components _rgb = { r: 0, g: 0, b: 0 };
+
+const hsl_components _hslA = { h: 0, s: 0, l: 0 };
+const hsl_components _hslB = { h: 0, s: 0, l: 0 };
+
+class Color;
 double hue2rgb(double p,double q,double t);
-rgb& toComponents(rgb& source,rgb& target);
+rgb_components& toComponents( Color& source, rgb_components& target );
 
 class Color {
 public:
     //named colors const map reference
     static const std::map<std::string,int>& NAMED_COLORS;
-    double r=1,g=1,b=1;
+    int r=1,g=1,b=1;
     bool isColor = true;
 
-    //olor()=default;
+    //Color()=default;
 
-    Color(double r=1,double g=1,double b=1):r(r),g(g),b(b){};
+    Color(int r=1,int g=1,int b=1):r(r),g(g),b(b){};
 
     Color(const Color& c):r(c.r),g(c.g),b(c.b){};
 
@@ -88,6 +96,14 @@ public:
 
        ColorManagement::toWorkingColorSpace( *this, colorSpace );
        return *this;
+    }
+
+    Color& setRGB( rgb_components& rc) {
+        this->r = rc.r;
+        this->g = rc.g;
+        this->b = rc.b;
+
+        return *this;
     }
 
     Color& setHSL(double h, double s, double l,std::string colorSpace = LinearSRGBColorSpace) {
@@ -176,62 +192,55 @@ public:
         return  ss.str();
     }
 
-//    getHSL( target, colorSpace = LinearSRGBColorSpace ) {
-//
-//        // h,s,l ranges are in 0.0 - 1.0
-//
-//        ColorManagement.fromWorkingColorSpace( toComponents( this, _rgb ), colorSpace );
-//
-//        const r = _rgb.r, g = _rgb.g, b = _rgb.b;
-//
-//        const max = Math.max( r, g, b );
-//        const min = Math.min( r, g, b );
-//
-//        let hue, saturation;
-//        const lightness = ( min + max ) / 2.0;
-//
-//        if ( min === max ) {
-//
-//            hue = 0;
-//            saturation = 0;
-//
-//        } else {
-//
-//            const delta = max - min;
-//
-//            saturation = lightness <= 0.5 ? delta / ( max + min ) : delta / ( 2 - max - min );
-//
-//            switch ( max ) {
-//
-//                case r: hue = ( g - b ) / delta + ( g < b ? 6 : 0 ); break;
-//                case g: hue = ( b - r ) / delta + 2; break;
-//                case b: hue = ( r - g ) / delta + 4; break;
-//
-//            }
-//
-//            hue /= 6;
-//
-//        }
-//
-//        target.h = hue;
-//        target.s = saturation;
-//        target.l = lightness;
-//
-//        return target;
-//
-//    }
-//
-//    getRGB( target, colorSpace = LinearSRGBColorSpace ) {
-//
-//        ColorManagement.fromWorkingColorSpace( toComponents( this, _rgb ), colorSpace );
-//
-//        target.r = _rgb.r;
-//        target.g = _rgb.g;
-//        target.b = _rgb.b;
-//
-//        return target;
-//
-//    }
+    hsl_components& getHSL( hsl_components& target, std::string colorSpace = ColorManagement::workingColorSpace() ) {
+        // h,s,l ranges are in 0.0 - 1.0
+        ColorManagement::fromWorkingColorSpace( toComponents( *this, _rgb ), colorSpace );
+
+        const int r = _rgb.r, g = _rgb.g, b = _rgb.b;
+
+        int max = std::max<int>( std::max<int>(r, g), b );
+        int min = std::min<int>( std::min<int>(r, g), b );
+
+        double  hue, saturation;
+        const double lightness = ( min + max ) / 2.0;
+
+        if ( min == max ) {
+            hue = 0;
+            saturation = 0;
+
+        } else {
+            const int delta = max - min;
+
+            saturation = lightness <= 0.5 ? delta / ( max + min ) : delta / ( 2 - max - min );
+
+            if(max==r)
+                hue = ( g - b ) / delta + ( g < b ? 6 : 0 );
+            else if(max == g)
+                hue = ( b - r ) / delta + 2;
+            else if(max == b)
+                hue = ( r - g ) / delta + 4;
+
+            hue /= 6;
+
+        }
+
+        target.h = hue;
+        target.s = saturation;
+        target.l = lightness;
+
+        return target;
+
+    }
+
+    rgb_components& getRGB( rgb_components& target, std::string colorSpace = LinearSRGBColorSpace ) {
+        ColorManagement::fromWorkingColorSpace( toComponents( *this, _rgb ), colorSpace );
+
+        target.r = _rgb.r;
+        target.g = _rgb.g;
+        target.b = _rgb.b;
+
+        return target;
+    }
 
 
     Color& multiplyScalar( double s ) {
@@ -261,6 +270,14 @@ public:
 //针对小型对象，则以值传递为主
 //对象内传递，则以reference为主
 using ColorSptr = std::shared_ptr<Color>;
+
+rgb_components& toComponents(Color& source,rgb_components& target){
+    target.r = source.r;
+    target.g = source.g;
+    target.b = source.b;
+
+    return target;
+};
 
 
 // 使用variant作为参数，variant是C++17的元素

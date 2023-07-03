@@ -155,9 +155,9 @@ const std::map<std::string, int> _colorKeywords =
          {"yellow",               0xFFFF00},
          {"yellowgreen",          0x9ACD32}};
 
-Color _rgb = { 0, 0, 0 };
-hsl _hslA = { 0, 0, 0 };
-hsl _hslB = { 0, 0, 0 };
+//rgb_components _rgb = { 0, 0, 0 };
+//hsl_components _hslA = { 0, 0, 0 };
+//hsl_components _hslB = { 0, 0, 0 };
 
 double hue2rgb(double p,double q,double t ) {
     if ( t < 0 ) t += 1;
@@ -168,7 +168,7 @@ double hue2rgb(double p,double q,double t ) {
     return p;
 }
 
-Color& toComponents( Color& source, Color& target ) {
+rgb_components& toComponents( Color& source, rgb_components& target ) {
 
     target.r = source.r;
     target.g = source.g;
