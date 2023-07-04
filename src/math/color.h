@@ -50,8 +50,9 @@ struct hsl_components{double h,s,l;};
 
 rgb_components _rgb = { r: 0, g: 0, b: 0 };
 
-const hsl_components _hslA = { h: 0, s: 0, l: 0 };
-const hsl_components _hslB = { h: 0, s: 0, l: 0 };
+hsl_components _hslA = { h: 0, s: 0, l: 0 };
+hsl_components _hslB = { h: 0, s: 0, l: 0 };
+//std::shared_ptr<hsl_components> _hslB = std::make_shared<hsl_components>();
 
 class Color;
 double hue2rgb(double p,double q,double t);
@@ -229,7 +230,6 @@ public:
         target.l = lightness;
 
         return target;
-
     }
 
     rgb_components& getRGB( rgb_components& target, std::string colorSpace = LinearSRGBColorSpace ) {
@@ -261,8 +261,81 @@ public:
             return *this;
     }
 
+    Color& offsetHSL( double h, double s,double l ) {
+        this->getHSL( _hslA );
 
+        _hslA.h += h; _hslA.s += s; _hslA.l += l;
 
+        this->setHSL( _hslA.h, _hslA.s, _hslA.l );
+
+        return *this;
+    }
+
+    Color& add( const Color& color ) {
+        this->r += color.r;
+        this->g += color.g;
+        this->b += color.b;
+
+        return *this;
+    }
+
+    Color& addColors( const Color& color1, const Color& color2 ) {
+        this->r = color1.r + color2.r;
+        this->g = color1.g + color2.g;
+        this->b = color1.b + color2.b;
+
+        return *this;
+    }
+
+    Color& addScalar( int s ) {
+        this->r += s;
+        this->g += s;
+        this->b += s;
+
+        return *this;
+    }
+
+    Color& sub( const Color& color ) {
+        this->r = std::max<int>( 0, this->r - color.r );
+        this->g = std::max<int>( 0, this->g - color.g );
+        this->b = std::max<int>( 0, this->b - color.b );
+
+        return *this;
+    }
+
+    Color& lerp( const Color& color, double alpha ) {
+        this->r += ( color.r - this->r ) * alpha;
+        this->g += ( color.g - this->g ) * alpha;
+        this->b += ( color.b - this->b ) * alpha;
+
+        return *this;
+
+    }
+
+    Color& lerpColors( const Color& color1, const Color& color2, double alpha ) {
+        this->r = color1.r + ( color2.r - color1.r ) * alpha;
+        this->g = color1.g + ( color2.g - color1.g ) * alpha;
+        this->b = color1.b + ( color2.b - color1.b ) * alpha;
+
+        return *this;
+    }
+
+    Color& lerpHSL( Color& color, double alpha ) {
+        this->getHSL( _hslA );
+        color.getHSL( _hslB );
+
+        double h = MathUtils::lerp( _hslA.h, _hslB.h, alpha );
+        double s = MathUtils::lerp( _hslA.s, _hslB.s, alpha );
+        double l = MathUtils::lerp( _hslA.l, _hslB.l, alpha );
+
+        this->setHSL( h, s, l );
+
+        return *this;
+    }
+
+    bool equals( const Color& c ) {
+        return ( c.r == r ) && ( c.g == g ) && ( c.b == b );
+    }
 
 };
 
@@ -443,101 +516,7 @@ rgb_components& toComponents(Color& source,rgb_components& target){
 //        return `rgb(${( _rgb.r * 255 ) | 0},${( _rgb.g * 255 ) | 0},${( _rgb.b * 255 ) | 0})`;
 //
 //    }
-//
-//    offsetHSL( h, s, l ) {
-//
-//        this.getHSL( _hslA );
-//
-//        _hslA.h += h; _hslA.s += s; _hslA.l += l;
-//
-//        this.setHSL( _hslA.h, _hslA.s, _hslA.l );
-//
-//        return this;
-//
-//    }
-//
-//    add( color ) {
-//
-//            this.r += color.r;
-//            this.g += color.g;
-//            this.b += color.b;
-//
-//            return this;
-//
-//    }
-//
-//    addColors( color1, color2 ) {
-//
-//        this.r = color1.r + color2.r;
-//        this.g = color1.g + color2.g;
-//        this.b = color1.b + color2.b;
-//
-//        return this;
-//
-//    }
-//
-//    addScalar( s ) {
-//
-//            this.r += s;
-//            this.g += s;
-//            this.b += s;
-//
-//            return this;
-//
-//    }
-//
-//    sub( color ) {
-//
-//            this.r = Math.max( 0, this.r - color.r );
-//            this.g = Math.max( 0, this.g - color.g );
-//            this.b = Math.max( 0, this.b - color.b );
-//
-//            return this;
-//
-//    }
 
-
-//    lerp( color, alpha ) {
-//
-//        this.r += ( color.r - this.r ) * alpha;
-//        this.g += ( color.g - this.g ) * alpha;
-//        this.b += ( color.b - this.b ) * alpha;
-//
-//        return this;
-//
-//    }
-//
-//    lerpColors( color1, color2, alpha ) {
-//
-//        this.r = color1.r + ( color2.r - color1.r ) * alpha;
-//        this.g = color1.g + ( color2.g - color1.g ) * alpha;
-//        this.b = color1.b + ( color2.b - color1.b ) * alpha;
-//
-//        return this;
-//
-//    }
-//
-//    lerpHSL( color, alpha ) {
-//
-//        this.getHSL( _hslA );
-//        color.getHSL( _hslB );
-//
-//        const h = lerp( _hslA.h, _hslB.h, alpha );
-//        const s = lerp( _hslA.s, _hslB.s, alpha );
-//        const l = lerp( _hslA.l, _hslB.l, alpha );
-//
-//        this.setHSL( h, s, l );
-//
-//        return this;
-//
-//    }
-//
-//    equals( c ) {
-//
-//            return ( c.r === this.r ) && ( c.g === this.g ) && ( c.b === this.b );
-//
-//    }
-//
 //    fromArray( array, offset = 0 ) {
 //
 //        this.r = array[ offset ];

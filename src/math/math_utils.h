@@ -130,6 +130,11 @@ namespace MathUtils {
         return range * ( 0.5 - random_gen<float>() );
     }
 
+    float lerp(double a, double b, double t){
+        return a + t * (b - a);
+    }
+
+
     //模板函数的别名如何设置
     //typedef clamp<double> clampd;
     //using clampd = double clamp<double>(double,double,double);
