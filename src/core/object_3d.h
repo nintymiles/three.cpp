@@ -20,7 +20,10 @@ typedef std::function<void(Object3D&)> Object3DCallback;
 class Quaternion;
 
 class Object3D:public EventDispatcher{
-    public:
+public:
+    virtual bool isMesh();
+
+public:
         Event _addedEvent = {"added"};
         Event _removedEvent = {"removed"};
         static std::shared_ptr<Vector3> default_up;
