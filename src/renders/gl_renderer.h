@@ -17,6 +17,7 @@
 #include "cameras/camera.h"
 #include "gl_buffer_renderer.h"
 #include "buffer_geometry.h"
+#include "common_types.h"
 
 #include <algorithm>
 
@@ -256,14 +257,18 @@ public:
 //            }
     }
 
-    GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, const BufferGeometry<int,double>& geometry, Material& material, Object3D& object, group ) {
+    void initGLContext(){
+        state = std::make_shared<GLState>();
+    }
+
+    GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, const BufferGeometry<int,double>& geometry, Material& material, Object3D& object, threecpp::GeometryGroup& group ) {
         using GIndex = shared_ptr<BufferAttribute<int>>;
         //if ( scene == nullptr ) scene = _emptyScene; // renderBufferDirect second parameter used to be fog (could be null)
         const bool frontFaceCW = ( object.isMesh() && object.matrixWorld->determinant() < 0 );
 
         GLProgram program = setProgram( camera, scene, geometry, material, object );
 
-        state.setMaterial( material, frontFaceCW );
+        //state->setMaterial( material, frontFaceCW );
 
         //
         GIndex index = geometry.index;
@@ -280,8 +285,8 @@ public:
         const drawRange = geometry.drawRange;
         const position = geometry.attributes.position;
 
-        let drawStart = drawRange.start * rangeFactor;
-        let drawEnd = ( drawRange.start + drawRange.count ) * rangeFactor;
+        int drawStart = drawRange.start * rangeFactor;
+        int drawEnd = ( drawRange.start + drawRange.count ) * rangeFactor;
 
         if ( group != null ) {
             drawStart = std::max<int>( drawStart, group.start * rangeFactor );
@@ -749,6 +754,7 @@ private:
     GLRenderTarget* _currentRenderTarget;
     std::shared_ptr<GLBufferRenderer> bufferRenderer;
     std::shared_ptr<GLInfo> glInfo;
+    std::shared_ptr<GLState> state;
 
 
     //struct 包含有成员函数后，不适用于指定初始化，通常需要构造函数
