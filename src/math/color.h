@@ -90,6 +90,16 @@ public:
         return *this;
     }
 
+    Color& setHex(int hex,std::string colorSpace = SRGBColorSpace){
+        r = ( hex >> 16 & 255 ) / 255;
+        g = ( hex >> 8 & 255 ) / 255;
+        b = ( hex & 255 ) / 255;
+
+        ColorManagement::toWorkingColorSpace( *this, colorSpace );
+        return *this;
+    }
+
+
     Color& setRGB( double r, double g, double b, std::string colorSpace = LinearSRGBColorSpace) {
        this->r = r;
        this->g = g;
@@ -337,6 +347,23 @@ public:
         return ( c.r == r ) && ( c.g == g ) && ( c.b == b );
     }
 
+    Color& fromArray( double* array, int offset = 0 ) {
+        this->r = array[ offset ];
+        this->g = array[ offset + 1 ];
+        this->b = array[ offset + 2 ];
+
+        return *this;
+    }
+
+    double* toArray( double* array, int offset = 0 ) {
+        array[ offset ] = this->r;
+        array[ offset + 1 ] = this->g;
+        array[ offset + 2 ] = this->b;
+
+        return array;
+    }
+
+
 };
 
 //所有较大对象先皆用shared_ptr,以type alias简化。根据情形辅以unique_ptr。
@@ -351,6 +378,15 @@ rgb_components& toComponents(Color& source,rgb_components& target){
 
     return target;
 };
+
+double hue2rgb(double p,double q,double t ) {
+    if ( t < 0 ) t += 1;
+    if ( t > 1 ) t -= 1;
+    if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
+    if ( t < 1 / 2 ) return q;
+    if ( t < 2 / 3 ) return p + ( q - p ) * 6 * ( 2 / 3 - t );
+    return p;
+}
 
 
 // 使用variant作为参数，variant是C++17的元素
@@ -498,7 +534,6 @@ rgb_components& toComponents(Color& source,rgb_components& target){
 //        return this;
 //
 //    }
-//
 
 
 
@@ -517,26 +552,7 @@ rgb_components& toComponents(Color& source,rgb_components& target){
 //
 //    }
 
-//    fromArray( array, offset = 0 ) {
-//
-//        this.r = array[ offset ];
-//        this.g = array[ offset + 1 ];
-//        this.b = array[ offset + 2 ];
-//
-//        return this;
-//
-//    }
-//
-//    toArray( array = [], offset = 0 ) {
-//
-//        array[ offset ] = this.r;
-//        array[ offset + 1 ] = this.g;
-//        array[ offset + 2 ] = this.b;
-//
-//        return array;
-//
-//    }
-//
+
 //    fromBufferAttribute( attribute, index ) {
 //
 //        this.r = attribute.getX( index );

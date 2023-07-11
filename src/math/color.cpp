@@ -159,23 +159,23 @@ const std::map<std::string, int> _colorKeywords =
 //hsl_components _hslA = { 0, 0, 0 };
 //hsl_components _hslB = { 0, 0, 0 };
 
-double hue2rgb(double p,double q,double t ) {
-    if ( t < 0 ) t += 1;
-    if ( t > 1 ) t -= 1;
-    if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
-    if ( t < 1 / 2 ) return q;
-    if ( t < 2 / 3 ) return p + ( q - p ) * 6 * ( 2 / 3 - t );
-    return p;
-}
+//double hue2rgb(double p,double q,double t ) {
+//    if ( t < 0 ) t += 1;
+//    if ( t > 1 ) t -= 1;
+//    if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
+//    if ( t < 1 / 2 ) return q;
+//    if ( t < 2 / 3 ) return p + ( q - p ) * 6 * ( 2 / 3 - t );
+//    return p;
+//}
 
-rgb_components& toComponents( Color& source, rgb_components& target ) {
-
-    target.r = source.r;
-    target.g = source.g;
-    target.b = source.b;
-
-    return target;
-}
+//rgb_components& toComponents( Color& source, rgb_components& target ) {
+//
+//    target.r = source.r;
+//    target.g = source.g;
+//    target.b = source.b;
+//
+//    return target;
+//}
 
 
 
