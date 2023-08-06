@@ -20,6 +20,7 @@
 #include "common_types.h"
 
 #include <algorithm>
+#include <typeinfo>
 
 struct GLRendererParameter{
     bool depth = true,stencil = true,antialias = false,
@@ -264,9 +265,9 @@ public:
     GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, const BufferGeometry<int,double>& geometry, Material& material, Object3D& object, threecpp::GeometryGroup& group ) {
         using GIndex = shared_ptr<BufferAttribute<int>>;
         //if ( scene == nullptr ) scene = _emptyScene; // renderBufferDirect second parameter used to be fog (could be null)
-        const bool frontFaceCW = ( object.isMesh() && object.matrixWorld->determinant() < 0 );
+        const bool frontFaceCW = (object.isMesh() && object.matrixWorld->determinant() < 0);
 
-        GLProgram program = setProgram( camera, scene, geometry, material, object );
+        GLProgram program = setProgram(camera, scene, geometry, material, object);
 
         //state->setMaterial( material, frontFaceCW );
 
@@ -274,11 +275,13 @@ public:
         GIndex index = geometry.index;
         int rangeFactor = 1;
 
-        if ( material.wireframe == true ) {
+        if (std::type_info(*this).name() == std::type_info(MeshBasicMaterial)) {
+            if (material.wireframe == true) {
 
-            index = geometries.getWireframeAttribute( geometry );
-            rangeFactor = 2;
+                index = geometries.getWireframeAttribute(geometry);
+                rangeFactor = 2;
 
+            }
         }
 
         //

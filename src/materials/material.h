@@ -12,6 +12,7 @@
 
 #include <map>
 #include <string>
+#include <typeinfo>
 
 int materialId = 0;
 
@@ -80,6 +81,8 @@ public:
 
     int _alphaTest = 0;
 
+    bool wireframe = false;
+
     Material()=default;
 
     int alphaTest(){
@@ -101,6 +104,8 @@ public:
     virtual Material& onBeforeRender( /* renderer, scene, camera, geometry, object, group */ ) {}
 
     virtual Material& onBeforeCompile( /* shaderobject, renderer */ ) {}
+
+    //virtual std:string what_am_i(){return typeid(*this).name();}
 
 //    customProgramCacheKey() {
 //        return this.onBeforeCompile.toString();
