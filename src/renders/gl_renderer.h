@@ -18,6 +18,7 @@
 #include "gl_buffer_renderer.h"
 #include "buffer_geometry.h"
 #include "common_types.h"
+#include "materials/mesh_basic_material.h"
 
 #include <algorithm>
 #include <typeinfo>
@@ -262,7 +263,7 @@ public:
         state = std::make_shared<GLState>();
     }
 
-    GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, const BufferGeometry<int,double>& geometry, Material& material, Object3D& object, threecpp::GeometryGroup& group ) {
+    GLRenderer& renderBufferDirect( const Camera& camera, const Scene& scene, const BufferGeometry<int,double>& geometry, Material& material, Object3D& object, std::shared_ptr<threecpp::GeometryGroup> group ) {
         using GIndex = shared_ptr<BufferAttribute<int>>;
         //if ( scene == nullptr ) scene = _emptyScene; // renderBufferDirect second parameter used to be fog (could be null)
         const bool frontFaceCW = (object.isMesh() && object.matrixWorld->determinant() < 0);
@@ -275,33 +276,34 @@ public:
         GIndex index = geometry.index;
         int rangeFactor = 1;
 
-        if (std::type_info(*this).name() == std::type_info(MeshBasicMaterial)) {
+        //typeid为RTTI操作符
+        if (typeid(*this) == typeid(MeshBasicMaterial)) {
+            MeshBasicMaterial& meshMaterial = dynamic_cast<MeshBasicMaterial&>(material);
             if (material.wireframe == true) {
-
-                index = geometries.getWireframeAttribute(geometry);
+                //todo
+                //index = geometries.getWireframeAttribute(geometry);
                 rangeFactor = 2;
-
             }
         }
 
         //
-        const drawRange = geometry.drawRange;
-        const position = geometry.attributes.position;
+        threecpp::Range drawRange = geometry.drawRange;
+        std::shared_ptr<BufferAttribute<double>> position = geometry.attributes.at("position");
 
         int drawStart = drawRange.start * rangeFactor;
         int drawEnd = ( drawRange.start + drawRange.count ) * rangeFactor;
 
-        if ( group != null ) {
-            drawStart = std::max<int>( drawStart, group.start * rangeFactor );
-            drawEnd = std::min<int>( drawEnd, ( group.start + group.count ) * rangeFactor );
+        if ( group != nullptr ) {
+            drawStart = std::max<int>( drawStart, group->start * rangeFactor );
+            drawEnd = std::min<int>( drawEnd, ( group->start + group->count ) * rangeFactor );
 
         }
 
-        if ( index != null ) {
+        if ( index != nullptr ) {
             drawStart = std::max<int>( drawStart, 0 );
             drawEnd = std::min<int>( drawEnd, index.count );
 
-        } else if ( position != undefined && position != null ) {
+        } else if (  position != nullptr ) {
             drawStart = std::max<int>( drawStart, 0 );
             drawEnd = std::min<int>( drawEnd, position.count );
 
@@ -309,7 +311,7 @@ public:
 
         int drawCount = drawEnd - drawStart;
 
-        if ( drawCount < 0 || drawCount == Infinity ) return;
+        if ( drawCount < 0 || drawCount == std::numeric_limits<int>::max() ) return;
         //
         bindingStates.setup( object, material, program, geometry, index );
 

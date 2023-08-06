@@ -40,6 +40,8 @@ class Light:public Object3D{
 
         virtual bool isLightProbe() const {};
 
+        virtual bool isHemisphereLight() const {};
+
     protected:
         bool _isLight = true;
         LightType _type = LightType::Light;
