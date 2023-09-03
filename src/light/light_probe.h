@@ -28,6 +28,8 @@ public:
         return _isLightProbe;
     }
 
+    virtual bool isHemisphereLightProbe() const;
+
 
 private:
     LightType _type = LightType::LightProbe;
