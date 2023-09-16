@@ -83,5 +83,6 @@ struct ViewOffset{
     double height;
 };
 
+using CameraSptr = std::shared_ptr<Camera>;
 
 #endif /* SRC_CAMERAS_CAMERA_H_ */
