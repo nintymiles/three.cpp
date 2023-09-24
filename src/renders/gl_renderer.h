@@ -287,6 +287,21 @@ public:
         }
 
         //
+        bindingStates.setup( object, material, program, geometry, index );
+
+        std::shared_ptr<BufferAttribute<int>> attribute;
+        std::shared_ptr<GLBufferRenderer> renderer = bufferRenderer;
+
+        if ( index != null ) {
+
+            attribute = attributes.get( index );
+
+            renderer = indexedBufferRenderer;
+            renderer.setIndex( attribute );
+
+        }
+
+        //
         threecpp::Range drawRange = geometry.drawRange;
         std::shared_ptr<BufferAttribute<double>> position = geometry.attributes.at("position");
 
@@ -301,31 +316,18 @@ public:
 
         if ( index != nullptr ) {
             drawStart = std::max<int>( drawStart, 0 );
-            drawEnd = std::min<int>( drawEnd, index.count );
+            drawEnd = std::min<int>( drawEnd, index->count() );
 
         } else if (  position != nullptr ) {
             drawStart = std::max<int>( drawStart, 0 );
-            drawEnd = std::min<int>( drawEnd, position.count );
+            drawEnd = std::min<int>( drawEnd, position->count() );
 
         }
 
         int drawCount = drawEnd - drawStart;
 
-        if ( drawCount < 0 || drawCount == std::numeric_limits<int>::max() ) return;
-        //
-        bindingStates.setup( object, material, program, geometry, index );
+        if ( drawCount < 0 || drawCount == std::numeric_limits<int>::max() ) return *this;
 
-        let attribute;
-        std::make_shared<GLBufferRenderer> renderer = bufferRenderer;
-
-        if ( index != null ) {
-
-            attribute = attributes.get( index );
-
-            renderer = indexedBufferRenderer;
-            renderer.setIndex( attribute );
-
-        }
 
         //
         if ( object.isMesh ) {

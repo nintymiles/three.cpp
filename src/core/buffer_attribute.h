@@ -28,7 +28,7 @@ class BufferAttribute {
     private:
         std::string name{""};
         int itemSize{0};
-        int count{0};
+        int _count{0};
         bool normalized{false};
         int usage{0};
         //std::ranges::range<int> updateRange;
@@ -45,8 +45,12 @@ class BufferAttribute {
 
         BufferAttribute(vector<T> arrVec, int itemSize, bool normalized = true)
             : arrayVec(arrVec), itemSize(itemSize), normalized(normalized), name(""), usage(StaticDrawUsage), version(0) {
-            count = arrVec.size() / itemSize;
+            _count = arrVec.size() / itemSize;
             //updateRange = std::ranges:range<int>(0,0);
+        }
+
+        const int count() const {
+            return _count;
         }
 
 	// constructor( array, itemSize, normalized ) {
