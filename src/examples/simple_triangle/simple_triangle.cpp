@@ -46,13 +46,7 @@ static void glfw_error_callback(int error, const char* description)
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-int main(int, char**)
-{
-    // Setup window
-    glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
-        return 1;
-
+void glfw_basic_setting() {
     // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
     // GL ES 2.0 + GLSL 100
@@ -65,13 +59,13 @@ int main(int, char**)
     const char* glsl_version = "#version 300 es"; //version必须匹配
     //EGL也必须在mac上指定，否则glfw提示不存在，能找到EGL lib，意味着从/usr/local/lib中获得
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,1);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-//    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+    //    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+    //    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
     // GLES 3.0
     const char* glsl_version = "#version 300 es";
@@ -89,9 +83,42 @@ int main(int, char**)
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 //    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 //    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-    
-    
+
+
 #endif
+}
+
+constexpr char* GLSL_VERSION(){
+    // Decide GL+GLSL versions
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+    // GL ES 2.0 + GLSL 100
+    retun "#version 100";
+#elif defined(__APPLE__)
+    // GL 3.2 + GLSL 150
+    return "#version 300 es"; //version必须匹配
+#else
+    // GLES 3.0
+    return "#version 300 es";  
+#endif
+}
+
+void printGLDriverInfo(std::ostream& out) {
+    out << "GL_VERSION                  : " << glGetString(GL_VERSION) << std::endl;
+    out << "GL_VENDOR                   : " << glGetString(GL_VENDOR) << std::endl;
+    out << "GL_RENDERER                 : " << glGetString(GL_RENDERER) << std::endl;
+    out << "GL_SHADING_LANGUAGE_VERSION : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
+    out << "GLFW_Info                 : " << glfwGetVersionString() << std::endl;
+}
+
+int main(int, char**)
+{
+    // Setup window
+    glfwSetErrorCallback(glfw_error_callback);
+    if (!glfwInit())
+        return 1;
+
+    glfw_basic_setting();
 
     // Create window with graphics context
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
@@ -113,15 +140,9 @@ int main(int, char**)
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui_ImplOpenGL3_Init(GLSL_VERSION());
     
-    
-    std::cout << "GL_VERSION                  : " << glGetString( GL_VERSION ) << std::endl;
-    std::cout << "GL_VENDOR                   : " << glGetString( GL_VENDOR ) << std::endl;
-    std::cout << "GL_RENDERER                 : " << glGetString( GL_RENDERER ) << std::endl;
-    std::cout << "GL_SHADING_LANGUAGE_VERSION : " << glGetString( GL_SHADING_LANGUAGE_VERSION ) << std::endl;
-    
-    std::cout << "GLFW_Info                 : " << glfwGetVersionString() << std::endl;
+    printGLDriverInfo(std::cout);
     
     constexpr int fboWidth(800);  
     constexpr int fboHeight(640); 
