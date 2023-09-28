@@ -139,7 +139,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   TARGET_LINK_LIBRARIES(threecpp PUBLIC
   # "-framework Cocoa"   # not necessary for system library
   # "-framework CoreGraphics"
-  glfw.3.3
+  # glfw.3.3
+  # libglfw.3.3.dylib
   GLESv2
   EGL)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
