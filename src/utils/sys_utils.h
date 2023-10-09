@@ -74,5 +74,16 @@ void delay()
     }
 }
 
+// void renderfps(int framerate) 
+// { 
+// 	currentTime = glfwGetTime(); 
+
+// 	if(currentTime - lastTime >= 1.0 / framerate) 
+// 	{
+// 		lastTime = currentTime;
+// 		render(); 
+// 	}
+// }
+
 
 #endif /* SRC_UTILS_SYS_UTILS_H_ */
