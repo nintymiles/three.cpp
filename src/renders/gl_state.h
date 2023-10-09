@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "common_types.h"
 
+#include <unordered_map>
 #include <map>
 #include <GLES3/gl3.h>
 
@@ -248,30 +249,60 @@ public:
 
         }
 
+        void reset() {
+            locked = false;
+
+            currentStencilFuncMask = 0;
+            //currentStencilFunc = StencilFunc::NeverStencilFunc;
+            currentStencilRef = 0;
+            currentStencilFuncMask = 0;
+            //currentStencilFail = StencilOp::ZeroStencilOp;
+            //currentStencilZFail = StencilOp::ZeroStencilOp;
+            //currentStencilZPass = StencilOp::ZeroStencilOp;
+            currentStencilClear =0;
+
+        }
+
     };
 
+    struct BoundTexture {
+        threecpp::TextureTarget target;
+        GLint texture;
 
+        BoundTexture(TextureTarget target, GLint texture) : target(target), texture(texture) {}
+        BoundTexture() :target(TextureTarget::Texture2D), texture(-1) {}
+    };
+
+    using namespace threecpp;
     ColorBuffer colorBuffer{};
     DepthBuffer depthBuffer{};
     StencilBuffer stencilBuffer{};
 
-    std::map<GLuint,bool> enabledCapabilities = {};
+    GLint maxVertexAttributes;
+
+//    std::vector<GLuint> newAttributes;
+//    std::vector<GLuint> enabledAttributes;
+//    std::vector<GLuint> attributeDivisors;
+
+
+    std::unordered_map<GLenum, bool> enabledCapabilities;
+    //std::map<GLuint,bool> enabledCapabilities = {};
 
     std::map<GLenum ,GLuint> currentBoundFramebuffers = {};
 //    let currentDrawbuffers = new WeakMap();
 //    let defaultDrawbuffers = [];
 
-    bool currentProgram = 0;
+    GLuint currentProgram = 0;
 
     bool currentBlendingEnabled = false;
-    bool currentBlending = false;
-    bool currentBlendEquation = -1;
-    bool currentBlendSrc = -1;
-    bool currentBlendDst = -1;
-    int currentBlendEquationAlpha = -1;
-    int currentBlendSrcAlpha = -1;
-    int currentBlendDstAlpha = -1;
-    bool currentPremultipledAlpha = false;
+    Blending currentBlending = Blending::NoBlending;
+    BlendingEquation currentBlendEquation = BlendingEquation::None;
+    BlendingDstFactor currentBlendSrc = BlendingDstFactor::None;
+    BlendingDstFactor currentBlendDst = BlendingDstFactor::None;
+    BlendingEquation currentBlendEquationAlpha = BlendingEquation::None;
+    BlendingDstFactor currentBlendSrcAlpha = BlendingDstFactor::None;
+    BlendingDstFactor currentBlendDstAlpha = BlendingDstFactor::None;
+    bool currentPremultipliedAlpha = false;
 
     bool currentFlipSided = false;
     int currentCullFace;
