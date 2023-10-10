@@ -3,6 +3,8 @@
 
 #include <GLES3/gl3.h>
 
+#include <unordered_map>
+
 namespace threecpp {
 
 struct Range{
@@ -154,7 +156,35 @@ enum class ToneMapping {
     ACESFilmicToneMapping	= 5
 };
 
+enum class Extension : size_t{
+    ARB_depth_texture = 1,
+    EXT_frag_depth = 1 << 1,
+    EXT_texture_filter_anisotropic = 1 << 2,
+    EXT_blend_minmax = 1 << 3,
+    EXT_texture_compression_s3tc = 1 << 4,
+    EXT_shader_texture_lod = 1 << 5,
+    OES_texture_float = 1 << 6,
+    OES_texture_float_linear = 1 << 7,
+    OES_texture_half_float = 1 << 8,
+    OES_texture_half_float_linear = 1 << 9,
+    OES_standard_derivatives = 1 << 10,
+    ANGLE_instanced_arrays = 1 << 11,
+    OES_element_index_uint = 1 << 12,
+    EXT_draw_buffers = 1 << 13,
+    EXT_draw_buffers2 = 1 << 14,
+    ARB_instanced_arrays = 1<<15,
+    ARB_ES3_compatibility=1<<16
+};
 
+struct EnumHash {
+    template <typename T>
+    typename std::underlying_type<T>::type operator()(T t) const {
+        return static_cast<typename std::underlying_type<T>::type>(t);
+    }
+};
+
+template<typename EnumT,typename ValueT>
+using enum_map = std::unordered_map<EnumT, ValueT, EnumHash>;
 
 
 
