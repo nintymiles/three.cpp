@@ -13,17 +13,16 @@
 #include <map>
 #include <GLES3/gl3.h>
 
-struct BoundTexture{
-    GLenum type;
-    GLuint texture;
-};
+//struct BoundTexture{
+//    GLenum type;
+//    GLuint texture;
+//};
 
 const threecpp::GLViewPort defaultViewPort{0,0,640,480};
 
 class GLState {
 public:
     const bool isWebGL2;
-    GLState() : isWebGL2(true) {}
 
     class ColorBuffer {
     public:
@@ -76,17 +75,22 @@ public:
 
     class DepthBuffer {
     public:
+        GLState& state;
         bool locked = false;
 
         bool currentDepthMask = false;
         int currentDepthFunc = 0;
         float currentDepthClear = 0.f;
 
+        DepthBuffer(GLState& state) : state(state) {}
+
         DepthBuffer &setTest(bool depthTest){
             if (depthTest) {
-                glEnable(GL_DEPTH_TEST);
+                //glEnable(GL_DEPTH_TEST);
+                state.enable(GL_DEPTH_TEST);
             }else {
-                glDisable(GL_DEPTH_TEST);
+                //glDisable(GL_DEPTH_TEST);
+                state.disable(GL_DEPTH_TEST);
             }
             return *this;
         }
@@ -165,6 +169,7 @@ public:
 
     class StencilBuffer{
     public:
+        GLState& state;
         bool locked = false;
 
         int currentStencilMask;
@@ -175,12 +180,17 @@ public:
         GLenum currentStencilZFail;
         GLenum currentStencilZPass;
         int currentStencilClear = 0;
+
+        StencilBuffer(GLState& state) : state(state) {}
+
         StencilBuffer &setTest( bool stencilTest ) {
             if ( ! locked ) {
                 if ( stencilTest ) {
-                    glEnable( GL_STENCIL_TEST );
+                    //glEnable( GL_STENCIL_TEST );
+                    state.enable(GL_STENCIL_TEST);
                 } else {
-                    glDisable( GL_STENCIL_TEST );
+                    //glDisable( GL_STENCIL_TEST );
+                    state.disable(GL_STENCIL_TEST);
                 }
             }
             return *this;
@@ -305,14 +315,17 @@ public:
     bool currentPremultipliedAlpha = false;
 
     bool currentFlipSided = false;
-    int currentCullFace;
+    CullFace currentCullFace = CullFace::CullFaceNone;
+    float currentLineWidth;
+    float currentPolygonOffsetFactor;
+    float currentPolygonOffsetUnits;
+    GLint maxTextures;
 
-    double currentLineWidth;
+    bool lineWidthAvailable = false;
+    GLuint version = 0;
+    std::string glVersion;
 
-    double currentPolygonOffsetFactor;
-    double currentPolygonOffsetUnits;
-
-    //const int maxTextures = glGetParameteri( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS );
+    int currentTextureSlot;
 
     bool lineWidthAvailable = false;
     int version = 0;
@@ -325,8 +338,7 @@ public:
 //        version = parseFloat( /^OpenGL ES (\d)/.exec( glVersion )[ 1 ] );
 //        lineWidthAvailable = ( version >= 2.0 );
 //    }
-//
-    int currentTextureSlot = -1;
+
     std::vector<BoundTexture> currentBoundTextures = {};
 //
 //    const scissorParam = gl.getParameter( GL_SCISSOR_BOX );
@@ -334,46 +346,155 @@ public:
 //
     Vector4d currentScissor; /*new Vector4().fromArray( scissorParam );*/
     Vector4d currentViewport; /*new Vector4().fromArray( viewportParam );*/
-//
-//    function createTexture( type, target, count ) {
-//
-//        const data = new Uint8Array( 4 ); // 4 is required to match default unpack alignment of 4.
-//        const texture = gl.createTexture();
-//
-//        gl.bindTexture( type, texture );
-//        gl.texParameteri( type, gl.TEXTURE_MIN_FILTER, gl.NEAREST );
-//        gl.texParameteri( type, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
-//
-//        for ( let i = 0; i < count; i ++ ) {
-//
-//            gl.texImage2D( target + i, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data );
-//
-//        }
-//
-//        return texture;
-//
-//    }
-//
-//    const emptyTextures = {};
-//    emptyTextures[ gl.TEXTURE_2D ] = createTexture( gl.TEXTURE_2D, gl.TEXTURE_2D, 1 );
-//    emptyTextures[ gl.TEXTURE_CUBE_MAP ] = createTexture( gl.TEXTURE_CUBE_MAP, gl.TEXTURE_CUBE_MAP_POSITIVE_X, 6 );
-//
-//    // init
-//
-//    colorBuffer.setClear( 0, 0, 0, 1 );
-//    depthBuffer.setClear( 1 );
-//    stencilBuffer.setClear( 0 );
-//
-//    enable( glDEPTH_TEST );
-//    depthBuffer.setFunc( LessEqualDepth );
-//
-//    setFlipSided( false );
-//    setCullFace( CullFaceBack );
-//    enable( gl.CULL_FACE );
-//
-//    setBlending( NoBlending );
-//
-//    //
+
+    GLState() : depthBuffer(*this),stencilBuffer(*this),currentTextureSlot(-1){
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextures);
+        glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttributes);
+
+        lineWidthAvailable = true;
+
+        newAttributes.resize(maxVertexAttributes);
+        enabledAttributes.resize(maxVertexAttributes);
+        attributeDivisors.resize(maxVertexAttributes);
+
+        emptyTextures[(GLuint)TextureTarget::Texture2D] = createTexture(TextureTarget::Texture2D, TextureTarget::Texture2D, 1);
+        emptyTextures[(GLuint)TextureTarget::cubeMap] = createTexture(TextureTarget::cubeMap, TextureTarget::cubeMapNegativeX, 6);
+
+        colorBuffer.setClear(0, 0, 0, 1);
+        depthBuffer.setClear(1);
+        stencilBuffer.setClear(0);
+
+
+        enable(GL_DEPTH_TEST);
+        depthBuffer.setFunc(DepthModes::LessEqualDepth);
+
+        setFlipSided(false);
+        setCullFace(CullFace::CullFaceBack);
+        enable(GL_CULL_FACE);
+
+        setBlending(Blending::NoBlending);
+    }
+    virtual ~GLState() = default;
+
+    GLState& copy(const GLState& source) {
+        colorBuffer = source.colorBuffer;
+        depthBuffer = source.depthBuffer;
+        stencilBuffer = source.stencilBuffer;
+
+        maxVertexAttributes = source.maxVertexAttributes;
+
+        if (source.newAttributes.size() > 0) {
+            newAttributes.resize(source.newAttributes.size());
+            std::copy(source.newAttributes.begin(), source.newAttributes.end(), newAttributes.begin());
+        }
+        if (source.enabledAttributes.size() > 0) {
+            enabledAttributes.resize(source.enabledAttributes.size());
+            std::copy(source.enabledAttributes.begin(), source.enabledAttributes.end(), enabledAttributes.begin());
+        }
+
+        if (source.attributeDivisors.size() > 0) {
+            attributeDivisors.resize(source.attributeDivisors.size());
+            std::copy(source.attributeDivisors.begin(), source.attributeDivisors.end(), attributeDivisors.begin());
+        }
+
+
+        enabledCapabilities = source.enabledCapabilities;
+
+
+        currentProgram = source.currentProgram;
+
+        currentBlendingEnabled = source.currentBlendingEnabled;
+        currentBlending = source.currentBlending;
+        currentBlendEquation = source.currentBlendEquation;
+        currentBlendSrc = source.currentBlendSrc;
+        currentBlendDst = source.currentBlendDst;
+        currentBlendEquationAlpha = source.currentBlendEquationAlpha;
+        currentBlendSrcAlpha = source.currentBlendSrcAlpha;
+        currentBlendDstAlpha = source.currentBlendDstAlpha;
+        currentPremultipliedAlpha = source.currentPremultipliedAlpha;
+
+        currentFlipSided = source.currentFlipSided;
+        currentCullFace = source.currentCullFace;
+        currentLineWidth = source.currentLineWidth;
+        currentPolygonOffsetFactor = source.currentPolygonOffsetFactor;
+        currentPolygonOffsetUnits = source.currentPolygonOffsetUnits;
+        maxTextures = source.maxTextures;
+
+        lineWidthAvailable = source.lineWidthAvailable;
+        version = source.version;
+        glVersion = source.glVersion;
+        currentTextureSlot = source.currentTextureSlot;
+
+        currentScissor = source.currentScissor;
+        currentViewport = source.currentViewport;
+
+        currentBoundTextures = source.currentBoundTextures;
+        emptyTextures = source.emptyTextures;
+
+        if (source.compressedTextureFormats.size() > 0)
+            compressedTextureFormats.resize(source.compressedTextureFormats.size());
+        std::copy(source.compressedTextureFormats.begin(), source.compressedTextureFormats.end(),compressedTextureFormats.begin());
+
+        return *this;
+    }
+
+    GLState& operator = (const GLState& source) {
+        return copy(source);
+    }
+
+    GLuint createTexture(TextureTarget type, TextureTarget target, unsigned count) {
+        byte data[4] = { 0,0,0,0 };
+        GLuint texture;
+        glGenTextures(1, &texture);
+        glBindTexture((GLenum)type, texture);
+        glTexParameteri((GLenum)type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri((GLenum)type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        for (unsigned i = 0;i < count;i++) {
+            glTexImage2D((GLenum)target + i, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        }
+
+        return texture;
+    }
+
+    void initAttributes() {
+        for (unsigned i = 0;i< newAttributes.size(); i++) {
+            newAttributes[i] = 0;
+        }
+    }
+
+    void enableAttribute(GLuint attribute) {
+        enableAttributeAndDivisor(attribute, 0);
+    }
+    void enableAttributeAndDivisor(GLuint attribute, GLuint meshPerAttribute) {
+        newAttributes[attribute] = 1;
+
+        if (enabledAttributes[attribute] == 0) {
+            glEnableVertexAttribArray(attribute);
+            enabledAttributes[attribute] = 1;
+        }
+
+        if (attributeDivisors[attribute] != meshPerAttribute) {
+            //glVertexAttribDivisor(attribute, meshPerAttribute);
+            attributeDivisors[attribute] = meshPerAttribute;
+        }
+    }
+    void disableUnusedAttributes() {
+        for (unsigned i = 0;i< enabledAttributes.size(); ++i) {
+
+            if (enabledAttributes[i] !=  newAttributes[i]) {
+
+                glDisableVertexAttribArray(i);
+                enabledAttributes[i] = 0;
+            }
+        }
+    }
+    void vertexAttribPointer(GLuint index,GLint size,GLenum type,bool normalized,GLuint stride,GLuint offset) {
+        //if(type==GL_INT || type==GL_UNSIGNED_INT)
+        //	glVertexAttribIPointer(index, size, type, normalized,(const void*)offset);
+        //else
+        glVertexAttribPointer(index, size, type, normalized, stride, (void*)offset);
+    }
 
     GLState & enable( GLuint id ) {
         if ( enabledCapabilities[ id ] != true ) {
@@ -417,82 +538,6 @@ public:
         return *this;
     }
 
-//    function drawBuffers( renderTarget, framebuffer ) {
-//
-//        let drawBuffers = defaultDrawbuffers;
-//
-//        let needsUpdate = false;
-//
-//        if ( renderTarget ) {
-//
-//            drawBuffers = currentDrawbuffers.get( framebuffer );
-//
-//            if ( drawBuffers === undefined ) {
-//
-//                drawBuffers = [];
-//                currentDrawbuffers.set( framebuffer, drawBuffers );
-//
-//            }
-//
-//            if ( renderTarget.isWebGLMultipleRenderTargets ) {
-//
-//                const textures = renderTarget.texture;
-//
-//                if ( drawBuffers.length !== textures.length || drawBuffers[ 0 ] !== gl.COLOR_ATTACHMENT0 ) {
-//
-//                    for ( let i = 0, il = textures.length; i < il; i ++ ) {
-//
-//                        drawBuffers[ i ] = gl.COLOR_ATTACHMENT0 + i;
-//
-//                    }
-//
-//                    drawBuffers.length = textures.length;
-//
-//                    needsUpdate = true;
-//
-//                }
-//
-//            } else {
-//
-//                if ( drawBuffers[ 0 ] !== gl.COLOR_ATTACHMENT0 ) {
-//
-//                    drawBuffers[ 0 ] = gl.COLOR_ATTACHMENT0;
-//
-//                    needsUpdate = true;
-//
-//                }
-//
-//            }
-//
-//        } else {
-//
-//            if ( drawBuffers[ 0 ] !== gl.BACK ) {
-//
-//                drawBuffers[ 0 ] = gl.BACK;
-//
-//                needsUpdate = true;
-//
-//            }
-//
-//        }
-//
-//        if ( needsUpdate ) {
-//
-//            if ( capabilities.isWebGL2 ) {
-//
-//                glDrawBuffers( drawBuffers );
-//
-//            } else {
-//
-//                extensions.get( 'WEBGL_draw_buffers' ).drawBuffersWEBGL( drawBuffers );
-//
-//            }
-//
-//        }
-//
-//
-//    }
-
     GLState &useProgram( GLuint program ) {
         if ( currentProgram != program ) {
             glUseProgram( program );
@@ -525,111 +570,212 @@ public:
         { OneMinusDstAlphaFactor , GL_ONE_MINUS_DST_ALPHA}
     };
 
-    GLState &setBlending( int blending, int blendEquation, int blendSrc, int blendDst, int blendEquationAlpha, int blendSrcAlpha, int blendDstAlpha, bool premultipliedAlpha ) {
-        if ( blending == NoBlending ) {
-            if ( currentBlendingEnabled == true ) {
-                disable( GL_BLEND );
+//    GLState &setBlending( int blending, int blendEquation, int blendSrc, int blendDst, int blendEquationAlpha, int blendSrcAlpha, int blendDstAlpha, bool premultipliedAlpha ) {
+//        if ( blending == NoBlending ) {
+//            if ( currentBlendingEnabled == true ) {
+//                disable( GL_BLEND );
+//                currentBlendingEnabled = false;
+//            }
+//            return *this;
+//        }
+//
+//        if ( currentBlendingEnabled == false ) {
+//            enable( GL_BLEND );
+//            currentBlendingEnabled = true;
+//        }
+//
+//        if ( blending != CustomBlending ) {
+//            if ( blending != currentBlending || premultipliedAlpha != currentPremultipledAlpha ) {
+//
+//                if ( currentBlendEquation != AddEquation || currentBlendEquationAlpha != AddEquation ) {
+//
+//                    glBlendEquation( GL_FUNC_ADD );
+//
+//                    currentBlendEquation = AddEquation;
+//                    currentBlendEquationAlpha = AddEquation;
+//                }
+//
+//                if ( premultipliedAlpha ) {
+//                    switch ( blending ) {
+//                        case NormalBlending:
+//                            glBlendFuncSeparate( GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+//                            break;
+//
+//                        case AdditiveBlending:
+//                            glBlendFunc( GL_ONE, GL_ONE );
+//                            break;
+//
+//                        case SubtractiveBlending:
+//                            glBlendFuncSeparate( GL_ZERO, GL_ONE_MINUS_SRC_COLOR, GL_ZERO, GL_ONE );
+//                            break;
+//
+//                        case MultiplyBlending:
+//                            glBlendFuncSeparate( GL_ZERO, GL_SRC_COLOR, GL_ZERO, GL_SRC_ALPHA );
+//                            break;
+//
+//                        default:
+//                            //console.error( 'THREE.WebGLState: Invalid blending: ', blending );
+//                            break;
+//
+//                    }
+//
+//                } else {
+//                    switch ( blending ) {
+//                        case NormalBlending:
+//                            glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+//                            break;
+//
+//                        case AdditiveBlending:
+//                            glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+//                            break;
+//
+//                        case SubtractiveBlending:
+//                            glBlendFuncSeparate( GL_ZERO, GL_ONE_MINUS_SRC_COLOR, GL_ZERO, GL_ONE );
+//                            break;
+//
+//                        case MultiplyBlending:
+//                            glBlendFunc( GL_ZERO, GL_SRC_COLOR );
+//                            break;
+//
+//                        default:
+//                            //console.error( 'THREE.WebGLState: Invalid blending: ', blending );
+//                            break;
+//
+//                    }
+//
+//                }
+//
+//                currentBlendSrc = -1;
+//                currentBlendDst = -1;
+//                currentBlendSrcAlpha = -1;
+//                currentBlendDstAlpha = -1;
+//
+//                currentBlending = blending;
+//                currentPremultipledAlpha = premultipliedAlpha;
+//
+//            }
+//
+//            return *this;
+//        }
+//
+//        // custom blending
+//
+//        blendEquationAlpha = blendEquationAlpha || blendEquation;
+//        blendSrcAlpha = blendSrcAlpha || blendSrc;
+//        blendDstAlpha = blendDstAlpha || blendDst;
+//
+//        if ( blendEquation != currentBlendEquation || blendEquationAlpha != currentBlendEquationAlpha ) {
+//
+//            glBlendEquationSeparate( equationToGL[blendEquation], equationToGL[blendEquationAlpha] );
+//
+//            currentBlendEquation = blendEquation;
+//            currentBlendEquationAlpha = blendEquationAlpha;
+//        }
+//
+//        if ( blendSrc != currentBlendSrc || blendDst != currentBlendDst || blendSrcAlpha != currentBlendSrcAlpha || blendDstAlpha != currentBlendDstAlpha ) {
+//
+//            glBlendFuncSeparate( factorToGL[ blendSrc ], factorToGL[ blendDst ], factorToGL[ blendSrcAlpha ], factorToGL[ blendDstAlpha ] );
+//
+//            currentBlendSrc = blendSrc;
+//            currentBlendDst = blendDst;
+//            currentBlendSrcAlpha = blendSrcAlpha;
+//            currentBlendDstAlpha = blendDstAlpha;
+//
+//        }
+//
+//        currentBlending = blending;
+//        currentPremultipledAlpha = false;
+//
+//        return *this;
+//    }
+    GLState& setBlending(Blending blending, BlendingEquation blendEquation=BlendingEquation::None, BlendingDstFactor blendSrc=BlendingDstFactor::None, BlendingDstFactor blendDst=BlendingDstFactor::None, BlendingEquation blendEquationAlpha=BlendingEquation::None,BlendingDstFactor blendSrcAlpha=BlendingDstFactor::None,BlendingDstFactor blendDstAlpha=BlendingDstFactor::None, bool premultipliedAlpha = false) {
+        if (blending == Blending::NoBlending) {
+            if (currentBlendingEnabled) {
+                disable(GL_BLEND);
                 currentBlendingEnabled = false;
+                return;
             }
-            return *this;
+            return;
         }
 
-        if ( currentBlendingEnabled == false ) {
-            enable( GL_BLEND );
+
+        if (!currentBlendingEnabled) {
+            enable(GL_BLEND);
             currentBlendingEnabled = true;
         }
-
-        if ( blending != CustomBlending ) {
-            if ( blending != currentBlending || premultipliedAlpha != currentPremultipledAlpha ) {
-
-                if ( currentBlendEquation != AddEquation || currentBlendEquationAlpha != AddEquation ) {
-
-                    glBlendEquation( GL_FUNC_ADD );
-
-                    currentBlendEquation = AddEquation;
-                    currentBlendEquationAlpha = AddEquation;
+        if (blending != Blending::CustomBlending) {
+            if (blending != currentBlending || premultipliedAlpha != currentPremultipliedAlpha) {
+                if (currentBlendEquation != BlendingEquation::AddEquation || currentBlendEquationAlpha != BlendingEquation::AddEquation) {
+                    glBlendEquation((GLenum)BlendingEquation::AddEquation);
+                    currentBlendEquation = BlendingEquation::AddEquation;
+                    currentBlendEquationAlpha = BlendingEquation::AddEquation;
                 }
 
-                if ( premultipliedAlpha ) {
-                    switch ( blending ) {
-                        case NormalBlending:
-                            glBlendFuncSeparate( GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+                if (premultipliedAlpha) {
+                    switch (blending) {
+                        case Blending::NormalBlending:
+                            glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+                            break;
+                        case Blending::AdditiveBlending:
+                            glBlendFunc(GL_ONE, GL_ONE);
                             break;
 
-                        case AdditiveBlending:
-                            glBlendFunc( GL_ONE, GL_ONE );
+                        case Blending::SubtractiveBlending:
+                            glBlendFuncSeparate(GL_ZERO, GL_ZERO, GL_ONE_MINUS_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
                             break;
 
-                        case SubtractiveBlending:
-                            glBlendFuncSeparate( GL_ZERO, GL_ONE_MINUS_SRC_COLOR, GL_ZERO, GL_ONE );
+                        case Blending::MultiplyBlending:
+                            glBlendFuncSeparate(GL_ZERO, GL_SRC_COLOR, GL_ZERO, GL_SRC_ALPHA);
                             break;
-
-                        case MultiplyBlending:
-                            glBlendFuncSeparate( GL_ZERO, GL_SRC_COLOR, GL_ZERO, GL_SRC_ALPHA );
-                            break;
-
-                        default:
-                            //console.error( 'THREE.WebGLState: Invalid blending: ', blending );
-                            break;
-
                     }
-
-                } else {
-                    switch ( blending ) {
-                        case NormalBlending:
-                            glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
-                            break;
-
-                        case AdditiveBlending:
-                            glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-                            break;
-
-                        case SubtractiveBlending:
-                            glBlendFuncSeparate( GL_ZERO, GL_ONE_MINUS_SRC_COLOR, GL_ZERO, GL_ONE );
-                            break;
-
-                        case MultiplyBlending:
-                            glBlendFunc( GL_ZERO, GL_SRC_COLOR );
-                            break;
-
-                        default:
-                            //console.error( 'THREE.WebGLState: Invalid blending: ', blending );
-                            break;
-
-                    }
-
                 }
+                else {
+                    switch (blending) {
 
-                currentBlendSrc = -1;
-                currentBlendDst = -1;
-                currentBlendSrcAlpha = -1;
-                currentBlendDstAlpha = -1;
+                        case Blending::NormalBlending:
+                            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                            break;
+
+                        case Blending::AdditiveBlending:
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                            break;
+
+                        case Blending::SubtractiveBlending:
+                            glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+                            break;
+
+                        case Blending::MultiplyBlending:
+                            glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+                            break;
+                    }
+                }
+                currentBlendSrc = BlendingDstFactor::None;
+                currentBlendDst = BlendingDstFactor::None;
+                currentBlendSrcAlpha = BlendingDstFactor::None;
+                currentBlendDstAlpha = BlendingDstFactor::None;
 
                 currentBlending = blending;
-                currentPremultipledAlpha = premultipliedAlpha;
-
+                currentPremultipliedAlpha = premultipliedAlpha;
             }
-
-            return *this;
+            return;
         }
+        //custom blending
+        blendEquationAlpha = blendEquationAlpha!=BlendingEquation::None ? blendEquationAlpha:blendEquation;
+        blendSrcAlpha = blendSrcAlpha!=BlendingDstFactor::None? blendSrcAlpha : blendSrc;
+        blendDstAlpha = blendDstAlpha!=BlendingDstFactor::None? blendDstAlpha : blendDst;
 
-        // custom blending
+        if (blendEquation !=  currentBlendEquation || blendEquationAlpha !=  currentBlendEquationAlpha) {
 
-        blendEquationAlpha = blendEquationAlpha || blendEquation;
-        blendSrcAlpha = blendSrcAlpha || blendSrc;
-        blendDstAlpha = blendDstAlpha || blendDst;
-
-        if ( blendEquation != currentBlendEquation || blendEquationAlpha != currentBlendEquationAlpha ) {
-
-            glBlendEquationSeparate( equationToGL[blendEquation], equationToGL[blendEquationAlpha] );
+            glBlendEquationSeparate((GLenum)blendEquation, (GLenum)blendEquationAlpha);
 
             currentBlendEquation = blendEquation;
             currentBlendEquationAlpha = blendEquationAlpha;
+
         }
 
-        if ( blendSrc != currentBlendSrc || blendDst != currentBlendDst || blendSrcAlpha != currentBlendSrcAlpha || blendDstAlpha != currentBlendDstAlpha ) {
+        if (blendSrc != currentBlendSrc || blendDst !=  currentBlendDst || blendSrcAlpha !=  currentBlendSrcAlpha || blendDstAlpha !=  currentBlendDstAlpha) {
 
-            glBlendFuncSeparate( factorToGL[ blendSrc ], factorToGL[ blendDst ], factorToGL[ blendSrcAlpha ], factorToGL[ blendDstAlpha ] );
+            glBlendFuncSeparate((GLenum)blendSrc, (GLenum)blendDst, (GLenum)blendSrcAlpha, (GLenum)blendDstAlpha);
 
             currentBlendSrc = blendSrc;
             currentBlendDst = blendDst;
@@ -639,50 +785,60 @@ public:
         }
 
         currentBlending = blending;
-        currentPremultipledAlpha = false;
-
-        return *this;
+        currentPremultipliedAlpha = false;
     }
 
-//    function setMaterial( material, frontFaceCW ) {
-//
-//        material.side === DoubleSide
-//                          ? disable( gl.CULL_FACE )
-//                          : enable( gl.CULL_FACE );
-//
-//        let flipSided = ( material.side === BackSide );
-//        if ( frontFaceCW ) flipSided = ! flipSided;
-//
-//        setFlipSided( flipSided );
-//
-//        ( material.blending === NormalBlending && material.transparent === false )
-//        ? setBlending( NoBlending )
-//        : setBlending( material.blending, material.blendEquation, material.blendSrc, material.blendDst, material.blendEquationAlpha, material.blendSrcAlpha, material.blendDstAlpha, material.premultipliedAlpha );
-//
-//        depthBuffer.setFunc( material.depthFunc );
-//        depthBuffer.setTest( material.depthTest );
-//        depthBuffer.setMask( material.depthWrite );
-//        colorBuffer.setMask( material.colorWrite );
-//
-//        const stencilWrite = material.stencilWrite;
-//        stencilBuffer.setTest( stencilWrite );
-//        if ( stencilWrite ) {
-//
-//            stencilBuffer.setMask( material.stencilWriteMask );
-//            stencilBuffer.setFunc( material.stencilFunc, material.stencilRef, material.stencilFuncMask );
-//            stencilBuffer.setOp( material.stencilFail, material.stencilZFail, material.stencilZPass );
-//
-//        }
-//
-//        setPolygonOffset( material.polygonOffset, material.polygonOffsetFactor, material.polygonOffsetUnits );
-//
-//        material.alphaToCoverage === true
-//                                     ? enable( gl.SAMPLE_ALPHA_TO_COVERAGE )
-//                                     : disable( gl.SAMPLE_ALPHA_TO_COVERAGE );
-//
-//    }
-//
-//    //
+    GLState& setMaterial(const Material& material, bool frontFaceCW=false) {
+        //material.side == Side::DoubleSide ? disable(GL_CULL_FACE) : enable(GL_CULL_FACE);
+        if (material.side == Side::DoubleSide) {
+            glDisable(GL_CULL_FACE);
+        }
+        else {
+            glEnable(GL_CULL_FACE);
+        }
+
+        bool flipSided = material.side == Side::BackSide;
+
+        if (frontFaceCW) flipSided = !flipSided;
+
+        setFlipSided(flipSided);
+
+        if (material.blending == Blending::NormalBlending && material.transparent == false) {
+            setBlending(Blending::NoBlending);
+        }
+        else {
+            setBlending(material.blending, material.blendEquation, material.blendSrc, material.blendDst, material.blendEquationAlpha, material.blendSrcAlpha, material.blendDstAlpha, material.premultipliedAlpha);
+        }
+
+        depthBuffer.setFunc(material.depthFunc);
+        depthBuffer.setTest(material.depthTest);
+        depthBuffer.setMask(material.depthWrite);
+        colorBuffer.setMask(material.colorWrite);
+
+        if(material.depthTest)
+            enable(GL_DEPTH_TEST);
+        else
+            disable(GL_DEPTH_TEST);
+
+        auto stencilWrite = material.stencilWrite;
+
+        stencilBuffer.setTest(stencilWrite);
+
+        /*if (stencilWrite) {
+            enable(GL_STENCIL_TEST);
+        }
+        else {
+            disable(GL_STENCIL_TEST);
+        }*/
+
+        if (stencilWrite) {
+            stencilBuffer.setMask(material.stencilWriteMask);
+            stencilBuffer.setFunc(material.stencilFunc, material.stencilRef, material.stencilFuncMask);
+            stencilBuffer.setOp(material.stencilFail, material.stencilZFail, material.stencilZPass);
+        }
+
+        setPolygonOffset(material.polygonOffset, material.polygonOffsetFactor, material.polygonOffsetUnits);
+    }
 
     GLState &setFlipSided( bool flipSided ) {
         if ( currentFlipSided != flipSided ) {
@@ -728,18 +884,33 @@ public:
         return *this;
     }
 
-    GLState &setPolygonOffset( bool polygonOffset, double factor, double units ) {
-        if ( polygonOffset ) {
-            enable( GL_POLYGON_OFFSET_FILL );
-            if ( currentPolygonOffsetFactor != factor || currentPolygonOffsetUnits != units ) {
-
-                glPolygonOffset( factor, units );
+//    GLState &setPolygonOffset( bool polygonOffset, double factor, double units ) {
+//        if ( polygonOffset ) {
+//            enable( GL_POLYGON_OFFSET_FILL );
+//            if ( currentPolygonOffsetFactor != factor || currentPolygonOffsetUnits != units ) {
+//
+//                glPolygonOffset( factor, units );
+//
+//                currentPolygonOffsetFactor = factor;
+//                currentPolygonOffsetUnits = units;
+//            }
+//        } else {
+//            disable( GL_POLYGON_OFFSET_FILL );
+//        }
+//        return *this;
+//    }
+    GLState &setPolygonOffset(bool polygonOffset, float factor=std::numeric_limits<float>::quiet_NaN(), float units=std::numeric_limits<float>::quiet_NaN()) {
+        if (polygonOffset) {
+            enable(GL_POLYGON_OFFSET_FILL);
+            if ((!std::isnan(factor) && currentPolygonOffsetFactor != factor) || (!std::isnan(units) && currentPolygonOffsetUnits != units)) {
+                glPolygonOffset(factor, units);
 
                 currentPolygonOffsetFactor = factor;
                 currentPolygonOffsetUnits = units;
             }
-        } else {
-            disable( GL_POLYGON_OFFSET_FILL );
+        }
+        else {
+            disable(GL_POLYGON_OFFSET_FILL);
         }
         return *this;
     }
@@ -754,63 +925,143 @@ public:
     }
 
     // texture
-    GLState &activeTexture( int glSlot = -1 ) {
-        //if ( webglSlot === undefined ) webglSlot = gl.TEXTURE0 + maxTextures - 1;
-        if ( currentTextureSlot != glSlot ) {
-            glActiveTexture( glSlot );
+//    GLState &activeTexture( int glSlot = -1 ) {
+//        //if ( webglSlot === undefined ) webglSlot = gl.TEXTURE0 + maxTextures - 1;
+//        if ( currentTextureSlot != glSlot ) {
+//            glActiveTexture( glSlot );
+//            currentTextureSlot = glSlot;
+//        }
+//        return *this;
+//    }
+    GLState &activeTexture(int glSlot=-1) {
+        if (glSlot == -1) glSlot = GL_TEXTURE0 + maxTextures - 1;
+        if (currentTextureSlot !=  glSlot) {
+            glActiveTexture(glSlot);
             currentTextureSlot = glSlot;
         }
         return *this;
     }
 
-    GLState &bindTexture( GLenum glType, GLuint glTexture ) {
-        if ( currentTextureSlot == -1 ) {
+//    GLState &bindTexture( GLenum glType, GLuint glTexture ) {
+//        if ( currentTextureSlot == -1 ) {
+//            activeTexture();
+//        }
+//
+//        BoundTexture boundTexture{GL_NONE,0};
+//        if(currentBoundTextures.size() >= currentTextureSlot)
+//            boundTexture = currentBoundTextures[ currentTextureSlot ];
+////        if ( boundTexture == undefined ) {
+////            boundTexture = { type: undefined, texture: undefined };
+////            currentBoundTextures[ currentTextureSlot ] = boundTexture;
+////        }
+//
+//        if ( boundTexture.type != glType || boundTexture.texture != glTexture ) {
+//
+//            glBindTexture( glType, glTexture /**|| emptyTextures[ glType ]*/ );
+//
+//            boundTexture.type = glType;
+//            boundTexture.texture = glTexture;
+//        }
+//        return *this;
+//    }
+    GLState &bindTexture(TextureTarget target, GLint texture = -1) {
+        if (currentTextureSlot < 0 ) {
             activeTexture();
         }
 
-        BoundTexture boundTexture{GL_NONE,0};
-        if(currentBoundTextures.size() >= currentTextureSlot)
-            boundTexture = currentBoundTextures[ currentTextureSlot ];
-//        if ( boundTexture == undefined ) {
-//            boundTexture = { type: undefined, texture: undefined };
-//            currentBoundTextures[ currentTextureSlot ] = boundTexture;
-//        }
+        /*if (currentTextureSlot == 33985)
+            std::cout << "CurrentTextureSlot :" << currentTextureSlot << " texture:" << texture << std::endl;*/
 
-        if ( boundTexture.type != glType || boundTexture.texture != glTexture ) {
+        BoundTexture* boundTexture;
 
-            glBindTexture( glType, glTexture /**|| emptyTextures[ glType ]*/ );
+        if (texture == 0)
+            std::cout << "Texture is 0" << std::endl;
 
-            boundTexture.type = glType;
-            boundTexture.texture = glTexture;
+        auto found = currentBoundTextures.find(currentTextureSlot);
+        if (found == currentBoundTextures.end()) {
+            currentBoundTextures.emplace(currentTextureSlot, BoundTexture(TextureTarget::None, -1));
+            boundTexture = &currentBoundTextures[currentTextureSlot];
+        }
+        else {
+            boundTexture = &found->second;
+        }
+
+        if (boundTexture->target != target || boundTexture->texture !=  texture) {
+            if(texture>0)
+                glBindTexture((GLenum)target, (GLuint)texture);
+            else
+                glBindTexture((GLenum)target,emptyTextures[(GLuint)target]);
+
+            boundTexture->target = target;
+            boundTexture->texture = texture;
+
         }
         return *this;
     }
 
-    GLState &unbindTexture() {
-        if(currentBoundTextures.size()>=currentTextureSlot) {
-            BoundTexture boundTexture = currentBoundTextures[currentTextureSlot];
-
-            glBindTexture(boundTexture.type, 0);
-
-            boundTexture.type = GL_NONE;
-            boundTexture.texture = 0;
-        }
-        return *this;
-    }
-
-//    function compressedTexImage2D() {
-//        glCompressedTexImage2D()
-//        try {
+//    GLState &unbindTexture() {
+//        if(currentBoundTextures.size()>=currentTextureSlot) {
+//            BoundTexture boundTexture = currentBoundTextures[currentTextureSlot];
 //
-//            gl.compressedTexImage2D.apply( gl, arguments );
+//            glBindTexture(boundTexture.type, 0);
 //
-//        } catch ( error ) {
-//
-//            console.error( 'THREE.WebGLState:', error );
-//
+//            boundTexture.type = GL_NONE;
+//            boundTexture.texture = 0;
 //        }
-//
+//        return *this;
 //    }
+    GLState &unbindTexture() {
+        BoundTexture* boundTexture;
+        auto found = currentBoundTextures.find(currentTextureSlot);
+        if (found != currentBoundTextures.end()) {
+            boundTexture = &found->second;
+            glBindTexture((GLenum)boundTexture->target, 0);
+
+            boundTexture->target = TextureTarget::None;
+            boundTexture->texture = -1;
+        }
+
+        return *this;
+    }
+
+    void compressedTexImage2D(GLenum target, GLint level, GLint internalFormat,GLsizei width, GLsizei height, const std::vector<unsigned char>& data)
+    {
+        glCompressedTexImage2D(target, level, internalFormat, width, height, 0, data.size(), data.data());
+    }
+
+    void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border,GLenum format, GLenum type, byte* pixels)
+    {
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*)pixels);
+    }
+    void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const std::vector<unsigned char>& pixels)
+    {
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*) &pixels[0]);
+    }
+
+    void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type)
+    {
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, nullptr);
+    }
+
+    void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const MipMap& mipmap)
+    {
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, mipmap.data.data());
+    }
+
+    void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,GLint border,GLenum format,GLenum type, byte* pixels)
+    {
+        glTexImage3D(target, level, format, width, height, depth, border, format, type, pixels);
+    }
+
+    void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const MipMap& mipmap)
+    {
+        glTexImage3D(target, level, (GLenum)format, width, height, depth, border, (GLenum)format, (GLenum)type, mipmap.data.data());
+    }
+
+    void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const std::vector<byte>& pixels)
+    {
+        glTexImage3D(target, level, format, width, height, depth, border, format, type, &pixels[0]);
+    }
 
 //    function texSubImage2D() {
 //
@@ -903,7 +1154,6 @@ public:
 //            console.error( 'THREE.WebGLState:', error );
 //        }
 //    }
-    //
 
     GLState &scissor( Vector4d scissor ) {
         if ( currentScissor.equals( scissor ) == false ) {
@@ -921,164 +1171,128 @@ public:
         return *this;
     }
 
+//    GLState &reset() {
+//
+//        // reset state
+//        glDisable( GL_BLEND );
+//        glDisable( GL_CULL_FACE );
+//        glDisable( GL_DEPTH_TEST );
+//        glDisable( GL_POLYGON_OFFSET_FILL );
+//        glDisable( GL_SCISSOR_TEST );
+//        glDisable( GL_STENCIL_TEST );
+//        glDisable( GL_SAMPLE_ALPHA_TO_COVERAGE );
+//
+//        glBlendEquation( GL_FUNC_ADD );
+//        glBlendFunc( GL_ONE, GL_ZERO );
+//        glBlendFuncSeparate( GL_ONE, GL_ZERO, GL_ONE, GL_ZERO );
+//
+//        glColorMask( true, true, true, true );
+//        glClearColor( 0, 0, 0, 0 );
+//
+//        glDepthMask( true );
+//        glDepthFunc( GL_LESS );
+//        glClearDepthf( 1 );
+//
+//        glStencilMask( 0xffffffff );
+//        glStencilFunc( GL_ALWAYS, 0, 0xffffffff );
+//        glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+//        glClearStencil( 0 );
+//
+//        glCullFace( GL_BACK );
+//        glFrontFace( GL_CCW );
+//
+//        glPolygonOffset( 0, 0 );
+//
+//        glActiveTexture( GL_TEXTURE0 );
+//
+//        glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+//
+//        if ( isWebGL2 == true ) {
+//
+//            glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
+//            glBindFramebuffer( GL_READ_FRAMEBUFFER, 0 );
+//
+//        }
+//
+//        glUseProgram( 0 );
+//
+//        glLineWidth( 1 );
+//
+//        glScissor( 0, 0, defaultViewPort.width, defaultViewPort.height );
+//        glViewport( 0, 0, defaultViewPort.width, defaultViewPort.height );
+//
+//        // reset internals
+//
+//        enabledCapabilities = {};
+//
+//        currentTextureSlot = -1;
+//        currentBoundTextures = {};
+//
+//        currentBoundFramebuffers = {};
+////        currentDrawbuffers = new WeakMap();
+////        defaultDrawbuffers = [];
+//
+//        GLuint currentProgram = 0;
+//
+//        currentBlendingEnabled = false;
+//        currentBlending = -1;
+//        currentBlendEquation = -1;
+//        currentBlendSrc = -1;
+//        currentBlendDst = -1;
+//        currentBlendEquationAlpha = -1;
+//        currentBlendSrcAlpha = -1;
+//        currentBlendDstAlpha = -1;
+//        currentPremultipledAlpha = false;
+//
+//        currentFlipSided = -1;
+//        currentCullFace = -1;
+//
+//        currentLineWidth = -1;
+//
+//        currentPolygonOffsetFactor = -1;
+//        currentPolygonOffsetUnits = -1;
+//
+//        currentScissor.set( 0, 0, defaultViewPort.width, defaultViewPort.height );
+//        currentViewport.set( 0, 0, defaultViewPort.width, defaultViewPort.height );
+//
+//        colorBuffer.reset();
+//        depthBuffer.reset();
+//        stencilBuffer.reset();
+//
+//    }
+
     GLState &reset() {
-
-        // reset state
-        glDisable( GL_BLEND );
-        glDisable( GL_CULL_FACE );
-        glDisable( GL_DEPTH_TEST );
-        glDisable( GL_POLYGON_OFFSET_FILL );
-        glDisable( GL_SCISSOR_TEST );
-        glDisable( GL_STENCIL_TEST );
-        glDisable( GL_SAMPLE_ALPHA_TO_COVERAGE );
-
-        glBlendEquation( GL_FUNC_ADD );
-        glBlendFunc( GL_ONE, GL_ZERO );
-        glBlendFuncSeparate( GL_ONE, GL_ZERO, GL_ONE, GL_ZERO );
-
-        glColorMask( true, true, true, true );
-        glClearColor( 0, 0, 0, 0 );
-
-        glDepthMask( true );
-        glDepthFunc( GL_LESS );
-        glClearDepthf( 1 );
-
-        glStencilMask( 0xffffffff );
-        glStencilFunc( GL_ALWAYS, 0, 0xffffffff );
-        glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-        glClearStencil( 0 );
-
-        glCullFace( GL_BACK );
-        glFrontFace( GL_CCW );
-
-        glPolygonOffset( 0, 0 );
-
-        glActiveTexture( GL_TEXTURE0 );
-
-        glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-
-        if ( isWebGL2 == true ) {
-
-            glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
-            glBindFramebuffer( GL_READ_FRAMEBUFFER, 0 );
-
+        for (unsigned i = 0; i < enabledAttributes.size(); i++) {
+            glDisableVertexAttribArray(i);
+            enabledAttributes[i] = 0;
         }
 
-        glUseProgram( 0 );
+        enabledCapabilities.clear();
 
-        glLineWidth( 1 );
-
-        glScissor( 0, 0, defaultViewPort.width, defaultViewPort.height );
-        glViewport( 0, 0, defaultViewPort.width, defaultViewPort.height );
-
-        // reset internals
-
-        enabledCapabilities = {};
+        compressedTextureFormats.clear();
 
         currentTextureSlot = -1;
-        currentBoundTextures = {};
 
-        currentBoundFramebuffers = {};
-//        currentDrawbuffers = new WeakMap();
-//        defaultDrawbuffers = [];
+        currentBoundTextures.clear();
 
-        GLuint currentProgram = 0;
+        currentProgram = -1;
 
-        currentBlendingEnabled = false;
-        currentBlending = -1;
-        currentBlendEquation = -1;
-        currentBlendSrc = -1;
-        currentBlendDst = -1;
-        currentBlendEquationAlpha = -1;
-        currentBlendSrcAlpha = -1;
-        currentBlendDstAlpha = -1;
-        currentPremultipledAlpha = false;
+        currentBlending = Blending::NoBlending;
 
-        currentFlipSided = -1;
-        currentCullFace = -1;
+        currentFlipSided = false;
 
-        currentLineWidth = -1;
-
-        currentPolygonOffsetFactor = -1;
-        currentPolygonOffsetUnits = -1;
-
-        currentScissor.set( 0, 0, defaultViewPort.width, defaultViewPort.height );
-        currentViewport.set( 0, 0, defaultViewPort.width, defaultViewPort.height );
+        currentCullFace = CullFace::CullFaceNone;
 
         colorBuffer.reset();
         depthBuffer.reset();
         stencilBuffer.reset();
 
+        return *this;
     }
-
-//    return {
-//
-//        buffers: {
-//            color: colorBuffer,
-//            depth: depthBuffer,
-//            stencil: stencilBuffer
-//        },
-//
-//        enable: enable,
-//        disable: disable,
-//
-//        bindFramebuffer: bindFramebuffer,
-//        drawBuffers: drawBuffers,
-//
-//        useProgram: useProgram,
-//
-//        setBlending: setBlending,
-//        setMaterial: setMaterial,
-//
-//        setFlipSided: setFlipSided,
-//        setCullFace: setCullFace,
-//
-//        setLineWidth: setLineWidth,
-//        setPolygonOffset: setPolygonOffset,
-//
-//        setScissorTest: setScissorTest,
-//
-//        activeTexture: activeTexture,
-//        bindTexture: bindTexture,
-//        unbindTexture: unbindTexture,
-//        compressedTexImage2D: compressedTexImage2D,
-//        texImage2D: texImage2D,
-//        texImage3D: texImage3D,
-//
-//        texStorage2D: texStorage2D,
-//        texStorage3D: texStorage3D,
-//        texSubImage2D: texSubImage2D,
-//        texSubImage3D: texSubImage3D,
-//        compressedTexSubImage2D: compressedTexSubImage2D,
-//
-//        scissor: scissor,
-//        viewport: viewport,
-//
-//        reset: reset
-//
-//    };
 
 };
 
-//import { NotEqualDepth, GreaterDepth, GreaterEqualDepth, EqualDepth, LessEqualDepth, LessDepth, AlwaysDepth, NeverDepth, CullFaceFront, CullFaceBack, CullFaceNone, DoubleSide, BackSide, CustomBlending, MultiplyBlending, SubtractiveBlending, AdditiveBlending, NoBlending, NormalBlending, AddEquation, SubtractEquation, ReverseSubtractEquation, MinEquation, MaxEquation, ZeroFactor, OneFactor, SrcColorFactor, SrcAlphaFactor, SrcAlphaSaturateFactor, DstColorFactor, DstAlphaFactor, OneMinusSrcColorFactor, OneMinusSrcAlphaFactor, OneMinusDstColorFactor, OneMinusDstAlphaFactor } from '../../constants.js';
-//import { Vector4 } from '../../math/Vector4.js';
-//
-//function WebGLState( gl, extensions, capabilities ) {
-//
-//    const isWebGL2 = capabilities.isWebGL2;
 
-//    function StencilBuffer() {
-//
-
-//
-//    }
-//
-//    //
-
-//
-//}
-//
-//export { WebGLState };
 
 
 #endif //THREE_CPP_SRC_RENDERS_GL_STATE_H
