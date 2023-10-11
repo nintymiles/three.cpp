@@ -10,24 +10,36 @@
 #include <vector>
 #include <GLES3/gl3.h>
 
+class GLProgram;
+
 class GLInfo{
 public:
+    using GLProgramPtr = std::shared_ptr<GLProgram>;
+
     struct MemoryInfo{
-        int geometries;
-        int textures;
+        unsigned geometries;
+        unsigned textures;
+
+        MemoryInfo() :geometries(0), textures(0) {}
     };
+
     struct RenderInfo{
-        int frame;
-        int calls;
-        int triangles;
-        int points;
-        int lines;
+        unsigned frame;
+        unsigned calls;
+        unsigned triangles;
+        unsigned points;
+        unsigned lines;
+
+        RenderInfo() :frame(0), calls(0), triangles(0), points(0), lines(0) {}
     };
 
     MemoryInfo memory;
     RenderInfo render;
-    //std::vector<OpenGLProgram> progams;
+
+    std::vector<GLProgramPtr> programs;
     bool autoReset = true;
+
+    using sptr = std::shared_ptr<GLInfo>;
     
     GLInfo& reset(){
         render.calls = 0;

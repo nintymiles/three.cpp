@@ -10,166 +10,340 @@
 #include "math_utils.h"
 #include "vector2.h"
 
+#include "common_types.h"
+#include "../utils/sole.h"
+
 #include <fstream>
 #include <string>
+#include <cstddef>
+#include <vector>
 
-static int _textureId{0};
-class Texture:public EventDispatcher{
+#include <GLES3/gl3.h>
+
+class Texture {
+    static size_t textureId;
+private:
+
 public:
-    int id = _textureId++;
-    std::string UUID = MathUtils::generate_uuid();
-    std::string name = "";
+    using sptr = std::shared_ptr<Texture>;
+
+    using threecpp::TextureMapping;
+    using threecpp::Wrapping;
+    using threecpp::TextureFilter;
+    using threecpp::PixelFormat;
 
 
-    //this.source = new Source( image );
-//this.mipmaps = [];
+    bool needsUpdate;
+    size_t id;
+    sole::uuid uuid = sole::uuid1();
 
-    int mapping;
+    std::string name;
+    std::string sourceFile;
+    std::vector<unsigned char> image;
+    std::vector<Texture> images;
 
-    int wrapS;
-    int wrapT;
+    GLsizei imageWidth;
+    GLsizei imageHeight;
+    GLsizei depth;
 
-    int magFilter;
-    int minFilter;
+    int channel;
+    //std::vector<unsigned char> image;
 
-    int anisotropy;
+    std::vector<MipMap> mipmaps;
+    TextureMapping mapping;
 
-    int format;
-//  int internalFormat = null;
+    Wrapping wrapS;
 
-    int type = type;
+    Wrapping wrapT;
 
-    static std::fstream DEFAULT_IMAGE;
-    static const int DEFAULT_MAPPING = UVMapping;
+    Wrapping wrapR = Wrapping::ClampToEdgeWrapping;
 
-    Vector2 offset = {0, 0};
-    Vector2 repeat = {1, 1};
-    Vector2 center = {0, 0} ;
-    double rotation = 0;
+    TextureFilter magFilter;
+    TextureFilter minFilter;
 
-    bool matrixAutoUpdate = true;
+    unsigned anisotropy;
+
+    PixelFormat format;
+    PixelFormatGPU internalFormat;
+    TextureDataType type;
+
+    Vector2 offset;
+    Vector2 repeat;
+    Vector2 center;
+
+    float rotation;
+    bool generateMipmaps;
+    bool premultiplyAlpha;
+    bool flipY;
+    unsigned unpackAlignment;
+
+    TextureEncoding encoding;
+
+    size_t version = 0;
+    bool matrixAutoUpdate;
+
     Matrix3 matrix;
 
-    bool generateMipmaps = true;
-    bool premultiplyAlpha = false;
-    bool flipY = true;
+    bool isCompressedTexture = false;
+    bool isCubeTexture = false;
+    bool isDataTexture = false;
+    bool isDataTexture3D = false;
+    bool isDataTexture2DArray = false;
+    bool isDepthTexture = false;
+    bool isVideoTexture = false;
 
-    int unpackAlignment = 4;	// valid values: 1, 2, 4, 8 (see http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml)
+    Signal<void(Texture&)> onDispose;
+    Signal<void(Texture&)> onUpdate;
 
-    // Values of encoding !== THREE.LinearEncoding only supported on map, envMap and emissiveMap.
-    // Also changing the encoding after already used by a Material will not automatically make the Material
-    // update. You need to explicitly call Material.needsUpdate to trigger it to recompile.
-    int encoding = encoding;
+    Texture(std::vector<unsigned char> image=std::vector<unsigned char>(), TextureMapping mapping = TextureMapping::UVMapping, Wrapping wraps = Wrapping::ClampToEdgeWrapping, Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::LinearFilter, TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter, PixelFormat format = PixelFormat::RGBAFormat, TextureDataType type = TextureDataType::UnsignedByteType, unsigned anisotropy = 1, TextureEncoding encoding = TextureEncoding::LinearEncoding);
 
-//this.userData = {};
+    Texture(const Texture& source);
 
-    int version = 0;
-//this.onUpdate = null;
-
-    bool isRenderTargetTexture = false; // indicates whether a texture belongs to a render target or not
-    bool needsPMREMUpdate = false; // indicates whether this texture should be processed by PMREMGenerator or not (only relevant for render target textures)
-
-    Texture(std::fstream image, int mapping = DEFAULT_MAPPING,
-            int wrapS = ClampToEdgeWrapping, int wrapT = ClampToEdgeWrapping,
-            int magFilter = LinearFilter, int minFilter = LinearMipmapLinearFilter,
-            int format = RGBAFormat, int type = UnsignedByteType,
-            int anisotropy = 1, int encoding = LinearEncoding)
-            :mapping(mapping),wrapS{wrapS},wrapT(wrapT),magFilter(magFilter),minFilter(minFilter),
-             format(format),type(type),anisotropy(anisotropy),encoding(encoding){}
-
-//
-//get image() {
-//
-//    return this.source.data;
-//
-//}
-//
-//set image( value ) {
-//
-//    this.source.data = value;
-//
-//}
-
-    Texture &updateMatrix(){
-        this->matrix.setUvTransform( this->offset.x, this->offset.y,
-                                     this->repeat.x, this->repeat.y,
-                                     this->rotation, this->center.x, this->center.y );
-        return *this;
+    static sptr create(std::vector<unsigned char> image = std::vector<unsigned char>(),
+                      TextureMapping mapping = TextureMapping::UVMapping,
+                      Wrapping wraps = Wrapping::ClampToEdgeWrapping,
+                      Wrapping wrapt = Wrapping::ClampToEdgeWrapping,
+                      TextureFilter magFilter = TextureFilter::LinearFilter,
+                      TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter,
+                      PixelFormat format = PixelFormat::RGBAFormat,
+                      TextureDataType type = TextureDataType::UnsignedByteType,
+                      unsigned anisotropy = 1,
+                      TextureEncoding encoding = TextureEncoding::LinearEncoding) {
+        return std::make_shared<Texture>(image, mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy);
     }
 
+    virtual ~Texture() = default;
 
-    Texture &dispose() {
-        this->dispatchEvent( Event{ "type", nullptr } );
 
-        return *this;
+    void updateMatrix() {
+        matrix.setUvTransform(offset.x, offset.y, repeat.x, repeat.y, rotation, center.x, center.y);
     }
+    Texture* clone();
 
-    Vector2 &transformUv( Vector2 &uv ) {
-        if ( this->mapping != UVMapping ) return uv;
+    Texture& copy(const Texture& source);
 
-        uv.applyMatrix3( this->matrix );
+    Vector2& transformUv(Vector2& uv){
+        if (mapping != TextureMapping::UVMapping) return uv;
 
-        if ( uv.x < 0 || uv.x > 1 ) {
+        uv.applyMatrix3(matrix);
 
-            switch ( this->wrapS ) {
-
-                case RepeatWrapping:
-                    uv.x = uv.x - floor( uv.x );
+        if (uv.x < 0 || uv.x > 1) {
+            switch (wrapS) {
+                case Wrapping::RepeatWrapping:
+                    uv.x = uv.x - std::floor(uv->x);
                     break;
-                case ClampToEdgeWrapping:
-                    uv.x = uv.x < 0 ? 0 : 1;
+                case Wrapping::ClampToEdgeWrapping:
+                    uv.x = uv.x < 0 ? 0.0f : 1.0f;
                     break;
-                case MirroredRepeatWrapping:
-                    if ( std::abs( (int)std::floor( uv.x ) % 2 ) == 1 ) {
-                        uv.x = std::ceil( uv.x ) - uv.x;
-                    } else {
-                        uv.x = uv.x - std::floor( uv.x );
+                case Wrapping::MirroredRepeatWrapping:
+                    if (std::abs(std::fmod(std::floor(uv->x), 2)) ==  1) {
+                        uv.x = ceil(uv.x) - uv.x;
+                    }
+                    else {
+                        uv.x = uv.x - floor(uv.x);
                     }
                     break;
-
             }
 
         }
 
-        if ( uv.y < 0 || uv.y > 1 ) {
-
-            switch ( this->wrapT ) {
-
-                case RepeatWrapping:
-                    uv.y = uv.y - std::floor( uv.y );
+        if (uv.y < 0 || uv.y > 1) {
+            switch (wrapT) {
+                case Wrapping::RepeatWrapping:
+                    uv.y = uv.y - floor(uv.y);
                     break;
-                case ClampToEdgeWrapping:
-                    uv.y = uv.y < 0 ? 0 : 1;
+                case Wrapping::ClampToEdgeWrapping:
+                    uv.y = uv.y < 0 ? 0.0f : 1.0f;
                     break;
-                case MirroredRepeatWrapping:
-                    if ( (int)std::abs( std::floor( uv.y ) % 2 ) == 1 ) {
-                        uv.y = std::ceil( uv.y ) - uv.y;
-                    } else {
-                        uv.y = uv.y - std::floor( uv.y );
+                case Wrapping::MirroredRepeatWrapping:
+                    if (abs(std::fmod(floor(uv.y),2)) == 1) {
+                        uv.y = ceil(uv.y) - uv.y;
+                    }
+                    else {
+                        uv.y = uv.y - floor(uv.y);
                     }
                     break;
-
             }
-
         }
 
-        if ( this->flipY ) {
+        if (flipY) {
             uv.y = 1 - uv.y;
         }
 
         return uv;
     }
 
-    Texture &needsUpdate( bool value ) {
-        if ( value == true ) {
-            this->version ++;
-            this->source.needsUpdate = true;
-        }
+    void updateTexture();
 
+    bool isEmpty()  const{
+        return id == std::numeric_limits<size_t>::infinity() || id == 0;
     }
 
-
+    void setNeedsUpdate(const bool value) {
+        if (value == true) {
+            version++;
+            needsUpdate = value;
+        }
+    }
 };
+
+//static int _textureId{0};
+//class Texture:public EventDispatcher{
+//public:
+//    int id = _textureId++;
+//    std::string UUID = MathUtils::generate_uuid();
+//    std::string name = "";
+//
+//
+//    //this.source = new Source( image );
+////this.mipmaps = [];
+//
+//    int mapping;
+//
+//    int wrapS;
+//    int wrapT;
+//
+//    int magFilter;
+//    int minFilter;
+//
+//    int anisotropy;
+//
+//    int format;
+////  int internalFormat = null;
+//
+//    int type = type;
+//
+//    static std::fstream DEFAULT_IMAGE;
+//    static const int DEFAULT_MAPPING = UVMapping;
+//
+//    Vector2 offset = {0, 0};
+//    Vector2 repeat = {1, 1};
+//    Vector2 center = {0, 0} ;
+//    double rotation = 0;
+//
+//    bool matrixAutoUpdate = true;
+//    Matrix3 matrix;
+//
+//    bool generateMipmaps = true;
+//    bool premultiplyAlpha = false;
+//    bool flipY = true;
+//
+//    int unpackAlignment = 4;	// valid values: 1, 2, 4, 8 (see http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml)
+//
+//    // Values of encoding !== THREE.LinearEncoding only supported on map, envMap and emissiveMap.
+//    // Also changing the encoding after already used by a Material will not automatically make the Material
+//    // update. You need to explicitly call Material.needsUpdate to trigger it to recompile.
+//    int encoding = encoding;
+//
+////this.userData = {};
+//
+//    int version = 0;
+////this.onUpdate = null;
+//
+//    bool isRenderTargetTexture = false; // indicates whether a texture belongs to a render target or not
+//    bool needsPMREMUpdate = false; // indicates whether this texture should be processed by PMREMGenerator or not (only relevant for render target textures)
+//
+//    Texture(std::fstream image, int mapping = DEFAULT_MAPPING,
+//            int wrapS = ClampToEdgeWrapping, int wrapT = ClampToEdgeWrapping,
+//            int magFilter = LinearFilter, int minFilter = LinearMipmapLinearFilter,
+//            int format = RGBAFormat, int type = UnsignedByteType,
+//            int anisotropy = 1, int encoding = LinearEncoding)
+//            :mapping(mapping),wrapS{wrapS},wrapT(wrapT),magFilter(magFilter),minFilter(minFilter),
+//             format(format),type(type),anisotropy(anisotropy),encoding(encoding){}
+//
+////
+////get image() {
+////
+////    return this.source.data;
+////
+////}
+////
+////set image( value ) {
+////
+////    this.source.data = value;
+////
+////}
+//
+//    Texture &updateMatrix(){
+//        this->matrix.setUvTransform( this->offset.x, this->offset.y,
+//                                     this->repeat.x, this->repeat.y,
+//                                     this->rotation, this->center.x, this->center.y );
+//        return *this;
+//    }
+//
+//
+//    Texture &dispose() {
+//        this->dispatchEvent( Event{ "type", nullptr } );
+//
+//        return *this;
+//    }
+//
+//    Vector2 &transformUv( Vector2 &uv ) {
+//        if ( this->mapping != UVMapping ) return uv;
+//
+//        uv.applyMatrix3( this->matrix );
+//
+//        if ( uv.x < 0 || uv.x > 1 ) {
+//
+//            switch ( this->wrapS ) {
+//
+//                case RepeatWrapping:
+//                    uv.x = uv.x - floor( uv.x );
+//                    break;
+//                case ClampToEdgeWrapping:
+//                    uv.x = uv.x < 0 ? 0 : 1;
+//                    break;
+//                case MirroredRepeatWrapping:
+//                    if ( std::abs( (int)std::floor( uv.x ) % 2 ) == 1 ) {
+//                        uv.x = std::ceil( uv.x ) - uv.x;
+//                    } else {
+//                        uv.x = uv.x - std::floor( uv.x );
+//                    }
+//                    break;
+//
+//            }
+//
+//        }
+//
+//        if ( uv.y < 0 || uv.y > 1 ) {
+//
+//            switch ( this->wrapT ) {
+//
+//                case RepeatWrapping:
+//                    uv.y = uv.y - std::floor( uv.y );
+//                    break;
+//                case ClampToEdgeWrapping:
+//                    uv.y = uv.y < 0 ? 0 : 1;
+//                    break;
+//                case MirroredRepeatWrapping:
+//                    if ( (int)std::abs( std::floor( uv.y ) % 2 ) == 1 ) {
+//                        uv.y = std::ceil( uv.y ) - uv.y;
+//                    } else {
+//                        uv.y = uv.y - std::floor( uv.y );
+//                    }
+//                    break;
+//
+//            }
+//
+//        }
+//
+//        if ( this->flipY ) {
+//            uv.y = 1 - uv.y;
+//        }
+//
+//        return uv;
+//    }
+//
+//    Texture &needsUpdate( bool value ) {
+//        if ( value == true ) {
+//            this->version ++;
+//            this->source.needsUpdate = true;
+//        }
+//
+//    }
+//
+//
+//};
 
 
 

@@ -43,7 +43,7 @@ public :
 class GLExtensions {
     threecpp::enum_map<threecpp::Extension, bool> extensions;
 public:
-    using ptr = std::shared_ptr<GLExtensions>;
+    using sptr = std::shared_ptr<GLExtensions>;
     GLExtensions() {}
 
     bool get(threecpp::Extension extension) {

@@ -156,6 +156,150 @@ enum class ToneMapping {
     ACESFilmicToneMapping	= 5
 };
 
+enum class TextureMapping {
+    Unknown								= 0,
+    UVMapping							= 300,
+    CubeReflectionMapping				= 301,
+    CubeRefractionMapping				= 302,
+    EquirectangularReflectionMapping	= 303,
+    EquirectangularRefractionMapping	= 304,
+    SphericalReflectionMapping			= 305,
+    CubeUVReflectionMapping				= 306,
+    CubeUVRefractionMapping				= 307
+};
+
+enum class TextureFilter {
+    NearestFilter				= GL_NEAREST,
+    NearestMipmapNearestFilter	= GL_NEAREST_MIPMAP_NEAREST,
+    NearestMipMapNearestFilter	= GL_NEAREST_MIPMAP_NEAREST,
+    NearestMipmapLinearFilter	= GL_NEAREST_MIPMAP_LINEAR,
+    NearestMipMapLinearFilter	= GL_NEAREST_MIPMAP_LINEAR,
+    LinearFilter				= GL_LINEAR,
+    LinearMipmapNearestFilter	= GL_LINEAR_MIPMAP_NEAREST,
+    LinearMipMapNearestFilter	= GL_LINEAR_MIPMAP_NEAREST,
+    LinearMipmapLinearFilter	= GL_LINEAR_MIPMAP_LINEAR,
+    LinearMipMapLinearFilter	= GL_LINEAR_MIPMAP_LINEAR
+};
+
+enum class TextureEncoding : int {
+    Unknown			= 0,
+    LinearEncoding	= 3000,
+    sRGBEncoding	= 3001,
+    GammaEncoding	= 3007,
+    RGBEEncoding	= 3002,
+    LogLuvEncoding	= 3003,
+    RGBM7Encoding	= 3004,
+    RGBM16Encoding	= 3005,
+    RGBDEncoding	= 3006
+};
+
+enum class TextureDataType {
+    UnsignedByteType		= GL_UNSIGNED_BYTE,
+    ByteType				= GL_BYTE,
+    ShortType				= GL_SHORT,
+    UnsignedShortType		= GL_UNSIGNED_SHORT,
+    IntType					= GL_INT,
+    UnsignedIntType			= GL_UNSIGNED_INT,
+    FloatType				= GL_FLOAT,
+    HalfFloatType			= GL_HALF_FLOAT,
+    UnsignedShort4444Type	= GL_UNSIGNED_SHORT_4_4_4_4,
+    UnsignedShort5551Type	= GL_UNSIGNED_SHORT_5_5_5_1,
+    UnsignedShort565Type	= GL_UNSIGNED_SHORT_5_6_5,
+    UnsignedInt248Type		= GL_UNSIGNED_INT_24_8,
+};
+
+enum class Wrapping {
+    RepeatWrapping = GL_REPEAT,
+    ClampToEdgeWrapping = GL_CLAMP_TO_EDGE,
+    MirroredRepeatWrapping = GL_MIRRORED_REPEAT,
+    None = GL_NONE
+};
+
+
+enum class PixelFormat {
+    AlphaFormat				= GL_ALPHA,
+    RGBFormat				= GL_RGB,
+    RGBAFormat				= GL_RGBA,
+    LuminanceFormat			= GL_LUMINANCE,
+    LuminanceAlphaFormat	= GL_LUMINANCE4_ALPHA4,
+    RGBEFormat				= GL_RGBA,
+    DepthFormat				= GL_DEPTH,
+    DepthStencilFormat		= GL_DEPTH_STENCIL,
+    RedFormat				= GL_R,
+    RedIntegerFormat		= GL_R16,
+    RGFormat				= GL_RG,
+    RGIntegerFormat			= GL_RG16,
+    RGBIntegerFormat		= GL_RGB16,
+    RGBAIntegerFormat		= GL_RGBA16,
+    None					= GL_NONE
+};
+
+enum class PixelFormatGPU {
+    NONE				= GL_NONE,
+    ALPHA				= GL_ALPHA,
+    RGB					= GL_RGB,
+    RGBA				= GL_RGBA,
+    LUMINANCE			= GL_LUMINANCE,
+    LUMINANCE_ALPHA		= GL_LUMINANCE_ALPHA,
+    RED_INTEGER			= GL_RED_INTEGER,
+    R8					= GL_R8,
+    R8_SNORM			= GL_R8_SNORM,
+    R8I					= GL_R8I,
+    R8UI				= GL_R8UI,
+    R16I				= GL_R16I,
+    R16UI				= GL_R16UI,
+    R16F				= GL_R16F,
+    R32I				= GL_R32I,
+    R32UI				= GL_R32UI,
+    R32F				= GL_R32F,
+    RG8					= GL_RG8,
+    RG8_SNORM			= GL_RG8_SNORM,
+    RG8I				= GL_RG8I,
+    RG8UI				= GL_RG8UI,
+    RG16I				= GL_RG16I,
+    RG16UI				= GL_RG16UI,
+    RG16F				= GL_RG16F,
+    RG32I				= GL_RG32I,
+    RG32UI				= GL_RG32UI,
+    RG32F				= GL_RG32F,
+    RGB565				= GL_RGB565,
+    RGB8				= GL_RGB8,
+    RGB8_SNORM			= GL_RGB8_SNORM,
+    RGB8I				= GL_RGB8I,
+    RGB8UI				= GL_RGB8UI,
+    RGB16I				= GL_RGB16I,
+    RGB16UI				= GL_RGB16UI,
+    RGB16F				= GL_RGB16F,
+    RGB32I				= GL_RGB32I,
+    RGB32UI				= GL_RGB32UI,
+    RGB32F				= GL_RGB32F,
+    RGB9_E5				= GL_RGB9_E5,
+    SRGB8				= GL_SRGB8,
+    R11F_G11F_B10F		= GL_R11F_G11F_B10F,
+    RGBA4				= GL_RGBA4,
+    RGBA8				= GL_RGBA8,
+    RGBA8_SNORM			= GL_RGBA8_SNORM,
+    RGBA8I				= GL_RGBA8I,
+    RGBA8UI				= GL_RGBA8UI,
+    RGBA16I				= GL_RGBA16I,
+    RGBA16UI			= GL_RGBA16UI,
+    RGBA16F				= GL_RGBA16F,
+    RGBA32I				= GL_RGBA32I,
+    RGBA32UI			= GL_RGBA32UI,
+    RGBA32F				= GL_RGBA32F,
+    RGB5_A1				= GL_RGB5_A1,
+    RGB10_A2			= GL_RGB10_A2,
+    RGB10_A2UI			= GL_RGB10_A2UI,
+    SRGB8_ALPHA8		= GL_SRGB8_ALPHA8,
+    DEPTH_COMPONENT16	= GL_DEPTH_COMPONENT16,
+    DEPTH_COMPONENT24	= GL_DEPTH_COMPONENT24,
+    DEPTH_COMPONENT32F	= GL_DEPTH_COMPONENT32F,
+    DEPTH24_STENCIL8	= GL_DEPTH24_STENCIL8,
+    DEPTH32F_STENCIL8	= GL_DEPTH32F_STENCIL8
+};
+
+
+
 enum class Extension : size_t{
     ARB_depth_texture = 1,
     EXT_frag_depth = 1 << 1,
