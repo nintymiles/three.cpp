@@ -107,6 +107,48 @@ std::pair<std::string,std::string> getEncodingComponents( EncodingComponents enc
     }
 }
 
+class GLShader {
+public:
+    using sptr = std::shared_ptr<GLShader>;
+
+    unsigned type;
+
+    std::string name="";
+    std::string code ="";
+
+    const char* vertexShader;
+    const char* fragmentShader;
+
+    unsigned shader = -1;
+
+    UniformValues uniforms;
+
+    GLShader() :type(GL_VERTEX_SHADER){}
+
+    GLShader(const char* vertexShader, const char* fragmentShader, const LibUniformValues& uniforms)
+            : type(GL_VERTEX_SHADER), vertexShader(vertexShader), fragmentShader(fragmentShader), uniforms(uniforms) {}
+
+    GLShader(unsigned type, const std::string& code) {
+        this->type = type;
+        this->code = code;
+
+        shader = glCreateShader(type);
+
+        const char* shaderCode = code.c_str();
+        glShaderSource(shader, 1, &shaderCode, NULL);
+        glCompileShader(shader);
+    }
+
+    static sptr create() {
+        return std::make_shared<GLShader>();
+    }
+
+    UniformValues& getUniforms() {
+        return uniforms;
+    }
+
+};
+
 
 
 

@@ -10,6 +10,8 @@
 using std::string;
 class Camera:public Object3D {
     public:
+        using sptr = std::make_shared<Camera>;
+
         bool isCamera = true;
         string type;
         std::shared_ptr<Matrix4> matrixWorldInverse;
