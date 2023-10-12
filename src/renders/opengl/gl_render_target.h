@@ -6,16 +6,20 @@
 #define THREE_CPP_GL_RENDER_TARGET_H
 
 #include "common_types.h"
+#include "depth_texture.h"
 
 #include <unordered_map>
+#include <memory>
+#include <string>
+
+using threecpp::TextureMapping;
+using threecpp::Wrapping;
+using threecpp::TextureFilter;
+using threecpp::PixelFormat;
+using threecpp::TextureDataType;
+using threecpp::TextureEncoding;
 
 struct GLRenderTargetParameter {
-    using threecpp::TextureMapping;
-    using threecpp::Wrapping;
-    using threecpp::TextureFilter;
-    using threecpp::PixelFormat;
-    using threecpp::TextureDataType;
-
     TextureMapping mapping = TextureMapping::UVMapping;
     Wrapping wrapS = Wrapping::ClampToEdgeWrapping;
     Wrapping wrapT = Wrapping::ClampToEdgeWrapping;
@@ -28,7 +32,7 @@ struct GLRenderTargetParameter {
     bool generateMipmaps = false;
     bool depthBuffer = true;
     bool stencilBuffer = false;
-    DepthTexture::ptr depthTexture = nullptr;
+    DepthTexture::sptr depthTexture = nullptr;
 };
 
 class GLRenderTarget {

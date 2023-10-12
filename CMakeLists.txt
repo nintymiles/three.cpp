@@ -159,6 +159,6 @@ file(COPY ${SHADERS} ${MODEL_FILES}
 
 add_subdirectory(src)
 
-add_subdirectory(src/examples/simple_triangle)
+# add_subdirectory(src/examples/simple_triangle)
 # add_subdirectory(src/examples/teapot_desktop)
-add_subdirectory(src/application/remove_quartine)
+# add_subdirectory(src/application/remove_quartine)
