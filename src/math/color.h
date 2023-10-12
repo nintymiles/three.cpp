@@ -6,6 +6,7 @@
 #define THREE_CPP_COLOR_H
 
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <cmath>
 #include <locale>
@@ -61,7 +62,7 @@ rgb_components& toComponents( Color& source, rgb_components& target );
 class Color {
 public:
     //named colors const map reference
-    static const std::map<std::string,int>& NAMED_COLORS;
+    static const std::unordered_map<std::string,int>& NAMED_COLORS;
     int r=1,g=1,b=1;
     bool isColor = true;
 

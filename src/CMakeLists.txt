@@ -25,8 +25,8 @@ file(GLOB CAMERAS_HEADER ${ROOT_DIR}/src/cameras/*.h)
 file(GLOB LIGHTS_SOURCE ${ROOT_DIR}/src/lights/*.cpp)
 file(GLOB LIGHTS_HEADER ${ROOT_DIR}/src/lights/*.h)
 
-file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/opengl/gl_capabilities.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
-file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/opengl/gl_capabilities.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h)
+file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/*.cpp;${ROOT_DIR}/src/renders/opengl/*.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
+file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h)
 
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})

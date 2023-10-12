@@ -8,10 +8,11 @@
 #include "vector4.h"
 #include "constants.h"
 #include "common_types.h"
+#include "gl_headers.h"
 
 #include <unordered_map>
 #include <map>
-#include <GLES3/gl3.h>
+
 
 //struct BoundTexture{
 //    GLenum type;
@@ -22,7 +23,7 @@ const threecpp::GLViewPort defaultViewPort{0,0,640,480};
 
 class GLState {
 public:
-    const bool isWebGL2;
+    const bool isGLES3 = true;
 
     class ColorBuffer {
     public:
@@ -45,7 +46,7 @@ public:
             return *this;
         }
 
-        ColorBuffer &setClear(double r, double g, double b, double a, bool premultipliedAlpha) {
+        ColorBuffer &setClear(double r, double g, double b, double a, bool premultipliedAlpha = true) {
             if (premultipliedAlpha == true) {
 
                 r *= a;
@@ -79,7 +80,7 @@ public:
         bool locked = false;
 
         bool currentDepthMask = false;
-        int currentDepthFunc = 0;
+        DepthModes currentDepthFunc = DepthModes::NeverDepth;
         float currentDepthClear = 0.f;
 
         DepthBuffer(GLState& state) : state(state) {}
@@ -103,40 +104,40 @@ public:
             return *this;
         }
 
-        DepthBuffer &setFunc( int depthFunc ) {
+        DepthBuffer &setFunc( DepthModes depthFunc ) {
             if ( currentDepthFunc == depthFunc ) {
-                if ( depthFunc ) {
+//                if ( depthFunc ) {
                     switch ( depthFunc ) {
-                        case NeverDepth:
+                        case DepthModes::NeverDepth:
                             glDepthFunc( GL_NEVER );
                             break;
-                        case AlwaysDepth:
+                        case DepthModes::AlwaysDepth:
                             glDepthFunc( GL_ALWAYS );
                             break;
-                        case LessDepth:
+                        case DepthModes::LessDepth:
                             glDepthFunc( GL_LESS );
                             break;
-                        case LessEqualDepth:
+                        case DepthModes::LessEqualDepth:
                             glDepthFunc( GL_LEQUAL );
                             break;
-                        case EqualDepth:
+                        case DepthModes::EqualDepth:
                             glDepthFunc( GL_EQUAL );
                             break;
-                        case GreaterEqualDepth:
+                        case DepthModes::GreaterEqualDepth:
                             glDepthFunc( GL_GEQUAL );
                             break;
-                        case GreaterDepth:
+                        case DepthModes::GreaterDepth:
                             glDepthFunc( GL_GREATER );
                             break;
-                        case NotEqualDepth:
+                        case DepthModes::NotEqualDepth:
                             glDepthFunc( GL_NOTEQUAL );
                             break;
                         default:
                             glDepthFunc( GL_LEQUAL );
                     }
-                } else {
-                    glDepthFunc( GL_LEQUAL );
-                }
+//                } else {
+//                    glDepthFunc( GL_LEQUAL );
+//                }
                 currentDepthFunc = depthFunc;
             }
 
@@ -259,23 +260,24 @@ public:
 
         }
 
-        void reset() {
-            locked = false;
-
-            currentStencilFuncMask = 0;
-            //currentStencilFunc = StencilFunc::NeverStencilFunc;
-            currentStencilRef = 0;
-            currentStencilFuncMask = 0;
-            //currentStencilFail = StencilOp::ZeroStencilOp;
-            //currentStencilZFail = StencilOp::ZeroStencilOp;
-            //currentStencilZPass = StencilOp::ZeroStencilOp;
-            currentStencilClear =0;
-
-        }
+//        void reset() {
+//            locked = false;
+//
+//            currentStencilFuncMask = 0;
+//            //currentStencilFunc = StencilFunc::NeverStencilFunc;
+//            currentStencilRef = 0;
+//            currentStencilFuncMask = 0;
+//            //currentStencilFail = StencilOp::ZeroStencilOp;
+//            //currentStencilZFail = StencilOp::ZeroStencilOp;
+//            //currentStencilZPass = StencilOp::ZeroStencilOp;
+//            currentStencilClear =0;
+//
+//        }
 
     };
 
     struct BoundTexture {
+        using TextureTarget = threecpp::TextureTarget;
         threecpp::TextureTarget target;
         GLint texture;
 
@@ -283,16 +285,16 @@ public:
         BoundTexture() :target(TextureTarget::Texture2D), texture(-1) {}
     };
 
-    using namespace threecpp;
+
     ColorBuffer colorBuffer{};
-    DepthBuffer depthBuffer{};
-    StencilBuffer stencilBuffer{};
+    DepthBuffer depthBuffer;
+    StencilBuffer stencilBuffer;
 
     GLint maxVertexAttributes;
 
-//    std::vector<GLuint> newAttributes;
-//    std::vector<GLuint> enabledAttributes;
-//    std::vector<GLuint> attributeDivisors;
+    std::vector<GLuint> newAttributes;
+    std::vector<GLuint> enabledAttributes;
+    std::vector<GLuint> attributeDivisors;
 
 
     std::unordered_map<GLenum, bool> enabledCapabilities;
@@ -327,9 +329,7 @@ public:
 
     int currentTextureSlot;
 
-    bool lineWidthAvailable = false;
-    int version = 0;
-    const GLubyte * glVersion = glGetString( GL_VERSION );
+    //const GLubyte * glVersion = glGetString( GL_VERSION );
 
 //    if ( glVersion.indexOf( 'WebGL' ) !== - 1 ) {
 //        version = parseFloat( /^WebGL (\d)/.exec( glVersion )[ 1 ] );
@@ -339,15 +339,20 @@ public:
 //        lineWidthAvailable = ( version >= 2.0 );
 //    }
 
-    std::vector<BoundTexture> currentBoundTextures = {};
-//
+
 //    const scissorParam = gl.getParameter( GL_SCISSOR_BOX );
 //    const viewportParam = gl.getParameter( GL_VIEWPORT );
-//
     Vector4d currentScissor; /*new Vector4().fromArray( scissorParam );*/
     Vector4d currentViewport; /*new Vector4().fromArray( viewportParam );*/
 
+//    std::vector<BoundTexture> currentBoundTextures = {};
+    std::unordered_map<int, BoundTexture> currentBoundTextures;
+    std::unordered_map<GLuint, GLuint> emptyTextures;
+    std::vector<int> compressedTextureFormats;
+
     GLState() : depthBuffer(*this),stencilBuffer(*this),currentTextureSlot(-1){
+        using TextureTarget = threecpp::TextureTarget;
+
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextures);
         glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttributes);
 
@@ -548,27 +553,27 @@ public:
         return *this;
     }
 
-    std::map<int,GLenum>  equationToGL = {
-        { AddEquation , GL_FUNC_ADD},
-        { SubtractEquation , GL_FUNC_SUBTRACT},
-        { ReverseSubtractEquation , GL_FUNC_REVERSE_SUBTRACT},
-        { MinEquation , GL_MIN},
-        { MaxEquation , GL_MAX}
-    };
+//    std::map<int,GLenum>  equationToGL = {
+//        { AddEquation , GL_FUNC_ADD},
+//        { SubtractEquation , GL_FUNC_SUBTRACT},
+//        { ReverseSubtractEquation , GL_FUNC_REVERSE_SUBTRACT},
+//        { MinEquation , GL_MIN},
+//        { MaxEquation , GL_MAX}
+//    };
 
-    std::map<int,GLenum> factorToGL = {
-        { ZeroFactor, GL_ZERO},
-        { OneFactor , GL_ONE},
-        { SrcColorFactor , GL_SRC_COLOR},
-        { SrcAlphaFactor , GL_SRC_ALPHA},
-        { SrcAlphaSaturateFactor , GL_SRC_ALPHA_SATURATE},
-        { DstColorFactor , GL_DST_COLOR},
-        { DstAlphaFactor , GL_DST_ALPHA},
-        { OneMinusSrcColorFactor , GL_ONE_MINUS_SRC_COLOR},
-        { OneMinusSrcAlphaFactor , GL_ONE_MINUS_SRC_ALPHA},
-        { OneMinusDstColorFactor , GL_ONE_MINUS_DST_COLOR},
-        { OneMinusDstAlphaFactor , GL_ONE_MINUS_DST_ALPHA}
-    };
+//    std::map<int,GLenum> factorToGL = {
+//        { ZeroFactor, GL_ZERO},
+//        { OneFactor , GL_ONE},
+//        { SrcColorFactor , GL_SRC_COLOR},
+//        { SrcAlphaFactor , GL_SRC_ALPHA},
+//        { SrcAlphaSaturateFactor , GL_SRC_ALPHA_SATURATE},
+//        { DstColorFactor , GL_DST_COLOR},
+//        { DstAlphaFactor , GL_DST_ALPHA},
+//        { OneMinusSrcColorFactor , GL_ONE_MINUS_SRC_COLOR},
+//        { OneMinusSrcAlphaFactor , GL_ONE_MINUS_SRC_ALPHA},
+//        { OneMinusDstColorFactor , GL_ONE_MINUS_DST_COLOR},
+//        { OneMinusDstAlphaFactor , GL_ONE_MINUS_DST_ALPHA}
+//    };
 
 //    GLState &setBlending( int blending, int blendEquation, int blendSrc, int blendDst, int blendEquationAlpha, int blendSrcAlpha, int blendDstAlpha, bool premultipliedAlpha ) {
 //        if ( blending == NoBlending ) {
@@ -693,9 +698,9 @@ public:
             if (currentBlendingEnabled) {
                 disable(GL_BLEND);
                 currentBlendingEnabled = false;
-                return;
+                return *this;
             }
-            return;
+            return *this;
         }
 
 
@@ -757,7 +762,7 @@ public:
                 currentBlending = blending;
                 currentPremultipliedAlpha = premultipliedAlpha;
             }
-            return;
+            return *this;
         }
         //custom blending
         blendEquationAlpha = blendEquationAlpha!=BlendingEquation::None ? blendEquationAlpha:blendEquation;
@@ -853,14 +858,14 @@ public:
         return *this;
     }
 
-    GLState &setCullFace( int cullFace ) {
-        if ( cullFace != CullFaceNone ) {
+    GLState &setCullFace( CullFace cullFace ) {
+        if ( cullFace != CullFace::CullFaceNone ) {
             enable( GL_CULL_FACE );
 
             if ( cullFace != currentCullFace ) {
-                if ( cullFace == CullFaceBack ) {
+                if ( cullFace == CullFace::CullFaceBack ) {
                     glCullFace( GL_BACK );
-                } else if ( cullFace == CullFaceFront ) {
+                } else if ( cullFace == CullFace::CullFaceFront ) {
                     glCullFace( GL_FRONT );
                 } else {
                     glCullFace( GL_FRONT_AND_BACK );
@@ -964,7 +969,7 @@ public:
 //        }
 //        return *this;
 //    }
-    GLState &bindTexture(TextureTarget target, GLint texture = -1) {
+    GLState &bindTexture(threecpp::TextureTarget target, GLint texture = -1) {
         if (currentTextureSlot < 0 ) {
             activeTexture();
         }
@@ -979,7 +984,7 @@ public:
 
         auto found = currentBoundTextures.find(currentTextureSlot);
         if (found == currentBoundTextures.end()) {
-            currentBoundTextures.emplace(currentTextureSlot, BoundTexture(TextureTarget::None, -1));
+            currentBoundTextures.emplace(currentTextureSlot, BoundTexture(threecpp::TextureTarget::None, -1));
             boundTexture = &currentBoundTextures[currentTextureSlot];
         }
         else {
@@ -1017,7 +1022,7 @@ public:
             boundTexture = &found->second;
             glBindTexture((GLenum)boundTexture->target, 0);
 
-            boundTexture->target = TextureTarget::None;
+            boundTexture->target = threecpp::TextureTarget::None;
             boundTexture->texture = -1;
         }
 

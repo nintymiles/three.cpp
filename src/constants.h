@@ -2,53 +2,105 @@
 #define CONSTANTS_H
 
 #include<string>
+#include "gl_headers.h"
 
 const std::string REVISION = "139dev";
 enum MOUSE { LEFT = 0, MIDDLE = 1, RIGHT = 2, ROTATE = 0, DOLLY = 1, PAN = 2 };
 enum TOUCH { TOUCH_ROTATE = 0, TOUCH_PAN = 1, DOLLY_PAN = 2, DOLLY_ROTATE = 3 };
-const int CullFaceNone = 0;
-const int CullFaceBack = 1;
-const int CullFaceFront = 2;
-const int CullFaceFrontBack = 3;
+//const int CullFaceNone = 0;
+//const int CullFaceBack = 1;
+//const int CullFaceFront = 2;
+//const int CullFaceFrontBack = 3;
+enum class CullFace {
+    CullFaceNone = GL_NONE,
+    CullFaceBack = GL_BACK,
+    CullFaceFront = GL_FRONT,
+    CullFaceFrontBack = GL_FRONT_AND_BACK
+};
 const int BasicShadowMap = 0;
 const int PCFShadowMap = 1;
 const int PCFSoftShadowMap = 2;
 const int VSMShadowMap = 3;
-const int FrontSide = 0;
-const int BackSide = 1;
-const int DoubleSide = 2;
+//const int FrontSide = 0;
+//const int BackSide = 1;
+//const int DoubleSide = 2;
+enum class Side {
+    None = 0,
+    FrontSide	= GL_FRONT,
+    BackSide	= GL_BACK,
+    DoubleSide	= GL_FRONT_AND_BACK
+};
 const int FlatShading = 1;
 const int SmoothShading = 2;
-const int NoBlending = 0;
-const int NormalBlending = 1;
-const int AdditiveBlending = 2;
-const int SubtractiveBlending = 3;
-const int MultiplyBlending = 4;
-const int CustomBlending = 5;
-const int AddEquation = 100;
-const int SubtractEquation = 101;
-const int ReverseSubtractEquation = 102;
-const int MinEquation = 103;
-const int MaxEquation = 104;
-const int ZeroFactor = 200;
-const int OneFactor = 201;
-const int SrcColorFactor = 202;
-const int OneMinusSrcColorFactor = 203;
-const int SrcAlphaFactor = 204;
-const int OneMinusSrcAlphaFactor = 205;
-const int DstAlphaFactor = 206;
-const int OneMinusDstAlphaFactor = 207;
-const int DstColorFactor = 208;
-const int OneMinusDstColorFactor = 209;
-const int SrcAlphaSaturateFactor = 210;
-const int NeverDepth = 0;
-const int AlwaysDepth = 1;
-const int LessDepth = 2;
-const int LessEqualDepth = 3;
-const int EqualDepth = 4;
-const int GreaterEqualDepth = 5;
-const int GreaterDepth = 6;
-const int NotEqualDepth = 7;
+//const int NoBlending = 0;
+//const int NormalBlending = 1;
+//const int AdditiveBlending = 2;
+//const int SubtractiveBlending = 3;
+//const int MultiplyBlending = 4;
+//const int CustomBlending = 5;
+enum class Blending {
+    NoBlending = 0,
+    NormalBlending = 1,
+    AdditiveBlending = 2,
+    SubtractiveBlending = 3,
+    MultiplyBlending = 4,
+    CustomBlending = 5
+};
+//const int AddEquation = 100;
+//const int SubtractEquation = 101;
+//const int ReverseSubtractEquation = 102;
+//const int MinEquation = 103;
+//const int MaxEquation = 104;
+enum class BlendingEquation {
+    None					= 0,
+    AddEquation				= GL_FUNC_ADD,
+    SubtractEquation		= GL_FUNC_SUBTRACT,
+    ReverseSubtractEquation = GL_FUNC_REVERSE_SUBTRACT,
+    MinEquation				= GL_MIN,
+    MaxEquation				= GL_MAX
+};
+//const int ZeroFactor = 200;
+//const int OneFactor = 201;
+//const int SrcColorFactor = 202;
+//const int OneMinusSrcColorFactor = 203;
+//const int SrcAlphaFactor = 204;
+//const int OneMinusSrcAlphaFactor = 205;
+//const int DstAlphaFactor = 206;
+//const int OneMinusDstAlphaFactor = 207;
+//const int DstColorFactor = 208;
+//const int OneMinusDstColorFactor = 209;
+//const int SrcAlphaSaturateFactor = 210;
+enum class BlendingDstFactor {
+    None					= -1,
+    ZeroFactor				= GL_ZERO,
+    OneFactor				= GL_ONE,
+    SrcColorFactor			= GL_SRC_COLOR,
+    OneMinusSrcColorFactor	= GL_ONE_MINUS_SRC_COLOR,
+    SrcAlphaFactor			= GL_SRC_ALPHA,
+    OneMinusSrcAlphaFactor	= GL_ONE_MINUS_SRC_ALPHA,
+    DstAlphaFactor			= GL_DST_ALPHA,
+    OneMinusDstAlphaFactor	= GL_ONE_MINUS_DST_ALPHA,
+    DstColorFactor			= GL_DST_COLOR,
+    OneMinusDstColorFactor	= GL_ONE_MINUS_DST_COLOR
+};
+//const int NeverDepth = 0;
+//const int AlwaysDepth = 1;
+//const int LessDepth = 2;
+//const int LessEqualDepth = 3;
+//const int EqualDepth = 4;
+//const int GreaterEqualDepth = 5;
+//const int GreaterDepth = 6;
+//const int NotEqualDepth = 7;
+enum class DepthModes {
+    NeverDepth			= GL_NEVER,
+    AlwaysDepth			= GL_ALWAYS,
+    LessDepth			= GL_LESS,
+    LessEqualDepth		= GL_LEQUAL,
+    EqualDepth			= GL_EQUAL,
+    GreaterEqualDepth	= GL_GEQUAL,
+    GreaterDepth		= GL_GREATER,
+    NotEqualDepth		= GL_NOTEQUAL
+};
 const int MultiplyOperation = 0;
 const int MixOperation = 1;
 const int AddOperation = 2;

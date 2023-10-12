@@ -11,15 +11,16 @@
 #include <cmath>
 #include <sstream>
 #include <map>
+#include <memory>
 
-GLuint glShader( GLenum type, std::string shaderSrc) {
-    GLuint shader = glCreateShader( type );
-    const char * shaderSource = shaderSrc.c_str();
-    glShaderSource( shader, 1, &shaderSource,NULL);
-    glCompileShader( shader );
-
-    return shader;
-}
+//GLuint glShader( GLenum type, std::string shaderSrc) {
+//    GLuint shader = glCreateShader( type );
+//    const char * shaderSource = shaderSrc.c_str();
+//    glShaderSource( shader, 1, &shaderSource,NULL);
+//    glCompileShader( shader );
+//
+//    return shader;
+//}
 
 std::string getShaderErrors( GLuint shader, GLenum type ) {
     GLint infoLen;

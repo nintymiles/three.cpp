@@ -5,7 +5,7 @@
 #include "color.h"
 
 //named colors map
-const std::map<std::string, int> _colorKeywords =
+const std::unordered_map<std::string, int> _colorKeywords =
         {{"aliceblue",            0xF0F8FF},
          {"antiquewhite",         0xFAEBD7},
          {"aqua",                 0x00FFFF},
@@ -179,7 +179,7 @@ const std::map<std::string, int> _colorKeywords =
 
 
 
-const std::map<std::string,int>& Color::NAMED_COLORS = _colorKeywords;
+const std::unordered_map<std::string,int>& Color::NAMED_COLORS = _colorKeywords;
 
 int Color::getHex( std::string colorSpace) {
     ColorManagement::fromWorkingColorSpace( toComponents( *this, _rgb ), colorSpace );
