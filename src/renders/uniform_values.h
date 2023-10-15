@@ -7,6 +7,7 @@
 
 #include "common_types.h"
 #include "gl_uniforms.h"
+#include "texture.h"
 
 #include <unordered_map>
 #include <string>
@@ -44,16 +45,16 @@ template<> struct UniformValueT<Cls> : public UniformValue \
   Cls value; \
   explicit UniformValueT(std::string nm, const Cls &value) : UniformValue(nm), value(value) {} \
   explicit UniformValueT(std::string nm, const Cls &value, UniformProperties properties) : UniformValue(nm, properties), value(value) {} \
-  static ptr create(std::string nm,const Cls& value, UniformProperties properties){\
+  static sptr create(std::string nm,const Cls& value, UniformProperties properties){\
     return std::make_shared<UniformValueT>(nm,value,properties);\
   }\
-  static ptr create(std::string nm, const Cls &value) { \
+  static sptr create(std::string nm, const Cls &value) { \
     return std::make_shared<UniformValueT>(nm, value); \
   } \
   UniformValueT &operator = (const Cls &value) { \
     this->value = value; return *this; \
   } \
-  ptr clone() const override { \
+  sptr clone() const override { \
     return std::make_shared<UniformValueT>(id, value); \
   } \
   void applyValue(std::shared_ptr<GLUniform> uniform,int index=0) override { \
@@ -69,12 +70,12 @@ UNIFORM_VALUE_T(Vector2)
 UNIFORM_VALUE_T(Vector3)
 UNIFORM_VALUE_T(Matrix3)
 UNIFORM_VALUE_T(Matrix4)
-UNIFORM_VALUE_T(Texture::ptr)
-UNIFORM_VALUE_T(CubeTexture::ptr)
-UNIFORM_VALUE_T(DataTexture::ptr)
+UNIFORM_VALUE_T(Texture::sptr)
+UNIFORM_VALUE_T(CubeTexture::sptr)
+UNIFORM_VALUE_T(DataTexture::sptr)
 UNIFORM_VALUE_T(std::vector<unsigned char>)
 UNIFORM_VALUE_T(std::vector<float>)
-UNIFORM_VALUE_T(std::vector<Texture::ptr>)
+UNIFORM_VALUE_T(std::vector<Texture::sptr>)
 UNIFORM_VALUE_T(std::vector<Matrix4>)
 UNIFORM_VALUE_T(std::vector<Vector3>)
 
@@ -297,15 +298,111 @@ template<> struct UniformValueT<CachedPointLightShadows> : public UniformValue
 };
 
 struct UniformValueDelegate {
-    UniformValue::ptr value;
+    UniformValue::sptr value;
     template<typename T>
     UniformValueDelegate(std::string id, T t) {
         value = std::make_shared <UniformValueT<T>>(id, t);
     }
-    operator UniformValue::ptr() const {
+    operator UniformValue::sptr() const {
         return value;
     }
 };
+
+class LibUniformValues {
+    std::unordered_map<std::string, UniformValue::sptr,threecpp::StringHash> values;
+
+public:
+    LibUniformValues() {}
+    LibUniformValues(std::initializer_list<UniformValue::sptr> vals) {
+        for (auto it = std::begin(vals); it != std::end(vals); it++) {
+            const UniformValue::sptr val = *it;
+            values[val->id] = val;
+        }
+    }
+
+    std::unordered_map<std::string, UniformValue::sptr,threecpp::StringHash> cloneValues() const
+    {
+        std::unordered_map<std::string, UniformValue::sptr,threecpp::StringHash> cloned;
+
+        for (auto& entry : values) {
+            cloned[entry.first] = entry.second->clone();
+        }
+        return cloned;
+    };
+
+    UniformValue::sptr operator[](std::string name) const {
+        return values.at(name);
+    }
+
+    LibUniformValues& operator +=(const UniformValue::sptr val){
+        values.insert({ val->id, val });
+        return *this;
+    }
+
+    LibUniformValues& operator +=(const LibUniformValues& vals){
+        values.insert(vals.values.begin(), vals.values.end());
+        return *this;
+    }
+
+    LibUniformValues merge(const LibUniformValues& values) const{
+        LibUniformValues merged(values);
+        merged.values.insert(values.values.begin(), values.values.end());
+        return merged;
+    }
+
+    LibUniformValues merge(std::initializer_list<UniformValueDelegate> vals) const{
+        LibUniformValues merged(*this);
+        for (auto it = std::begin(vals); it != std::end(vals); it++) {
+            const UniformValue::sptr val = *it;
+            merged.values[val->id] = val;
+        }
+        return merged;
+    }
+};
+
+
+template <typename T>
+UniformValue& UniformValue::operator = (T t) {
+    UniformValueT<T>& ut = dynamic_cast<UniformValueT<T>&>(*this);
+    ut = t;
+    return *this;
+}
+
+template <typename T>
+T& UniformValue::get() {
+    UniformValueT<T>& ut = dynamic_cast<UniformValueT<T>&>(*this);
+    return ut.value;
+}
+
+
+template<typename T>
+inline UniformValue::sptr value(const std::string& id, T value) {
+    return UniformValue::sptr(new UniformValueT<T>(id, value));
+    //return UniformValue::ptr(new UniformValueT<T>(id, value));
+}
+
+template<typename T>
+inline UniformValue::sptr value(const std::string& id, T value, std::vector<UniformValue::sptr> properties) {
+    UniformValue::UniformProperties props;
+
+    for (auto p : properties) {
+        props[p->id] = p;
+    }
+
+    return UniformValue::sptr(new UniformValueT<T>(id, value, props));
+}
+
+struct UniformValuesDelegate{
+    LibUniformValues values{};
+
+    operator const LibUniformValues& () const { return values; }
+
+    UniformValuesDelegate& add(std::initializer_list<UniformValueDelegate> add);
+};
+
+const LibUniformValues& getLibUniformValues(const std::string id);
+
+UniformValuesDelegate merged(std::initializer_list<std::string> id);
 
 class UniformValues {
     std::unordered_map<std::string, std::shared_ptr<UniformValue>,threecpp::StringHash> values;
