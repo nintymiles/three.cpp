@@ -10,8 +10,13 @@
 template <typename T> class BufferAttribute;
 
 class Vector2 {
-    public:
-        double x,y;
+public:
+    union {
+        struct {
+            double x,y;
+        };
+        double elements[2];
+    };
 
         Vector2(double x = 0,double y = 0):x(x),y(y){};
 
@@ -81,7 +86,7 @@ class Vector2 {
             return Vector2( x,y );
         }
 
-        Vector2& copy( Vector2& v ) {
+        Vector2& copy(const Vector2& v) {
             x = v.x;
             y = v.y;
 

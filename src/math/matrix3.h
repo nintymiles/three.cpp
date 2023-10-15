@@ -42,7 +42,7 @@ class Matrix3{
 		return Matrix3().fromArray(elements);
 	}
 
-	Matrix3 copy(Matrix3& m) {
+	Matrix3 copy(const Matrix3& m) {
         for(int i=0;i<sizeof(elements)/sizeof(elements[0]);i++){
             elements[i] = m.elements[i];
         }

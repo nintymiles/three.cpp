@@ -9,7 +9,13 @@ template <typename T>
 class Vector4 {
     public:
         //public data member
-        T x,y,z,w;
+        //T x,y,z,w;
+        union {
+            struct {
+                T x,y,z,w;
+            };
+            T elements[4];
+        };
 
 		Vector4()=default;
         Vector4(T x,T y,T z,T w):x(x),y(y),z(z),w(w){};

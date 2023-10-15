@@ -7,6 +7,7 @@
 const std::string REVISION = "139dev";
 enum MOUSE { LEFT = 0, MIDDLE = 1, RIGHT = 2, ROTATE = 0, DOLLY = 1, PAN = 2 };
 enum TOUCH { TOUCH_ROTATE = 0, TOUCH_PAN = 1, DOLLY_PAN = 2, DOLLY_ROTATE = 3 };
+
 //const int CullFaceNone = 0;
 //const int CullFaceBack = 1;
 //const int CullFaceFront = 2;
@@ -17,10 +18,19 @@ enum class CullFace {
     CullFaceFront = GL_FRONT,
     CullFaceFrontBack = GL_FRONT_AND_BACK
 };
-const int BasicShadowMap = 0;
-const int PCFShadowMap = 1;
-const int PCFSoftShadowMap = 2;
-const int VSMShadowMap = 3;
+
+//const int BasicShadowMap = 0;
+//const int PCFShadowMap = 1;
+//const int PCFSoftShadowMap = 2;
+//const int VSMShadowMap = 3;
+enum class ShadowMapType {
+    BasicShadowMap = 0,
+    PCFShadowMap = 1,
+    PCFSoftShadowMap =2,
+    VSMShadowMap =3,
+    NoneShadowMap=4
+};
+
 //const int FrontSide = 0;
 //const int BackSide = 1;
 //const int DoubleSide = 2;
@@ -59,6 +69,7 @@ enum class BlendingEquation {
     MinEquation				= GL_MIN,
     MaxEquation				= GL_MAX
 };
+
 //const int ZeroFactor = 200;
 //const int OneFactor = 201;
 //const int SrcColorFactor = 202;
@@ -69,7 +80,6 @@ enum class BlendingEquation {
 //const int OneMinusDstAlphaFactor = 207;
 //const int DstColorFactor = 208;
 //const int OneMinusDstColorFactor = 209;
-//const int SrcAlphaSaturateFactor = 210;
 enum class BlendingDstFactor {
     None					= -1,
     ZeroFactor				= GL_ZERO,
@@ -83,6 +93,12 @@ enum class BlendingDstFactor {
     DstColorFactor			= GL_DST_COLOR,
     OneMinusDstColorFactor	= GL_ONE_MINUS_DST_COLOR
 };
+
+//const int SrcAlphaSaturateFactor = 210;
+enum class BlendingSrcFactor {
+    SrcAlphaSaturateFactor = GL_SRC_ALPHA_SATURATE
+};
+
 //const int NeverDepth = 0;
 //const int AlwaysDepth = 1;
 //const int LessDepth = 2;
@@ -110,59 +126,206 @@ enum class Combine {
     MixOperation = 2,
     AddOperation = 3
 };
-const int NoToneMapping = 0;
-const int LinearToneMapping = 1;
-const int ReinhardToneMapping = 2;
-const int CineonToneMapping = 3;
-const int ACESFilmicToneMapping = 4;
-const int CustomToneMapping = 5;
+//const int NoToneMapping = 0;
+//const int LinearToneMapping = 1;
+//const int ReinhardToneMapping = 2;
+//const int CineonToneMapping = 3;
+//const int ACESFilmicToneMapping = 4;
+//const int CustomToneMapping = 5;
+enum class ToneMapping {
+    NoToneMapping			= 0,
+    LinearToneMapping		= 1,
+    ReinhardToneMapping		= 2,
+    Uncharted2ToneMapping	= 3,
+    CineonToneMapping		= 4,
+    ACESFilmicToneMapping	= 5
+};
 
-const int UVMapping = 300;
-const int CubeReflectionMapping = 301;
-const int CubeRefractionMapping = 302;
-const int EquirectangularReflectionMapping = 303;
-const int EquirectangularRefractionMapping = 304;
-const int CubeUVReflectionMapping = 306;
-const int RepeatWrapping = 1000;
-const int ClampToEdgeWrapping = 1001;
-const int MirroredRepeatWrapping = 1002;
-const int NearestFilter = 1003;
-const int NearestMipmapNearestFilter = 1004;
-const int NearestMipMapNearestFilter = 1004;
-const int NearestMipmapLinearFilter = 1005;
-const int NearestMipMapLinearFilter = 1005;
-const int LinearFilter = 1006;
-const int LinearMipmapNearestFilter = 1007;
-const int LinearMipMapNearestFilter = 1007;
-const int LinearMipmapLinearFilter = 1008;
-const int LinearMipMapLinearFilter = 1008;
-const int UnsignedByteType = 1009;
-const int ByteType = 1010;
-const int ShortType = 1011;
-const int UnsignedShortType = 1012;
-const int IntType = 1013;
-const int UnsignedIntType = 1014;
-const int FloatType = 1015;
-const int HalfFloatType = 1016;
-const int UnsignedShort4444Type = 1017;
-const int UnsignedShort5551Type = 1018;
-const int UnsignedInt248Type = 1020;
-const int AlphaFormat = 1021;
-const int RGBFormat = 1022;
-const int RGBAFormat = 1023;
-const int LuminanceFormat = 1024;
-const int LuminanceAlphaFormat = 1025;
-const int DepthFormat = 1026;
-const int DepthStencilFormat = 1027;
-const int RedFormat = 1028;
-const int RedIntegerFormat = 1029;
-const int RGFormat = 1030;
-const int RGIntegerFormat = 1031;
-const int RGBAIntegerFormat = 1033;
+//const int UVMapping = 300;
+//const int CubeReflectionMapping = 301;
+//const int CubeRefractionMapping = 302;
+//const int EquirectangularReflectionMapping = 303;
+//const int EquirectangularRefractionMapping = 304;
+//const int CubeUVReflectionMapping = 306;
 
+enum class TextureMapping {
+    Unknown								= 0,
+    UVMapping							= 300,
+    CubeReflectionMapping				= 301,
+    CubeRefractionMapping				= 302,
+    EquirectangularReflectionMapping	= 303,
+    EquirectangularRefractionMapping	= 304,
+    SphericalReflectionMapping			= 305,
+    CubeUVReflectionMapping				= 306,
+    CubeUVRefractionMapping				= 307
+};
 
+//const int RepeatWrapping = 1000;
+//const int ClampToEdgeWrapping = 1001;
+//const int MirroredRepeatWrapping = 1002;
+enum class Wrapping {
+    RepeatWrapping = GL_REPEAT,
+    ClampToEdgeWrapping = GL_CLAMP_TO_EDGE,
+    MirroredRepeatWrapping = GL_MIRRORED_REPEAT,
+    None = GL_NONE
+};
 
+//const int NearestFilter = 1003;
+//const int NearestMipmapNearestFilter = 1004;
+//const int NearestMipMapNearestFilter = 1004;
+//const int NearestMipmapLinearFilter = 1005;
+//const int NearestMipMapLinearFilter = 1005;
+//const int LinearFilter = 1006;
+//const int LinearMipmapNearestFilter = 1007;
+//const int LinearMipMapNearestFilter = 1007;
+//const int LinearMipmapLinearFilter = 1008;
+//const int LinearMipMapLinearFilter = 1008;
+enum class TextureFilter {
+    NearestFilter				= GL_NEAREST,
+    NearestMipmapNearestFilter	= GL_NEAREST_MIPMAP_NEAREST,
+    NearestMipMapNearestFilter	= GL_NEAREST_MIPMAP_NEAREST,
+    NearestMipmapLinearFilter	= GL_NEAREST_MIPMAP_LINEAR,
+    NearestMipMapLinearFilter	= GL_NEAREST_MIPMAP_LINEAR,
+    LinearFilter				= GL_LINEAR,
+    LinearMipmapNearestFilter	= GL_LINEAR_MIPMAP_NEAREST,
+    LinearMipMapNearestFilter	= GL_LINEAR_MIPMAP_NEAREST,
+    LinearMipmapLinearFilter	= GL_LINEAR_MIPMAP_LINEAR,
+    LinearMipMapLinearFilter	= GL_LINEAR_MIPMAP_LINEAR
+};
 
+//const int UnsignedByteType = 1009;
+//const int ByteType = 1010;
+//const int ShortType = 1011;
+//const int UnsignedShortType = 1012;
+//const int IntType = 1013;
+//const int UnsignedIntType = 1014;
+//const int FloatType = 1015;
+//const int HalfFloatType = 1016;
+//const int UnsignedShort4444Type = 1017;
+//const int UnsignedShort5551Type = 1018;
+//const int UnsignedInt248Type = 1020;
+enum class TextureDataType {
+    UnsignedByteType		= GL_UNSIGNED_BYTE,
+    ByteType				= GL_BYTE,
+    ShortType				= GL_SHORT,
+    UnsignedShortType		= GL_UNSIGNED_SHORT,
+    IntType					= GL_INT,
+    UnsignedIntType			= GL_UNSIGNED_INT,
+    FloatType				= GL_FLOAT,
+    HalfFloatType			= GL_HALF_FLOAT,
+    UnsignedShort4444Type	= GL_UNSIGNED_SHORT_4_4_4_4,
+    UnsignedShort5551Type	= GL_UNSIGNED_SHORT_5_5_5_1,
+    UnsignedShort565Type	= GL_UNSIGNED_SHORT_5_6_5,
+    UnsignedInt248Type		= GL_UNSIGNED_INT_24_8,
+};
+
+enum class TextureTarget {
+    None = -1,
+    Texture2D = GL_TEXTURE_2D, //A two-dimensional texture.
+    cubeMap = GL_TEXTURE_CUBE_MAP, //Positive X face for a cube-mapped texture.
+    Texture2DArray = GL_TEXTURE_2D_ARRAY,
+    Texture3D = GL_TEXTURE_3D,
+    cubeMapPositiveX = GL_TEXTURE_CUBE_MAP_POSITIVE_X, // Positive Y face for a cube-mapped texture.
+    cubeMapNegativeX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X, //Negative X face for a cube-mapped texture.
+    cubeMapPositiveY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y, // Positive Y face for a cube-mapped texture.
+    cubeMapNegativeY = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, //Negative Y face for a cube-mapped texture.
+    cubeMapPositiveZ = GL_TEXTURE_CUBE_MAP_POSITIVE_Z, //Positive Z face for a cube-mapped texture.
+    cubeMapNegativeZ = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z  //Negative Z face for a cube-mapped texture.
+};
+
+//const int AlphaFormat = 1021;
+//const int RGBFormat = 1022;
+//const int RGBAFormat = 1023;
+//const int LuminanceFormat = 1024;
+//const int LuminanceAlphaFormat = 1025;
+//const int DepthFormat = 1026;
+//const int DepthStencilFormat = 1027;
+//const int RedFormat = 1028;
+//const int RedIntegerFormat = 1029;
+//const int RGFormat = 1030;
+//const int RGIntegerFormat = 1031;
+//const int RGBAIntegerFormat = 1033;
+enum class PixelFormat {
+    AlphaFormat				= GL_ALPHA,
+    RGBFormat				= GL_RGB,
+    RGBAFormat				= GL_RGBA,
+    LuminanceFormat			= GL_LUMINANCE,
+    LuminanceAlphaFormat	= 1025,//GL_LUMINANCE4_ALPHA4,
+    RGBEFormat				= GL_RGBA,
+    DepthFormat				= GL_DEPTH,
+    DepthStencilFormat		= GL_DEPTH_STENCIL,
+    RedFormat				= 1028,//GL_R,
+    RedIntegerFormat		= 1029,//GL_R16,
+    RGFormat				= GL_RG,
+    RGIntegerFormat			= 1031,//GL_RG16,
+//    RGBIntegerFormat		= GL_RGB16,
+    RGBAIntegerFormat		= 1033,//GL_RGBA16,
+    None					= GL_NONE
+};
+
+enum class PixelFormatGPU {
+    NONE				= GL_NONE,
+    ALPHA				= GL_ALPHA,
+    RGB					= GL_RGB,
+    RGBA				= GL_RGBA,
+    LUMINANCE			= GL_LUMINANCE,
+    LUMINANCE_ALPHA		= GL_LUMINANCE_ALPHA,
+    RED_INTEGER			= GL_RED_INTEGER,
+    R8					= GL_R8,
+    R8_SNORM			= GL_R8_SNORM,
+    R8I					= GL_R8I,
+    R8UI				= GL_R8UI,
+    R16I				= GL_R16I,
+    R16UI				= GL_R16UI,
+    R16F				= GL_R16F,
+    R32I				= GL_R32I,
+    R32UI				= GL_R32UI,
+    R32F				= GL_R32F,
+    RG8					= GL_RG8,
+    RG8_SNORM			= GL_RG8_SNORM,
+    RG8I				= GL_RG8I,
+    RG8UI				= GL_RG8UI,
+    RG16I				= GL_RG16I,
+    RG16UI				= GL_RG16UI,
+    RG16F				= GL_RG16F,
+    RG32I				= GL_RG32I,
+    RG32UI				= GL_RG32UI,
+    RG32F				= GL_RG32F,
+    RGB565				= GL_RGB565,
+    RGB8				= GL_RGB8,
+    RGB8_SNORM			= GL_RGB8_SNORM,
+    RGB8I				= GL_RGB8I,
+    RGB8UI				= GL_RGB8UI,
+    RGB16I				= GL_RGB16I,
+    RGB16UI				= GL_RGB16UI,
+    RGB16F				= GL_RGB16F,
+    RGB32I				= GL_RGB32I,
+    RGB32UI				= GL_RGB32UI,
+    RGB32F				= GL_RGB32F,
+    RGB9_E5				= GL_RGB9_E5,
+    SRGB8				= GL_SRGB8,
+    R11F_G11F_B10F		= GL_R11F_G11F_B10F,
+    RGBA4				= GL_RGBA4,
+    RGBA8				= GL_RGBA8,
+    RGBA8_SNORM			= GL_RGBA8_SNORM,
+    RGBA8I				= GL_RGBA8I,
+    RGBA8UI				= GL_RGBA8UI,
+    RGBA16I				= GL_RGBA16I,
+    RGBA16UI			= GL_RGBA16UI,
+    RGBA16F				= GL_RGBA16F,
+    RGBA32I				= GL_RGBA32I,
+    RGBA32UI			= GL_RGBA32UI,
+    RGBA32F				= GL_RGBA32F,
+    RGB5_A1				= GL_RGB5_A1,
+    RGB10_A2			= GL_RGB10_A2,
+    RGB10_A2UI			= GL_RGB10_A2UI,
+    SRGB8_ALPHA8		= GL_SRGB8_ALPHA8,
+    DEPTH_COMPONENT16	= GL_DEPTH_COMPONENT16,
+    DEPTH_COMPONENT24	= GL_DEPTH_COMPONENT24,
+    DEPTH_COMPONENT32F	= GL_DEPTH_COMPONENT32F,
+    DEPTH24_STENCIL8	= GL_DEPTH24_STENCIL8,
+    DEPTH32F_STENCIL8	= GL_DEPTH32F_STENCIL8
+};
 
 const int RGB_S3TC_DXT1_Format = 33776;
 const int RGBA_S3TC_DXT1_Format = 33777;
@@ -204,8 +367,20 @@ const int AdditiveAnimationBlendMode = 2501;
 const int TrianglesDrawMode = 0;
 const int TriangleStripDrawMode = 1;
 const int TriangleFanDrawMode = 2;
-const int LinearEncoding = 3000;
-const int sRGBEncoding = 3001;
+
+//const int LinearEncoding = 3000;
+//const int sRGBEncoding = 3001;
+enum class TextureEncoding : int {
+    Unknown			= 0,
+    LinearEncoding	= 3000,
+    sRGBEncoding	= 3001,
+    GammaEncoding	= 3007,
+    RGBEEncoding	= 3002,
+    LogLuvEncoding	= 3003,
+    RGBM7Encoding	= 3004,
+    RGBM16Encoding	= 3005,
+    RGBDEncoding	= 3006
+};
 
 
 //const int BasicDepthPacking = 3200;
@@ -284,6 +459,65 @@ enum class Usage {
     StaticCopyUsage		= 35046,
     DynamicCopyUsage	= 35050,
     StreamCopyUsage		= 35042
+};
+
+enum class BufferUsageHint {
+    Float			= GL_FLOAT,
+    UnsignedShort	= GL_UNSIGNED_SHORT,
+    Short			= GL_SHORT,
+    UnsignedInt		= GL_UNSIGNED_INT,
+    Int				= GL_INT,
+    Byte			= GL_BYTE,
+    UnsignedByte	= GL_UNSIGNED_BYTE
+};
+
+enum class UniformType {
+    None		= 0,
+    Float		= GL_FLOAT,
+    FloatVect2	= GL_FLOAT_VEC2,
+    FloatVec3	= GL_FLOAT_VEC3,
+    FloatVec4	= GL_FLOAT_VEC4,
+    Int			= GL_INT,
+    IntVec2		= GL_INT_VEC2,
+    IntVec3		= GL_INT_VEC3,
+    IntVect4	= GL_INT_VEC4,
+    Bool		= GL_BOOL,
+    BoolVec2	= GL_BOOL_VEC2,
+    BoolVec3	= GL_BOOL_VEC3,
+    BoolVec4	= GL_BOOL_VEC4,
+    FloatMat2	= GL_FLOAT_MAT2,
+    FloatMat3	= GL_FLOAT_MAT3,
+    FloatMat4	= GL_FLOAT_MAT4,
+    Sampler2D	= GL_SAMPLER_2D,
+    Sampler3D   = GL_SAMPLER_3D,
+    SamplerCube = GL_SAMPLER_CUBE,
+    Sampler2DArray = GL_SAMPLER_2D_ARRAY
+};
+
+enum class UniformClassType : unsigned {
+    SingleUniform,
+    PureArrayUniform,
+    StructuredUniform
+};
+
+enum class Extension : size_t{
+    ARB_depth_texture = 1,
+    EXT_frag_depth = 1 << 1,
+    EXT_texture_filter_anisotropic = 1 << 2,
+    EXT_blend_minmax = 1 << 3,
+    EXT_texture_compression_s3tc = 1 << 4,
+    EXT_shader_texture_lod = 1 << 5,
+    OES_texture_float = 1 << 6,
+    OES_texture_float_linear = 1 << 7,
+    OES_texture_half_float = 1 << 8,
+    OES_texture_half_float_linear = 1 << 9,
+    OES_standard_derivatives = 1 << 10,
+    ANGLE_instanced_arrays = 1 << 11,
+    OES_element_index_uint = 1 << 12,
+    EXT_draw_buffers = 1 << 13,
+    EXT_draw_buffers2 = 1 << 14,
+    ARB_instanced_arrays = 1<<15,
+    ARB_ES3_compatibility=1<<16
 };
 
 const std::string GLSL1 = "100";

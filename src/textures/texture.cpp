@@ -1,10 +1,10 @@
 //
 // Created by SeanR on 2023/10/11.
 //
+#include "texture.h"
 
 size_t Texture::textureId = 0;
-Texture::Texture(std::vector<unsigned char> image,TextureMapping mapping,Wrapping wraps,Wrapping wrapt,TextureFilter magFilter,TextureFilter minFilter, PixelFormat format,TextureDataType type, unsigned anisotropy, TextureEncoding encoding)
-{
+Texture::Texture(std::vector<unsigned char> image,TextureMapping mapping,Wrapping wraps,Wrapping wrapt,TextureFilter magFilter,TextureFilter minFilter, PixelFormat format,TextureDataType type, unsigned anisotropy, TextureEncoding encoding){
     id = textureId++;
 
     name = "";
@@ -45,6 +45,7 @@ Texture::Texture(std::vector<unsigned char> image,TextureMapping mapping,Wrappin
     this->anisotropy = anisotropy;
     this->encoding = encoding;
 }
+
 Texture::Texture(const Texture& source) {
     name = source.name;
 
@@ -82,13 +83,12 @@ Texture::Texture(const Texture& source) {
     unpackAlignment = source.unpackAlignment;
     encoding = source.encoding;
 }
-Texture* Texture::clone()
-{
+
+Texture* Texture::clone(){
     return new Texture(*this);
 }
 
-Texture& Texture::copy(const Texture& source)
-{
+Texture& Texture::copy(const Texture& source){
     name = source.name;
 
     image = source.image;
@@ -115,7 +115,6 @@ Texture& Texture::copy(const Texture& source)
     rotation = source.rotation;
 
     //TODO copy images
-
     matrixAutoUpdate = source.matrixAutoUpdate;
     matrix.copy(source.matrix);
 

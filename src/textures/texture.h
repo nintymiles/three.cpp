@@ -11,7 +11,8 @@
 #include "vector2.h"
 
 #include "common_types.h"
-#include "../utils/sole.h"
+#include "sole.h"
+#include "simplesignal.h"
 
 #include <fstream>
 #include <string>
@@ -26,12 +27,6 @@ private:
 
 public:
     using sptr = std::shared_ptr<Texture>;
-
-    using threecpp::TextureMapping;
-    using threecpp::Wrapping;
-    using threecpp::TextureFilter;
-    using threecpp::PixelFormat;
-
 
     bool needsUpdate;
     size_t id;
@@ -49,7 +44,7 @@ public:
     int channel;
     //std::vector<unsigned char> image;
 
-    std::vector<MipMap> mipmaps;
+    std::vector<threecpp::MipMap> mipmaps;
     TextureMapping mapping;
 
     Wrapping wrapS;
@@ -92,8 +87,8 @@ public:
     bool isDepthTexture = false;
     bool isVideoTexture = false;
 
-    Signal<void(Texture&)> onDispose;
-    Signal<void(Texture&)> onUpdate;
+    threecpp::Signal<void(Texture&)> onDispose;
+    threecpp::Signal<void(Texture&)> onUpdate;
 
     Texture(std::vector<unsigned char> image=std::vector<unsigned char>(), TextureMapping mapping = TextureMapping::UVMapping, Wrapping wraps = Wrapping::ClampToEdgeWrapping, Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::LinearFilter, TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter, PixelFormat format = PixelFormat::RGBAFormat, TextureDataType type = TextureDataType::UnsignedByteType, unsigned anisotropy = 1, TextureEncoding encoding = TextureEncoding::LinearEncoding);
 
@@ -130,13 +125,13 @@ public:
         if (uv.x < 0 || uv.x > 1) {
             switch (wrapS) {
                 case Wrapping::RepeatWrapping:
-                    uv.x = uv.x - std::floor(uv->x);
+                    uv.x = uv.x - std::floor(uv.x);
                     break;
                 case Wrapping::ClampToEdgeWrapping:
                     uv.x = uv.x < 0 ? 0.0f : 1.0f;
                     break;
                 case Wrapping::MirroredRepeatWrapping:
-                    if (std::abs(std::fmod(std::floor(uv->x), 2)) ==  1) {
+                    if (std::abs(std::fmod(std::floor(uv.x), 2)) ==  1) {
                         uv.x = ceil(uv.x) - uv.x;
                     }
                     else {

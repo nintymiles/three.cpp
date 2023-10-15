@@ -58,7 +58,13 @@ class Vector3{
     public:
         //public data member
 		// use in-class initializer
-        double x = 0,y = 0,z = 0;
+        //double x = 0,y = 0,z = 0;
+        union {
+            struct {
+                double x = 0,y = 0,z = 0;
+            };
+            double elements[3];
+        };
 
 		// explicitly constructor inistializing
 		// Vector3():x(0),y(0),z(0){};
