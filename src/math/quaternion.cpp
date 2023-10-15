@@ -14,7 +14,7 @@ Quaternion& Quaternion::setFromAxisAngle(Vector3& axis, double angle) {
 		_w = cos(halfAngle);
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 }
@@ -56,7 +56,7 @@ Quaternion& Quaternion::setFromUnitVectors(Vector3& vFrom,Vector3& vTo){
 
 Quaternion& Quaternion::setFromEuler(Euler& euler, bool update) {
 	const double x = euler.x(), y = euler.y(), z = euler.z();
-	const euler_order order = euler.order();
+	const RotationOrder order = euler.order();
 	// http://www.mathworks.com/matlabcentral/fileexchange/
 	// 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
 	//	content/SpinCalc.m
@@ -121,7 +121,7 @@ Quaternion& Quaternion::setFromEuler(Euler& euler, bool update) {
 
 	if ( update != false )
         if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 	return *this;
 }

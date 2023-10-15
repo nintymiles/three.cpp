@@ -17,11 +17,11 @@ static Vector3 _vector{};
 //Vector3::Vector3():_vector(std::make_shared<Vector3>()){}
                                 //,_quaternion(std::make_shared<Quaternion>()){}
 
-
-Vector3& Vector3::fromBufferAttribute(BufferAttribute<double>& attribute,int index){
-    // this->x = attribute.getX( index );
-    // this->y = attribute.getY( index );
-    // this->z = attribute.getZ( index );
+template<typename T>
+Vector3& Vector3::fromBufferAttribute(BufferAttribute<T>& attribute,int index){
+     this->x = attribute.getX( index );
+     this->y = attribute.getY( index );
+     this->z = attribute.getZ( index );
 
     return *this;
 }
@@ -143,7 +143,7 @@ Vector3& Vector3::project(Camera& camera) {
 }
 
 Vector3& Vector3::unproject(Camera& camera) {
-    return applyMatrix4( *camera.projectionMatrixInverse ).applyMatrix4( *camera.matrixWorld );
+    return applyMatrix4( *camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
 }
 
 

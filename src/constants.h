@@ -101,9 +101,15 @@ enum class DepthModes {
     GreaterDepth		= GL_GREATER,
     NotEqualDepth		= GL_NOTEQUAL
 };
-const int MultiplyOperation = 0;
-const int MixOperation = 1;
-const int AddOperation = 2;
+//const int MultiplyOperation = 0;
+//const int MixOperation = 1;
+//const int AddOperation = 2;
+enum class Combine {
+    None = 0,
+    MultiplyOperation = 1,
+    MixOperation = 2,
+    AddOperation = 3
+};
 const int NoToneMapping = 0;
 const int LinearToneMapping = 1;
 const int ReinhardToneMapping = 2;
@@ -154,6 +160,10 @@ const int RGFormat = 1030;
 const int RGIntegerFormat = 1031;
 const int RGBAIntegerFormat = 1033;
 
+
+
+
+
 const int RGB_S3TC_DXT1_Format = 33776;
 const int RGBA_S3TC_DXT1_Format = 33777;
 const int RGBA_S3TC_DXT3_Format = 33778;
@@ -196,46 +206,93 @@ const int TriangleStripDrawMode = 1;
 const int TriangleFanDrawMode = 2;
 const int LinearEncoding = 3000;
 const int sRGBEncoding = 3001;
-const int BasicDepthPacking = 3200;
-const int RGBADepthPacking = 3201;
-const int TangentSpaceNormalMap = 0;
-const int ObjectSpaceNormalMap = 1;
+
+
+//const int BasicDepthPacking = 3200;
+//const int RGBADepthPacking = 3201;
+enum class DepthPackingStrategies {
+    None=0,
+    BasicDepthPacking = 3200,
+    RGBADepthPacking = 3201
+};
+//const int TangentSpaceNormalMap = 0;
+//const int ObjectSpaceNormalMap = 1;
+enum class NormalMapTypes {
+    TangentSpaceNormalMap	= 0,
+    ObjectSpaceNormalMap	= 1,
+    None = 2
+};
 
 // Color space string identifiers, matching CSS Color Module Level 4 and WebGPU names where available.
 const std::string NoColorSpace = "";
 const std::string SRGBColorSpace = "srgb";
 const std::string LinearSRGBColorSpace = "srgb-linear";
 
-const int ZeroStencilOp = 0;
-const int KeepStencilOp = 7680;
-const int ReplaceStencilOp = 7681;
-const int IncrementStencilOp = 7682;
-const int DecrementStencilOp = 7683;
-const int IncrementWrapStencilOp = 34055;
-const int DecrementWrapStencilOp = 34056;
-const int InvertStencilOp = 5386;
+//const int ZeroStencilOp = 0;
+//const int KeepStencilOp = 7680;
+//const int ReplaceStencilOp = 7681;
+//const int IncrementStencilOp = 7682;
+//const int DecrementStencilOp = 7683;
+//const int IncrementWrapStencilOp = 34055;
+//const int DecrementWrapStencilOp = 34056;
+//const int InvertStencilOp = 5386;
+enum class StencilOp {
+    ZeroStencilOp			= 0,
+    KeepStencilOp			= 7680,
+    ReplaceStencilOp		= 7681,
+    IncrementStencilOp		= 7682,
+    DecrementStencilOp		= 7683,
+    IncrementWrapStencilOp	= 34055,
+    DecrementWrapStencilOp	= 34056,
+    InvertStencilOp			= 5386,
+};
 
-const int NeverStencilFunc = 512;
-const int LessStencilFunc = 513;
-const int EqualStencilFunc = 514;
-const int LessEqualStencilFunc = 515;
-const int GreaterStencilFunc = 516;
-const int NotEqualStencilFunc = 517;
-const int GreaterEqualStencilFunc = 518;
-const int AlwaysStencilFunc = 519;
+//const int NeverStencilFunc = 512;
+//const int LessStencilFunc = 513;
+//const int EqualStencilFunc = 514;
+//const int LessEqualStencilFunc = 515;
+//const int GreaterStencilFunc = 516;
+//const int NotEqualStencilFunc = 517;
+//const int GreaterEqualStencilFunc = 518;
+//const int AlwaysStencilFunc = 519;
+enum class StencilFunc {
+    NeverStencilFunc		= GL_NEVER,
+    LessStencilFunc			= GL_LESS,
+    EqualStencilFunc		= GL_EQUAL,
+    LessEqualStencilFunc	= GL_LEQUAL,
+    NotEqualStencilFunc		= GL_NOTEQUAL,
+    GreaterEqualStencilFunc = GL_GEQUAL,
+    AlwaysStencilFunc		= GL_ALWAYS
+};
 
-const int StaticDrawUsage = 35044;
-const int DynamicDrawUsage = 35048;
-const int StreamDrawUsage = 35040;
-const int StaticReadUsage = 35045;
-const int DynamicReadUsage = 35049;
-const int StreamReadUsage = 35041;
-const int StaticCopyUsage = 35046;
-const int DynamicCopyUsage = 35050;
-const int StreamCopyUsage = 35042;
+//const int StaticDrawUsage = 35044;
+//const int DynamicDrawUsage = 35048;
+//const int StreamDrawUsage = 35040;
+//const int StaticReadUsage = 35045;
+//const int DynamicReadUsage = 35049;
+//const int StreamReadUsage = 35041;
+//const int StaticCopyUsage = 35046;
+//const int DynamicCopyUsage = 35050;
+//const int StreamCopyUsage = 35042;
+enum class Usage {
+    StaticDrawUsage		= 35044,
+    DynamicDrawUsage	= 35048,
+    StreamDrawUsage		= 35040,
+    StaticReadUsage		= 35045,
+    DynamicReadUsage	= 35049,
+    StreamReadUsage		= 35041,
+    StaticCopyUsage		= 35046,
+    DynamicCopyUsage	= 35050,
+    StreamCopyUsage		= 35042
+};
 
 const std::string GLSL1 = "100";
 const std::string GLSL3 = "300 es";
+
+enum class GLSLVersion {
+    GLSL1,
+    GLSL3
+};
 
 const int _SRGBAFormat = 1035; // fallback for WebGL 1
 

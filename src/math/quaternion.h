@@ -5,6 +5,7 @@
 #include "matrix4.h"
 #include "math_utils.h"
 #include "number.h"
+#include "simplesignal.h"
 
 #include <cmath>
 #include <random>
@@ -18,7 +19,8 @@
 // 若类模版中有别名定义，则前置声明时此别名也需要在前置声明后重新定义
 class Euler;
 
-typedef void(*OnChangeCallbackType)(void);
+class Quaternion;
+typedef void(*OnChangeCallbackType)(const Quaternion&);
 
 class Quaternion{
 
@@ -33,7 +35,7 @@ public:
     Quaternion& setX(double x){
         _x = x;
         if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
         return *this;
     }
 
@@ -42,7 +44,7 @@ public:
     Quaternion& setY(double y){
         _y = y;
         if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
         return *this;
     }
 
@@ -51,7 +53,7 @@ public:
     Quaternion& setZ(double z){
         _z = z;
         if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
         return *this;
     }
 
@@ -60,7 +62,7 @@ public:
     Quaternion& setW(double w){
         _w = w;
         if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
         return *this;
     }
 
@@ -86,7 +88,7 @@ public:
 		_w = quaternion.w();
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 	}
@@ -138,7 +140,7 @@ public:
 		}
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 	}
@@ -178,7 +180,7 @@ public:
 		_z *= - 1;
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 	}
@@ -220,7 +222,7 @@ public:
 		}
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 	}
@@ -246,7 +248,7 @@ public:
 		_w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 	}
@@ -300,7 +302,7 @@ public:
 
 			normalize();
 			if(onChangeCallback)
-                onChangeCallback();
+                onChangeCallback(*this);
 
 			return *this;
 		}
@@ -316,7 +318,7 @@ public:
 		_z = ( z * ratioA + _z * ratioB );
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 	}
@@ -361,7 +363,7 @@ public:
 		_w = array[ offset + 3 ];
 
 		if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
 
 		return *this;
 	}
@@ -389,15 +391,16 @@ public:
 // 	}
 
 	//function pointer's definition void(*callback)(void) which already includes declaration's everything 
-	Quaternion& onChange(void(*callback)(void)){
-		onChangeCallback = callback;
-		return *this;
-	}
+//	Quaternion& onChange(void(*callback)(void)){
+//		onChangeCallback = callback;
+//		return *this;
+//	}
+    threecpp::Signal<void(const Quaternion&)> onChange;
 
 private:
     double _x,_y,_z,_w;
 	OnChangeCallbackType onChangeCallback = nullptr;
-//	std::function<void(void)> onChangeCallback;
+//	std::function<void(const Quaternion&)> onChangeCallback;
 };
 
 

@@ -14,7 +14,6 @@ struct Range{
     //Range(const Range& r):start(r.start),count(r.count){};
 };
 
-
 struct GeometryGroup{
     int start;
     int count;
@@ -43,6 +42,25 @@ struct GLVertexAttribute{
     GLint location;
     GLint locationSize;
 };
+
+struct UpdateRange {
+    size_t start;
+    size_t count;
+
+    UpdateRange(size_t offset = 0, size_t count = std::numeric_limits<size_t>::max()) :start(offset), count(count) {}
+};
+
+struct DrawRange {
+    unsigned start =0;
+    unsigned count = std::numeric_limits<unsigned>::infinity();
+    int materialIndex=-1;
+    DrawRange() :start(0), count(std::numeric_limits<unsigned>::infinity()), materialIndex(-1) {}
+    DrawRange(unsigned start, unsigned count, int materialIndex) : start(start), count(count), materialIndex(materialIndex) {}
+    bool equals(const DrawRange& target) {
+        return start == target.start && count == target.count && materialIndex == target.materialIndex;
+    }
+};
+
 
 struct GLViewPort
 {
@@ -443,8 +461,12 @@ struct EnumHash {
 template<typename EnumT,typename ValueT>
 using enum_map = std::unordered_map<EnumT, ValueT, EnumHash>;
 
-
-
+template <class T>
+inline void hash_combine(std::size_t& seed, const T& v)
+{
+    std::hash<T> hasher;
+    seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+}
 
 
 

@@ -172,7 +172,7 @@ class Matrix3{
 		return *this;
 	}
 
-	Matrix3& getNormalMatrix( Matrix4& matrix4 ) {
+	Matrix3& getNormalMatrix(Matrix4& matrix4 ) {
 		return setFromMatrix4( matrix4 ).invert().transpose();
 	}
 

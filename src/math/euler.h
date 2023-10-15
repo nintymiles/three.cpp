@@ -5,15 +5,18 @@
 #include <memory>
 
 #include "math_utils.h"
+#include "simplesignal.h"
 
-enum euler_order{
+enum RotationOrder{
     XYZ = 0,
     XZY,
     YXZ,
     YZX,
     ZXY,
-    ZYX
+    ZYX,
+    Default
 };
+//enum class RotationOrder { XYZ, YZX, ZXY, XZY, YXZ, ZYX,Default };
 
 class Matrix4;
 class Vector3;
@@ -21,12 +24,12 @@ class Quaternion;
 
 class Euler{
     public:
-        static const euler_order defaultOrder = euler_order::XYZ;
+        static const RotationOrder defaultOrder = RotationOrder::XYZ;
 
         //无默认构造器，会导致undefined symbol错误，通常为默认构造函数声明而未定义导致
         //Undefined symbols for architecture arm64: "Euler::Euler()", referenced from
         Euler()=default;
-        Euler(double x,double y,double z,euler_order order = Euler::defaultOrder){}
+        Euler(double x,double y,double z,RotationOrder order = Euler::defaultOrder){}
 
         double x() const{return _x;}
         void x(double value){
@@ -47,8 +50,8 @@ class Euler{
         }
 
 
-        euler_order order() const{return _order;}
-        void order(euler_order value){
+        RotationOrder order() const{return _order;}
+        void order(RotationOrder value){
             _order = value;
             _onChangeCallback();
         }
@@ -63,7 +66,7 @@ class Euler{
             return *this;
         }
 
-        Euler& set(double x,double y,double z, euler_order order) {
+        Euler& set(double x,double y,double z, RotationOrder order) {
             _x = x;
             _y = y;
             _z = z;
@@ -89,13 +92,13 @@ class Euler{
             return *this;
         }
 
-        Euler& setFromRotationMatrix(Matrix4& m, euler_order order, bool update = true );
+        Euler& setFromRotationMatrix(Matrix4& m, RotationOrder order, bool update = true );
 
-        Euler& setFromQuaternion(Quaternion& q,euler_order order,bool update = true);
+        Euler& setFromQuaternion(Quaternion& q,RotationOrder order,bool update = true);
 
-        Euler& setFromVector3(Vector3& v,euler_order order);
+        Euler& setFromVector3(Vector3& v,RotationOrder order);
 
-        Euler& reorder(euler_order newOrder);
+        Euler& reorder(RotationOrder newOrder);
 
         bool equals(Euler&  euler) {
             return (euler.x() == _x ) && (euler.y() == _y) && (euler.z() == _z) && (euler.order() == _order);
@@ -105,7 +108,7 @@ class Euler{
             _x = array[ 0 ];
             _y = array[ 1 ];
             _z = array[ 2 ];
-            _order = (euler_order)array[ 3 ];
+            _order = (RotationOrder)array[ 3 ];
 
             _onChangeCallback();
 
@@ -121,13 +124,14 @@ class Euler{
             return array;
         }
 
-        void onChange(std::function<void (void)> onChangeCallBack){
-            _onChangeCallback = onChangeCallBack;
-        }
+//        void onChange(std::function<void (void)> onChangeCallBack){
+//            _onChangeCallback = onChangeCallBack;
+//        }
+        threecpp::Signal<void(const Quaternion&)> onChange;
 
     private:
         double _x,_y,_z;
-        euler_order _order;    
+        RotationOrder _order;    
         //void _changeCallBack(void);  //wrong function decalartion
         //void (*_changeCallBack)(void); //right function (pointer) declaration
         std::function<void (void)> _onChangeCallback;

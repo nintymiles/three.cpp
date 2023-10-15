@@ -140,7 +140,91 @@ class Vector3{
             return operator[](n);
         }
 
-        //deprecated,use copy constructor instead of this
+    Vector3& operator /= (const Vector3& v){
+        x /= v.x;
+        y /= v.y;
+        z /= v.z;
+
+        return *this;
+    }
+
+    Vector3& operator /=(float scalar)
+    {
+        return *this *= (1.0f / scalar);
+    }
+
+    Vector3& operator =(double scalar){
+        x = y = z = scalar;
+        return *this;
+    }
+
+    Vector3& operator +=(const Vector3& vector){
+        x += vector.x;
+        y += vector.y;
+        z += vector.z;
+
+        return *this;
+    }
+
+    Vector3& operator +=(double scalar){
+        x += scalar;
+        y += scalar;
+        z += scalar;
+
+        return *this;
+    }
+
+    Vector3& operator -=(const Vector3& v){
+        x -= v.x;
+        y -= v.y;
+        z -= v.z;
+
+        return *this;
+    }
+
+    Vector3& operator -=(double scalar){
+        x -= scalar;
+        y -= scalar;
+        z -= scalar;
+
+        return *this;
+    }
+
+    Vector3& operator *=(const Vector3& v){
+        x *= v.x;
+        y *= v.y;
+        z *= v.z;
+
+        return *this;
+    }
+
+    Vector3& operator *=(double scalar){
+        x *= scalar;
+        y *= scalar;
+        z *= scalar;
+
+        return *this;
+    }
+
+    bool operator !=(const Vector3& v) {
+        return !equals(v);
+    }
+
+    bool operator == (const Vector3& v) {
+        return equals(v);
+    }
+    float& operator [] (unsigned char ch) {
+        switch (ch) {
+            case 'x':
+                return x;
+            case 'y':
+                return y;
+            case 'z':
+                return z;
+        }
+    }
+
+    //deprecated,use copy constructor instead of this
 		Vector3 clone() {
 			return Vector3(this->x,this->y,this->z);
 		}
@@ -150,11 +234,11 @@ class Vector3{
 			return *this;
 		}
 		
-		//操作符重载，不熟悉
-		Vector3& operator+=(const Vector3& rhs){
-			*this += rhs;
-			return *this;
-		}
+//		//操作符重载，不熟悉
+//		Vector3& operator+=(const Vector3& rhs){
+//			*this += rhs;
+//			return *this;
+//		}
 
 		Vector3& add(Vector3& vec) {
 			return addScaledVector(vec,1);
@@ -460,10 +544,11 @@ class Vector3{
             return *this;
         }
 
-        Vector3& fromArrayVec(std::vector<double> array, int offset = 0) {
-            x = array[ offset ];
-            y = array[ offset + 1 ];
-            z = array[ offset + 2 ];
+        template<typename T>
+        Vector3& fromArrayVec(std::vector<T> array, int offset = 0) {
+            x = (double)array[ offset ];
+            y = (double)array[ offset + 1 ];
+            z = (double)array[ offset + 2 ];
 
             return *this;
         }
@@ -484,7 +569,8 @@ class Vector3{
             return array;
         }
 
-        Vector3& fromBufferAttribute(BufferAttribute<double>& attribute,int index);
+        template<typename T>
+        Vector3& fromBufferAttribute(BufferAttribute<T>& attribute,int index);
 
         Vector3& random() {
             this->x = MathUtils::random_gen<double>();
@@ -547,6 +633,44 @@ inline bool operator==(const Vector3& lhs,const Vector3& rhs){
 }
 inline bool operator!=(const Vector3& lhs,const Vector3& rhs){
     return !(lhs==rhs);
+}
+
+inline Vector3 operator + (const Vector3& left, const Vector3& right) {
+    Vector3 result(left);
+    result += right;
+    return result;
+}
+inline Vector3 operator -(const Vector3& left, const Vector3& right){
+    Vector3 result(left);
+    result -= right;
+    return result;
+}
+
+inline Vector3 operator *(const Vector3& left, const Vector3& right){
+    Vector3 result(left);
+    result *= right;
+    return result;
+}
+
+inline Vector3 operator *(const Vector3& vector, float scalar){
+    Vector3 result(vector);
+    result *= scalar;
+    return result;
+}
+
+inline Vector3 operator *(const Vector3& vector, Matrix4& matrix){
+    return Vector3(vector).applyMatrix4(matrix);
+}
+
+inline Vector3 operator / (const Vector3& v1, const Vector3& v2){
+    Vector3 vector(v1);
+    vector /= v2;
+
+    return vector;
+}
+
+inline Vector3 operator / (const Vector3& vector, float scalar){
+    return vector * (1.0f / scalar);
 }
 
 using Vector3Sptr = std::shared_ptr<Vector3>;

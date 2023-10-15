@@ -11,24 +11,24 @@
 Matrix4 _matrix;
 Quaternion _quaternion;
 
-Euler& Euler::reorder(euler_order newOrder) {
+Euler& Euler::reorder(RotationOrder newOrder) {
     // WARNING: this discards revolution information -bhouston
     _quaternion.setFromEuler(*this,true);
 
     return setFromQuaternion(_quaternion, newOrder);
 }
 
-Euler& Euler::setFromVector3(Vector3& v,euler_order order) {
+Euler& Euler::setFromVector3(Vector3& v,RotationOrder order) {
 	return set( v.x, v.y, v.z, order );
 }
 
-Euler& Euler::setFromQuaternion(Quaternion& q,euler_order order,bool update) {
+Euler& Euler::setFromQuaternion(Quaternion& q,RotationOrder order,bool update) {
     _matrix.makeRotationFromQuaternion(q);
 
     return setFromRotationMatrix( _matrix, order, update );
 }
 
-Euler& Euler::setFromRotationMatrix(Matrix4& m, euler_order order, bool update) {
+Euler& Euler::setFromRotationMatrix(Matrix4& m, RotationOrder order, bool update) {
     // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
     const double m11 = m.elements[ 0 ], m12 = m.elements[ 4 ], m13 = m.elements[ 8 ];

@@ -140,6 +140,11 @@ class Box3 {
 			return *this;
 		}
 
+        Box3& Box3::clone(Box3* target){
+            *target = copy(*this);
+            return *target;
+        }
+
         Box3& makeEmpty() {
             min.x = min.y = min.z = DBL_MAX;
             max.x = max.y = max.z = DBL_MIN;

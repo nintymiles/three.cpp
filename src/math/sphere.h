@@ -19,11 +19,23 @@ class Sphere {
 
 		//copy constructor
 		Sphere(const Sphere& sphere):center(sphere.center),radius(sphere.radius){}
+
 		// copy( sphere ) {
 		// 	this.center.copy( sphere.center );
 		// 	this.radius = sphere.radius;
 		// 	return this;
 		// }
+        Sphere& Sphere::copy(const Sphere& sphere){
+            center.copy(sphere.center);
+            radius = sphere.radius;
+
+            return *this;
+        }
+
+        Sphere& Sphere::clone(Sphere* sphere){
+            sphere->copy(*this);
+            return *sphere;
+        }
 
 		Sphere& set(Vector3& center,double radius) {
 			center.copy( center );

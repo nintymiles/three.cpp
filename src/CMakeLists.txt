@@ -12,6 +12,9 @@ find_package(Microsoft.GSL CONFIG)
 file(GLOB TOP_SOURCE ${ROOT_DIR}/src/common_utils.cpp)
 file(GLOB TOP_HEADER ${ROOT_DIR}/src/*.h)
 
+file(GLOB UTIL_SOURCE ${ROOT_DIR}/src/utils/*.cpp)
+file(GLOB UTIL_HEADER ${ROOT_DIR}/src/utils/*.h)
+
 file(GLOB_RECURSE CORE_SOURCE ${ROOT_DIR}/src/core/*.cpp)
 # file(GLOB_RECURSE CORE_INLINE ./detail/*.inl)
 file(GLOB_RECURSE CORE_HEADER ${ROOT_DIR}/src/core/*.h)
@@ -25,6 +28,12 @@ file(GLOB CAMERAS_HEADER ${ROOT_DIR}/src/cameras/*.h)
 file(GLOB LIGHTS_SOURCE ${ROOT_DIR}/src/lights/*.cpp)
 file(GLOB LIGHTS_HEADER ${ROOT_DIR}/src/lights/*.h)
 
+file(GLOB TEXTURES_SOURCE ${ROOT_DIR}/src/textures/*.cpp)
+file(GLOB TEXTURES_HEADER ${ROOT_DIR}/src/textures/*.h)
+
+file(GLOB MATERIALS_SOURCE ${ROOT_DIR}/src/materials/*.cpp)
+file(GLOB MATERIALS_HEADER ${ROOT_DIR}/src/materials/*.h)
+
 file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/*.cpp;${ROOT_DIR}/src/renders/opengl/*.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
 file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h)
 
@@ -37,10 +46,22 @@ source_group("Cameras" FILES ${CAMERAS_HEADER})
 source_group("Renders" FILES ${RENDERS_SOURCE})
 source_group("Renders" FILES ${RENDERS_HEADER})
 
+source_group("Utils" FILES ${UTIL_SOURCE})
+source_group("Utils" FILES ${UTIL_HEADER})
+
+source_group("Textures" FILES ${TEXTURES_SOURCE})
+source_group("Textures" FILES ${TEXTURES_HEADER})
+
+source_group("Materials" FILES ${TEXTURES_SOURCE})
+source_group("Materials" FILES ${TEXTURES_HEADER})
+
 file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE};
         ${CAMERAS_HEADER};${CAMERAS_SOURCE};
         ${CORE_SOURCE};${CORE_HEADER};
+        ${UTIL_SOURCE};${UTIL_HEADER};
         ${LIGHTS_SOURCE};${LIGHTS_HEADER};
+        ${TEXTURES_SOURCE};${TEXTURES_HEADER};
+        ${MATERIALS_SOURCE};${MATERIALS_SOURCE};
         ${RENDERS_SOURCE};${RENDERS_HEADER})
 
 # 构建可执行程序
@@ -53,7 +74,10 @@ ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math
 ${ROOT_DIR}/src/core
-${ROOT_DIR}/src/renders/opengl)
+${ROOT_DIR}/src/textures
+${ROOT_DIR}/src/materials
+${ROOT_DIR}/src/renders/opengl
+${ROOT_DIR}/src/utils)
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
 if(MSVC)
