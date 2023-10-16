@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 #include "gl_headers.h"
+#include "gl_programs.h"
 #include "../utils/sole.h"
 
 struct Properties{

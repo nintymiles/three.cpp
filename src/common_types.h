@@ -7,6 +7,8 @@
 
 namespace threecpp {
 
+using byte = unsigned char;
+
 struct Range{
     int start;
     int count;

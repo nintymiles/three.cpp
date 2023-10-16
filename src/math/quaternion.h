@@ -73,7 +73,7 @@ public:
         _w = w;
         //cpp回调函数判空
         if(onChangeCallback)
-            onChangeCallback();
+            onChangeCallback(*this);
         return *this;
     }
 

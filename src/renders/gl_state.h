@@ -277,8 +277,7 @@ public:
     };
 
     struct BoundTexture {
-        using TextureTarget = threecpp::TextureTarget;
-        threecpp::TextureTarget target;
+        TextureTarget target;
         GLint texture;
 
         BoundTexture(TextureTarget target, GLint texture) : target(target), texture(texture) {}
@@ -351,8 +350,7 @@ public:
     std::vector<int> compressedTextureFormats;
 
     GLState() : depthBuffer(*this),stencilBuffer(*this),currentTextureSlot(-1){
-        using TextureTarget = threecpp::TextureTarget;
-
+        //using TextureTarget = threecpp::TextureTarget;
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextures);
         glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttributes);
 
@@ -448,7 +446,7 @@ public:
     }
 
     GLuint createTexture(TextureTarget type, TextureTarget target, unsigned count) {
-        byte data[4] = { 0,0,0,0 };
+        threecpp::byte data[4] = { 0,0,0,0 };
         GLuint texture;
         glGenTextures(1, &texture);
         glBindTexture((GLenum)type, texture);
@@ -1048,17 +1046,17 @@ public:
         glTexImage2D(target, level, internalFormat, width, height, border, format, type, nullptr);
     }
 
-    void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const MipMap& mipmap)
+    void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const threecpp::MipMap& mipmap)
     {
         glTexImage2D(target, level, internalFormat, width, height, border, format, type, mipmap.data.data());
     }
 
-    void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,GLint border,GLenum format,GLenum type, byte* pixels)
+    void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,GLint border,GLenum format,GLenum type, threecpp::byte* pixels)
     {
         glTexImage3D(target, level, format, width, height, depth, border, format, type, pixels);
     }
 
-    void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const MipMap& mipmap)
+    void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const threecpp::MipMap& mipmap)
     {
         glTexImage3D(target, level, (GLenum)format, width, height, depth, border, (GLenum)format, (GLenum)type, mipmap.data.data());
     }

@@ -1,6 +1,7 @@
 //
 // Created by SeanR on 2023/10/11.
 //
+#include "gl_lights.h"
 
 GLLights::GLLights(){
     state.version=0;

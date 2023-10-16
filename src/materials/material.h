@@ -7,6 +7,7 @@
 
 #include "event_dispatcher.h"
 #include "constants.h"
+#include "color.h"
 #include "math_utils.h"
 #include "plane.h"
 #include "texture.h"

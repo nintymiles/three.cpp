@@ -3,29 +3,24 @@
 //
 
 #include "face3.h"
-#include "common_types.h"
 
 size_t Face3::_faceId = 0;
-Face3::Face3() : a(0), b(0), c(0), materialIndex(0)
-{
-    color = Color().setColorName(threecpp::ColorKeywords::black);
+Face3::Face3() : a(0), b(0), c(0), materialIndex(0){
+    color = Color().setColorName("black");
     _id = Face3::_faceId++;
 }
-Face3::Face3(unsigned a, unsigned b, unsigned c)	: a(a), b(b), c(c), materialIndex(0)
-{
-    color = Color().setColorName(ColorKeywords::black);
+Face3::Face3(unsigned a, unsigned b, unsigned c)	: a(a), b(b), c(c), materialIndex(0){
+    color = Color().setColorName("black");
     _id = Face3::_faceId++;
 }
-Face3::Face3(unsigned a, unsigned b, unsigned c, Vector3 normal, Color color, unsigned materialIndex)	:a(a), b(b), c(c), normal(normal), color(color), materialIndex(materialIndex)
-{
+Face3::Face3(unsigned a, unsigned b, unsigned c, Vector3 normal, Color color, unsigned materialIndex)	:a(a), b(b), c(c), normal(normal), color(color), materialIndex(materialIndex){
     _id = Face3::_faceId++;
 }
 
 
 
 Face3::Face3(unsigned a, unsigned b, unsigned c, std::vector<Vector3>* normals, Color* color, unsigned materialIndex)
-        : a(a), b(b), c(c), materialIndex(materialIndex)
-{
+        : a(a), b(b), c(c), materialIndex(materialIndex){
     _id = Face3::_faceId++;
     if (normals != nullptr)
         vertexNormals = *normals;
@@ -35,8 +30,7 @@ Face3::Face3(unsigned a, unsigned b, unsigned c, std::vector<Vector3>* normals, 
 }
 
 Face3::Face3(unsigned a, unsigned b, unsigned c, std::vector<Vector3>* normals, std::vector<Color>* colors, unsigned materialIndex)
-        :a(a), b(b), c(c), materialIndex(materialIndex)
-{
+        :a(a), b(b), c(c), materialIndex(materialIndex){
 
     _id = Face3::_faceId++;
     if (normals != nullptr)
@@ -46,13 +40,12 @@ Face3::Face3(unsigned a, unsigned b, unsigned c, std::vector<Vector3>* normals, 
         vertexColors = *colors;
 
     if (vertexColors.size() == 0) {
-        Color color1 = Color().setColorName(ColorKeywords::black);
+        Color color1 = Color().setColorName("black");
         color = color1;
     }
 }
 
-Face3::Face3(const Face3& source)
-{
+Face3::Face3(const Face3& source){
     _id = source._id;
     a = source.a;
     b = source.b;
@@ -67,15 +60,13 @@ Face3::Face3(const Face3& source)
     materialIndex = source.materialIndex;
 }
 
-Face3& three::Face3::clone(Face3* target)
-{
+Face3& Face3::clone(Face3* target){
     target->copy(*this);
 
     return *target;
 }
 
-Face3& three::Face3::copy(Face3& source)
-{
+Face3& Face3::copy(Face3& source){
     a = source.a;
     b = source.b;
     c = source.c;

@@ -3,6 +3,8 @@
 
 #include "event_dispatcher.h"
 
+class EventDispatcher;
+class Event;
 class EventListener{
 public:
     virtual void onDispatch(EventDispatcher* dispatcher,Event& event) = 0;

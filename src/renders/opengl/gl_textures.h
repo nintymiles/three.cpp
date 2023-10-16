@@ -5,23 +5,26 @@
 #ifndef THREE_CPP_GL_TEXTURES_H
 #define THREE_CPP_GL_TEXTURES_H
 
+#include "gl_extensions.h"
+#include "gl_properties.h"
+#include "gl_capabilities.h"
+#include "gl_info.h"
+#include "gl_state.h"
+
 class GLRenderTarget;
 
 class GLTextures {
 
 private:
+    GLExtensions::sptr extensions;
 
-    GLExtensions::ptr extensions;
+    GLState::sptr state;
 
-    GLState::ptr state;
+    GLProperties::sptr properties;
+    GLCapabilities::sptr capabilities;
+    GLInfo::sptr info;
 
-    GLProperties::ptr properties;
-
-    GLCapabilities::ptr capabilities;
-
-    GLInfo::ptr info;
-
-    bool isGL2 = false;
+    bool isGLES3 = false;
 
     GLint maxTextures;
 

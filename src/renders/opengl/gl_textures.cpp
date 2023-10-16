@@ -1,6 +1,7 @@
 //
 // Created by SeanR on 2023/10/11.
 //
+#include "gl_textures.h"
 
 namespace gltextures {
     //ThreeDataTable _videoTextures;
@@ -9,7 +10,7 @@ namespace gltextures {
 using namespace gltextures;
 GLTextures::GLTextures(GLExtensions::ptr& extensions, GLState::ptr& state, GLProperties::ptr& properties, GLCapabilities::ptr& capabilities, GLInfo::ptr& info)
         :extensions(extensions), state(state), properties(properties), capabilities(capabilities), info(info){
-    isGL2 = capabilities->isGL2;
+    isGLES3 = capabilities->isGLES3;
 
     maxTextures = capabilities->maxTextures;
 

@@ -1,7 +1,6 @@
 //
 // Created by SeanR on 2023/10/15.
 //
-
 #ifndef THREE_CPP_GL_GEOMETRIES_H
 #define THREE_CPP_GL_GEOMETRIES_H
 

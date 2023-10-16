@@ -9,6 +9,7 @@
 #include "color.h"
 
 class Face3 {
+private:
     static size_t _faceId;
 public:
     union {

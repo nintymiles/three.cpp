@@ -70,7 +70,7 @@ class Vector3{
 		// Vector3():x(0),y(0),z(0){};
 
 		// default constructor use in-class initialzier
-		Vector3() = default;
+		Vector3(){};
 
         Vector3(double x,double y,double z):x(x),y(y),z(z){};
 
@@ -219,16 +219,16 @@ class Vector3{
     bool operator == (const Vector3& v) {
         return equals(v);
     }
-    float& operator [] (unsigned char ch) {
-        switch (ch) {
-            case 'x':
-                return x;
-            case 'y':
-                return y;
-            case 'z':
-                return z;
-        }
-    }
+//    float& operator [] (unsigned char ch) {
+//        switch (ch) {
+//            case 'x':
+//                return x;
+//            case 'y':
+//                return y;
+//            case 'z':
+//                return z;
+//        }
+//    }
 
     //deprecated,use copy constructor instead of this
 		Vector3 clone() {

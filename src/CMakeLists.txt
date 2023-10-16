@@ -76,6 +76,7 @@ ${ROOT_DIR}/src/math
 ${ROOT_DIR}/src/core
 ${ROOT_DIR}/src/textures
 ${ROOT_DIR}/src/materials
+${ROOT_DIR}/src/cameras
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/utils)
 

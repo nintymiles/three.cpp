@@ -140,7 +140,7 @@ class Box3 {
 			return *this;
 		}
 
-        Box3& Box3::clone(Box3* target){
+        Box3& clone(Box3* target){
             *target = copy(*this);
             return *target;
         }

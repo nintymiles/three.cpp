@@ -6,6 +6,7 @@
 #define THREE_CPP_GL_CLIPPING_H
 
 #include "camera.h"
+#include "plane.h"
 
 #include "matrix3.h"
 

@@ -33,7 +33,7 @@ class EventDispatcher {
 			auto findResult = std::find(begin(listeners),end(listeners),listener);
 
 			if(findResult!=std::end(listeners)){
-				events.push_back( listener );
+                listeners.push_back( listener );
 			}
 		}
 
@@ -47,12 +47,12 @@ class EventDispatcher {
 
 		void removeEventListener( std::string type, EventListener* listener ) {
 			std::vector<EventListener*>& listeners = _listeners[ type ];
-			if(events.size() == 0) return;
+			if(listeners.size() == 0) return;
 			
 			auto findResult = std::find(begin(listeners),end(listeners),listener);
 
 			if(findResult!=std::end(listeners)){
-				events.erase(findResult);
+                listeners.erase(findResult);
 			}
 
 		}

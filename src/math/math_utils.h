@@ -144,10 +144,10 @@ namespace MathUtils {
 
 namespace math {
 
-const float PI= 3.1415926535897932384f;//std::atan(1.f)/4;
-#ifndef _MSC_VER
-const float M_PI = PI;
-#endif
+//const float PI= 3.1415926535897932384f;//std::atan(1.f)/4;
+//#ifndef _MSC_VER
+//const float M_PI = PI;
+//#endif
 const float LN2 =0.6931471805599453094f;
 
 const float INF = std::numeric_limits<float>::infinity(); //std::numeric_limits<float>::infinity();

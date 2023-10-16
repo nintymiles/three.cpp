@@ -1,8 +1,9 @@
 //
 // Created by SeanR on 2023/10/11.
 //
+#include "gl_clipping.h"
 
-std::vector<float> GLClipping::projectPlanes(std::vector<Plane>& planes, const Camera::ptr& camera, int dstOffset, bool skipTransform){
+std::vector<float> GLClipping::projectPlanes(std::vector<Plane>& planes, const Camera::sptr& camera, int dstOffset, bool skipTransform){
     auto nPlanes = planes.size();
     std::vector<float>& dstArray = uniform;
 
@@ -48,7 +49,7 @@ void GLClipping::resetGlobalState(){
     numIntersection = 0;
 }
 
-bool GLClipping::init(std::vector<Plane>& planes, bool enableLocalClipping, const Camera::ptr& camera){
+bool GLClipping::init(std::vector<Plane>& planes, bool enableLocalClipping, const Camera::sptr& camera){
     bool enabled = planes.size() > 0 || enableLocalClipping || numGlobalPlanes != 0 || localClippingEnabled;
 
     localClippingEnabled = enableLocalClipping;
@@ -57,7 +58,7 @@ bool GLClipping::init(std::vector<Plane>& planes, bool enableLocalClipping, cons
     return enabled;
 }
 
-void three::gl::GLClipping::beginShadows(){
+void GLClipping::beginShadows(){
     renderingShadows = true;
     std::vector<Plane> emptyPlanes;
     projectPlanes(emptyPlanes);
@@ -68,7 +69,7 @@ void GLClipping::endShadows(){
     resetGlobalState();
 }
 
-void GLClipping::setState(std::vector<Plane>& planes, bool clipIntersection, bool clipShadows, const Camera::ptr& camera, MaterialProperties& cache, bool fromCache){
+void GLClipping::setState(std::vector<Plane>& planes, bool clipIntersection, bool clipShadows, const Camera::sptr& camera, MaterialProperties& cache, bool fromCache){
     if (!localClippingEnabled || planes.size() == 0 || renderingShadows && !clipShadows){
         if (renderingShadows){
             std::vector<Plane> emptyPlanes;

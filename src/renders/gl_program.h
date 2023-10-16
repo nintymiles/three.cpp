@@ -22,9 +22,10 @@
 //#include "../utils/string_format.h"
 #include "shaders/shader_chunk.h"
 #include "gl_renderer.h"
-#include "opengl/gl_uniforms.h"
+#include "gl_uniforms.h"
+#include "material.h"
 
-class Material;
+//class Material;
 class GLRenderer;
 /*else {
    array.push_back(parameters.get<std::string>("fragmentShader"));
@@ -138,8 +139,6 @@ class GLProgram {
         std::string programLog;
     };
 private:
-
-
     std::vector<std::string> getEncodingComponents(TextureEncoding encoding);
 
     std::string getShaderErrors(const GLShader& shader, const std::string& type);
@@ -207,18 +206,18 @@ public:
 
     GLShader fragmentShader;
 
-    GLUniforms::ptr cachedUniforms;
+    GLUniforms::sptr cachedUniforms;
 
     std::unordered_map<std::string, GLint> cachedAttributes;
 
     ProgramDiagnostics diagnostics;
 
-    three::GLRenderer& renderer;
+    GLRenderer& renderer;
 
     std::shared_ptr<GLBindingStates> bindingStates;
     //GLProgram();
 
-    GLProgram(GLRenderer& renderer,const GLExtensions::ptr& extensions, const std::string& cacheKey, const ProgramParameters& parameters,const std::shared_ptr<GLBindingStates>& bindingStates);
+    GLProgram(GLRenderer& renderer,const GLExtensions::sptr& extensions, const std::string& cacheKey, const ProgramParameters& parameters,const std::shared_ptr<GLBindingStates>& bindingStates);
 
     ~GLProgram() = default;
     /*{
@@ -227,7 +226,7 @@ public:
             this->program = 0;
         }
     }	*/
-    GLUniforms::ptr getUniforms();
+    GLUniforms::sptr getUniforms();
 
     std::unordered_map<std::string, GLint>& getAttributes();
 

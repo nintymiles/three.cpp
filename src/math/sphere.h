@@ -25,14 +25,14 @@ class Sphere {
 		// 	this.radius = sphere.radius;
 		// 	return this;
 		// }
-        Sphere& Sphere::copy(const Sphere& sphere){
+        Sphere& copy(const Sphere& sphere){
             center.copy(sphere.center);
             radius = sphere.radius;
 
             return *this;
         }
 
-        Sphere& Sphere::clone(Sphere* sphere){
+        Sphere& clone(Sphere* sphere){
             sphere->copy(*this);
             return *sphere;
         }

@@ -4,7 +4,7 @@
 
 #ifndef THREE_CPP_EMISSIVEMAP_PARS_FRAGMENT_GLSL_H
 #define THREE_CPP_EMISSIVEMAP_PARS_FRAGMENT_GLSL_H
-.glsl
+
 namespace shader_chunk {
 
 /*glsl*/
