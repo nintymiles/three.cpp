@@ -15,6 +15,7 @@
 #include <iostream>
 #include <tuple>
 #include <cmath>
+#include <sstream>
 
 #include "constants.h"
 #include "common_types.h"
