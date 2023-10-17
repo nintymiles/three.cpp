@@ -5,12 +5,16 @@
 #include "euler.h"
 
 //static Vector3 _v = Vector3();
+//私有namepspace，用于本地变量的存放scope
+namespace __matrix4 {
+    Vector3 _v1;
+    Matrix4 _m1;
+    Vector3 _zero;
+    Vector3 _one;
+    Vector3 _x, _y, _z;
+}
 
-Vector3 _v1;
-Matrix4 _m1;
-Vector3 _zero;
-Vector3 _one;
-Vector3 _x,_y,_z;
+using namespace __matrix4;
 
 // Matrix4::Matrix4():_v1(std::make_shared<Vector3>()),
     // _m1(std::make_shared<Matrix4>()),

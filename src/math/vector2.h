@@ -320,9 +320,9 @@ public:
             return *this;
         }
 
-        Vector2& fromArray( std::vector<double> array, int offset = 0 ) {
-            x = array[ offset ];
-            y = array[ offset + 1 ];
+        Vector2& fromArrayVec( std::vector<float> array, int offset = 0 ) {
+            x = (double)array[ offset ];
+            y = (double)array[ offset + 1 ];
 
             return *this;
         }

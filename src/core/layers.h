@@ -6,6 +6,11 @@ struct Layers {
 
 	Layers():mask( 1|0 ){};
 
+    Layers& copy(const Layers& source) {
+        mask = source.mask;
+        return *this;
+    }
+
 	Layers& set( unsigned channel ) {
 
 		mask = ( 1 << channel | 0 ) >> 0;

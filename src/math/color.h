@@ -72,6 +72,8 @@ public:
 
     Color(const Color& c):r(c.r),g(c.g),b(c.b){};
 
+    Color(unsigned hex) : r((hex >> 16 & 255) / 255.0f), g((hex >> 8 & 255) / 255.0f), b((hex & 255) / 255.0f) {}
+
     Color& setScalar( double scalar ) {
        r = scalar;
        g = scalar;

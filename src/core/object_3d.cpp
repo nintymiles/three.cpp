@@ -3,6 +3,7 @@
 //
 #include "object_3d.h"
 #include "quaternion.h"
+#include "buffer_geometry.h"
 
 namespace object3d {
 Vector3 _v1;
@@ -26,7 +27,7 @@ Object3D::Object3D() :id(++_objectIdCount) {
 
     this->geometry = BufferGeometry::create();
     this->material = MeshBasicMaterial::create();
-    material->color.set(0xffffff);
+    material->color.setHex(0xffffff);
 }
 
 Object3D::Object3D(const Geometry::sptr& geometry, const Material::sptr& material) : id(++_objectIdCount),  geometry(geometry), material(material),materials({ material }) {
@@ -34,8 +35,7 @@ Object3D::Object3D(const Geometry::sptr& geometry, const Material::sptr& materia
     quaternion.onChange.connect(*this, &Object3D::onQuaternionChange);
 }
 
-Object3D::Object3D(const Geometry::sptr& geometry, const std::initializer_list<Material::sptr>& materials) : id(++_objectIdCount),geometry(geometry),materials(materials)
-{
+Object3D::Object3D(const Geometry::sptr& geometry, const std::initializer_list<Material::sptr>& materials) : id(++_objectIdCount),geometry(geometry),materials(materials){
     rotation.onChange.connect(*this, &Object3D::onRotationChange);
     quaternion.onChange.connect(*this, &Object3D::onQuaternionChange);
 
@@ -101,8 +101,7 @@ Object3D::Object3D(const Object3D& object) : Object3D() {
 
 }
 
-void Object3D::onRotationChange(const Euler& rotation)
-{
+void Object3D::onRotationChange(const Euler& rotation){
     quaternion.setFromEuler(this->rotation, false);
 }
 
@@ -110,42 +109,37 @@ void Object3D::onQuaternionChange(const Quaternion& quaternion){
     rotation.setFromQuaternion(this->quaternion, RotationOrder::Default, false);
 }
 
-void Object3D::applyMatrix4(Matrix4& matrix)
-{
+void Object3D::applyMatrix4(Matrix4& matrix){
     if (matrixAutoUpdate) updateMatrix();
 
     matrix.premultiply(matrix);
 
-    matrix.decompose(&position, &quaternion, &scale);
+    //matrix.decompose(&position, &quaternion, &scale);
+    matrix.decompose(position, quaternion, scale);
 
 }
 
-Object3D& Object3D::applyQuaternion(Quaternion& quaternion)
-{
+Object3D& Object3D::applyQuaternion(Quaternion& quaternion){
     quaternion.premultiply(quaternion);
 
     return *this;
 }
 
-void Object3D::setRotationFromAxisAngle(Vector3& axis, float angle)
-{
+void Object3D::setRotationFromAxisAngle(Vector3& axis, float angle){
     quaternion.setFromAxisAngle(axis, angle);
 }
 
-void Object3D::setRotationFromEuler(Euler& euler)
-{
+void Object3D::setRotationFromEuler(Euler& euler){
     quaternion.setFromEuler(euler, true);
 }
 
-void Object3D::setRotationFromMatrix(Matrix4& m)
-{
+void Object3D::setRotationFromMatrix(Matrix4& m){
     // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
     quaternion.setFromRotationMatrix(m);
 }
 
-void Object3D::setRotationFromQuaternion(Quaternion& q)
-{
+void Object3D::setRotationFromQuaternion(Quaternion& q){
     // assumes q is normalized
 
     quaternion.copy(q);
@@ -154,7 +148,6 @@ void Object3D::setRotationFromQuaternion(Quaternion& q)
 Object3D& Object3D::rotateOnAxis(const Vector3& axis, float angle){
     // rotate object on axis in object space
     // axis is assumed to be normalized
-
     _q1.setFromAxisAngle(axis, angle);
 
     quaternion.multiply(_q1);
@@ -166,7 +159,6 @@ Object3D& Object3D::rotateOnWorldAxis(const Vector3& axis, float angle){
     // rotate object on axis in world space
     // axis is assumed to be normalized
     // method assumes no rotated parent
-
     _q1.setFromAxisAngle(axis, angle);
 
     quaternion.premultiply(_q1);
@@ -243,7 +235,7 @@ void Object3D::lookAt(const Vector3& vector){
 
         _m1.extractRotation(parent->matrixWorld);
         _q1.setFromRotationMatrix(_m1);
-        quaternion.premultiply(_q1.inverse());
+        quaternion.premultiply(_q1.invert());
 
     }
 
@@ -348,7 +340,6 @@ Object3D* Object3D::clone(bool recursive){
 }
 
 Object3D& Object3D::copy(const Object3D& source,bool recursive){
-
     //return new Object3D(source);
     name = source.name;
     up.copy(source.up);
@@ -386,7 +377,8 @@ Object3D& Object3D::copy(const Object3D& source,bool recursive){
 Vector3& Object3D::getWorldPosition(Vector3& target){
     updateMatrixWorld(true);
 
-    float* e = matrixWorld.elements;
+    //float* e = matrixWorld.elements;
+    double* e = matrixWorld.elements;
 
     return target.set(e[8], e[9], e[10]).normalize();
 }
@@ -394,7 +386,8 @@ Vector3& Object3D::getWorldPosition(Vector3& target){
 Quaternion& Object3D::getWorldQuaternion(Quaternion& target){
     updateMatrixWorld(true);
 
-    matrixWorld.decompose(&_position, &target, &_scale);
+//    matrixWorld.decompose(&_position, &target, &_scale);
+    matrixWorld.decompose(_position, target, _scale);
 
     return target;
 }
@@ -402,7 +395,7 @@ Quaternion& Object3D::getWorldQuaternion(Quaternion& target){
 Vector3& Object3D::getWorldScale(Vector3&& target){
     updateMatrixWorld(true);
 
-    matrixWorld.decompose(&_position, &_quaternion, &target);
+    matrixWorld.decompose(_position, _quaternion, target);
 
     return target;
 }
@@ -410,7 +403,8 @@ Vector3& Object3D::getWorldScale(Vector3&& target){
 Vector3& Object3D::getWorldDirection(Vector3& target){
     updateMatrixWorld(true);
 
-    float* e = matrixWorld.elements;
+//    float* e = matrixWorld.elements;
+    double* e = matrixWorld.elements;
 
     return target.set(e[8], e[9], e[10]).normalize();
 }
@@ -456,11 +450,8 @@ void Object3D::updateMatrixWorld(bool force){
 
             matrixWorld.copy(matrix);
 
-        }
-        else {
-
+        }else {
             matrixWorld.multiplyMatrices(parent->matrixWorld, matrix);
-
         }
 
         matrixWorldNeedsUpdate = false;

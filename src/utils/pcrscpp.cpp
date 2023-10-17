@@ -18,7 +18,7 @@
 
 ***********************************************************************/
 
-#include <three/utils/pcrscpp.h>
+#include "pcrscpp.h"
 #include <list>
 #include <vector>
 #include <string>

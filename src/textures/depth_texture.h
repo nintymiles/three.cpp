@@ -14,10 +14,6 @@ private:
     size_t width, height;
 public:
     using sptr = std::shared_ptr<DepthTexture>;
-    using threecpp::TextureMapping;
-    using threecpp::Wrapping;
-    using threecpp::TextureFilter;
-    using threecpp::PixelFormat;
 
     DepthTexture() :Texture(),width(0), height(0) {
         isDepthTexture = true;

@@ -5,8 +5,8 @@
 #ifndef THREE_CPP_SRC_RENDERS_OPENGL_GL_LIGHTS_H
 #define THREE_CPP_SRC_RENDERS_OPENGL_GL_LIGHTS_H
 
-#include "light/light.h"
-#include "light/light_probe.h"
+#include "light.h"
+#include "light_probe.h"
 #include "color.h"
 #include "vector2.h"
 

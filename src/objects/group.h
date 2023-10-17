@@ -9,11 +9,25 @@
 
 class Group : public Object3D {
 public:
-    std::string type = "Group";
-    bool isGroup = true;
+    std::vector<std::string> materialLibraries;
+    using sptr = std::shared_ptr<Group>;
 
-    Group() = default;
+    Group() : Object3D(){
+        this->type = "Group";
+    }
 
+    static sptr create() {
+        return std::make_shared<Group>();
+    }
 };
+
+//class Group : public Object3D {
+//public:
+//    std::string type = "Group";
+//    bool isGroup = true;
+//
+//    Group() = default;
+//
+//};
 
 #endif //THREE_CPP_SRC_OBJECTS_GROUP_H

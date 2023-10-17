@@ -81,7 +81,7 @@ public:
 		return Quaternion(_x, _y, _z, _w);
 	}
 
-    Quaternion& copy(Quaternion& quaternion) {
+    Quaternion& copy(const Quaternion& quaternion) {
 		_x = quaternion.x();
 		_y = quaternion.y();
 		_z = quaternion.z();
@@ -95,7 +95,7 @@ public:
 
 	Quaternion& setFromEuler(Euler& euler, bool update);
 	
-	Quaternion& setFromAxisAngle(Vector3& axis, double angle);
+	Quaternion& setFromAxisAngle(const Vector3& axis, double angle);
 
 	Quaternion& setFromRotationMatrix(Matrix4& m){
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm

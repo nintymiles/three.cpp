@@ -57,7 +57,7 @@ class Matrix4{
 		return Matrix4().fromArray(elements);
 	}
 
-	Matrix4& copy(Matrix4& m) {
+	Matrix4& copy(const Matrix4& m) {
         for(int i=0;i<sizeof(elements)/sizeof(elements[0]);i++){
             elements[i] = m.elements[i];
         }

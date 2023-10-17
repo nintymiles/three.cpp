@@ -21,7 +21,7 @@
 #ifndef PCRSCPP_H_
 #define PCRSCPP_H_
 
-#include <pcre.h>
+//#include "pcre.h"
 
 #include <string>
 #include <vector>

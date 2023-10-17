@@ -12,6 +12,7 @@
 #include "vector2.h"
 #include "vector3.h"
 #include "gl_render_target.h"
+#include "gl_render_states.h"
 #include "gl_state.h"
 #include "gl_buffer_renderer.h"
 #include "buffer_geometry.h"

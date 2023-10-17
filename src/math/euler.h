@@ -81,7 +81,7 @@ class Euler{
             return Euler(_x, _y, _z, _order);
         }
 
-        Euler& copy(Euler euler) {
+        Euler& copy(const Euler& euler) {
             _x = euler.x();
             _y = euler.y();
             _z = euler.z();
@@ -127,7 +127,7 @@ class Euler{
 //        void onChange(std::function<void (void)> onChangeCallBack){
 //            _onChangeCallback = onChangeCallBack;
 //        }
-        threecpp::Signal<void(const Quaternion&)> onChange;
+        threecpp::Signal<void(const Euler&)> onChange;
 
     private:
         double _x,_y,_z;

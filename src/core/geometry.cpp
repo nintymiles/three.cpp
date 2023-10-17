@@ -2,6 +2,7 @@
 // Created by SeanR on 2023/10/14.
 //
 #include "geometry.h"
+#include "buffer_geometry.h"
 
 #include "object_3d.h"
 #include "vector3.h"
@@ -31,8 +32,8 @@ void Geometry::addFace(unsigned a, unsigned b, unsigned c, unsigned materialInde
     if (normals!=nullptr&&normals->size > 0)
     {
         vertexNormals.push_back(Vector3().fromArrayVec(normals->array, a * 3));
-        vertexNormals.push_back(Vector3().fromArray(normals->array, b * 3));
-        vertexNormals.push_back(Vector3().fromArray(normals->array, c * 3));
+        vertexNormals.push_back(Vector3().fromArrayVec(normals->array, b * 3));
+        vertexNormals.push_back(Vector3().fromArrayVec(normals->array, c * 3));
     }
 
     auto face = Face3(a, b, c, &vertexNormals, &vertexColors, materialIndex);
@@ -42,9 +43,9 @@ void Geometry::addFace(unsigned a, unsigned b, unsigned c, unsigned materialInde
     if (uvs!=nullptr&&uvs->size > 0)
     {
         std::vector<Vector2> list2;
-        list2.push_back(Vector2().fromArray(uvs->array, a * 2));
-        list2.push_back(Vector2().fromArray(uvs->array, b * 2));
-        list2.push_back(Vector2().fromArray(uvs->array, c * 2));
+        list2.push_back(Vector2().fromArrayVec(uvs->array, a * 2));
+        list2.push_back(Vector2().fromArrayVec(uvs->array, b * 2));
+        list2.push_back(Vector2().fromArrayVec(uvs->array, c * 2));
         std::vector<std::vector<Vector2>> list1;
 
         list1.push_back(list2);
@@ -57,9 +58,9 @@ void Geometry::addFace(unsigned a, unsigned b, unsigned c, unsigned materialInde
     if (uvs2!=nullptr&&uvs2->size > 0)
     {
         std::vector<Vector2> list2;
-        list2.push_back(Vector2().fromArray(uvs2->array, a * 2));
-        list2.push_back(Vector2().fromArray(uvs2->array, b * 2));
-        list2.push_back(Vector2().fromArray(uvs2->array, c * 2));
+        list2.push_back(Vector2().fromArrayVec(uvs2->array, a * 2));
+        list2.push_back(Vector2().fromArrayVec(uvs2->array, b * 2));
+        list2.push_back(Vector2().fromArrayVec(uvs2->array, c * 2));
         std::vector<std::vector<Vector2>> list1;
         list1.push_back(list2);
         if (this->faceVertexUvs.size() == 1)
@@ -214,9 +215,7 @@ Geometry& Geometry::applyMatrix4(Matrix4& matrix)
     }
 
     if (!boundingSphere.isEmpty()) {
-
         computeBoundingSphere();
-
     }
 
     verticesNeedUpdate = true;
@@ -265,8 +264,8 @@ Geometry& Geometry::translate(float x, float y, float z)
 
     return *this;
 }
-Geometry& Geometry::scale(float x, float y, float z)
-{
+
+Geometry& Geometry::scale(float x, float y, float z){
     // scale geometry
 
     _m1.makeScale(x, y, z);
@@ -275,6 +274,7 @@ Geometry& Geometry::scale(float x, float y, float z)
 
     return *this;
 }
+
 Geometry& Geometry::lookAt(Vector3& vector)
 {
     _obj.lookAt(vector);
@@ -320,10 +320,10 @@ Geometry& Geometry::fromBufferGeometry(BufferGeometry& geometry){
     }
     for (unsigned int i = 0; i < positions->size; i += 3)
     {
-        this->vertices.push_back(Vector3().fromArray(positions->array, i));
+        this->vertices.push_back(Vector3().fromArrayVec(positions->array, i));
         if (colors != nullptr && colors->size > 0) {
 
-            this->colors.push_back(Color(ColorKeywords::white).fromArray(colors->array, i));
+            this->colors.push_back(Color(threecpp::Colors::white).fromArray(colors->array, i));
         }
     }
 
@@ -391,14 +391,14 @@ Geometry& Geometry::center()
 {
     computeBoundingBox();
 
-    boundingBox.getCenter(&_offset).negate();
+    boundingBox.getCenter(_offset).negate();
 
     translate(_offset.x, _offset.y, _offset.z);
 
     return *this;
 }
-Geometry& Geometry::normalize()
-{
+
+Geometry& Geometry::normalize(){
     computeBoundingSphere();
 
     Vector3 center = boundingSphere.center;
@@ -418,8 +418,8 @@ Geometry& Geometry::normalize()
 
     return *this;
 }
-void Geometry::computeFaceNormals()
-{
+
+void Geometry::computeFaceNormals(){
     Vector3 cb, ab;
 
     for (unsigned f = 0;f<faces.size();f++) {
@@ -440,8 +440,8 @@ void Geometry::computeFaceNormals()
 
     }
 }
-void Geometry::computeVertexNormals(bool areaWeighted)
-{
+
+void Geometry::computeVertexNormals(bool areaWeighted){
     if (areaWeighted == false) areaWeighted = true;
 
     //var v, vl, f, fl, face, vertices;
@@ -482,8 +482,7 @@ void Geometry::computeVertexNormals(bool areaWeighted)
 
         }
 
-    }
-    else {
+    } else {
 
         computeFaceNormals();
 
@@ -534,45 +533,36 @@ void Geometry::computeVertexNormals(bool areaWeighted)
 
     }
 }
-void Geometry::computeFlatVertexNormals()
-{
+void Geometry::computeFlatVertexNormals(){
     computeFaceNormals();
 
-    for (unsigned f = 0;f < faces.size(); f++)
-    {
+    for (unsigned f = 0;f < faces.size(); f++){
 
         Face3* face = &faces[f];
 
         //var vertexNormals = face.VertexNormals;
 
-        if (face->vertexNormals.size() == 3)
-        {
+        if (face->vertexNormals.size() == 3){
 
             face->vertexNormals[0].copy(face->normal);
             face->vertexNormals[1].copy(face->normal);
             face->vertexNormals[2].copy(face->normal);
 
-        }
-        else
-        {
+        }else{
             face->vertexNormals.clear();
             face->vertexNormals.push_back(face->normal.clone());
             face->vertexNormals.push_back(face->normal.clone());
             face->vertexNormals.push_back(face->normal.clone());
-
         }
 
     }
 
-    if (this->faces.size() > 0)
-    {
-
+    if (this->faces.size() > 0){
         normalsNeedUpdate = true;
-
     }
 }
-void Geometry::computeMorphNormals()
-{
+
+void Geometry::computeMorphNormals(){
     //var i, il, f, fl, face;
     unsigned i, f;
 
@@ -669,16 +659,16 @@ void Geometry::computeMorphNormals()
 
     }
 }
-void Geometry::computeBoundingBox()
-{
+
+void Geometry::computeBoundingBox(){
     boundingBox.setFromPoints(&vertices[0],vertices.size());
 }
-void Geometry::computeBoundingSphere()
-{
+
+void Geometry::computeBoundingSphere(){
     boundingSphere.setFromPoints(&vertices[0],vertices.size());
 }
-void Geometry::merge(Geometry& geometry, Matrix4* matrix, unsigned materialIndexOffset)
-{
+
+void Geometry::merge(Geometry& geometry, Matrix4* matrix, unsigned materialIndexOffset){
     /*if (!geometry.isGeometry) {
 
         console.error('THREE.Geometry.merge(): geometry not an instance of THREE.Geometry.', geometry);
@@ -800,8 +790,8 @@ void Geometry::merge(Geometry& geometry, Matrix4* matrix, unsigned materialIndex
 
     }
 }
-void Geometry::mergeMesh(Mesh& mesh)
-{
+
+void Geometry::mergeMesh(Mesh& mesh){
     assert(!mesh.isMesh);
 
     if (mesh.matrixAutoUpdate) mesh.updateMatrix();
@@ -814,8 +804,7 @@ void Geometry::mergeMesh(Mesh& mesh)
 * Duplicated vertices are removed
 * and faces' vertices are updated.
 */
-int Geometry::mergeVertices()
-{
+int Geometry::mergeVertices(){
     std::unordered_map<std::string,size_t> verticesMap; // Hashmap for looking up vertices by position coordinates (and making sure they are unique)
     std::vector<Vector3> unique;
     std::vector<int> changes;
@@ -903,8 +892,8 @@ int Geometry::mergeVertices()
 
     return diff;
 }
-Geometry& Geometry::setFromPoints(Vector2* points, unsigned length)
-{
+
+Geometry& Geometry::setFromPoints(Vector2* points, unsigned length){
     this->vertices.clear();
 
     for (unsigned i = 0;i< length; i++) {
@@ -916,8 +905,8 @@ Geometry& Geometry::setFromPoints(Vector2* points, unsigned length)
 
     return *this;
 }
-Geometry& Geometry::setFromPoints(Vector3* points, unsigned length)
-{
+
+Geometry& Geometry::setFromPoints(Vector3* points, unsigned length){
     this->vertices.clear();
 
     for (unsigned i = 0;i < length; i++) {
@@ -930,8 +919,8 @@ Geometry& Geometry::setFromPoints(Vector3* points, unsigned length)
 
     return *this;
 }
-void Geometry::sortFacesByMaterialIndex()
-{
+
+void Geometry::sortFacesByMaterialIndex(){
     size_t length = this->faces.size();
 
     // tag faces
@@ -941,10 +930,7 @@ void Geometry::sortFacesByMaterialIndex()
         faces[i]._id = i;
 
     }
-
     // sort faces
-
-
 
     std::sort(faces.begin(),faces.end(),materialIndexSort);
 
@@ -986,15 +972,13 @@ void Geometry::sortFacesByMaterialIndex()
         //this.faceVertexUvs[1] = newUvs2;
     }
 }
-Geometry* Geometry::clone()
-{
+
+Geometry* Geometry::clone(){
     return new Geometry(*this);
 }
-Geometry& Geometry::copy(const Geometry& source)
-{
 
+Geometry& Geometry::copy(const Geometry& source){
     // reset
-
     this->vertices.clear();
     this->colors.clear();
     this->faces.clear();
@@ -1056,7 +1040,6 @@ Geometry& Geometry::copy(const Geometry& source)
     }
 
     for (unsigned int i = 0;i< source.faceVertexUvs.size(); i++) {
-
         auto faceVertexUvs1 = source.faceVertexUvs[i];
 
         /*if (this->faceVertexUvs[i] == = undefined) {

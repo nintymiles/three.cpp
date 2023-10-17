@@ -133,7 +133,7 @@ class Box3 {
 
 	// }
 
-		Box3& copy(Box3& box) {
+		Box3& copy(const Box3& box) {
 			min.copy( box.min );
 			max.copy( box.max );
 

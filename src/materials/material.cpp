@@ -68,6 +68,7 @@ Material::Material(){
     version = 0;
 
 }
+
 Material::Material(const Material& source){
     name = source.name;
 

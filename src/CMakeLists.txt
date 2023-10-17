@@ -49,6 +49,9 @@ source_group("Renders" FILES ${RENDERS_HEADER})
 source_group("Utils" FILES ${UTIL_SOURCE})
 source_group("Utils" FILES ${UTIL_HEADER})
 
+source_group("Lights" FILES ${LIGHTS_SOURCE})
+source_group("Lights" FILES ${LIGHTS_HEADER})
+
 source_group("Textures" FILES ${TEXTURES_SOURCE})
 source_group("Textures" FILES ${TEXTURES_HEADER})
 
@@ -77,6 +80,7 @@ ${ROOT_DIR}/src/core
 ${ROOT_DIR}/src/textures
 ${ROOT_DIR}/src/materials
 ${ROOT_DIR}/src/cameras
+${ROOT_DIR}/src/lights
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/utils)
 

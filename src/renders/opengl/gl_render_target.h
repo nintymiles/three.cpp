@@ -49,8 +49,8 @@ public:
     size_t height = 0;
     bool scissorTest = false;
 
-    math::Vector4 scissor;
-    math::Vector4 viewport;
+    Vector4f scissor;
+    Vector4f viewport;
 
     Texture::sptr texture = nullptr;
 
@@ -88,7 +88,7 @@ public:
 
     virtual void dispose();
 
-    Signal<void(GLRenderTarget&)> onDispose;
+    threecpp::Signal<void(GLRenderTarget&)> onDispose;
 
 
 

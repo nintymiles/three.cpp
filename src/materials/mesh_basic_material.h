@@ -12,7 +12,7 @@
 #include <string>
 #include <map>
 
-class MeshBasicMaterial : public Material {
+class MeshBasicMaterial : public Material{
 public:
     MeshBasicMaterial() : Material(){
         type = "MeshBasicMaterial";

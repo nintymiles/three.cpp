@@ -82,7 +82,7 @@ enum class LightType{
     Light,DirectionalLight,SpotLight,PointLight,AmbientLight,LightProbe,HemisphereLight,RectAreaLight
 };
 
-enum class ColorKeywords {
+enum class Colors:unsigned {
     aliceblue = 0xf0f8ff,
     antiquewhite = 0xfaebd7,
     aqua = 0x00ffff,
