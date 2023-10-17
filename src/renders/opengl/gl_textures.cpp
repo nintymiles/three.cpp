@@ -130,7 +130,7 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
 
         if (texture.type == TextureDataType::FloatType) {
 
-            //if (isGL2 == false) throw new Error('Float Depth Texture only supported in WebGL2.0');
+            //if (isGLES3 == false) throw new Error('Float Depth Texture only supported in WebGL2.0');
             glInternalFormat = GL_DEPTH_COMPONENT32F;
 
         }

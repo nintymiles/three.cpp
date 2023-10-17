@@ -3,12 +3,18 @@
 //
 #include "gl_program.h"
 
+#include "pcrscpp.h"
+
+using namespace std;
+using namespace string_utils;
+
 unsigned GLProgram::programId = 0;
+
 void sendDebugMessage(const std::wstring& name) {
     std::wcout << name << std::endl;
 }
 
-using namespace std;
+
 
 pcrscpp::replace pcrscpp_rs;
 
@@ -34,7 +40,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
     float gammaFactorDefine = (renderer.gammaFactor > 0) ? renderer.gammaFactor : 1.0f;
 
-    std::string customExtensions = parameters.isGL2 ? "" : generateExtensions(parameters);
+    std::string customExtensions = parameters.isGLES3 ? "" : generateExtensions(parameters);
 
     std::string customDefines = generateDefines(definesString);
 
@@ -335,7 +341,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
     vShader = unrollLoops(vShader);
     fShader = unrollLoops(fShader);
 
-    if (parameters.isGL2 && parameters.isRawShaderMaterial) {
+    if (parameters.isGLES3 && parameters.isRawShaderMaterial) {
         bool isGLSL3ShaderMaterial = false;
 
         // GLSL 3.0 conversion
@@ -520,6 +526,10 @@ std::vector<std::string> GLProgram::getEncodingComponents(TextureEncoding encodi
 }
 
 std::string GLProgram::getShaderErrors(const GLShader& shader, const std::string& type){
+    using std::stringstream;
+    using std::endl;
+    using std::string;
+
     int status;
     glGetShaderiv(shader.shader, GL_COMPILE_STATUS, &status);
 
@@ -536,7 +546,7 @@ std::string GLProgram::getShaderErrors(const GLShader& shader, const std::string
 
     stringstream ss;
 
-    ss<< "THREE.Renderers.gl.GLProgram: glGetShaderInfoLog() "<< type<<endl << log <<endl <<addLineNumbers(string(source));
+    ss<< "THREE.Renderers.gl.GLProgram: glGetShaderInfoLog() "<< type<< endl << log << endl <<addLineNumbers(string(source));
 
     delete source;
 
@@ -544,6 +554,7 @@ std::string GLProgram::getShaderErrors(const GLShader& shader, const std::string
 }
 
 std::string GLProgram::getTexelDecodingFunction(const std::string& functionName, TextureEncoding encoding){
+    using std::stringstream;
     stringstream ss;
 
     std::vector<std::string> components = getEncodingComponents(encoding);
@@ -554,6 +565,7 @@ std::string GLProgram::getTexelDecodingFunction(const std::string& functionName,
 }
 
 std::string GLProgram::getTexelEncodingFunction(const std::string& functionName, TextureEncoding encoding){
+    using std::stringstream;
     stringstream ss;
 
     std::vector<std::string> components = getEncodingComponents(encoding);
@@ -564,6 +576,8 @@ std::string GLProgram::getTexelEncodingFunction(const std::string& functionName,
 }
 
 std::string GLProgram::getToneMappingFunction(const std::string& functionName, ToneMapping toneMapping){
+    using std::stringstream;
+    using std::string;
     stringstream ss;
     string toneMappingName;
     switch (toneMapping) {
@@ -600,6 +614,8 @@ std::string GLProgram::getToneMappingFunction(const std::string& functionName, T
 }
 
 std::string GLProgram::generateExtensions(const ProgramParameters& parameters){
+    using std::stringstream;
+    using std::endl;
     stringstream chunks;
 
     if (parameters.extensionDerivatives || parameters.envMapCubeUV || parameters.bumpMap || parameters.tangentSpaceNormalMap || parameters.clearcoatNormalMap || parameters.flatShading || parameters.shaderID=="physical")
@@ -618,6 +634,9 @@ std::string GLProgram::generateExtensions(const ProgramParameters& parameters){
 }
 
 std::string GLProgram::generateDefines(const std::unordered_map<std::string, std::string>& defines){
+    using std::stringstream;
+    using std::endl;
+
     if (defines.size() == 0) return {};
     stringstream ss;
     std::string strVal;
@@ -645,7 +664,7 @@ void GLProgram::fetchAttributeLocation(const int program, std::unordered_map<std
 
         int location = glGetAttribLocation(program, name);
 
-        string attributeName(name);
+        std::string attributeName(name);
 
         attribute[attributeName] = location;
         //morphTarget
@@ -764,6 +783,9 @@ std::string GLProgram::resolveIncludeUX(const std::string& source){
 }
 
 std::string GLProgram::unrollLoopsUX(const std::string& source){
+    using std::regex;
+    using std::stringstream;
+
     static const regex rex(R"(for \( int i = (\d+)\; i < (\d+); i \+\+ \) \{[\r\n]?([\s\S]+?)(?=\})\})");
     static const regex rex2(R"(\[ i \])");
 
@@ -842,6 +864,9 @@ std::string GLProgram::includeReplacerRX(std::string& match) {
 }
 
 std::string GLProgram::generatePrecision(const ProgramParameters& parameter){
+    using std::stringstream;
+    using std::endl;
+
     stringstream ss;
     ss << "precision " << parameter.precision << " float; " << endl;
     ss << "precision " + parameter.precision + " int; "<<endl;
@@ -863,7 +888,6 @@ std::string GLProgram::generatePrecision(const ProgramParameters& parameter){
 }
 
 std::string GLProgram::generateShadowMapTypeDefine(const ProgramParameters& parameters){
-
     if(parameters.shadowMapType==ShadowMapType::PCFShadowMap)
         return "SHADOWMAP_TYPE_PCF";
     else if(parameters.shadowMapType ==ShadowMapType::PCFSoftShadowMap)
@@ -909,7 +933,6 @@ std::string GLProgram::generateEnvMapTypeDefine(const ProgramParameters& paramet
 }
 
 std::string GLProgram::generateEnvMapModeDefine(const ProgramParameters& parameters){
-
     if (parameters.envMap) {
         switch (parameters.envMapMode) {
 
@@ -969,6 +992,9 @@ std::unordered_map<std::string, GLint>& GLProgram::getAttributes(){
 }
 
 std::string GLProgram::addLineNumbers(const std::string& code){
+    using std::stringstream;
+    using std::endl;
+
     std::vector<std::string> lines = split(code, '\n');
     stringstream ss;
     for (unsigned i = 0;i < lines.size();i++) {

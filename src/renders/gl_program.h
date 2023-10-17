@@ -5,7 +5,7 @@
 #ifndef THREE_CPP_SRC_RENDERS_GL_PROGRAM_H
 #define THREE_CPP_SRC_RENDERS_GL_PROGRAM_H
 
-#include <GLES3/gl3.h>
+
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/fmt.h>
 #include <string>
@@ -21,19 +21,21 @@
 #include "common_types.h"
 #include "string_utils.h"
 //#include "../utils/string_format.h"
-#include "shaders/shader_chunk.h"
-#include "gl_renderer.h"
+////#include "shaders/shader_chunk.h"
+//#include "gl_renderer.h"
+#include "gl_shader.h"
 #include "gl_uniforms.h"
-#include "material.h"
+#include "uniform_values.h"
+//#include "material.h"
 
-//class Material;
+class Material;
 class GLRenderer;
 /*else {
    array.push_back(parameters.get<std::string>("fragmentShader"));
    array.push_back(parameters.get<std::string>("vertexShader"));
 }*/
 struct ProgramParameters {
-    using ptr = std::shared_ptr<ProgramParameters>;
+    using sptr = std::shared_ptr<ProgramParameters>;
     std::string name = "";
     bool isGLES3 = false;
     std::string shaderID;
@@ -232,6 +234,9 @@ public:
     std::unordered_map<std::string, GLint>& getAttributes();
 
 };
+
+#endif //THREE_CPP_SRC_RENDERS_GL_PROGRAM_H
+
 
 ///**
 // * all kinds of shader parameters
@@ -1166,5 +1171,3 @@ public:
 //    std::shared_ptr<GLUniforms> cachedUniforms;
 //    std::shared_ptr<std::map<std::string,threecpp::GLVertexAttribute>> cachedAttributes;
 //};
-
-#endif //THREE_CPP_SRC_RENDERS_GL_PROGRAM_H
