@@ -39,8 +39,8 @@ Light::Light(const Light& source) : Light() {
     //LightShadow::ptr shadow = nullptr;
 
     //Object3D::ptr target;
-
-    sh.copy(source.sh);
+    //todo:remove const_cast
+    sh.copy(const_cast<SphericalHarmonics3&>(source.sh));
 
     width = source.width;
 
@@ -86,7 +86,7 @@ Light& Light::copy(const Light& source) {
 
     //Object3D::ptr target;
 
-    sh.copy(source.sh);
+    sh.copy(const_cast<SphericalHarmonics3&>(source.sh));
 
     width = source.width;
 

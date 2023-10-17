@@ -31,9 +31,9 @@ public:
 
     using LightShadowPtr= std::shared_ptr<LightShadow>;
 
-    Color color(threecpp::Colors::white);
+    Color color{(unsigned)threecpp::Colors::white};
 
-    Color groundColor(threecpp::Colors::blue);
+    Color groundColor{(unsigned)threecpp::Colors::blue};
 
     Color skyColor;
 

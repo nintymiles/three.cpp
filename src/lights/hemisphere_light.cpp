@@ -9,7 +9,7 @@ HemisphereLight::HemisphereLight() : Light() {
     type = "HemisphereLight";
     lightType = LightType::HemisphereLight;
     position.copy(object3d::DefaultUp);
-    groundColor.set(threecpp::Colors::white);
+    groundColor.setHex((int)threecpp::Colors::white);
 }
 
 HemisphereLight::HemisphereLight(const Color& skyColor, const Color& groundColor, float intensity) : Light(skyColor,intensity) {

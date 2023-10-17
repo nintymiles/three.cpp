@@ -6,7 +6,6 @@
 #define THREE_CPP_DIRECTIONAL_LIGHT_H
 
 #include "light.h"
-#include "directional_light_shadow.h"
 #include "color.h"
 #include <string>
 #include <memory>

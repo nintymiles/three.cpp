@@ -6,7 +6,7 @@
 #define THREE_CPP_POINT_LIGHT_SHADOW_H
 
 #include "light_shadow.h"
-#include "point_light.h"
+//#include "point_light.h"
 #include "perspective_camera.h"
 #include "orthographic_camera.h"
 
@@ -17,17 +17,15 @@
 
 class DirectionalLightShadow : public LightShadow {
 public:
-    using ptr = std::shared_ptr<DirectionalLightShadow>;
+    using sptr = std::shared_ptr<DirectionalLightShadow>;
 
     DirectionalLightShadow();
-
-
 
     DirectionalLightShadow(const DirectionalLightShadow& source) : LightShadow(source) {
         lightShadowType = LightShadowType::DirectionalLightShadow;
     }
 
-    static ptr create() {
+    static sptr create() {
         return std::make_shared<DirectionalLightShadow>();
     }
 
@@ -41,6 +39,8 @@ public:
         return *this;
     }
 };
+
+
 
 //class DirectionalLightShadow:public LightShadow{
 //public:

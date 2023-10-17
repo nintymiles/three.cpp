@@ -4,6 +4,12 @@
 #include "gl_program.h"
 
 #include "pcrscpp.h"
+#include "material.h"
+#include "constants.h"
+#include "shader_chunk.h"
+#include "gl_renderer.h"
+
+#include <pcre/pcrecpp.h>
 
 using namespace std;
 using namespace string_utils;
@@ -796,7 +802,6 @@ std::string GLProgram::unrollLoopsUX(const std::string& source){
     auto it_start = source.begin();
 
     while (rex_it != rex_end) {
-
         smatch match = *rex_it;
 
         for (auto it_end = source.begin() + match.position(); it_start != it_end; it_start++) unroll << *it_start;
@@ -977,7 +982,7 @@ std::string GLProgram::generateEnvMapBlendingDefine(const ProgramParameters& par
 
 
 
-GLUniforms::ptr GLProgram::getUniforms(){
+GLUniforms::sptr GLProgram::getUniforms(){
     if (cachedUniforms == nullptr) {
         cachedUniforms = GLUniforms::create(renderer.textures,program);
     }

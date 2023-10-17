@@ -9,7 +9,7 @@
 
 #include "gl_headers.h"
 #include "gl_programs.h"
-#include "../utils/sole.h"
+#include "sole.h"
 
 struct Properties{
     GLuint image_textureCube = 0;
@@ -29,7 +29,7 @@ struct Properties{
 
 struct MaterialProperties {
     int version=-1;
-    GLProgram::ptr program;
+    GLProgram::sptr program;
     int lightsStateVersion;
     Fog::ptr fog;
     std::vector<float> clippingState;

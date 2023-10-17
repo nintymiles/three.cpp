@@ -7,6 +7,7 @@
 
 #include "camera.h"
 #include "plane.h"
+#include "gl_properties.h"
 
 #include "matrix3.h"
 

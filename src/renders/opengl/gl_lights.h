@@ -5,12 +5,11 @@
 #ifndef THREE_CPP_SRC_RENDERS_OPENGL_GL_LIGHTS_H
 #define THREE_CPP_SRC_RENDERS_OPENGL_GL_LIGHTS_H
 
-#include "light.h"
-#include "light_probe.h"
-#include "color.h"
-#include "vector2.h"
+#include "lights.h"
+//#include "color.h"
+//#include "vector2.h"
 
-#include <any>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -52,7 +51,7 @@ struct LightsHash {
 
 class UniformsCache  {
 public:
-    std::unordered_map<unsigned, Light::ptr> lights;
+    std::unordered_map<unsigned, Light::sptr> lights;
 
     UniformsCache() {}
 
@@ -102,19 +101,20 @@ public:
 
     }
 };
+
 class ShadowUniformsCache  {
 public:
     using ptr = std::shared_ptr<ShadowUniformsCache>;
-    std::unordered_map<unsigned, LightShadow::ptr> shadows;
+    std::unordered_map<unsigned, LightShadow::sptr> shadows;
 
     ShadowUniformsCache(){}
 
     virtual ~ShadowUniformsCache() = default;
 
-    LightShadow::ptr& get(Light::ptr light) {
-        DirectionalLightShadow::ptr directionalLightShadow;
-        SpotLightShadow::ptr spotLightShadow;
-        PointLightShadow::ptr pointLightShadow;
+    LightShadow::sptr& get(Light::ptr light) {
+        DirectionalLightShadow::sptr directionalLightShadow;
+        SpotLightShadow::sptr spotLightShadow;
+        PointLightShadow::sptr pointLightShadow;
 
         if (shadows.find(light->id) != shadows.end()) {
             return shadows[light->id];
@@ -149,27 +149,28 @@ public:
         }
     }
 };
+
 struct GLLightsState {
     int version;
     LightsHash hash;
     Color ambient;
     std::vector<Vector3> probe;
 
-    std::vector<DirectionalLight::ptr> directional;
-    std::vector<DirectionalLightShadow::ptr> directionalShadow;
-    std::vector<Texture::ptr> directionalShadowMap;
+    std::vector<DirectionalLight::sptr> directional;
+    std::vector<DirectionalLightShadow::sptr> directionalShadow;
+    std::vector<Texture::sptr> directionalShadowMap;
     std::vector<Matrix4> directionalShadowMatrix;
 
-    std::vector<SpotLight::ptr> spot;
-    std::vector<SpotLightShadow::ptr> spotShadow;
-    std::vector<Texture::ptr> spotShadowMap;
+    std::vector<SpotLight::sptr> spot;
+    std::vector<SpotLightShadow::sptr> spotShadow;
+    std::vector<Texture::sptr> spotShadowMap;
     std::vector<Matrix4> spotShadowMatrix;
 
-    std::vector<RectAreaLight::ptr> rectArea;
+    std::vector<RectAreaLight::sptr> rectArea;
 
-    std::vector<PointLight::ptr> point;
-    std::vector<PointLightShadow::ptr> pointShadow;
-    std::vector<Texture::ptr> pointShadowMap;
+    std::vector<PointLight::sptr> point;
+    std::vector<PointLightShadow::sptr> pointShadow;
+    std::vector<Texture::sptr> pointShadowMap;
     std::vector<Matrix4> pointShadowMatrix;
 
     std::vector<HemisphereLight::ptr> hemi;

@@ -54,8 +54,8 @@ public:
     }
 
 
-    static ptr create(float left = std::numeric_limits<float>::quiet_NaN(), float right = std::numeric_limits<float>::quiet_NaN(), float top = std::numeric_limits<float>::quiet_NaN(), float bottom = std::numeric_limits<float>::quiet_NaN(), float _near = std::numeric_limits<float>::quiet_NaN(), float _far = std::numeric_limits<float>::quiet_NaN()) {
-        return ptr(new OrthographicCamera(left, right, top, bottom, _near, _far));
+    static sptr create(float left = std::numeric_limits<float>::quiet_NaN(), float right = std::numeric_limits<float>::quiet_NaN(), float top = std::numeric_limits<float>::quiet_NaN(), float bottom = std::numeric_limits<float>::quiet_NaN(), float _near = std::numeric_limits<float>::quiet_NaN(), float _far = std::numeric_limits<float>::quiet_NaN()) {
+        return sptr(new OrthographicCamera(left, right, top, bottom, _near, _far));
     }
 
     void setViewOffset(float fullWidth, float fullHeight, float x, float y, float width, float height) override {

@@ -8,8 +8,9 @@
 #include <cstdint>
 #include <memory>
 
-#include "../common_types.h"
-#include "../common_utils.h"
+#include "common_types.h"
+#include "common_utils.h"
+#include "constants.h"
 
 class UseExtension{
     uint16_t bits;
@@ -17,7 +18,7 @@ class UseExtension{
     template<typename Ret>
     static Ret decl() { return (Ret)0; }
 
-    template<typename Ret,threecpp::Extension e,threecpp::Extension... Args>
+    template<typename Ret,Extension e,Extension... Args>
     static Ret decl() {
         return (Ret)e | decl<Ret, Args...>();
     }
@@ -25,28 +26,28 @@ class UseExtension{
 public :
     UseExtension(uint16_t bits = 0) : bits(bits) {}
 
-    template<threecpp::Extension... extensions>
+    template<Extension... extensions>
     static UseExtension use() {
         return UseExtension(decl<uint16_t, extensions...>());
     }
 
-    UseExtension& add(threecpp::Extension ext) {
+    UseExtension& add(Extension ext) {
         bits |= (uint16_t)ext;
         return *this;
     }
 
-    bool get(threecpp::Extension ext) const {
+    bool get(Extension ext) const {
         return (bits & (size_t)ext) != 0;
     }
 };
 
 class GLExtensions {
-    threecpp::enum_map<threecpp::Extension, bool> extensions;
+    threecpp::enum_map<Extension, bool> extensions;
 public:
     using sptr = std::shared_ptr<GLExtensions>;
     GLExtensions() {}
 
-    bool get(threecpp::Extension extension) {
+    bool get(Extension extension) {
         switch (extension) {
 #ifdef OPENGL_ES_3_2
             case Extension::OES_texture_float:
@@ -130,7 +131,7 @@ public:
         return extensions[extension];
     }
 
-    bool operator[](threecpp::Extension extension) {
+    bool operator[](Extension extension) {
         return get(extension);
     }
 };

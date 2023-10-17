@@ -3,6 +3,7 @@
 //
 
 #include "directional_light.h"
+#include "directional_light_shadow.h"
 
 DirectionalLight::DirectionalLight() : Light() {
 

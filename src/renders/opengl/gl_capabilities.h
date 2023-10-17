@@ -21,6 +21,8 @@ public:
       std::string precision;
   };
 
+    std::string precision;
+
 //  int maxAnisotropy;
 //  bool isGLES3 = true;
 //  bool logarithmicDepthBuffer;
@@ -97,7 +99,7 @@ public:
         glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_VECTORS, &maxFragmentUniforms);
 
         vertexTextures = maxVertexTextures > 0;
-        floatFragmentTextures = isGL2 || !extensions->get(Extension::OES_texture_float);
+        floatFragmentTextures = isGLES3 || !extensions->get(Extension::OES_texture_float);
         floatVertexTextures = vertexTextures && floatFragmentTextures;
 
         glGetIntegerv(GL_MAX_SAMPLES, &maxSamples);

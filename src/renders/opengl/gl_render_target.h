@@ -12,13 +12,6 @@
 #include <memory>
 #include <string>
 
-using threecpp::TextureMapping;
-using threecpp::Wrapping;
-using threecpp::TextureFilter;
-using threecpp::PixelFormat;
-using threecpp::TextureDataType;
-using threecpp::TextureEncoding;
-
 struct GLRenderTargetParameter {
     TextureMapping mapping = TextureMapping::UVMapping;
     Wrapping wrapS = Wrapping::ClampToEdgeWrapping;

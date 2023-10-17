@@ -3,6 +3,8 @@
 //
 #include "spot_light.h"
 
+#include "spot_light_shadow.h"
+
 SpotLight::SpotLight() : Light() {
     type = "SpotLight";
     lightType = LightType::SpotLight;

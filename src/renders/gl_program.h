@@ -22,7 +22,6 @@
 #include "string_utils.h"
 //#include "../utils/string_format.h"
 ////#include "shaders/shader_chunk.h"
-//#include "gl_renderer.h"
 #include "gl_shader.h"
 #include "gl_uniforms.h"
 #include "uniform_values.h"
@@ -191,7 +190,7 @@ private:
     std::string addLineNumbers(const std::string& code);
 
 public:
-    using ptr = std::shared_ptr<GLProgram>;
+    using sptr = std::shared_ptr<GLProgram>;
 
     std::string name;
 

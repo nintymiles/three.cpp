@@ -4,6 +4,8 @@
 #include <GLES3/gl3.h>
 
 #include <unordered_map>
+#include <vector>
+#include <string_view>
 
 namespace threecpp {
 

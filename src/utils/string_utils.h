@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 namespace string_utils{
     //string split operation
@@ -39,6 +40,18 @@ namespace string_utils{
 
     std::string join(const std::vector<std::string>& strVec){
         return join(strVec,"");
+    }
+
+    static inline std::vector<std::string> split(std::string str, char delimiter) {
+        std::vector<std::string> internal;
+        size_t size = str.find(delimiter);
+        internal.reserve(size + 2);
+        std::stringstream ss(str);
+        std::string temp;
+        while (std::getline(ss, temp, delimiter)) {
+            internal.push_back(temp);
+        }
+        return internal;
     }
 
     // trim from start (in place)
