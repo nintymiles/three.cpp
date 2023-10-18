@@ -27,9 +27,8 @@ class GLCubeMap;
 class GLPrograms {
 private:
     int getMaxBones(const SkinnedMesh& skinnedMesh);
+
 protected:
-
-
     bool isGLES3 = false;
 
     bool logarithmicDepthBuffer = false;

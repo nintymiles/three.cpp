@@ -193,19 +193,14 @@ public:
     using sptr = std::shared_ptr<GLProgram>;
 
     std::string name;
-
     std::string cacheKey;
-
     unsigned usedTimes = 1;
-
     int id;
 
     sole::uuid uuid = sole::uuid1();
 
     GLuint program = 0;
-
     GLShader vertexShader;
-
     GLShader fragmentShader;
 
     GLUniforms::sptr cachedUniforms;

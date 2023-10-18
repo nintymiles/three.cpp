@@ -5,7 +5,7 @@
 #include "gl_materials.h"
 #include "mesh_standard_material.h"
 #include "line_basic_material.h"
-#include "shader_materal.h"
+#include "shader_material.h"
 
 void GLMaterials::refreshMaterialUniforms(UniformValues& m_uniforms, const Material::sptr& material, float pixelRatio, float height){
 

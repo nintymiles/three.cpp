@@ -11,16 +11,11 @@
 
 #include <pcre/pcrecpp.h>
 
-using namespace std;
-using namespace string_utils;
-
 unsigned GLProgram::programId = 0;
 
 void sendDebugMessage(const std::wstring& name) {
     std::wcout << name << std::endl;
 }
-
-
 
 pcrscpp::replace pcrscpp_rs;
 
@@ -54,187 +49,187 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
     this->program = glCreateProgram();
 
-    stringstream prefixVertex, prefixFragment;
+    std::stringstream prefixVertex, prefixFragment;
 
     GLSLVersion glslVersion = parameters.glslVersion;
 
 
     if (parameters.isRawShaderMaterial) {
-        prefixVertex << customDefines << endl;
+        prefixVertex << customDefines << std::endl;
         if (customDefines.size() > 0)
-            prefixVertex << endl;
+            prefixVertex << std::endl;
 
-        prefixFragment << customExtensions << customDefines << endl;
+        prefixFragment << customExtensions << customDefines << std::endl;
         if (!customExtensions.empty() || !customDefines.empty())
-            prefixFragment << endl;
+            prefixFragment << std::endl;
     }
     else {
 #ifdef OPENGL_ES_3_2
-        prefixVertex << "#version 300 es" << endl;
+        prefixVertex << "#version 300 es" << std::endl;
 
 #else
-        prefixVertex << "#version 440" << endl;
-        prefixVertex << generatePrecision(parameters) << endl;
-        //prefixVertex << "#version 140" << endl;
+        prefixVertex << "#version 440" << std::endl;
+        prefixVertex << generatePrecision(parameters) << std::endl;
+        //prefixVertex << "#version 140" << std::endl;
 #endif
-        prefixVertex << "#define attribute in" << endl;
-        prefixVertex << "#define varying out" << endl;
-        prefixVertex << "#define texture2D texture" << endl;
+        prefixVertex << "#define attribute in" << std::endl;
+        prefixVertex << "#define varying out" << std::endl;
+        prefixVertex << "#define texture2D texture" << std::endl;
 
-        prefixVertex << "#define SHADER_NAME " << parameters.shaderName << endl;
+        prefixVertex << "#define SHADER_NAME " << parameters.shaderName << std::endl;
 
         prefixVertex << customDefines;
 
-        if (parameters.instancing) prefixVertex << "#define USE_INSTANCING" << endl;
-        if(parameters.instancingColor) prefixVertex << "#define USE_INSTANCING_COLOR" << endl;
-        if (parameters.supportsVertexTextures) prefixVertex << "#define VERTEX_TEXTURES" << endl;
+        if (parameters.instancing) prefixVertex << "#define USE_INSTANCING" << std::endl;
+        if(parameters.instancingColor) prefixVertex << "#define USE_INSTANCING_COLOR" << std::endl;
+        if (parameters.supportsVertexTextures) prefixVertex << "#define VERTEX_TEXTURES" << std::endl;
 
-        prefixVertex << "#define GAMMA_FACTOR " << std::to_string(gammaFactorDefine) << endl;
+        prefixVertex << "#define GAMMA_FACTOR " << std::to_string(gammaFactorDefine) << std::endl;
 
-        prefixVertex << "#define MAX_BONES " << parameters.maxBones << endl;
+        prefixVertex << "#define MAX_BONES " << parameters.maxBones << std::endl;
 
-        if (parameters.useFog && parameters.fog) prefixVertex << "#define USE_FOG" << endl;
-        if (parameters.useFog && parameters.fogExp2) prefixVertex << "#define FOG_EXP2" << endl;
+        if (parameters.useFog && parameters.fog) prefixVertex << "#define USE_FOG" << std::endl;
+        if (parameters.useFog && parameters.fogExp2) prefixVertex << "#define FOG_EXP2" << std::endl;
 
-        if (parameters.map)  prefixVertex << "#define USE_MAP" << endl;
-        if (parameters.envMap) prefixVertex << "#define USE_ENVMAP" << endl;
-        if (parameters.envMap) prefixVertex << "#define " + envMapModeDefine << endl;
-        if (parameters.lightMap) prefixVertex << "#define USE_LIGHTMAP" << endl;
-        if (parameters.aoMap) prefixVertex << "#define USE_AOMAP" << endl;
-        if (parameters.emissiveMap) prefixVertex << "#define USE_EMISSIVEMAP" << endl;
-        if (parameters.bumpMap) prefixVertex << "#define USE_BUMPMAP" << endl;
-        if (parameters.normalMap) prefixVertex << "#define USE_NORMALMAP" << endl;
-        if (parameters.normalMap && parameters.objectSpaceNormalMap) prefixVertex << "#define OBJECTSPACE_NORMALMAP" << endl;
-        if (parameters.normalMap && parameters.tangentSpaceNormalMap) prefixVertex << "#define TANGENTSPACE_NORMALMAP" << endl;
+        if (parameters.map)  prefixVertex << "#define USE_MAP" << std::endl;
+        if (parameters.envMap) prefixVertex << "#define USE_ENVMAP" << std::endl;
+        if (parameters.envMap) prefixVertex << "#define " + envMapModeDefine << std::endl;
+        if (parameters.lightMap) prefixVertex << "#define USE_LIGHTMAP" << std::endl;
+        if (parameters.aoMap) prefixVertex << "#define USE_AOMAP" << std::endl;
+        if (parameters.emissiveMap) prefixVertex << "#define USE_EMISSIVEMAP" << std::endl;
+        if (parameters.bumpMap) prefixVertex << "#define USE_BUMPMAP" << std::endl;
+        if (parameters.normalMap) prefixVertex << "#define USE_NORMALMAP" << std::endl;
+        if (parameters.normalMap && parameters.objectSpaceNormalMap) prefixVertex << "#define OBJECTSPACE_NORMALMAP" << std::endl;
+        if (parameters.normalMap && parameters.tangentSpaceNormalMap) prefixVertex << "#define TANGENTSPACE_NORMALMAP" << std::endl;
 
-        if (parameters.clearcoatMap) prefixVertex << "#define USE_CLEARCOATMAP" << endl;
-        if (parameters.clearcoatRoughnessMap) prefixVertex << "#define USE_CLEARCOAT_ROUGHNESSMAP" << endl;
-        if (parameters.clearcoatNormalMap) prefixVertex << "#define USE_CLEARCOAT_NORMALMAP" << endl;
-        if (parameters.displacementMap && parameters.supportsVertexTextures) prefixVertex << "#define USE_DISPLACEMENTMAP" << endl;
-        if (parameters.specularMap) prefixVertex << "#define USE_SPECULARMAP" << endl;
-        if (parameters.roughnessMap) prefixVertex << "#define USE_ROUGHNESSMAP" << endl;
-        if (parameters.metalnessMap) prefixVertex << "#define USE_METALNESSMAP" << endl;
-        if (parameters.alphaMap) prefixVertex << "#define USE_ALPHAMAP" << endl;
-        if (parameters.transmissionMap) prefixVertex << "#define USE_TRANSMISSIONMAP" << endl;
+        if (parameters.clearcoatMap) prefixVertex << "#define USE_CLEARCOATMAP" << std::endl;
+        if (parameters.clearcoatRoughnessMap) prefixVertex << "#define USE_CLEARCOAT_ROUGHNESSMAP" << std::endl;
+        if (parameters.clearcoatNormalMap) prefixVertex << "#define USE_CLEARCOAT_NORMALMAP" << std::endl;
+        if (parameters.displacementMap && parameters.supportsVertexTextures) prefixVertex << "#define USE_DISPLACEMENTMAP" << std::endl;
+        if (parameters.specularMap) prefixVertex << "#define USE_SPECULARMAP" << std::endl;
+        if (parameters.roughnessMap) prefixVertex << "#define USE_ROUGHNESSMAP" << std::endl;
+        if (parameters.metalnessMap) prefixVertex << "#define USE_METALNESSMAP" << std::endl;
+        if (parameters.alphaMap) prefixVertex << "#define USE_ALPHAMAP" << std::endl;
+        if (parameters.transmissionMap) prefixVertex << "#define USE_TRANSMISSIONMAP" << std::endl;
 
-        if (parameters.vertexTangents) prefixVertex << "#define USE_TANGENT" << endl;
-        if (parameters.vertexColors) prefixVertex << "#define USE_COLOR" << endl;
-        if (parameters.vertexUvs) prefixVertex << "#define USE_UV" << endl;
-        if (parameters.uvsVertexOnly) prefixVertex << "#define UVS_VERTEX_ONLY" << endl;
+        if (parameters.vertexTangents) prefixVertex << "#define USE_TANGENT" << std::endl;
+        if (parameters.vertexColors) prefixVertex << "#define USE_COLOR" << std::endl;
+        if (parameters.vertexUvs) prefixVertex << "#define USE_UV" << std::endl;
+        if (parameters.uvsVertexOnly) prefixVertex << "#define UVS_VERTEX_ONLY" << std::endl;
 
-        if (parameters.flatShading) prefixVertex << "#define FLAT_SHADED" << endl;
+        if (parameters.flatShading) prefixVertex << "#define FLAT_SHADED" << std::endl;
 
-        if (parameters.skinning) prefixVertex << "#define USE_SKINNING" << endl;
-        if (parameters.useVertexTexture) prefixVertex << "#define BONE_TEXTURE" << endl;
+        if (parameters.skinning) prefixVertex << "#define USE_SKINNING" << std::endl;
+        if (parameters.useVertexTexture) prefixVertex << "#define BONE_TEXTURE" << std::endl;
 
-        if (parameters.morphTargets) prefixVertex << "#define USE_MORPHTARGETS" << endl;
-        if (parameters.morphNormals && parameters.flatShading == false) prefixVertex << "#define USE_MORPHNORMALS" << endl;
-        if (parameters.doubleSided) prefixVertex << "#define DOUBLE_SIDED" << endl;
-        if (parameters.flipSided) prefixVertex << "#define FLIP_SIDED" << endl;
+        if (parameters.morphTargets) prefixVertex << "#define USE_MORPHTARGETS" << std::endl;
+        if (parameters.morphNormals && parameters.flatShading == false) prefixVertex << "#define USE_MORPHNORMALS" << std::endl;
+        if (parameters.doubleSided) prefixVertex << "#define DOUBLE_SIDED" << std::endl;
+        if (parameters.flipSided) prefixVertex << "#define FLIP_SIDED" << std::endl;
 
-        if (parameters.shadowMapEnabled) prefixVertex << "#define USE_SHADOWMAP" << endl;
-        if (parameters.shadowMapEnabled) prefixVertex << "#define " + shadowMapTypeDefine << endl;
+        if (parameters.shadowMapEnabled) prefixVertex << "#define USE_SHADOWMAP" << std::endl;
+        if (parameters.shadowMapEnabled) prefixVertex << "#define " + shadowMapTypeDefine << std::endl;
 
-        if (parameters.sizeAttenuation) prefixVertex << "#define USE_SIZEATTENUATION" << endl;
+        if (parameters.sizeAttenuation) prefixVertex << "#define USE_SIZEATTENUATION" << std::endl;
 
-        if (parameters.logarithmicDepthBuffer) prefixVertex << "#define USE_LOGDEPTHBUF" << endl;
-        if (parameters.logarithmicDepthBuffer && parameters.rendererExtensionFragDepth) prefixVertex << "#define USE_LOGDEPTHBUF_EXT" << endl;
+        if (parameters.logarithmicDepthBuffer) prefixVertex << "#define USE_LOGDEPTHBUF" << std::endl;
+        if (parameters.logarithmicDepthBuffer && parameters.rendererExtensionFragDepth) prefixVertex << "#define USE_LOGDEPTHBUF_EXT" << std::endl;
 
-        prefixVertex << "uniform mat4 modelMatrix;" << endl;
-        prefixVertex << "uniform mat4 modelViewMatrix;" << endl;
-        prefixVertex << "uniform mat4 projectionMatrix;" << endl;
-        prefixVertex << "uniform mat4 viewMatrix;" << endl;
-        prefixVertex << "uniform mat3 normalMatrix;" << endl;
-        prefixVertex << "uniform vec3 cameraPosition;" << endl;
-        prefixVertex << "uniform bool isOrthographic;" << endl;
+        prefixVertex << "uniform mat4 modelMatrix;" << std::endl;
+        prefixVertex << "uniform mat4 modelViewMatrix;" << std::endl;
+        prefixVertex << "uniform mat4 projectionMatrix;" << std::endl;
+        prefixVertex << "uniform mat4 viewMatrix;" << std::endl;
+        prefixVertex << "uniform mat3 normalMatrix;" << std::endl;
+        prefixVertex << "uniform vec3 cameraPosition;" << std::endl;
+        prefixVertex << "uniform bool isOrthographic;" << std::endl;
 
-        prefixVertex << "#ifdef USE_INSTANCING" << endl;
+        prefixVertex << "#ifdef USE_INSTANCING" << std::endl;
 
-        prefixVertex << " attribute mat4 instanceMatrix;" << endl;
+        prefixVertex << " attribute mat4 instanceMatrix;" << std::endl;
 
-        prefixVertex << "#endif" << endl;
+        prefixVertex << "#endif" << std::endl;
 
-        prefixVertex << "#ifdef USE_INSTANCING_COLOR" << endl;
+        prefixVertex << "#ifdef USE_INSTANCING_COLOR" << std::endl;
 
-        prefixVertex << " attribute vec3 instanceColor;" << endl;
+        prefixVertex << " attribute vec3 instanceColor;" << std::endl;
 
-        prefixVertex << "#endif" << endl;
+        prefixVertex << "#endif" << std::endl;
 
 
-        prefixVertex << "attribute vec3 position;" << endl;
-        prefixVertex << "attribute vec3 normal;" << endl;
-        prefixVertex << "attribute vec2 uv;" << endl;
+        prefixVertex << "attribute vec3 position;" << std::endl;
+        prefixVertex << "attribute vec3 normal;" << std::endl;
+        prefixVertex << "attribute vec2 uv;" << std::endl;
 
-        prefixVertex << "#ifdef USE_TANGENT" << endl;
+        prefixVertex << "#ifdef USE_TANGENT" << std::endl;
 
-        prefixVertex << "	attribute vec4 tangent;" << endl;
+        prefixVertex << "	attribute vec4 tangent;" << std::endl;
 
-        prefixVertex << "#endif" << endl;
+        prefixVertex << "#endif" << std::endl;
 
-        prefixVertex << "#ifdef USE_COLOR" << endl;
+        prefixVertex << "#ifdef USE_COLOR" << std::endl;
 
-        prefixVertex << "	attribute vec3 color;" << endl;
+        prefixVertex << "	attribute vec3 color;" << std::endl;
 
-        prefixVertex << "#endif" << endl;
+        prefixVertex << "#endif" << std::endl;
 
-        prefixVertex << "#ifdef USE_MORPHTARGETS" << endl;
+        prefixVertex << "#ifdef USE_MORPHTARGETS" << std::endl;
 
-        prefixVertex << "	attribute vec3 morphTarget0;" << endl;
-        prefixVertex << "	attribute vec3 morphTarget1;" << endl;
-        prefixVertex << "	attribute vec3 morphTarget2;" << endl;
-        prefixVertex << "	attribute vec3 morphTarget3;" << endl;
+        prefixVertex << "	attribute vec3 morphTarget0;" << std::endl;
+        prefixVertex << "	attribute vec3 morphTarget1;" << std::endl;
+        prefixVertex << "	attribute vec3 morphTarget2;" << std::endl;
+        prefixVertex << "	attribute vec3 morphTarget3;" << std::endl;
 
-        prefixVertex << "	#ifdef USE_MORPHNORMALS" << endl;
+        prefixVertex << "	#ifdef USE_MORPHNORMALS" << std::endl;
 
-        prefixVertex << "		attribute vec3 morphNormal0;" << endl;
-        prefixVertex << "		attribute vec3 morphNormal1;" << endl;
-        prefixVertex << "		attribute vec3 morphNormal2;" << endl;
-        prefixVertex << "		attribute vec3 morphNormal3;" << endl;
+        prefixVertex << "		attribute vec3 morphNormal0;" << std::endl;
+        prefixVertex << "		attribute vec3 morphNormal1;" << std::endl;
+        prefixVertex << "		attribute vec3 morphNormal2;" << std::endl;
+        prefixVertex << "		attribute vec3 morphNormal3;" << std::endl;
 
-        prefixVertex << "	#else" << endl;
+        prefixVertex << "	#else" << std::endl;
 
-        prefixVertex << "		attribute vec3 morphTarget4;" << endl;
-        prefixVertex << "		attribute vec3 morphTarget5;" << endl;
-        prefixVertex << "		attribute vec3 morphTarget6;" << endl;
-        prefixVertex << "		attribute vec3 morphTarget7;" << endl;
+        prefixVertex << "		attribute vec3 morphTarget4;" << std::endl;
+        prefixVertex << "		attribute vec3 morphTarget5;" << std::endl;
+        prefixVertex << "		attribute vec3 morphTarget6;" << std::endl;
+        prefixVertex << "		attribute vec3 morphTarget7;" << std::endl;
 
-        prefixVertex << "	#endif" << endl;
+        prefixVertex << "	#endif" << std::endl;
 
-        prefixVertex << "#endif" << endl;
+        prefixVertex << "#endif" << std::endl;
 
-        prefixVertex << "#ifdef USE_SKINNING" << endl;
+        prefixVertex << "#ifdef USE_SKINNING" << std::endl;
 
-        prefixVertex << "	attribute vec4 skinIndex;" << endl;
-        prefixVertex << "	attribute vec4 skinWeight;" << endl;
+        prefixVertex << "	attribute vec4 skinIndex;" << std::endl;
+        prefixVertex << "	attribute vec4 skinWeight;" << std::endl;
 
-        prefixVertex << "#endif" << endl;
+        prefixVertex << "#endif" << std::endl;
 
 
 #ifdef OPENGL_ES_3_2
-        prefixFragment << "#version 300 es" << endl;
+        prefixFragment << "#version 300 es" << std::endl;
 
 #else
-        prefixFragment << "#version 440" << endl;
-        prefixFragment << generatePrecision(parameters) << endl;
-        //prefixFragment << "#version 140" << endl;
+        prefixFragment << "#version 440" << std::endl;
+        prefixFragment << generatePrecision(parameters) << std::endl;
+        //prefixFragment << "#version 140" << std::endl;
 #endif
-        prefixFragment << customExtensions << endl;
-        prefixFragment << "#define varying in" << endl;
-        prefixFragment << "out highp vec4 pc_fragColor;" << endl;
-        prefixFragment << "#define gl_FragColor pc_fragColor" << endl;
-        prefixFragment << "#define gl_FragDepthEXT gl_FragDepth" << endl;
-        prefixFragment << "#define texture2D texture" << endl;
-        prefixFragment << "#define textureCube texture" << endl;
-        prefixFragment << "#define texture2DProj textureProj" << endl;
-        prefixFragment << "#define texture2DLodEXT textureLod" << endl;
-        prefixFragment << "#define texture2DProjLodEXT textureProjLod" << endl;
-        prefixFragment << "#define textureCubeLodEXT textureLod" << endl;
-        prefixFragment << "#define texture2DGradEXT textureGrad" << endl;
-        prefixFragment << "#define texture2DProjGradEXT textureProjGrad" << endl;
-        prefixFragment << "#define textureCubeGradEXT textureGrad" << endl;
+        prefixFragment << customExtensions << std::endl;
+        prefixFragment << "#define varying in" << std::endl;
+        prefixFragment << "out highp vec4 pc_fragColor;" << std::endl;
+        prefixFragment << "#define gl_FragColor pc_fragColor" << std::endl;
+        prefixFragment << "#define gl_FragDepthEXT gl_FragDepth" << std::endl;
+        prefixFragment << "#define texture2D texture" << std::endl;
+        prefixFragment << "#define textureCube texture" << std::endl;
+        prefixFragment << "#define texture2DProj textureProj" << std::endl;
+        prefixFragment << "#define texture2DLodEXT textureLod" << std::endl;
+        prefixFragment << "#define texture2DProjLodEXT textureProjLod" << std::endl;
+        prefixFragment << "#define textureCubeLodEXT textureLod" << std::endl;
+        prefixFragment << "#define texture2DGradEXT textureGrad" << std::endl;
+        prefixFragment << "#define texture2DProjGradEXT textureProjGrad" << std::endl;
+        prefixFragment << "#define textureCubeGradEXT textureGrad" << std::endl;
 
 
-        prefixFragment << "#define SHADER_NAME " + parameters.shaderName << endl;
+        prefixFragment << "#define SHADER_NAME " + parameters.shaderName << std::endl;
 
         prefixFragment << customDefines;
 
@@ -244,60 +239,60 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
             if (std::fmod(alphaTest, 1.0f) > 0)
                 prefixFragment << "";
             else
-                prefixFragment << ".0" << endl; // add ".0" if integer
+                prefixFragment << ".0" << std::endl; // add ".0" if integer
         }
-        prefixFragment << "#define GAMMA_FACTOR " << gammaFactorDefine << endl;
+        prefixFragment << "#define GAMMA_FACTOR " << gammaFactorDefine << std::endl;
 
-        if (parameters.useFog && parameters.fog)  prefixFragment << "#define USE_FOG" << endl;
-        if (parameters.useFog && parameters.fogExp2)  prefixFragment << "#define FOG_EXP2" << endl;
+        if (parameters.useFog && parameters.fog)  prefixFragment << "#define USE_FOG" << std::endl;
+        if (parameters.useFog && parameters.fogExp2)  prefixFragment << "#define FOG_EXP2" << std::endl;
 
-        if (parameters.map)  prefixFragment << "#define USE_MAP" << endl;
-        if (parameters.matcap)  prefixFragment << "#define USE_MATCAP" << endl;
-        if (parameters.envMap)  prefixFragment << "#define USE_ENVMAP" << endl;
-        if (parameters.envMap)  prefixFragment << "#define " + envMapTypeDefine << endl;
-        if (parameters.envMap)  prefixFragment << "#define " + envMapModeDefine << endl;
-        if (parameters.envMap)  prefixFragment << "#define " + envMapBlendingDefine << endl;
-        if (parameters.lightMap)  prefixFragment << "#define USE_LIGHTMAP" << endl;
-        if (parameters.aoMap)  prefixFragment << "#define USE_AOMAP" << endl;
-        if (parameters.emissiveMap)  prefixFragment << "#define USE_EMISSIVEMAP" << endl;
-        if (parameters.bumpMap)  prefixFragment << "#define USE_BUMPMAP" << endl;
-        if (parameters.normalMap)  prefixFragment << "#define USE_NORMALMAP" << endl;
-        if (parameters.normalMap && parameters.objectSpaceNormalMap)  prefixFragment << "#define OBJECTSPACE_NORMALMAP" << endl;
-        if (parameters.normalMap && parameters.tangentSpaceNormalMap)  prefixFragment << "#define TANGENTSPACE_NORMALMAP" << endl;
-        if (parameters.clearcoatMap)  prefixFragment << "#define USE_CLEARCOATMAP" << endl;
-        if (parameters.clearcoatRoughnessMap)  prefixFragment << "#define USE_CLEARCOAT_ROUGHNESSMAP" << endl;
-        if (parameters.clearcoatNormalMap)  prefixFragment << "#define USE_CLEARCOAT_NORMALMAP" << endl;
-        if (parameters.specularMap)  prefixFragment << "#define USE_SPECULARMAP" << endl;
-        if (parameters.roughnessMap)  prefixFragment << "#define USE_ROUGHNESSMAP" << endl;
-        if (parameters.metalnessMap)  prefixFragment << "#define USE_METALNESSMAP" << endl;
-        if (parameters.alphaMap)  prefixFragment << "#define USE_ALPHAMAP" << endl;
+        if (parameters.map)  prefixFragment << "#define USE_MAP" << std::endl;
+        if (parameters.matcap)  prefixFragment << "#define USE_MATCAP" << std::endl;
+        if (parameters.envMap)  prefixFragment << "#define USE_ENVMAP" << std::endl;
+        if (parameters.envMap)  prefixFragment << "#define " + envMapTypeDefine << std::endl;
+        if (parameters.envMap)  prefixFragment << "#define " + envMapModeDefine << std::endl;
+        if (parameters.envMap)  prefixFragment << "#define " + envMapBlendingDefine << std::endl;
+        if (parameters.lightMap)  prefixFragment << "#define USE_LIGHTMAP" << std::endl;
+        if (parameters.aoMap)  prefixFragment << "#define USE_AOMAP" << std::endl;
+        if (parameters.emissiveMap)  prefixFragment << "#define USE_EMISSIVEMAP" << std::endl;
+        if (parameters.bumpMap)  prefixFragment << "#define USE_BUMPMAP" << std::endl;
+        if (parameters.normalMap)  prefixFragment << "#define USE_NORMALMAP" << std::endl;
+        if (parameters.normalMap && parameters.objectSpaceNormalMap)  prefixFragment << "#define OBJECTSPACE_NORMALMAP" << std::endl;
+        if (parameters.normalMap && parameters.tangentSpaceNormalMap)  prefixFragment << "#define TANGENTSPACE_NORMALMAP" << std::endl;
+        if (parameters.clearcoatMap)  prefixFragment << "#define USE_CLEARCOATMAP" << std::endl;
+        if (parameters.clearcoatRoughnessMap)  prefixFragment << "#define USE_CLEARCOAT_ROUGHNESSMAP" << std::endl;
+        if (parameters.clearcoatNormalMap)  prefixFragment << "#define USE_CLEARCOAT_NORMALMAP" << std::endl;
+        if (parameters.specularMap)  prefixFragment << "#define USE_SPECULARMAP" << std::endl;
+        if (parameters.roughnessMap)  prefixFragment << "#define USE_ROUGHNESSMAP" << std::endl;
+        if (parameters.metalnessMap)  prefixFragment << "#define USE_METALNESSMAP" << std::endl;
+        if (parameters.alphaMap)  prefixFragment << "#define USE_ALPHAMAP" << std::endl;
 
-        if (parameters.sheen)  prefixFragment << "#define USE_SHEEN" << endl;
-        if (parameters.transmissionMap) prefixFragment << "#define USE_TRANSMISSIONMAP" << endl;
+        if (parameters.sheen)  prefixFragment << "#define USE_SHEEN" << std::endl;
+        if (parameters.transmissionMap) prefixFragment << "#define USE_TRANSMISSIONMAP" << std::endl;
 
-        if (parameters.vertexTangents)  prefixFragment << "#define USE_TANGENT" << endl;
-        if (parameters.vertexColors || parameters.instancingColor)  prefixFragment << "#define USE_COLOR" << endl;
-        if (parameters.vertexUvs)  prefixFragment << "#define USE_UV" << endl;
-        if (parameters.uvsVertexOnly)  prefixFragment << "#define UVS_VERTEX_ONLY" << endl;
+        if (parameters.vertexTangents)  prefixFragment << "#define USE_TANGENT" << std::endl;
+        if (parameters.vertexColors || parameters.instancingColor)  prefixFragment << "#define USE_COLOR" << std::endl;
+        if (parameters.vertexUvs)  prefixFragment << "#define USE_UV" << std::endl;
+        if (parameters.uvsVertexOnly)  prefixFragment << "#define UVS_VERTEX_ONLY" << std::endl;
 
-        if (parameters.gradientMap)  prefixFragment << "#define USE_GRADIENTMAP" << endl;
+        if (parameters.gradientMap)  prefixFragment << "#define USE_GRADIENTMAP" << std::endl;
 
-        if (parameters.flatShading)  prefixFragment << "#define FLAT_SHADED" << endl;
+        if (parameters.flatShading)  prefixFragment << "#define FLAT_SHADED" << std::endl;
 
-        if (parameters.doubleSided)  prefixFragment << "#define DOUBLE_SIDED" << endl;
-        if (parameters.flipSided)  prefixFragment << "#define FLIP_SIDED" << endl;
+        if (parameters.doubleSided)  prefixFragment << "#define DOUBLE_SIDED" << std::endl;
+        if (parameters.flipSided)  prefixFragment << "#define FLIP_SIDED" << std::endl;
 
-        if (parameters.shadowMapEnabled)  prefixFragment << "#define USE_SHADOWMAP" << endl;
-        if (parameters.shadowMapEnabled)  prefixFragment << "#define " + shadowMapTypeDefine << endl;
+        if (parameters.shadowMapEnabled)  prefixFragment << "#define USE_SHADOWMAP" << std::endl;
+        if (parameters.shadowMapEnabled)  prefixFragment << "#define " + shadowMapTypeDefine << std::endl;
 
-        if (parameters.premultipliedAlpha)  prefixFragment << "#define PREMULTIPLIED_ALPHA" << endl;
+        if (parameters.premultipliedAlpha)  prefixFragment << "#define PREMULTIPLIED_ALPHA" << std::endl;
 
-        if (parameters.physicallyCorrectLights)  prefixFragment << "#define PHYSICALLY_CORRECT_LIGHTS" << endl;
+        if (parameters.physicallyCorrectLights)  prefixFragment << "#define PHYSICALLY_CORRECT_LIGHTS" << std::endl;
 
-        if (parameters.logarithmicDepthBuffer)  prefixFragment << "#define USE_LOGDEPTHBUF" << endl;
+        if (parameters.logarithmicDepthBuffer)  prefixFragment << "#define USE_LOGDEPTHBUF" << std::endl;
         if (parameters.logarithmicDepthBuffer) {
             if (parameters.rendererExtensionFragDepth)
-                prefixFragment << "#define USE_LOGDEPTHBUF_EXT" << endl;
+                prefixFragment << "#define USE_LOGDEPTHBUF_EXT" << std::endl;
         }
 
         bool extensionShaderTextureLOD = parameters.extensionShaderTextureLOD;
@@ -306,17 +301,17 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         bool rendererExtensionShaderTextureLod = parameters.renderExtensionShaderTextureLOD;
 
         if ((extensionShaderTextureLOD || parameters.envMap) && rendererExtensionShaderTextureLod)
-            prefixFragment << "#define TEXTURE_LOD_EXT" << endl;
+            prefixFragment << "#define TEXTURE_LOD_EXT" << std::endl;
 
-        prefixFragment << "uniform mat4 viewMatrix;" << endl;
-        prefixFragment << "uniform vec3 cameraPosition;" << endl;
-        prefixFragment << "uniform bool isOrthographic;" << endl;
+        prefixFragment << "uniform mat4 viewMatrix;" << std::endl;
+        prefixFragment << "uniform vec3 cameraPosition;" << std::endl;
+        prefixFragment << "uniform bool isOrthographic;" << std::endl;
 
-        if (parameters.toneMapping != ToneMapping::NoToneMapping)  prefixFragment << "#define TONE_MAPPING" << endl;
-        if (parameters.toneMapping != ToneMapping::NoToneMapping) prefixFragment << getShaderChunk(ShaderLibID::tonemapping_pars_fragment) << endl; // this code is required here because it is used by the toneMapping() function defined below
-        if (parameters.toneMapping != ToneMapping::NoToneMapping) prefixFragment << getToneMappingFunction("toneMapping", parameters.toneMapping) << endl;
+        if (parameters.toneMapping != ToneMapping::NoToneMapping)  prefixFragment << "#define TONE_MAPPING" << std::endl;
+        if (parameters.toneMapping != ToneMapping::NoToneMapping) prefixFragment << getShaderChunk(ShaderLibID::tonemapping_pars_fragment) << std::endl; // this code is required here because it is used by the toneMapping() function defined below
+        if (parameters.toneMapping != ToneMapping::NoToneMapping) prefixFragment << getToneMappingFunction("toneMapping", parameters.toneMapping) << std::endl;
 
-        if (parameters.dithering)  prefixFragment << "#define DITHERING" << endl;
+        if (parameters.dithering)  prefixFragment << "#define DITHERING" << std::endl;
 
         if (parameters.outputEncoding!=TextureEncoding::Unknown ||
             parameters.mapEncoding != TextureEncoding::Unknown ||
@@ -324,15 +319,15 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
             parameters.envMapEncoding != TextureEncoding::Unknown ||
             parameters.emissiveMapEncoding != TextureEncoding::Unknown ||
             parameters.lightMapEncoding != TextureEncoding::Unknown)
-            prefixFragment << getShaderChunk(ShaderLibID::encodings_pars_fragment) << endl; // this code is required here because it is used by the various encoding/decoding function defined below
-        if (parameters.mapEncoding!=TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("mapTexelToLinear", parameters.mapEncoding) << endl;
-        if (parameters.matcapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("matcapTexelToLinear", parameters.matcapEncoding) << endl;
-        if (parameters.envMapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("envMapTexelToLinear", parameters.envMapEncoding) << endl;
-        if (parameters.emissiveMapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("emissiveMapTexelToLinear", parameters.emissiveMapEncoding) << endl;
-        if (parameters.lightMapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("lightMapTexelToLinear", parameters.lightMapEncoding) << endl;
-        if (parameters.outputEncoding != TextureEncoding::Unknown) prefixFragment << getTexelEncodingFunction("linearToOutputTexel", parameters.outputEncoding) << endl;
+            prefixFragment << getShaderChunk(ShaderLibID::encodings_pars_fragment) << std::endl; // this code is required here because it is used by the various encoding/decoding function defined below
+        if (parameters.mapEncoding!=TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("mapTexelToLinear", parameters.mapEncoding) << std::endl;
+        if (parameters.matcapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("matcapTexelToLinear", parameters.matcapEncoding) << std::endl;
+        if (parameters.envMapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("envMapTexelToLinear", parameters.envMapEncoding) << std::endl;
+        if (parameters.emissiveMapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("emissiveMapTexelToLinear", parameters.emissiveMapEncoding) << std::endl;
+        if (parameters.lightMapEncoding != TextureEncoding::Unknown) prefixFragment << getTexelDecodingFunction("lightMapTexelToLinear", parameters.lightMapEncoding) << std::endl;
+        if (parameters.outputEncoding != TextureEncoding::Unknown) prefixFragment << getTexelEncodingFunction("linearToOutputTexel", parameters.outputEncoding) << std::endl;
 
-        if (parameters.depthPacking!=DepthPackingStrategies::None)  prefixFragment << "#define DEPTH_PACKING " + std::to_string((int)parameters.depthPacking) << endl;
+        if (parameters.depthPacking!=DepthPackingStrategies::None)  prefixFragment << "#define DEPTH_PACKING " + std::to_string((int)parameters.depthPacking) << std::endl;
     }
     pcrscpp_rs.remove_jobs();
     vShader = resolveIncludesRX(vShader);
@@ -352,51 +347,51 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
         // GLSL 3.0 conversion
 
-        stringstream prefixVertex3;
+        std::stringstream prefixVertex3;
 
 #ifdef OPENGL_ES_3_2
-        prefixVertex3 << "#version 300 es" << endl
-							 << generatePrecision(parameters) << endl
+        prefixVertex3 << "#version 300 es" << std::endl
+							 << generatePrecision(parameters) << std::endl
 #else
-        prefixVertex3 << "#version 440" << endl
-                      <<" precision highp float;" <<endl
-                      << "#define HIGH_PRECISION" << endl
+        prefixVertex3 << "#version 440" << std::endl
+                      <<" precision highp float;" << std::endl
+                      << "#define HIGH_PRECISION" << std::endl
                       #endif
-                      << "#define attribute in" << endl
-                      << "#define varying out" << endl
-                      << "#define texture2D texture" << endl
-                      << prefixVertex.str() <<endl;
+                      << "#define attribute in" << std::endl
+                      << "#define varying out" << std::endl
+                      << "#define texture2D texture" << std::endl
+                      << prefixVertex.str() << std::endl;
         prefixVertex.swap(prefixVertex3);
 
 
-        stringstream prefixFragment3;
+        std::stringstream prefixFragment3;
         prefixFragment3
 #ifdef OPENGL_ES_3_2
-                << "#version 300 es" << endl
-					<< generatePrecision(parameters) << endl
+                << "#version 300 es" << std::endl
+					<< generatePrecision(parameters) << std::endl
 #else
-                << "#version 440" << endl
-                <<"precision highp float;"<<endl
-                <<"#define HIGH_PRECISION"<<endl
+                << "#version 440" << std::endl
+                <<"precision highp float;"<< std::endl
+                <<"#define HIGH_PRECISION"<< std::endl
                 #endif
-                << "#define varying in" << endl
-                << "out highp vec4 pc_fragColor;" << endl
-                << "#define gl_FragColor pc_fragColor" << endl
-                << "#define gl_FragDepthEXT gl_FragDepth" << endl
-                << "#define texture2D texture" << endl
-                << "#define textureCube texture" << endl
-                << "#define texture2DProj textureProj" << endl
-                << "#define texture2DLodEXT textureLod" << endl
-                << "#define texture2DProjLodEXT textureProjLod" << endl
-                << "#define textureCubeLodEXT textureLod" << endl
-                << "#define texture2DGradEXT textureGrad" << endl
-                << "#define texture2DProjGradEXT textureProjGrad" << endl
-                << "#define textureCubeGradEXT textureGrad" << endl;
+                << "#define varying in" << std::endl
+                << "out highp vec4 pc_fragColor;" << std::endl
+                << "#define gl_FragColor pc_fragColor" << std::endl
+                << "#define gl_FragDepthEXT gl_FragDepth" << std::endl
+                << "#define texture2D texture" << std::endl
+                << "#define textureCube texture" << std::endl
+                << "#define texture2DProj textureProj" << std::endl
+                << "#define texture2DLodEXT textureLod" << std::endl
+                << "#define texture2DProjLodEXT textureProjLod" << std::endl
+                << "#define textureCubeLodEXT textureLod" << std::endl
+                << "#define texture2DGradEXT textureGrad" << std::endl
+                << "#define texture2DProjGradEXT textureProjGrad" << std::endl
+                << "#define textureCubeGradEXT textureGrad" << std::endl;
         prefixFragment.swap(prefixFragment3);
     }
 
-    prefixVertex << vShader << endl;
-    prefixFragment << fShader << endl;
+    prefixVertex << vShader << std::endl;
+    prefixFragment << fShader << std::endl;
 
     std::string vertexGlsl = prefixVertex.str();
     std::string fragmentGlsl = prefixFragment.str();
@@ -445,7 +440,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
         if (linkStatus == 0) {
             runnable = false;
-            string vertexError = getShaderErrors(vertexShader, "vertex");
+            std::string vertexError = getShaderErrors(vertexShader, "vertex");
             if (!vertexError.empty()) {
 #ifdef _DEBUG
                 std::ofstream outfile;
@@ -455,7 +450,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 						//sendDebugMessage(std::wstring().assign(vertexError.begin(), vertexError.end()));
 #endif
             }
-            string fragmentErrors = getShaderErrors(fragmentShader, "fragment");
+            std::string fragmentErrors = getShaderErrors(fragmentShader, "fragment");
             if (!fragmentErrors.empty()) {
 #ifdef _DEBUG
                 std::ofstream outfile;
@@ -468,8 +463,8 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
             int validateState;
             glGetProgramiv(program, GL_VALIDATE_STATUS, &validateState);
 
-            stringstream errorMessage;
-            errorMessage << "THREE.Renderers.gl.GLProgram:Shader error " << glGetError() << " , VALIDATE_STATUS " << validateState << ", GL.GetProgramInfoLog " << programLog << endl << vertexLog << endl << fragmentLog;
+            std::stringstream errorMessage;
+            errorMessage << "THREE.Renderers.gl.GLProgram:Shader error " << glGetError() << " , VALIDATE_STATUS " << validateState << ", GL.GetProgramInfoLog " << programLog << std::endl << vertexLog << std::endl << fragmentLog;
 #ifdef _DEBUG
             std::ofstream errorfile;
 					errorfile.open("programError.txt", std::ios_base::out);
@@ -532,10 +527,6 @@ std::vector<std::string> GLProgram::getEncodingComponents(TextureEncoding encodi
 }
 
 std::string GLProgram::getShaderErrors(const GLShader& shader, const std::string& type){
-    using std::stringstream;
-    using std::endl;
-    using std::string;
-
     int status;
     glGetShaderiv(shader.shader, GL_COMPILE_STATUS, &status);
 
@@ -550,9 +541,9 @@ std::string GLProgram::getShaderErrors(const GLShader& shader, const std::string
 
     glGetShaderSource(shader.shader, 4096000, &length, source);
 
-    stringstream ss;
+    std::stringstream ss;
 
-    ss<< "THREE.Renderers.gl.GLProgram: glGetShaderInfoLog() "<< type<< endl << log << endl <<addLineNumbers(string(source));
+    ss<< "THREE.Renderers.gl.GLProgram: glGetShaderInfoLog() "<< type<< std::endl << log << std::endl <<addLineNumbers(std::string(source));
 
     delete source;
 
@@ -560,8 +551,7 @@ std::string GLProgram::getShaderErrors(const GLShader& shader, const std::string
 }
 
 std::string GLProgram::getTexelDecodingFunction(const std::string& functionName, TextureEncoding encoding){
-    using std::stringstream;
-    stringstream ss;
+    std::stringstream ss;
 
     std::vector<std::string> components = getEncodingComponents(encoding);
 
@@ -571,8 +561,7 @@ std::string GLProgram::getTexelDecodingFunction(const std::string& functionName,
 }
 
 std::string GLProgram::getTexelEncodingFunction(const std::string& functionName, TextureEncoding encoding){
-    using std::stringstream;
-    stringstream ss;
+    std::stringstream ss;
 
     std::vector<std::string> components = getEncodingComponents(encoding);
 
@@ -582,10 +571,8 @@ std::string GLProgram::getTexelEncodingFunction(const std::string& functionName,
 }
 
 std::string GLProgram::getToneMappingFunction(const std::string& functionName, ToneMapping toneMapping){
-    using std::stringstream;
-    using std::string;
-    stringstream ss;
-    string toneMappingName;
+    std::stringstream ss;
+    std::string toneMappingName;
     switch (toneMapping) {
 
         case ToneMapping::LinearToneMapping:
@@ -620,37 +607,32 @@ std::string GLProgram::getToneMappingFunction(const std::string& functionName, T
 }
 
 std::string GLProgram::generateExtensions(const ProgramParameters& parameters){
-    using std::stringstream;
-    using std::endl;
-    stringstream chunks;
+    std::stringstream chunks;
 
     if (parameters.extensionDerivatives || parameters.envMapCubeUV || parameters.bumpMap || parameters.tangentSpaceNormalMap || parameters.clearcoatNormalMap || parameters.flatShading || parameters.shaderID=="physical")
-        chunks <<  "#extension GL_OES_standard_derivatives : enable" << endl;
+        chunks <<  "#extension GL_OES_standard_derivatives : enable" << std::endl;
 
     if ((parameters.extensionFragDepth || parameters.logarithmicDepthBuffer) && parameters.rendererExtensionFragDepth)
-        chunks << "#extension GL_EXT_frag_depth : enable"<<endl;
+        chunks << "#extension GL_EXT_frag_depth : enable"<< std::endl;
 
     if (parameters.extensionDrawBuffers && parameters.rendererExtensionDrawBuffers)
-        chunks << "#extension GL_EXT_draw_buffers : require"<<endl;
+        chunks << "#extension GL_EXT_draw_buffers : require"<< std::endl;
 
     if ((parameters.shaderTextureLOD || parameters.envMap) && parameters.renderExtensionShaderTextureLOD)
-        chunks << "#extension GL_EXT_shader_texture_lod : enable" << endl;
+        chunks << "#extension GL_EXT_shader_texture_lod : enable" << std::endl;
 
     return chunks.str();
 }
 
 std::string GLProgram::generateDefines(const std::unordered_map<std::string, std::string>& defines){
-    using std::stringstream;
-    using std::endl;
-
     if (defines.size() == 0) return {};
-    stringstream ss;
+    std::stringstream ss;
     std::string strVal;
     float floatVal;
     int intVal;
 
     for (auto& entry : defines) {
-        ss << "#define " << entry.first << " " << entry.second << endl;
+        ss << "#define " << entry.first << " " << entry.second << std::endl;
     }
 
     return ss.str();
@@ -679,6 +661,8 @@ void GLProgram::fetchAttributeLocation(const int program, std::unordered_map<std
 }
 
 std::string& GLProgram::replaceLightsNums(std::string& str, const ProgramParameters& parameters){
+    using string_utils::replace_all;
+
     str = replace_all(str, "NUM_DIR_LIGHTS", std::to_string(parameters.numDirLights));
     str = replace_all(str, "NUM_SPOT_LIGHTS", std::to_string(parameters.numSpotLights));
     str = replace_all(str, "NUM_RECT_AREA_LIGHTS", std::to_string(parameters.numRectAreaLights));
@@ -692,14 +676,16 @@ std::string& GLProgram::replaceLightsNums(std::string& str, const ProgramParamet
 }
 
 std::string GLProgram::replaceClippingPlaneNums(std::string& str, const ProgramParameters& parameters){
+    using string_utils::replace_all;
+
     int numClipingPlanes = parameters.numClippingPlanes;
     int numClipIntersection = parameters.numClippingPlanes;
     str = replace_all(str, "NUM_CLIPPING_PLANES", std::to_string(numClipingPlanes));
     str = replace_all(str, "UNION_CLIPPING_PLANES", std::to_string(numClipingPlanes - numClipingPlanes));
 
     return str;
-
 }
+
 static const std::string includePattern = R"([ \t]*#include +<([\w\d./]+)>)";
 //"[ \\t] * #include + <([\\w\\d./]+)>";
 
@@ -711,37 +697,39 @@ std::string GLProgram::resolveIncludes(std::string& source){
     auto words_end = std::sregex_iterator();
     if (words_begin != words_end) {
         for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
-            smatch match = *i;
-            string result = includeReplacer(match);
-            localSource = replace_all(localSource, match[0], result);
+            std::smatch match = *i;
+            std::string result = includeReplacer(match);
+            localSource = string_utils::replace_all(localSource, match[0], result);
         }
     }
     return localSource;
 }
 std::string GLProgram::includeReplacer(std::smatch& match){
-
-
     if (match.size() > 1) {
-        stringstream localstream;
+        std::stringstream localstream;
         for (unsigned ctr = 1; ctr < match.size(); ctr++) {
             std::string include = match[ctr];
             std::string source = getShaderChunk(shaderlib_name::get(include));
             if (source.empty() || source.size() == 1) continue;
-            string result = resolveIncludes(source);
-            source = replace_all(source, match[0], result);
+            std::string result = resolveIncludes(source);
+            source = string_utils::replace_all(source, match[0], result);
             localstream << source;
         }
 
         return localstream.str();
     }
     else {
-        return string();
+        return std::string();
     }
 }
 static const std::string loopPattern = R"(#pragma unroll_loop_start[\s]+?for \( int i \= (\d+)\; i < (\d+)\; i \+\+ \) \{([\s\S]+?)(?=\})\}[\s]+?#pragma unroll_loop_end)";
 //"(#pragma unroll_loop[\\s]+?for \\( int i \\= (\\d+)\\; i < (\\d+)\\; i \\+\\+ \\) \\{([\\s\\S]+?)(?=\\})\\}";
 
 std::string GLProgram::unrollLoops(const std::string& source){
+    using std::string;
+    using std::smatch;
+    using string_utils::replace_all;
+
     std::regex regx(loopPattern);
 
     std::string localSource = source;
@@ -758,6 +746,9 @@ std::string GLProgram::unrollLoops(const std::string& source){
 }
 
 std::string GLProgram::resolveIncludeUX(const std::string& source){
+    using std::string;
+    using std::sregex_iterator;
+
     static const std::regex rex(includePattern);
 
     string result;
@@ -774,9 +765,9 @@ std::string GLProgram::resolveIncludeUX(const std::string& source){
         std::ssub_match sub = match[1];
         string r = getShaderChunk(shaderlib_name::get(sub.str()));
         if (r.empty()) {
-            stringstream ss;
+            std::stringstream ss;
             ss << "unable to resolve #include <" << sub.str() << ">";
-            throw logic_error(ss.str());
+            throw std::logic_error(ss.str());
         }
         result.append(r);
         rex_it++;
@@ -790,12 +781,14 @@ std::string GLProgram::resolveIncludeUX(const std::string& source){
 
 std::string GLProgram::unrollLoopsUX(const std::string& source){
     using std::regex;
-    using std::stringstream;
+    using std::sregex_iterator;
+    using std::smatch;
+    using std::ssub_match;
 
     static const regex rex(R"(for \( int i = (\d+)\; i < (\d+); i \+\+ \) \{[\r\n]?([\s\S]+?)(?=\})\})");
     static const regex rex2(R"(\[ i \])");
 
-    stringstream unroll;
+    std::stringstream unroll;
     sregex_iterator rex_it(source.begin(), source.end(), rex);
     sregex_iterator rex_end;
 
@@ -811,7 +804,7 @@ std::string GLProgram::unrollLoopsUX(const std::string& source){
         ssub_match snippet = match[3];
 
         for (int i = start; i < end; i++) {
-            stringstream ss2;
+            std::stringstream ss2;
             ss2 << "[ " << i << " ]";
             unroll << regex_replace(snippet.str(), rex2, ss2.str());
         }
@@ -824,7 +817,10 @@ std::string GLProgram::unrollLoopsUX(const std::string& source){
 }
 
 std::string GLProgram::loopReplacer(std::smatch& match){
-    stringstream ss;
+    using std::string;
+    using string_utils::replace_all;
+
+    std::stringstream ss;
 
     if (match.size() > 1) {
         int start = std::stoi(match[1]);
@@ -834,7 +830,7 @@ std::string GLProgram::loopReplacer(std::smatch& match){
             string snippet1 = replace_all(snippet,"[ i ]", "[ " + std::to_string(i) + " ]");
             snippet1 = replace_all(snippet1, "UNROLLED_LOOP_INDEX", std::to_string(i));
 
-            ss << snippet1 << endl;
+            ss << snippet1 << std::endl;
         }
     }
 
@@ -848,7 +844,7 @@ std::string GLProgram::resolveIncludesRX(std::string& source) {
     std::string localSource = source;
     while (re.FindAndConsume(&input, &match)) {
 
-        string result = includeReplacerRX(match);
+        std::string result = includeReplacerRX(match);
         pcrscpp_rs.add_job(includePattern, result, "");
         pcrscpp_rs.replace_inplace(localSource);
 
@@ -869,24 +865,21 @@ std::string GLProgram::includeReplacerRX(std::string& match) {
 }
 
 std::string GLProgram::generatePrecision(const ProgramParameters& parameter){
-    using std::stringstream;
-    using std::endl;
-
-    stringstream ss;
-    ss << "precision " << parameter.precision << " float; " << endl;
-    ss << "precision " + parameter.precision + " int; "<<endl;
+    std::stringstream ss;
+    ss << "precision " << parameter.precision << " float; " << std::endl;
+    ss << "precision " + parameter.precision + " int; "<< std::endl;
 
     if (parameter.precision == "highp")
     {
-        ss << "#define HIGH_PRECISION" << endl;
+        ss << "#define HIGH_PRECISION" << std::endl;
     }
     else if (parameter.precision=="mediump")
     {
-        ss <<"#define MEDIUM_PRECISION"<<endl;
+        ss <<"#define MEDIUM_PRECISION"<< std::endl;
     }
     else if (parameter.precision =="lowp")
     {
-        ss<<"#define LOW_PRECISION"<<endl;
+        ss<<"#define LOW_PRECISION"<< std::endl;
     }
 
     return ss.str();
@@ -997,14 +990,11 @@ std::unordered_map<std::string, GLint>& GLProgram::getAttributes(){
 }
 
 std::string GLProgram::addLineNumbers(const std::string& code){
-    using std::stringstream;
-    using std::endl;
-
-    std::vector<std::string> lines = split(code, '\n');
-    stringstream ss;
+    std::vector<std::string> lines = string_utils::split(code, '\n');
+    std::stringstream ss;
     for (unsigned i = 0;i < lines.size();i++) {
 
-        ss << (i + 1) << ":" << lines[i]<<endl;
+        ss << (i + 1) << ":" << lines[i]<< std::endl;
         lines[i] = ss.str();
     }
     return ss.str();

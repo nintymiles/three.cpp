@@ -46,7 +46,7 @@ struct UniformValue {
     T& get();
 
     virtual sptr clone() const = 0;
-    virtual void applyValue(std::shared_ptr<GLUniform> uniform,int index=0) = 0;
+    virtual void applyValue(GLUniform::sptr uniform,int index=0) = 0;
 };
 
 template<typename T>

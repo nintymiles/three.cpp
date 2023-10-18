@@ -9,7 +9,7 @@
 #include "camera.h"
 #include "box_geometry.h"
 #include "plane_geometry.h"
-#include "shader_materal.h"
+#include "shader_material.h"
 #include "shader_lib.h"
 #include "texture.h"
 #include "gl_renderer.h"

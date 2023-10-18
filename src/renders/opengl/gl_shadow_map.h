@@ -11,7 +11,7 @@
 #include "frustum.h"
 
 #include "material.h"
-#include "shader_materal.h"
+#include "shader_material.h"
 #include "mesh.h"
 #include "scene.h"
 #include "gl_objects.h"

@@ -71,7 +71,7 @@ private:
 
     void vertexAttribPointer(GLuint index, GLint size, GLenum type, bool normalized, GLuint stride, GLuint offset);
 
-    void setupVertexAttributes(const Object3D::ptr& object, const Material::sptr& material, const GLProgram::sptr& program, const BufferGeometry::sptr& bufferGeometry);
+    void setupVertexAttributes(const Object3D::sptr& object, const Material::sptr& material, const GLProgram::sptr& program, const BufferGeometry::sptr& bufferGeometry);
 
 public :
     using sptr = std::shared_ptr<GLBindingStates>;
