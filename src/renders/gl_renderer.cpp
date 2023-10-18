@@ -4,10 +4,27 @@
 
 #include "gl_renderer.h"
 
+#include "gl_programs.h"
+#include "mesh_standard_material.h"
+#include "skeleton.h"
+#include "instanced_buffer_geometry.h"
+#include "instanced_mesh.h"
+#include "points.h"
+#include "line.h"
+#include "skinned_mesh.h"
+#include "timer.h"
+#include "immediate_render_object.h"
+#include "mesh_phong_material.h"
+#include "mesh_toon_material.h"
+#include "mesh_lambert_material.h"
+#include "sprite.h"
+#include "sprite_material.h"
+#include "lod.h"
+
 GLRenderer::GLRenderer(int width, int height){
     initGLContext(width, height);
-
 }
+
 void GLRenderer::initGLContext(int width, int height){
     extensions = std::make_shared<GLExtensions>();
     capabilitiesParameter.logarithmicDepthBuffer = false;
@@ -26,7 +43,6 @@ void GLRenderer::initGLContext(int width, int height){
     if (capabilities->isGLES3 == false) {
 
     }
-
 
     _currentScissor = (_scissor * _pixelRatio).floor();
     _currentViewport = (_viewport * _pixelRatio).floor();
@@ -52,7 +68,6 @@ void GLRenderer::initGLContext(int width, int height){
 
     programCache = std::make_shared<GLPrograms>(*cubeMaps,extensions, capabilities,bindingStates,_clipping);
 
-
     renderLists = std::make_shared<GLRenderLists>();
 
     renderStates = std::make_shared<GLRenderStates>();
@@ -77,19 +92,18 @@ int GLRenderer::getTargetPixelRatio(){
     return _pixelRatio != 0 ? _pixelRatio : 1;
 }
 
-void GLRenderer::initMaterial(const Material::sptr& material, const Scene::ptr& scene, const Object3D::ptr& object)
-{
+void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr& scene, const Object3D::sptr& object){
     auto fog = scene->fog;
 
     auto& materialProperties = properties->getMaterialProperties(material->uuid);
     MaterialProperties m;
     GLLights lights = currentRenderState->state.lights;
 
-    std::vector<Light::ptr> shadowsArray = currentRenderState->state.shadowsArray;
+    std::vector<Light::sptr> shadowsArray = currentRenderState->state.shadowsArray;
 
     auto lightsStateVersion = lights.state.version;
 
-    ProgramParameters::ptr parameters= programCache->getParameters(*this, material, lights, shadowsArray, scene.get(),*object);
+    ProgramParameters::sptr parameters= programCache->getParameters(*this, material, lights, shadowsArray, scene.get(),*object);
     std::string programCacheKey = programCache->getProgramCacheKey(*material, *parameters);
 
     bool programChange = true;
@@ -117,7 +131,7 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::ptr& 
 
         parameters->uniforms = programCache->getUniforms(material);
 
-        GLProgram::ptr program = programCache->acquireProgram(*this,*parameters, programCacheKey);
+        GLProgram::sptr program = programCache->acquireProgram(*this,*parameters, programCacheKey);
 
         materialProperties.program = program;
         materialProperties.uniforms = parameters->uniforms;
@@ -126,8 +140,6 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::ptr& 
     }
 
     auto& uniforms = materialProperties.uniforms;
-
-
 
     if (!material->isShaderMaterial && !material->isRawShaderMaterial || material->clipping) {
         materialProperties.numClippingPlanes = _clipping.numPlanes;
@@ -160,27 +172,25 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::ptr& 
         uniforms.set("pointShadowMatrix",lights.state.pointShadowMatrix);
     }
 
-    //auto progUniforms = materialProperties->get<GLProgram::ptr>("program")->getUniforms();
-    GLProgram::ptr program = materialProperties.program;
-    GLUniforms::ptr progUniforms = program->getUniforms();
+    //auto progUniforms = materialProperties->get<GLProgram::sptr>("program")->getUniforms();
+    GLProgram::sptr program = materialProperties.program;
+    GLUniforms::sptr progUniforms = program->getUniforms();
 
-    std::vector<GLUniform::ptr> uniformList = progUniforms->seqWithValue(uniforms);
+    std::vector<GLUniform::sptr> uniformList = progUniforms->seqWithValue(uniforms);
 
     materialProperties.uniformsList = uniformList;
 }
 
-bool GLRenderer::materialNeedsLights(Material& material)
-{
+bool GLRenderer::materialNeedsLights(Material& material){
     return (material.type=="MeshLambertMaterial" || material.type=="MeshToonMaterial" || material.type=="MeshPhongMaterial" ||
             material.type=="MeshStandardMaterial" || material.type=="ShadowMaterial" || material.type=="ShaderMaterial") && material.lights == true;
 }
 
-GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::ptr& scene, const Material::ptr& material, const Object3D::ptr& object)
-{
+GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::sptr& scene, const Material::sptr& material, const Object3D::sptr& object){
     Timer sw;
     textures->resetTextureUnits();
 
-    Fog::ptr fog = scene->fog;
+    Fog::sptr fog = scene->fog;
 
     auto environment = material->type=="MeshStandardMaterial" ? scene->environment : nullptr;
     auto encoding = (_currentRenderTarget == nullptr) ? outputEncoding : _currentRenderTarget->texture->encoding;
@@ -196,7 +206,6 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
             _clipping.setState(material->clippingPlanes, material->clipIntersection, material->clipShadows, camera, materialProperties, useCache);
         }
     }
-
 
     int version = materialProperties.version > -1 ? materialProperties.version : -1;
 
@@ -230,8 +239,8 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
         //std::cout << "material version:" << material->version << std::endl;
     }
 
-    GLProgram::ptr program = materialProperties.program;
-    GLUniforms::ptr p_uniforms = program->getUniforms();
+    GLProgram::sptr program = materialProperties.program;
+    GLUniforms::sptr p_uniforms = program->getUniforms();
     UniformValues& m_uniforms = materialProperties.uniforms;
 
     bool refreshProgram = false;
@@ -299,7 +308,7 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
            instanceOf<MeshStandardMaterial>(material.get()) ||
            material->envMap!=nullptr) {
             if (p_uniforms->contains("cameraPosition")) {
-                GLUniform::ptr uCamPos = p_uniforms->get("cameraPosition");
+                GLUniform::sptr uCamPos = p_uniforms->get("cameraPosition");
                 uCamPos->setValue(Vector3().setFromMatrixPosition(camera->matrixWorld));
             }
         }
@@ -340,7 +349,7 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
         p_uniforms->setUniformValue("bindMatrixInverse", skinnedMesh->bindMatrixInverse);
 
 
-        Skeleton::ptr skeleton = skinnedMesh->skeleton;
+        Skeleton::sptr skeleton = skinnedMesh->skeleton;
         if (skeleton != nullptr) {
             auto bones = skeleton->bones;
 
@@ -354,7 +363,7 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
                     //       32x32 pixel texture max  256 bones * 4 pixels = (32 * 32)
                     //       64x64 pixel texture max 1024 bones * 4 pixels = (64 * 64)
 
-                    float size = (float)sqrt(bones.size() * 4);
+                    float size = (float)std::sqrt(bones.size() * 4);
                     size = ceilPowerOfTwo(size);
                     size = (int)std::max(size, 4.0f);
 
@@ -362,7 +371,7 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
 
                     std::copy(skeleton->boneMatrices.begin(), skeleton->boneMatrices.end(), boneMatrices.begin());
 
-                    DataTexture::ptr boneTexture = std::make_shared<DataTexture>(boneMatrices, size, size,
+                    DataTexture::sptr boneTexture = std::make_shared<DataTexture>(boneMatrices, size, size,
                                                                                  TextureMapping::UVMapping,Wrapping::ClampToEdgeWrapping,Wrapping::ClampToEdgeWrapping,
                                                                                  TextureFilter::NearestFilter,TextureFilter::NearestFilter,
                                                                                  PixelFormat::RGBAFormat, TextureDataType::FloatType,
@@ -402,14 +411,14 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
 
         materials.refreshMaterialUniforms(m_uniforms, material, _pixelRatio, _height);
 
-        std::vector<GLUniform::ptr> uniformsList = materialProperties.uniformsList;
+        std::vector<GLUniform::sptr> uniformsList = materialProperties.uniformsList;
 
         GLUniforms::upload(uniformsList, m_uniforms);
 
     }
 
     if (instanceOf<ShaderMaterial>(material.get()) && material->uniformsNeedUpdate == true) {
-        std::vector<GLUniform::ptr> uniformsList = materialProperties.uniformsList;
+        std::vector<GLUniform::sptr> uniformsList = materialProperties.uniformsList;
         GLUniforms::upload(uniformsList, m_uniforms);
 
         //WebGLUniforms.upload(_gl, materialProperties.uniformsList, m_uniforms, textures);
@@ -418,7 +427,7 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
     }
 
     if (instanceOf<SpriteMaterial>(material.get())) {
-        Sprite::ptr sprite = std::dynamic_pointer_cast<Sprite>(object);
+        Sprite::sptr sprite = std::dynamic_pointer_cast<Sprite>(object);
         p_uniforms->setUniformValue("center", sprite->center);
 
     }
@@ -433,9 +442,8 @@ GLProgram::ptr GLRenderer::setProgram(const Camera::ptr& camera, const Scene::pt
     return program;
 
 }
-void GLRenderer::markUniformsLightsNeedsUpdate(UniformValues& uniforms, bool value)
-{
 
+void GLRenderer::markUniformsLightsNeedsUpdate(UniformValues& uniforms, bool value){
     uniforms.needsUpdate("ambientLightColor",value);
     uniforms.needsUpdate("lightProbe", value);
     uniforms.needsUpdate("directionalLights", value);
@@ -450,14 +458,12 @@ void GLRenderer::markUniformsLightsNeedsUpdate(UniformValues& uniforms, bool val
 }
 
 
-void GLRenderer::deallocateMaterial(Material& material)
-{
+void GLRenderer::deallocateMaterial(Material& material){
     releaseMaterialProgramReference(material);
     properties->remove(material.uuid);
 }
 
-void GLRenderer::releaseMaterialProgramReference(Material& material)
-{
+void GLRenderer::releaseMaterialProgramReference(Material& material){
     auto& materialProperties = properties->getMaterialProperties(material.uuid);
     if (materialProperties.program!=nullptr) {
         auto programInfo = materialProperties.program;
@@ -465,14 +471,12 @@ void GLRenderer::releaseMaterialProgramReference(Material& material)
     }
 }
 
-void GLRenderer::onMaterialDispose(Material& material)
-{
+void GLRenderer::onMaterialDispose(Material& material){
     material.onDispose.disconnectAll();
     deallocateMaterial(material);
 }
 
-void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& camera, int groupOrder, bool sortObjects)
-{
+void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& camera, int groupOrder, bool sortObjects){
     if (object->visible == false) return;
 
     //std::cout << object->name << std::endl;
@@ -484,18 +488,18 @@ void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& 
             groupOrder = object->renderOrder;
         }
         else if(instanceOf<LOD>(object.get())){
-            LOD::ptr lodObject = std::dynamic_pointer_cast<LOD>(object);
+            LOD::sptr lodObject = std::dynamic_pointer_cast<LOD>(object);
             if (lodObject->autoUpdate == true) lodObject->update(camera);
         }
         else if (instanceOf<Light>(object.get())) {
-            Light::ptr lightObject = std::dynamic_pointer_cast<Light>(object);
+            Light::sptr lightObject = std::dynamic_pointer_cast<Light>(object);
             currentRenderState->pushLight(lightObject);
             if (lightObject->castShadow) {
                 currentRenderState->pushShadow(lightObject);
             }
         }
         else if (instanceOf<Sprite>(object.get())) {
-            Sprite::ptr spriteObject = std::dynamic_pointer_cast<Sprite>(object);
+            Sprite::sptr spriteObject = std::dynamic_pointer_cast<Sprite>(object);
             if (!spriteObject->frustumCulled || _frustum.intersectsSprite(*spriteObject)) {
                 if (sortObjects) {
                     _vector3.setFromMatrixPosition(spriteObject->matrixWorld).applyMatrix4(_projScreenMatrix);
@@ -512,7 +516,7 @@ void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& 
             }*/
         else if (instanceOf<Mesh>(object.get()) || instanceOf<Line>(object.get()) || instanceOf<Points>(object.get())) {
             if (instanceOf<SkinnedMesh>(object.get())) {
-                SkinnedMesh::ptr skinObject = std::dynamic_pointer_cast<SkinnedMesh>(object);
+                SkinnedMesh::sptr skinObject = std::dynamic_pointer_cast<SkinnedMesh>(object);
                 if (skinObject->skeleton->frame != info->render.frame) {
                     skinObject->skeleton->update();
                     skinObject->skeleton->frame = info->render.frame;
@@ -549,8 +553,8 @@ void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& 
         projectObject(object->children[i], camera, groupOrder, sortObjects);
     }
 }
-void GLRenderer::renderObjects(const std::vector<RenderItem::ptr>& renderList, Scene::ptr& scene, const Camera::ptr& camera)
-{
+
+void GLRenderer::renderObjects(const std::vector<RenderItem::sptr>& renderList, Scene::sptr& scene, const Camera::sptr& camera){
     auto overrideMaterial = scene != nullptr ? scene->overrideMaterial : nullptr;
 
     for (unsigned i = 0;i < renderList.size();i++) {
@@ -560,7 +564,7 @@ void GLRenderer::renderObjects(const std::vector<RenderItem::ptr>& renderList, S
         auto geometry = renderItem->geometry;
         auto material = overrideMaterial == nullptr ? renderItem->material : overrideMaterial;
 
-        DrawRange* group = renderItem->group;
+        threecpp::DrawRange* group = renderItem->group;
 
         if (camera->isArrayCamera) {
             _currentArrayCamera = std::dynamic_pointer_cast<ArrayCamera>(camera);
@@ -587,7 +591,7 @@ void GLRenderer::renderObjects(const std::vector<RenderItem::ptr>& renderList, S
         }
     }
 }
-void GLRenderer::renderObject(const Object3D::ptr& object, Scene::ptr& scene, const Camera::ptr& camera, const BufferGeometry::ptr& geometry, const Material::ptr& material, DrawRange* group)
+void GLRenderer::renderObject(const Object3D::sptr& object, Scene::sptr& scene, const Camera::sptr& camera, const BufferGeometry::sptr& geometry, const Material::sptr& material, DrawRange* group)
 {
 
     object->onBeforeRender.emitSignal(*this, scene, camera, object, geometry,material,nullptr, NULL);
@@ -596,7 +600,7 @@ void GLRenderer::renderObject(const Object3D::ptr& object, Scene::ptr& scene, co
     object->modelViewMatrix.multiplyMatrices(camera->matrixWorldInverse, object->matrixWorld);
     object->normalMatrix.getNormalMatrix(object->modelViewMatrix);
 
-    if (instanceOf<extras::ImmediateRenderObject>(object.get())) {
+    if (instanceOf<ImmediateRenderObject>(object.get())) {
         auto program = setProgram(camera, scene, material, object);
 
         state->setMaterial(*material);
@@ -614,8 +618,7 @@ void GLRenderer::renderObject(const Object3D::ptr& object, Scene::ptr& scene, co
     currentRenderState = renderStates->get(scene, _currentArrayCamera != nullptr ? _currentArrayCamera : camera);
 }
 
-void GLRenderer::renderObjectImmediate(const Object3D::ptr& object, const GLProgram::ptr& program)
-{
+void GLRenderer::renderObjectImmediate(const Object3D::sptr& object, const GLProgram::sptr& program){
     renderBufferImmediate(object, program);
 }
 
@@ -647,7 +650,7 @@ GLRenderer::~GLRenderer()
 
     glDepthMask(true);
     glDepthFunc(GL_LESS);
-    glClearDepth(1);
+    glClearDepthf(1);
 
     glStencilMask(0xffffffff);
     glStencilFunc(GL_ALWAYS, 0, 0xffffffff);
@@ -663,10 +666,9 @@ GLRenderer::~GLRenderer()
 
     glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 
-    if (capabilities->isGL2 == true)
-    {
-
-        glBindFramebuffer(GL_DRAW_BUFFER, NULL);
+    if (capabilities->isGLES3 == true){
+        //glBindFramebuffer(GL_DRAW_BUFFER, NULL);
+        glBindFramebuffer(GL_DRAW_BUFFER0, NULL);
         glBindFramebuffer(GL_READ_FRAMEBUFFER,NULL);
 
     }
@@ -716,19 +718,19 @@ void GLRenderer::setSize(float width, float height, bool updateStyle)
 
 }
 
-Vector4& GLRenderer::getCurrentViewport(Vector4& target)
+Vector4f& GLRenderer::getCurrentViewport(Vector4f& target)
 {
     target.copy(_currentViewport);
     return target;
 }
 
-Vector4& GLRenderer::getViewport(Vector4& target)
+Vector4f& GLRenderer::getViewport(Vector4f& target)
 {
     target.copy(_viewport);
     return target;
 }
 
-void GLRenderer::setViewport(Vector4& v)
+void GLRenderer::setViewport(Vector4f& v)
 {
     _viewport.copy(v);
     _currentViewport.copy(_viewport);
@@ -753,7 +755,7 @@ void GLRenderer::setViewport(float x, float y, float width, float height)
     state->viewport(_currentViewport);
 }
 
-Vector4& GLRenderer::getScissor(Vector4& target)
+Vector4f& GLRenderer::getScissor(Vector4f& target)
 {
     target.copy(_scissor);
     return target;
@@ -766,7 +768,7 @@ void GLRenderer::setScissor(float x, float y, float width, float height)
     state->scissor(_currentScissor);
 }
 
-void GLRenderer::setScissor(Vector4& v)
+void GLRenderer::setScissor(Vector4f& v)
 {
     _scissor.copy(v);
     _currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).floor();
@@ -778,46 +780,38 @@ bool GLRenderer::getScissorTest()
     return _scissorTest;
 }
 
-void GLRenderer::setScissorTest(bool enable)
-{
+void GLRenderer::setScissorTest(bool enable){
     _scissorTest = enable;
     state->setScissorTest(_scissorTest);
 }
 
-Color& GLRenderer::getClearColor()
-{
+Color& GLRenderer::getClearColor(){
     return background->getClearColor();
 }
 
-void GLRenderer::setClearColor(const Color& color, float alpha)
-{
+void GLRenderer::setClearColor(const Color& color, float alpha){
     if (std::isnan(alpha))
         background->setClearColor(color);
     else
         background->setClearColor(color, alpha);
 }
 
-void GLRenderer::setClearColor(int color, float alpha)
-{
+void GLRenderer::setClearColor(int color, float alpha){
     if (std::isnan(alpha))
         background->setClearColor(Color().setHex(color));
     else
         background->setClearColor(Color().setHex(color),alpha);
 }
 
-int GLRenderer::getClearAlpha()
-{
+int GLRenderer::getClearAlpha(){
     return background->getClearAlpha();
 }
 
-void GLRenderer::setClearAlpha(float alpha)
-{
+void GLRenderer::setClearAlpha(float alpha){
     background->setClearAlpha(alpha);
-
 }
 
-void GLRenderer::clear(bool color, bool depth, bool stencil)
-{
+void GLRenderer::clear(bool color, bool depth, bool stencil){
     unsigned bits = 0;
     if (color) bits |= GL_COLOR_BUFFER_BIT;
     if (depth) bits |= GL_DEPTH_BUFFER_BIT;
@@ -826,26 +820,24 @@ void GLRenderer::clear(bool color, bool depth, bool stencil)
     glClear(bits);
 }
 
-void GLRenderer::clearColor()
-{
+void GLRenderer::clearColor(){
     clear(true, false, false);
 }
 
-void GLRenderer::clearDepth()
-{
+void GLRenderer::clearDepth(){
     clear(false, true, false);
 }
 
-void GLRenderer::clearStencil()
-{
+void GLRenderer::clearStencil(){
     clear(false, false, true);
 }
-void GLRenderer::renderBufferImmediate(const Object3D::ptr& object, const GLProgram::ptr& program)
-{
+
+void GLRenderer::renderBufferImmediate(const Object3D::sptr& object, const GLProgram::sptr& program){
     state->initAttributes();
 }
-void GLRenderer::renderBufferDirect(const Camera::ptr& camera, Scene::ptr& scene, const BufferGeometry::ptr& geometry, const Material::ptr& material, const Object3D::ptr& object, DrawRange* geometryGroup)
-{
+
+void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& scene, const BufferGeometry::sptr& geometry, const Material::sptr& material,
+                                    const Object3D::sptr& object, threecpp::DrawRange* geometryGroup){
 
     if (scene == nullptr) scene = tempScene;
 
@@ -897,8 +889,7 @@ void GLRenderer::renderBufferDirect(const Camera::ptr& camera, Scene::ptr& scene
 
     }
 
-    if (material->morphTargets || material->morphNormals)
-    {
+    if (material->morphTargets || material->morphNormals){
         morphtargets->update(*object, *geometry, *material, *program);
     }
 
@@ -930,8 +921,6 @@ void GLRenderer::renderBufferDirect(const Camera::ptr& camera, Scene::ptr& scene
 
     }*/
 
-
-
     auto dataCount = (index !=  nullptr) ? index->count : position->count;
 
     auto rangeStart = geometry->drawRange.start * rangeFactor;
@@ -961,8 +950,7 @@ void GLRenderer::renderBufferDirect(const Camera::ptr& camera, Scene::ptr& scene
             //renderer.setMode(_gl.TRIANGLES);
         }
 
-    }
-    else if (instanceOf<Line>(object.get())) {
+    } else if (instanceOf<Line>(object.get())) {
 
         auto lineWidth = material->linewidth;
 
@@ -986,45 +974,37 @@ void GLRenderer::renderBufferDirect(const Camera::ptr& camera, Scene::ptr& scene
 
         }
 
-    }
-    else if (instanceOf<Points>(object.get())) {
+    } else if (instanceOf<Points>(object.get())) {
 
         renderer->setMode(GL_POINTS);
 
-    }
-    else if (instanceOf<Sprite>(object.get())) {
-
+    } else if (instanceOf<Sprite>(object.get())) {
         renderer->setMode(GL_TRIANGLES);
 
     }
 
     if (instanceOf<InstancedMesh>(object.get())) {
-        InstancedMesh::ptr instanceMesh = std::dynamic_pointer_cast<InstancedMesh>(object);
+        InstancedMesh::sptr instanceMesh = std::dynamic_pointer_cast<InstancedMesh>(object);
         renderer->renderInstances(*geometry, drawStart, drawCount, instanceMesh->count);
 
-    }
-    else if (instanceOf<InstancedBufferGeometry>(geometry.get())) {
-        InstancedBufferGeometry::ptr instanceBufferGeometry = std::dynamic_pointer_cast<InstancedBufferGeometry>(object);
+    } else if (instanceOf<InstancedBufferGeometry>(geometry.get())) {
+        InstancedBufferGeometry::sptr instanceBufferGeometry = std::dynamic_pointer_cast<InstancedBufferGeometry>(object);
         renderer->renderInstances(*geometry, drawStart, drawCount, instanceBufferGeometry->maxInstancedCount);
 
-    }
-    else {
-
+    } else {
         renderer->render(drawStart, drawCount);
-
     }
 
 }
-void GLRenderer::compile(Scene& scene, Camera& camera)
-{
-}
-void GLRenderer::render(Scene::ptr& scene, const Camera::ptr& camera)
-{
+
+void GLRenderer::compile(Scene& scene, Camera& camera){}
+
+void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
     if (scene == nullptr || camera==nullptr) return;
 
     bindingStates->resetDefaultState();
 
-    GLRenderTarget::ptr renderTarget = nullptr;
+    GLRenderTarget::sptr renderTarget = nullptr;
 
     bool forceClear = false;
 
@@ -1116,24 +1096,22 @@ void GLRenderer::render(Scene::ptr& scene, const Camera::ptr& camera)
 
     currentRenderList.reset();
 }
-int GLRenderer::getActiveCubeFace()
-{
+
+int GLRenderer::getActiveCubeFace(){
     return _currentActiveCubeFace;
 }
-int GLRenderer::getActiveMipmapLevel()
-{
+
+int GLRenderer::getActiveMipmapLevel(){
     return _currentActiveMipmapLevel;
 }
-void GLRenderer::setFramebuffer(int value)
-{
-}
-GLRenderTarget::ptr GLRenderer::getRenderTarget()
-{
+
+void GLRenderer::setFramebuffer(int value){}
+
+GLRenderTarget::sptr GLRenderer::getRenderTarget(){
     return _currentRenderTarget;
 }
 
-void GLRenderer::setRenderTarget(const GLRenderTarget::ptr& renderTarget, int activeCubeFace, int activeMipmapLevel)
-{
+void GLRenderer::setRenderTarget(const GLRenderTarget::sptr& renderTarget, int activeCubeFace, int activeMipmapLevel){
     _currentRenderTarget = renderTarget;
     _currentActiveCubeFace = activeCubeFace;
     _currentActiveMipmapLevel = activeMipmapLevel;
@@ -1191,8 +1169,8 @@ void GLRenderer::setRenderTarget(const GLRenderTarget::ptr& renderTarget, int ac
     }
 
 }
-void GLRenderer::readRenderTargetPixels(const GLRenderTarget::ptr& renderTarget, float x, float y, float width, float height, int activeCubeFaceIndex)
-{
+
+void GLRenderer::readRenderTargetPixels(const GLRenderTarget::sptr& renderTarget, float x, float y, float width, float height, int activeCubeFaceIndex){
     if (!(renderTarget != nullptr && renderTarget->type=="GLRenderTarget"))
         return;
 
@@ -1217,8 +1195,8 @@ void GLRenderer::readRenderTargetPixels(const GLRenderTarget::ptr& renderTarget,
         //if(textureFormat !=PixelFormat::RGBAFormat && )
     }
 }
-void GLRenderer::copyFramebufferToTexture(const Vector2& position, const Texture::ptr& texture, int level)
-{
+
+void GLRenderer::copyFramebufferToTexture(const Vector2& position, const Texture::sptr& texture, int level){
     if (level == std::numeric_limits<int>::quiet_NaN()) level = 0;
 
     auto levelScale = (float)std::pow(2, -level);
@@ -1231,8 +1209,8 @@ void GLRenderer::copyFramebufferToTexture(const Vector2& position, const Texture
     glCopyTexImage2D(GL_TEXTURE_2D, level, (GLenum)glFormat, (int)position.x, (int)position.y, (int)width, (int)height, 0);
     state->unbindTexture();
 }
-void GLRenderer::copyTextureToTexture(const Vector2& position, const Texture::ptr& srcTexture, const Texture::ptr& dstTexture, int level)
-{
+
+void GLRenderer::copyTextureToTexture(const Vector2& position, const Texture::sptr& srcTexture, const Texture::sptr& dstTexture, int level){
     if (level == std::numeric_limits<int>::quiet_NaN()) level = 0;
 
     auto width = srcTexture->imageWidth;
@@ -1252,9 +1230,7 @@ void GLRenderer::copyTextureToTexture(const Vector2& position, const Texture::pt
 
         glTexSubImage2D(GL_TEXTURE_2D, level, position.x, position.y, width, height, (GLenum)glFormat, (GLenum)glType, &srcTexture->image[0]);
 
-    }
-    else {
-
+    } else {
         if (instanceOf<CompressedTexture>(srcTexture.get())) {
 
             glCompressedTexSubImage2D(GL_TEXTURE_2D, level, position.x, position.y, srcTexture->mipmaps[0].width, srcTexture->mipmaps[0].height, (GLenum)glFormat, srcTexture->mipmaps[0].data.size(),&srcTexture->mipmaps[0].data[0]);
@@ -1273,13 +1249,13 @@ void GLRenderer::copyTextureToTexture(const Vector2& position, const Texture::pt
 
     state->unbindTexture();
 }
-void GLRenderer::initTexture(const Texture::ptr& texture)
-{
+
+void GLRenderer::initTexture(const Texture::sptr& texture){
     textures->setTexture2D(*texture, 0);
     state->unbindTexture();
 }
-void GLRenderer::initGLParameter(void)
-{
+
+void GLRenderer::initGLParameter(void){
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
@@ -1297,7 +1273,7 @@ void GLRenderer::initGLParameter(void)
 
     glDepthMask(true);
     glDepthFunc(GL_LESS);
-    glClearDepth(1);
+    glClearDepthf(1);
 
     glStencilMask(0xffffffff);
     glStencilFunc(GL_ALWAYS, 0, 0xffffffff);
@@ -1313,8 +1289,9 @@ void GLRenderer::initGLParameter(void)
 
     glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 
-    if (capabilities->isGL2 == true){
-        glBindFramebuffer(GL_DRAW_BUFFER, NULL);
+    if (capabilities->isGLES3 == true){
+        //glBindFramebuffer(GL_DRAW_BUFFER, NULL);
+        glBindFramebuffer(GL_DRAW_BUFFER0, NULL);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, NULL);
     }
 

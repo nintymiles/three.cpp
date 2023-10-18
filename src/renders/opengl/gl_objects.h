@@ -14,7 +14,7 @@
 
 class GLObjects {
 public:
-    using ptr = std::shared_ptr<GLObjects>;
+    using sptr = std::shared_ptr<GLObjects>;
     std::unordered_map<unsigned, unsigned> updateList;
 
     GLInfo::sptr info;

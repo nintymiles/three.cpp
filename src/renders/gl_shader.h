@@ -5,15 +5,15 @@
 #ifndef THREE_CPP_SRC_RENDERS_GL_SHADER_H
 #define THREE_CPP_SRC_RENDERS_GL_SHADER_H
 
-#include <GLES3/gl3.h>
+#include "gl_headers.h"
+#include "uniform_values.h"
+
 #include <string>
 #include <regex>
 #include <cmath>
 #include <sstream>
 #include <map>
 #include <memory>
-
-#include "uniform_values.h"
 
 //GLuint glShader( GLenum type, std::string shaderSrc) {
 //    GLuint shader = glCreateShader( type );

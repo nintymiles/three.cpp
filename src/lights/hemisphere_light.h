@@ -12,14 +12,14 @@
 
 class HemisphereLight : public Light {
 public:
-    using ptr = std::shared_ptr<HemisphereLight>;
+    using sptr = std::shared_ptr<HemisphereLight>;
 
     HemisphereLight();
 
     HemisphereLight(const Color& skyColor, const Color& groundColor, float intensity = 1);
 
 
-    static ptr create(const Color& skyColor, const Color& groundColor, float intensity = 1) {
+    static sptr create(const Color& skyColor, const Color& groundColor, float intensity = 1) {
         return std::make_shared<HemisphereLight>(skyColor, groundColor, intensity);
     }
 

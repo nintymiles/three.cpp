@@ -25,11 +25,12 @@ private:
 
     void resetGlobalState();
 public:
+    using sptr = std::shared_ptr<GLClipping>;
 
     int numPlanes=0;
     int numIntersection = 0;
     std::vector<float> uniform;
-    using ptr = std::shared_ptr<GLClipping>;
+
 
     GLClipping() {}
 

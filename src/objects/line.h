@@ -13,10 +13,9 @@
 
 class Line :public Object3D {
 public:
-    using ptr = std::shared_ptr<Line>;
+    using sptr = std::shared_ptr<Line>;
 
     unsigned lineStrip = 0;
-
     unsigned linePieces = 1;
 
 
@@ -24,17 +23,15 @@ public:
 
     Line(const Geometry::sptr& geometry, const std::vector<Material::sptr>& materials);
 
-
-    static ptr create(const Geometry::sptr& geometry=nullptr, const Material::sptr& material=nullptr) {
+    static sptr create(const Geometry::sptr& geometry=nullptr, const Material::sptr& material=nullptr) {
         return std::make_shared<Line>(geometry, material);
     }
 
-    static ptr create(const Geometry::sptr& geometry, const std::vector<Material::sptr>& materials) {
+    static sptr create(const Geometry::sptr& geometry, const std::vector<Material::sptr>& materials) {
         return std::make_shared<Line>(geometry, materials);
     }
 
     virtual Line& computeLineDistances();
-
 
     virtual void raycast();
 
@@ -42,7 +39,7 @@ public:
 
 class LineLoop : public Line {
 public:
-    using ptr = std::shared_ptr<LineLoop>;
+    using sptr = std::shared_ptr<LineLoop>;
     LineLoop(const Geometry::sptr& geometry = nullptr, const Material::sptr& material = nullptr) : Line(geometry, material) {
         type = "LineLoop";
     }
@@ -55,8 +52,7 @@ public:
 
 class LineSegments : public Line {
 public:
-    using ptr = std::shared_ptr<LineSegments>;
-
+    using sptr = std::shared_ptr<LineSegments>;
 
     LineSegments(const Geometry::sptr& geometry = nullptr, const Material::sptr& material = nullptr) : Line(geometry, material) {
         type = "LineSegments";
@@ -67,11 +63,11 @@ public:
         type = "LineSegments";
     }
 
-    static ptr create(const Geometry::sptr& geometry = nullptr, const Material::sptr& material = nullptr) {
+    static sptr create(const Geometry::sptr& geometry = nullptr, const Material::sptr& material = nullptr) {
         return std::make_shared<LineSegments>(geometry, material);
     }
 
-    static ptr create(const Geometry::sptr& geometry, const std::vector<Material::sptr>& materials) {
+    static sptr create(const Geometry::sptr& geometry, const std::vector<Material::sptr>& materials) {
         return std::make_shared<LineSegments>(geometry, materials);
     }
 

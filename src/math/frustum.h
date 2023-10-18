@@ -5,10 +5,18 @@
 #ifndef THREE_CPP_FRUSTUM_H
 #define THREE_CPP_FRUSTUM_H
 
+#include "object_3d.h"
 #include "vector3.h"
 #include "sphere.h"
 #include "plane.h"
 #include "matrix4.h"
+#include "sprite.h"
+
+namespace frustum {
+    Sphere _sphere;
+    Vector3 _vector;
+}
+using namespace frustum;
 
 class Frustum {
 public:
@@ -55,17 +63,20 @@ public:
         return *this;
     }
 
-//    bool intersectsObject( object ) {
-//
-//            const geometry = object.geometry;
-//
-//            if ( geometry.boundingSphere === null ) geometry.computeBoundingSphere();
-//
-//            _sphere.copy( geometry.boundingSphere ).applyMatrix4( object.matrixWorld );
-//
-//            return this.intersectsSphere( _sphere );
-//
-//    }
+    bool intersectsObject(Object3D& object){
+        auto geometry = object.geometry;
+
+        if (geometry->boundingSphere.isEmpty() == true)
+            geometry->computeBoundingSphere();
+
+        _sphere.copy(geometry->boundingSphere).applyMatrix4(object.matrixWorld);
+
+        return this->intersectsSphere(_sphere);
+    }
+
+    bool intersectsSprite(const Sprite& sprite){
+        return false;
+    }
 
 //    intersectsSprite( sprite ) {
 //

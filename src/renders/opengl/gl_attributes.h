@@ -5,16 +5,18 @@
 #ifndef THREE_CPP_GL_ATTRIBUTES_H
 #define THREE_CPP_GL_ATTRIBUTES_H
 
+#include "gl_headers.h"
+
 #include "sole.h"
 #include "attribute.h"
 #include "buffer_attribute.h"
 #include "interleaved_buffer_attribute.h"
-#include "gl_headers.h"
 #include "common_types.h"
 #include "osdecl.h"
 
 #include <unordered_map>
 #include <memory>
+#include <cstdint>
 
 class GLAttributes {
     bool isGLES3 = false;
@@ -66,28 +68,28 @@ public:
             type = (unsigned)BufferUsageHint::Float;
 
         }
-        else if (typeid(UINT16) == typeid(T)) {
-            glBufferData(bufferType, attribute.size * sizeof(UINT16), array, (GLenum)usage);
+        else if (typeid(uint16_t) == typeid(T)) {
+            glBufferData(bufferType, attribute.size * sizeof(uint16_t), array, (GLenum)usage);
             type = (unsigned)BufferUsageHint::UnsignedShort;
         }
-        else if (typeid(INT16) == typeid(T)) {
-            glBufferData(bufferType, attribute.size * sizeof(INT16), array, (GLenum)usage);
+        else if (typeid(int16_t) == typeid(T)) {
+            glBufferData(bufferType, attribute.size * sizeof(int16_t), array, (GLenum)usage);
             type = (unsigned)BufferUsageHint::Short;
         }
-        else if (typeid(UINT32) == typeid(T)) {
-            glBufferData(bufferType, attribute.size * sizeof(UINT32), array, (GLenum)usage);
+        else if (typeid(uint32_t) == typeid(T)) {
+            glBufferData(bufferType, attribute.size * sizeof(uint32_t), array, (GLenum)usage);
             type = (unsigned)BufferUsageHint::UnsignedInt;
         }
-        else if (typeid(INT32)==typeid(T)) {
-            glBufferData(bufferType, attribute.size * sizeof(INT32), array, (GLenum)usage);
+        else if (typeid(int32_t)==typeid(T)) {
+            glBufferData(bufferType, attribute.size * sizeof(int32_t), array, (GLenum)usage);
             type = (unsigned)BufferUsageHint::Int;
         }
-        else if (typeid(INT8)== typeid(T)) {
-            glBufferData(bufferType, attribute.size * sizeof(INT8), array, (GLenum)usage);
+        else if (typeid(int8_t)== typeid(T)) {
+            glBufferData(bufferType, attribute.size * sizeof(int8_t), array, (GLenum)usage);
             type = (unsigned)BufferUsageHint::Byte;
         }
-        else if (typeid(UINT8)==typeid(T)) {
-            glBufferData(bufferType, attribute.size * sizeof(UINT8), array, (GLenum)usage);
+        else if (typeid(uint8_t)==typeid(T)) {
+            glBufferData(bufferType, attribute.size * sizeof(uint8_t), array, (GLenum)usage);
             type = (unsigned)BufferUsageHint::UnsignedByte;
         }
 

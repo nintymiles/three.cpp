@@ -5,7 +5,7 @@
 #ifndef THREE_CPP_GL_INFO_H
 #define THREE_CPP_GL_INFO_H
 
-#include "../gl_program.h"
+#include "gl_program.h"
 
 #include <vector>
 #include <GLES3/gl3.h>

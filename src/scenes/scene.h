@@ -7,33 +7,34 @@
 
 #include "object_3d.h"
 
+#include "gl_render_target.h"
+#include "cube_texture.h"
 #include "color.h"
 #include "fog.h"
 #include "material.h"
 
 class Scene : public Object3D {
 private:
-
-    GLCubeRenderTarget::ptr cubeRenderTarget;
+    GLCubeRenderTarget::sptr cubeRenderTarget;
     Texture::sptr texture;
-    CubeTexture::ptr cubeTexture;
+    CubeTexture::sptr cubeTexture;
     Color color;
 
 public:
+    using sptr = std::shared_ptr<Scene>;
+
     bool isColor = false;
     bool isCubeTexture = false;
     bool isGLCubeRenderTarget = false;
     bool isTexture = false;
 
-    using ptr = std::shared_ptr<Scene>;
+    Fog::sptr fog = nullptr;
 
-    Fog::ptr fog = nullptr;
-
-    Material::ptr overrideMaterial = nullptr;
+    Material::sptr overrideMaterial = nullptr;
 
     bool autoUpdate = true;
 
-    Texture::ptr environment;
+    Texture::sptr environment;
 
     //const void* background =nullptr;
     //const void* environment = nullptr;
@@ -67,17 +68,18 @@ public:
 
         return *this;
     }
-    static ptr create() {
+    static sptr create() {
         return std::make_shared<Scene>();
     }
 
-    Texture::ptr& getBackgroundTexture() {
+    Texture::sptr& getBackgroundTexture() {
         return texture;
     }
-    CubeTexture::ptr& getBackgroundCubeTexture() {
+    CubeTexture::sptr& getBackgroundCubeTexture() {
         return cubeTexture;
     }
-    GLCubeRenderTarget::ptr& getBackgroundCubeRenderTarget() {
+
+    GLCubeRenderTarget::sptr& getBackgroundCubeRenderTarget() {
         return cubeRenderTarget;
     }
 
@@ -92,14 +94,14 @@ public:
         isCubeTexture = false;
         isGLCubeRenderTarget = false;
     }
-    void setBackgroundTexture(Texture::ptr& value) {
+    void setBackgroundTexture(Texture::sptr& value) {
         texture = value;
         isColor = false;
         isTexture = true;
         isCubeTexture = false;
         isGLCubeRenderTarget = false;
     }
-    void setBackgroundCubeTexture(CubeTexture::ptr& value) {
+    void setBackgroundCubeTexture(CubeTexture::sptr& value) {
         cubeTexture = value;
         isColor = false;
         isTexture = false;
@@ -107,7 +109,7 @@ public:
         isGLCubeRenderTarget = false;
     }
 
-    void setBackgroundCubeRenderTarget(GLCubeRenderTarget::ptr& value) {
+    void setBackgroundCubeRenderTarget(GLCubeRenderTarget::sptr& value) {
 
         cubeRenderTarget = value;
         isColor = false;
@@ -121,7 +123,7 @@ public:
         return isColor || isTexture || isCubeTexture || isGLCubeRenderTarget;
     }
 
-    Signal<void(const Scene& scene)> onDisposed;
+    threecpp::Signal<void(const Scene& scene)> onDisposed;
 
 };
 

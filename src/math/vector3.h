@@ -567,6 +567,15 @@ class Vector3{
             return array;
         }
 
+        //todo:vector3 should be in parameterization
+        float* toArray(float array[],int offset = 0){
+            array[offset] = (float)this->x;
+            array[offset + 1] = (float)this->y;
+            array[offset + 2] = (float)this->z;
+
+            return array;
+        }
+
         gsl::span<double> toSpanArray(gsl::span<double> array,int offset = 0){
             array[offset] = this->x;
             array[offset + 1] = this->y;

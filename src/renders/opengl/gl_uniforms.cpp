@@ -204,11 +204,11 @@ void GLUniform::setValue(const Color& c){
 }
 
 void GLUniform::setValue(const Vector2& v){
-    glUniform2fv(addr, 1, v.elements);
+    glUniform2fv(addr, 1, (float *)v.elements);
 }
 
 void GLUniform::setValue(const Vector3& v){
-    glUniform3fv(addr, 1, v.elements);
+    glUniform3fv(addr, 1, (float *)v.elements);
 }
 
 void GLUniform::setValue(const Vector4f& v){
@@ -216,11 +216,11 @@ void GLUniform::setValue(const Vector4f& v){
 }
 
 void GLUniform::setValue(const Matrix3& v){
-    glUniformMatrix3fv(addr, 1, GL_FALSE, v.elements);
+    glUniformMatrix3fv(addr, 1, GL_FALSE, (float *)v.elements);
 }
 
 void GLUniform::setValue(const Matrix4& v){
-    glUniformMatrix4fv(addr, 1, GL_FALSE, v.elements);
+    glUniformMatrix4fv(addr, 1, GL_FALSE, (float *)v.elements);
 }
 
 void GLUniform::setValue(const std::vector<float>& v){
@@ -298,7 +298,7 @@ void GLUniform::setValue(const std::vector<Vector3>& v) {
     int error = glGetError();
 }
 
-void GLUniform::setValue(const std::vector<Vector4>& v) {
+void GLUniform::setValue(const std::vector<Vector4f>& v) {
     //std::vector<float> array4f = flatten(v);
     //setValue(array4f);
     glUniform4fv(addr, v.size(), reinterpret_cast<const float*>(v.data()));
@@ -382,7 +382,7 @@ void GLUniforms::setProjectionMatrix(const Matrix4& projMatrix)
 {
     if (this->seq.count("projectionMatrix")) {
         GLUniform::sptr u = seq["projectionMatrix"];
-        glUniformMatrix4fv(u->addr, 1, GL_FALSE, projMatrix.elements);
+        glUniformMatrix4fv(u->addr, 1, GL_FALSE, (float *)projMatrix.elements);
     }
 }
 
@@ -408,6 +408,7 @@ void GLUniforms::upload(const std::vector<GLUniform::sptr>& seq, UniformValues& 
         }
     }
 }
+
 std::vector<GLUniform::sptr> GLUniforms::seqWithValue(UniformValues& values){
     std::vector<GLUniform::sptr> r;
 
@@ -419,8 +420,8 @@ std::vector<GLUniform::sptr> GLUniforms::seqWithValue(UniformValues& values){
     }
     return r;
 }
-void StructuredUniform::setValue(UniformValue& v,int arrayIndex)
-{
+
+void StructuredUniform::setValue(UniformValue& v,int arrayIndex){
     for (auto& uniformKey : seq) {
         auto& uniform = uniformKey.second;
 

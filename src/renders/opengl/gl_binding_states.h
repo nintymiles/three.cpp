@@ -5,7 +5,8 @@
 #ifndef THREE_CPP_GL_BINDING_STATES_H
 #define THREE_CPP_GL_BINDING_STATES_H
 
-#include <GLES3/gl3.h>
+#include "gl_headers.h"
+
 #include "buffer_attribute.h"
 #include "interleaved_buffer.h"
 #include "geometry.h"
@@ -22,6 +23,7 @@ struct CacheData {
     BufferAttribute<float>::sptr attribute;
     InterleavedBuffer<float>::sptr data;
 };
+
 struct BindingStateStruct {
     sole::uuid uuid;
     size_t geometry;
@@ -87,7 +89,7 @@ public :
 
     void initAttributes();
 
-    void setUp(const Object3D::ptr& object, const Material::sptr& material, const GLProgram::sptr& program, const BufferGeometry::sptr& geometry, const BufferAttribute<unsigned>::sptr& index);
+    void setUp(const Object3D::sptr& object, const Material::sptr& material, const GLProgram::sptr& program, const BufferGeometry::sptr& geometry, const BufferAttribute<unsigned>::sptr& index);
 
     void reset();
 

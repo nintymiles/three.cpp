@@ -7,8 +7,8 @@
 
 #include <string>
 #include <map>
-#include <GLES3/gl3.h>
 
+#include "gl_headers.h"
 #include "gl_extensions.h"
 #include "common_utils.h"
 

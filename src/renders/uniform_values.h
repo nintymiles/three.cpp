@@ -89,7 +89,7 @@ UNIFORM_VALUE_T(CubeTexture::sptr)
 UNIFORM_VALUE_T(DataTexture::sptr)
 UNIFORM_VALUE_T(std::vector<unsigned char>)
 UNIFORM_VALUE_T(std::vector<float>)
-//UNIFORM_VALUE_T(std::vector<Texture::sptr>)
+UNIFORM_VALUE_T(std::vector<Texture::sptr>)
 UNIFORM_VALUE_T(std::vector<Matrix4>)
 UNIFORM_VALUE_T(std::vector<Vector3>)
 

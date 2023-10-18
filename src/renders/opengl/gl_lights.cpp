@@ -9,7 +9,7 @@ GLLights::GLLights(){
     state.probe = { Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3() };
 }
 
-void GLLights::setup(std::vector<Light::ptr>& lights, const Camera::ptr& camera){
+void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camera){
     using namespace std;
 
     Vector3 vector3;
@@ -66,11 +66,10 @@ void GLLights::setup(std::vector<Light::ptr>& lights, const Camera::ptr& camera)
     state.pointShadowMatrix.shrink_to_fit();
     state.hemi.shrink_to_fit();
 
-    state.ambient.set(0x000000);
+    state.ambient.setHex(0x000000);
 
     for (unsigned i = 0; i < lights.size(); i++) {
-
-        Light::ptr light = lights[i];
+        Light::sptr light = lights[i];
 
         Color color = light->color;
         float intensity = light->intensity;
@@ -83,13 +82,10 @@ void GLLights::setup(std::vector<Light::ptr>& lights, const Camera::ptr& camera)
             color.multiplyScalar(intensity);
             state.ambient = color;
 
-        }
-        else if (light->isLightProbe) {
-
+        } else if (light->isLightProbe) {
             for (int j = 0; j < 9; j++) {
-                state.probe[j].addScaledVector(light->sh.coefficients[j], intensity);
+                state.probe[j].addScaledVector(*light->sh.coefficients[j], intensity);
             }
-
         }
         else if (light->type=="DirectionalLight") {
 

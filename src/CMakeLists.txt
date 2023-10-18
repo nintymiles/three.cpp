@@ -40,6 +40,9 @@ file(GLOB OBJECTS_HEADER ${ROOT_DIR}/src/objects/*.h)
 file(GLOB SCENES_SOURCE ${ROOT_DIR}/src/scenes/*.cpp)
 file(GLOB SCENES_HEADER ${ROOT_DIR}/src/scenes/*.h)
 
+file(GLOB GEOMETRIES_SOURCE ${ROOT_DIR}/src/geometries/*.cpp)
+file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h)
+
 file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/*.cpp;${ROOT_DIR}/src/renders/opengl/*.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
 file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h)
 
@@ -61,6 +64,9 @@ source_group("Lights" FILES ${LIGHTS_HEADER})
 source_group("Objects" FILES ${OBJECTS_SOURCE})
 source_group("Objects" FILES ${OBJECTS_HEADER})
 
+source_group("Geometries" FILES ${GEOMETRIES_SOURCE})
+source_group("Geometries" FILES ${GEOMETRIES_HEADER})
+
 source_group("Textures" FILES ${TEXTURES_SOURCE})
 source_group("Textures" FILES ${TEXTURES_HEADER})
 
@@ -78,6 +84,7 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${OBJECTS_SOURCE};${OBJECTS_HEADER};
         ${TEXTURES_SOURCE};${TEXTURES_HEADER};
         ${SCENES_SOURCE};${SCENES_HEADER};
+        ${GEOMETRIES_SOURCE};${GEOMETRIES_HEADER};
         ${MATERIALS_SOURCE};${MATERIALS_SOURCE};
         ${RENDERS_SOURCE};${RENDERS_HEADER})
 
@@ -97,6 +104,7 @@ ${ROOT_DIR}/src/cameras
 ${ROOT_DIR}/src/lights
 ${ROOT_DIR}/src/objects
 ${ROOT_DIR}/src/scenes
+${ROOT_DIR}/src/geometries
 ${ROOT_DIR}/src/renders/
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders

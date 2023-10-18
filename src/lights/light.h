@@ -24,7 +24,6 @@ enum class LightType : unsigned {
     RectAreaLight=6
 };
 
-
 class Light : public Object3D {
 public:
     using sptr = std::shared_ptr<Light>;
@@ -51,7 +50,7 @@ public:
 
     LightShadow::sptr shadow = nullptr;
 
-    Object3D::ptr target;
+    Object3D::sptr target;
 
     SphericalHarmonics3 sh;
 

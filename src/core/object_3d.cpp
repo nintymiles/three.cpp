@@ -274,7 +274,7 @@ void Object3D::lookAt(float x, float y, float z){
 
 }
 
-Object3D& Object3D::add(const Object3D::ptr& object){
+Object3D& Object3D::add(const Object3D::sptr& object){
     if (object.get()==this) return *this;
 
 
@@ -287,7 +287,7 @@ Object3D& Object3D::add(const Object3D::ptr& object){
     return *this;
 }
 
-Object3D& Object3D::remove(const Object3D::ptr& object){
+Object3D& Object3D::remove(const Object3D::sptr& object){
     auto found = std::find(children.begin(), children.end(), object);
 
     if (found != children.end()) {
@@ -311,7 +311,7 @@ Object3D& Object3D::removeAll()
     return *this;
 }
 
-Object3D& Object3D::attach(const Object3D::ptr& object){
+Object3D& Object3D::attach(const Object3D::sptr& object){
     // adds object as a child of this, while maintaining the object's world transform
 
     updateWorldMatrix(true, false);

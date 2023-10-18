@@ -91,4 +91,19 @@ public:
     }
 };
 
+class GLCubeRenderTarget : public GLRenderTarget {
+public:
+    GLCubeRenderTarget() : GLRenderTarget() {
+        type = "GLCubeRenderTarget";
+    }
+};
+
+class GLMultisampleRenderTarget : public GLRenderTarget {
+public:
+    GLMultisampleRenderTarget() :GLRenderTarget() {
+        type = "GLMultisampleRenderTarget";
+        isGLMultisampleRenderTarget = true;
+    }
+};
+
 #endif //THREE_CPP_GL_RENDER_TARGET_H

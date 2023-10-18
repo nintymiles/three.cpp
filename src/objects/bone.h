@@ -9,11 +9,16 @@
 
 class Bone : public Object3D {
 public:
-    std::string type = "Bone";
-    bool isBone = true;
+    using sptr = std::shared_ptr<Bone>;
 
-    Bone() = default;
+    Bone() : Object3D(){
+        type = "Bone";
+    }
+    Bone(const Bone& source) : Object3D(source) {}
 
+    static sptr create() {
+        return std::make_shared <Bone>();
+    }
 };
 
 #endif //THREE_CPP_SRC_OBJECTS_BONE_H

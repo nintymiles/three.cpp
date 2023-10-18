@@ -13,6 +13,10 @@
 #include "sole.h"
 #include "common_types.h"
 #include "fog.h"
+#include "gl_shader.h"
+#include "uniform_values.h"
+#include "gl_shader.h"
+#include "gl_uniforms.h"
 
 struct Properties{
     GLuint image_textureCube = 0;

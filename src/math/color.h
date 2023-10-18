@@ -374,6 +374,12 @@ public:
         return r == source.r && g == source.g && b == source.b;
     }
 
+    bool isNull() const {
+        return r == std::numeric_limits<float>::infinity() ||
+               g == std::numeric_limits<float>::infinity() ||
+               b == std::numeric_limits<float>::infinity();
+    }
+
 
 };
 

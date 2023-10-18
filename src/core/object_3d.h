@@ -37,7 +37,7 @@ using namespace object3d;
 */
 class Object3D {
 public:
-    using ptr = std::shared_ptr<Object3D>;
+    using sptr = std::shared_ptr<Object3D>;
 
     /**
      * Unique number of this object instance.
@@ -64,7 +64,7 @@ public:
     /**
      * Array with object's children.
      */
-    std::vector<Object3D::ptr> children;
+    std::vector<Object3D::sptr> children;
 
     /**
      * Up direction.
@@ -197,8 +197,6 @@ public:
 
 protected:
 
-
-
     void onRotationChange(const Euler& rotation);
 
     void onQuaternionChange(const Quaternion& quaternion);
@@ -222,17 +220,17 @@ public:
     virtual ~Object3D() = default;
 
 
-    static ptr create() {
+    static sptr create() {
         return std::make_shared<Object3D>();
     }
-    static ptr create(const Geometry::sptr& geometry, const Material::sptr& material) {
+    static sptr create(const Geometry::sptr& geometry, const Material::sptr& material) {
         return std::make_shared<Object3D>(geometry, material);
     }
 
-    static ptr create(const Geometry::sptr& geometry, const std::initializer_list<Material::sptr>& materials) {
+    static sptr create(const Geometry::sptr& geometry, const std::initializer_list<Material::sptr>& materials) {
         return std::make_shared<Object3D>(geometry, materials);
     }
-    static ptr create(const Object3D& object) {
+    static sptr create(const Object3D& object) {
         return std::make_shared<Object3D>(object);
     }
 
@@ -342,12 +340,12 @@ public:
     /**
      * Adds object as child of this object.
      */
-    Object3D& add(const Object3D::ptr & object);
+    Object3D& add(const Object3D::sptr & object);
 
     /**
      * Removes object as child of this object.
      */
-    Object3D& remove(const Object3D::ptr & object);
+    Object3D& remove(const Object3D::sptr & object);
 
     /**
     * Removes all children objects
@@ -356,7 +354,7 @@ public:
     /**
      * Adds object as a child of this, while maintaining the object's world transform.
      */
-    Object3D& attach(const Object3D::ptr & object);
+    Object3D& attach(const Object3D::sptr & object);
 
     /**
      * Searches through the object's children and returns the first with a matching id.

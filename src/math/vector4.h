@@ -198,6 +198,15 @@ class Vector4 {
 
 	}
 
+    Vector4& floor(){
+        x = std::floor(x);
+        y = std::floor(y);
+        z = std::floor(z);
+        w = std::floor(w);
+
+        return *this;
+    }
+
 // 	min( v ) {
 
 // 		this->x = Math.min( this->x, v.x );
@@ -230,7 +239,7 @@ class Vector4 {
 		return *this;
 	}
 
-    bool equals( Vector4 &v ) {
+    bool equals( const Vector4 &v ) {
  		return ( ( v.x == this->x ) && ( v.y == this->y ) && ( v.z == this->z ) && ( v.z == this->w ) );
  	}
 

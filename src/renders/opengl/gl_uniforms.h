@@ -123,6 +123,7 @@ public:
     }
 
 };
+
 class PureArrayUniform : public GLUniform{
 public:
     GLint index;
@@ -251,9 +252,7 @@ public:
     using GLTexturesPtr = std::shared_ptr<GLTextures>;
 
 protected:
-
     GLTexturesPtr textures;
-
     GLuint program = 0;
 
     void initGLUniforms(const GLuint program);
@@ -286,8 +285,7 @@ public:
     }
 
     template<typename T>
-    void setOptional(std::unordered_map<std::string,T>& objects, std::string name,GLTextures* textures=nullptr)
-    {
+    void setOptional(std::unordered_map<std::string,T>& objects, std::string name,GLTextures* textures=nullptr){
         if (objects.count(name)) {
             T value = objects[name];
             setValue(name, value,textures);

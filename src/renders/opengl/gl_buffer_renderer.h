@@ -5,7 +5,7 @@
 #ifndef THREE_CPP_OPENGL_BUFFER_RENDERER_H
 #define THREE_CPP_OPENGL_BUFFER_RENDERER_H
 
-#include<GLES3/gl3.h>
+#include "gl_headers.h"
 
 class OpenGLIndexedBufferRenderer{
 private:

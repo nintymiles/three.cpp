@@ -5,12 +5,12 @@
 #ifndef THREE_CPP_GL_CUBEMAP_H
 #define THREE_CPP_GL_CUBEMAP_H
 
-#include "../textures/texture.h"
+#include "texture.h"
 
 class GLCubeMap {
 private:
     GLRenderer& renderer;
-    std::unordered_map<std::string, Texture::ptr> cubemaps;
+    std::unordered_map<std::string, Texture::sptr> cubemaps;
 public:
     using ptr = std::shared_ptr<GLCubeMap>;
 
@@ -24,7 +24,7 @@ public:
 
     //parameter is meaningless
     Texture::sptr get(const Texture::sptr texture){
-        return Texture::sptr;
+        return Texture::sptr();
     }
 };
 

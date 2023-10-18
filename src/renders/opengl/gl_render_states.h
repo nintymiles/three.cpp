@@ -6,8 +6,8 @@
 #define THREE_CPP_SRC_RENDERS_GL_RENDER_STATE_H
 
 #include "gl_lights.h"
-#include "light/light_shadow.h"
-#include "light.h"
+#include "lights.h"
+#include "scene.h"
 
 #include <vector>
 
@@ -15,8 +15,8 @@ class GLRenderState
 {
 public:
     struct RenderState {
-        std::vector<Light::ptr> lightsArray;
-        std::vector<Light::ptr> shadowsArray;
+        std::vector<Light::sptr> lightsArray;
+        std::vector<Light::sptr> shadowsArray;
         GLLights lights;
     };
 
@@ -36,13 +36,13 @@ public:
         state.shadowsArray.clear();
     }
 
-    void pushLight(const Light::ptr& light) {
+    void pushLight(const Light::sptr& light) {
         state.lightsArray.push_back(light);
     }
-    void pushShadow(const Light::ptr& shadowLight) {
+    void pushShadow(const Light::sptr& shadowLight) {
         state.shadowsArray.push_back(shadowLight);
     }
-    void setupLights(const Camera::ptr& camera) {
+    void setupLights(const Camera::sptr& camera) {
         state.lights.setup(state.lightsArray, camera);
     }
 };

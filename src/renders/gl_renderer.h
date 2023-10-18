@@ -13,6 +13,7 @@
 #include "vector3.h"
 #include "gl_render_target.h"
 #include "gl_render_states.h"
+#include "gl_render_lists.h"
 #include "gl_state.h"
 #include "gl_buffer_renderer.h"
 #include "buffer_geometry.h"
@@ -24,10 +25,15 @@
 #include "gl_textures.h"
 #include "gl_objects.h"
 #include "gl_binding_states.h"
+#include "gl_indexed_buffer_renderer.h"
+#include "gl_morph_targets.h"
+#include "gl_background.h"
+#include "gl_shadow_map.h"
+#include "gl_materials.h"
 
-#include "cameras/camera.h"
-#include "scenes/scene.h"
-#include "materials/mesh_basic_material.h"
+#include "camera.h"
+#include "scene.h"
+#include "mesh_basic_material.h"
 
 #include <algorithm>
 #include <typeinfo>
@@ -42,16 +48,16 @@ class GLRenderer {
     };
 
 private:
-    GLRenderState::ptr currentRenderState;
-    GLRenderList::ptr currentRenderList;
+    GLRenderState::sptr currentRenderState;
+    GLRenderList::sptr currentRenderList;
 
     GLCapabilities::GLCapabilitiesParameters capabilitiesParameter;
 
-    Vector4 _viewport;
-    Vector4 _scissor;
+    Vector4f _viewport;
+    Vector4f _scissor;
 
-    Vector4 _currentViewport;
-    Vector4 _currentScissor;
+    Vector4f _currentViewport;
+    Vector4f _currentScissor;
     bool _currentScissorTest;
 
     unsigned _frameBuffer;
@@ -68,9 +74,9 @@ private:
 
     GeometryProgram _currentGeometryProgram;
 
-    Camera::ptr _currentCamera;
+    Camera::sptr _currentCamera;
 
-    ArrayCamera::ptr _currentArrayCamera;
+    ArrayCamera::sptr _currentArrayCamera;
 
     int _pixelRatio = 1;
     bool premultipliedAlpha = true;
@@ -91,9 +97,9 @@ private:
     Vector3 _vector3;
 
 
-    Scene::ptr tempScene;
+    Scene::sptr tempScene;
 
-    GLBindingStates::ptr bindingStates;
+    GLBindingStates::sptr bindingStates;
 
     GLCubeMap::ptr cubeMaps;
 
@@ -101,7 +107,7 @@ private:
 
     int getTargetPixelRatio();
 
-    void initMaterial(const Material::ptr& material, const Scene::ptr& scene, const Object3D::ptr& object);
+    void initMaterial(const Material::sptr& material, const Scene::sptr& scene, const Object3D::sptr& object);
 
     bool materialNeedsLights(Material& material);
 
@@ -117,13 +123,14 @@ private:
 
     void projectObject(const std::shared_ptr<Object3D>& object, Camera& camera, int groupOrder, bool sortObjects = true);
 
-    void renderObjects(const std::vector<RenderItem::ptr>& renderList, Scene::ptr& scene, const Camera::ptr& camera);
+    void renderObjects(const std::vector<RenderItem::sptr>& renderList, Scene::sptr& scene, const Camera::sptr& camera);
 
-    void renderObject(const Object3D::ptr& object, Scene::ptr& scene, const Camera::ptr& camera, const BufferGeometry::ptr& geometry, const Material::ptr& material, DrawRange* group=NULL);
+    void renderObject(const Object3D::sptr& object, Scene::sptr& scene, const Camera::sptr& camera, const BufferGeometry::sptr& geometry,
+                      const Material::sptr& material, threecpp::DrawRange* group=NULL);
 
-    void renderObjectImmediate(const Object3D::ptr& object, const GLProgram::ptr& program);
+    void renderObjectImmediate(const Object3D::sptr& object, const GLProgram::sptr& program);
 public:
-    using ptr = std::shared_ptr<GLRenderer>;
+    using sptr = std::shared_ptr<GLRenderer>;
     // clearing
     bool autoClear = true;
     bool autoClearColor = true;
@@ -195,7 +202,6 @@ public:
     GLShadowMap::sptr shadowMap;
 
     GLMaterials materials;
-    using ptr = std::shared_ptr<GLRenderer>;
 
     std::function<bool(RenderItem::sptr, RenderItem::sptr)> customOpaqueSort = nullptr;
 
@@ -220,15 +226,15 @@ public:
     */
     void setSize(float width, float height, bool updateStyle = false);
 
-    Vector4& getCurrentViewport(Vector4& target);
+    Vector4f& getCurrentViewport(Vector4f& target);
 
 
     /**
      * Copies the viewport into target.
      */
-    Vector4& getViewport(Vector4& target);
+    Vector4f& getViewport(Vector4f& target);
 
-    void setViewport(Vector4& v);
+    void setViewport(Vector4f& v);
 
     /**
     * Sets the viewport to render from (x, y) to (x + width, y + height).
@@ -240,14 +246,14 @@ public:
     /**
     * Copies the scissor area into target.
     */
-    Vector4& getScissor(Vector4& target);
+    Vector4f& getScissor(Vector4f& target);
 
     void setScissor(float x, float y, float width, float height);
     /**
      * Sets the scissor area from (x, y) to (x + width, y + height).
      */
 
-    void setScissor(Vector4& v);
+    void setScissor(Vector4f& v);
 
     /**
      * Returns true if scissor test is enabled; returns false otherwise.
@@ -302,11 +308,11 @@ public:
     GLProgram::sptr setProgram(const Camera::sptr& camera, const Scene::sptr& scene, const Material::sptr& material, const Object3D::sptr& object);
 
     //void dispose();
-    Signal<void(const GLRenderer&)> onDispose;
+    threecpp::Signal<void(const GLRenderer&)> onDispose;
 
     void renderBufferImmediate(const Object3D::sptr& object,const GLProgram::sptr& program);
 
-    void renderBufferDirect(const Camera::sptr& camera,Scene::sptr& scene,const BufferGeometry::sptr& geometry,const Material::sptr& material,const Object3D::sptr& object, DrawRange* geometryGroup=nullptr);
+    void renderBufferDirect(const Camera::sptr& camera,Scene::sptr& scene,const BufferGeometry::sptr& geometry,const Material::sptr& material,const Object3D::sptr& object, threecpp::DrawRange* geometryGroup=nullptr);
 
     /**
      * A build in function that can be used instead of requestAnimationFrame. For WebXR projects this function must be used.

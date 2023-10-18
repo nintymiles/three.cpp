@@ -111,7 +111,7 @@ public:
 
     virtual ~ShadowUniformsCache() = default;
 
-    LightShadow::sptr& get(Light::ptr light) {
+    LightShadow::sptr& get(Light::sptr light) {
         DirectionalLightShadow::sptr directionalLightShadow;
         SpotLightShadow::sptr spotLightShadow;
         PointLightShadow::sptr pointLightShadow;
@@ -173,7 +173,7 @@ struct GLLightsState {
     std::vector<Texture::sptr> pointShadowMap;
     std::vector<Matrix4> pointShadowMatrix;
 
-    std::vector<HemisphereLight::ptr> hemi;
+    std::vector<HemisphereLight::sptr> hemi;
 };
 
 class GLLights {
@@ -192,11 +192,11 @@ public:
 
     virtual ~GLLights() = default;
 
-    void setup(std::vector<Light::ptr>& lights, const Camera::ptr& camera);
+    void setup(std::vector<Light::sptr>& lights, const Camera::sptr& camera);
 
 };
 
-inline bool shadowCastingLightsFirst(const Light::ptr& lightA, const Light::ptr& lightB) {
+inline bool shadowCastingLightsFirst(const Light::sptr& lightA, const Light::sptr& lightB) {
     int result = (lightB->castShadow ? 1 : 0) - (lightA->castShadow ? 1 : 0);
     return result > 0 ? true : false;
 }

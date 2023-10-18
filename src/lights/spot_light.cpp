@@ -41,7 +41,7 @@ SpotLight& SpotLight::copy(const SpotLight& source) {
 
     this->target.reset();
     if (source.target != nullptr)
-        this->target = Object3D::ptr(source.target->clone());
+        this->target = Object3D::sptr(source.target->clone());
 
     return *this;
 }
