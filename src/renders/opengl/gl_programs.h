@@ -2,20 +2,26 @@
 // Created by SeanR on 2023/10/15.
 //
 
-#ifndef THREE_CPP_GL_PROGRAMS_H
-#define THREE_CPP_GL_PROGRAMS_H
+#ifndef THREE_CPP_RENDERS_GL_PROGRAMS_H
+#define THREE_CPP_RENDERS_GL_PROGRAMS_H
 
 #include <string>
 #include <vector>
 
+#include "texture.h"
+#include "gl_programs.h"
 #include "gl_extensions.h"
 #include "gl_capabilities.h"
 #include "gl_binding_states.h"
 #include "gl_clipping.h"
+#include "light.h"
 #include "gl_program.h"
 
+#include "gl_program_parameters.h"
+//#include "gl_cubemap.h"
+
 class Material;
-class Light;
+//class Light;
 class GLLights;
 class Scene;
 class Object3D;
@@ -106,4 +112,4 @@ public :
 
 };
 
-#endif //THREE_CPP_GL_PROGRAMS_H
+#endif //THREE_CPP_RENDERS_GL_PROGRAMS_H

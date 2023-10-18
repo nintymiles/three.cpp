@@ -104,7 +104,7 @@ public:
 
 class ShadowUniformsCache  {
 public:
-    using ptr = std::shared_ptr<ShadowUniformsCache>;
+    using sptr = std::shared_ptr<ShadowUniformsCache>;
     std::unordered_map<unsigned, LightShadow::sptr> shadows;
 
     ShadowUniformsCache(){}
@@ -182,7 +182,6 @@ private:
     Vector3 vector3;
 
 public:
-
     UniformsCache cache;
     ShadowUniformsCache shadowCache;
 

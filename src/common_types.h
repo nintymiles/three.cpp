@@ -259,8 +259,6 @@ struct StringHash {
     }
 };
 
-
-
 }
 
 #endif /* SRC_COMMON_TYPES_H_ */

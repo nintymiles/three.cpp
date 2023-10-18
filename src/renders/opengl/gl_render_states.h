@@ -69,7 +69,7 @@ public:
         }
     }
 
-    const GLRenderState::sptr& get(const Scene::ptr& scene, const Camera::ptr& camera) {
+    const GLRenderState::sptr& get(const Scene::sptr& scene, const Camera::sptr& camera) {
         GLRenderState::sptr renderState = nullptr;
         if (renderStates.count(scene->uuid)<1) {
             renderState = GLRenderState::create();
