@@ -106,13 +106,13 @@ public:
 
     void setValue(const std::vector<Vector3>& v);
 
-    void setValue(const std::vector<Vector4>& v);
+    void setValue(const std::vector<Vector4f>& v);
 
     void setValue(const std::vector<Matrix3>& v);
 
     void setValue(const std::vector<Matrix4>& v);
 
-    void setValue(const std::vector<Texture::ptr>& t);
+    void setValue(const std::vector<Texture::sptr>& t);
 
 
     virtual GLUniform* asGLUniform() {
@@ -149,7 +149,7 @@ protected:
 
     //std::unordered_map<std::string, std::string> nameRegistry;
 public :
-    std::unordered_map<std::string, GLUniform::ptr,StringHash> seq;
+    std::unordered_map<std::string, GLUniform::sptr,threecpp::StringHash> seq;
     virtual ~GLUniformContainer() = default;
 
     /*UniformName registered(std::string name) {
@@ -170,7 +170,7 @@ public :
         }
     }
 
-    GLUniform::ptr get(const std::string& name) {
+    GLUniform::sptr get(const std::string& name) {
         return seq.count(name) ? seq[name] : nullptr;
     }
     /*GLUniform::ptr get(const size_t index) {
@@ -227,11 +227,11 @@ public:
         uniformClassType = UniformClassType::StructuredUniform;
     }
 
-    static ptr create(const GLUniform::GLTexturesPtr& textures, std::string& id, UniformType type, const GLint addr) {
+    static sptr create(const GLUniform::GLTexturesPtr& textures, std::string& id, UniformType type, const GLint addr) {
         return std::make_shared<StructuredUniform>(textures,id, type, addr);
     }
 
-    virtual GLUniform::ptr clone(std::string& id) override {
+    virtual GLUniform::sptr clone(std::string& id) override {
         auto cloned = create(this->textures,this->id, this->type, this->addr);
         cloned->seq = this->seq;
         return cloned;
@@ -293,9 +293,9 @@ public:
             setValue(name, value,textures);
         }
     }
-    static void upload(const std::vector<GLUniform::ptr>& seq, UniformValues& values);
+    static void upload(const std::vector<GLUniform::sptr>& seq, UniformValues& values);
 
-    std::vector<GLUniform::ptr> seqWithValue(UniformValues& values);
+    std::vector<GLUniform::sptr> seqWithValue(UniformValues& values);
 };
 
 //template<typename T>

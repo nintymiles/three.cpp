@@ -13,6 +13,8 @@
 #include <map>
 #include <memory>
 
+#include "uniform_values.h"
+
 //GLuint glShader( GLenum type, std::string shaderSrc) {
 //    GLuint shader = glCreateShader( type );
 //    const char * shaderSource = shaderSrc.c_str();

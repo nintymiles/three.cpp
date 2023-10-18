@@ -234,15 +234,34 @@ class Vector4 {
  		return ( ( v.x == this->x ) && ( v.y == this->y ) && ( v.z == this->z ) && ( v.z == this->w ) );
  	}
 
+    bool operator !=(const Vector4& v) {
+        return !equals(v);
+    }
+
+    bool operator == (const Vector4& v) {
+        return equals(v);
+    }
 
     private:
         
 };
 
+template<typename T>
+inline Vector4<T> operator *(const Vector4<T>& vector, float scalar){
+    Vector4<T> value(vector);
+    value.multiplyScalar(scalar);
+    return value;
+}
 
+template<typename T>
+inline Vector4<T> operator - (const Vector4<T>& a, const Vector4<T>& b){
+    float x = a.x - b.x;
+    float y = a.y - b.y;
+    float z = a.z - b.z;
+    float w = a.w - b.w;
 
-
-
+    return Vector4<T>(x, y, z, w);
+}
 
 
 

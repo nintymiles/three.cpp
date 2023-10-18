@@ -366,6 +366,14 @@ public:
         return array;
     }
 
+    Color& operator = (const Color& source) {
+        return copy(source);
+    }
+
+    bool operator == (const Color& source) const {
+        return r == source.r && g == source.g && b == source.b;
+    }
+
 
 };
 

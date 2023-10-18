@@ -620,7 +620,7 @@ class Vector3{
 
         Vector3& setFromMatrixColumn(Matrix4& m,int index);
 
-        Vector3& setFromMatrixPosition(Matrix4& m);
+        Vector3& setFromMatrixPosition(const Matrix4& m);
 
         Vector3& setFromMatrixScale(Matrix4& m);
 

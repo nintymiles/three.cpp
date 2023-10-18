@@ -39,9 +39,9 @@ private:
 
 
 public:
-    using ptr = std::shared_ptr<GLTextures>;
+    using sptr = std::shared_ptr<GLTextures>;
 
-    GLTextures(GLExtensions::ptr& extensions, GLState::ptr& state, GLProperties::ptr& properties, GLCapabilities::ptr& capabilities, GLInfo::ptr& info);
+    GLTextures(GLExtensions::sptr& extensions, GLState::sptr& state, GLProperties::sptr& properties, GLCapabilities::sptr& capabilities, GLInfo::sptr& info);
 
     virtual ~GLTextures() = default;
 
@@ -51,7 +51,7 @@ public:
         properties = source.properties;
         capabilities = source.capabilities;
         info = source.info;
-        isGL2 = source.isGL2;
+        isGLES3 = source.isGLES3;
         maxTextures = source.maxTextures;
         maxCubemapSize = source.maxCubemapSize;
         maxTexturesize = source.maxTexturesize;

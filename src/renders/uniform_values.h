@@ -8,10 +8,23 @@
 #include "common_types.h"
 #include "gl_uniforms.h"
 #include "texture.h"
+#include "data_texture.h"
+#include "cube_texture.h"
+
+#include "lights.h"
 
 #include <unordered_map>
 #include <string>
 #include <memory>
+
+using CachedDirectionalLights = std::vector<DirectionalLight::sptr>;
+using CachedDirectionalLightShadows = std::vector<DirectionalLightShadow::sptr>;
+using CachedSpotLights = std::vector<SpotLight::sptr>;
+using CachedSpotLightShadows = std::vector<SpotLightShadow::sptr>;
+using CachedRectAreaLights = std::vector<RectAreaLight::sptr>;
+using CachedPointLights = std::vector<PointLight::sptr>;
+using CachedPointLightShadows = std::vector<PointLightShadow::sptr>;
+using CachedHemisphereLights = std::vector<HemisphereLight::sptr>;
 
 struct UniformValue {
     using sptr = std::shared_ptr<UniformValue>;
@@ -61,6 +74,7 @@ template<> struct UniformValueT<Cls> : public UniformValue \
     uniform->setValue(value); \
   } \
 };
+
 UNIFORM_VALUE_T(float)
 UNIFORM_VALUE_T(bool)
 UNIFORM_VALUE_T(Color)
@@ -75,7 +89,7 @@ UNIFORM_VALUE_T(CubeTexture::sptr)
 UNIFORM_VALUE_T(DataTexture::sptr)
 UNIFORM_VALUE_T(std::vector<unsigned char>)
 UNIFORM_VALUE_T(std::vector<float>)
-UNIFORM_VALUE_T(std::vector<Texture::sptr>)
+//UNIFORM_VALUE_T(std::vector<Texture::sptr>)
 UNIFORM_VALUE_T(std::vector<Matrix4>)
 UNIFORM_VALUE_T(std::vector<Vector3>)
 
@@ -86,18 +100,17 @@ UNIFORM_VALUE_T(std::vector<Vector3>)
   UniformValueT &operator = (const Cls &value) { \
     this->value = value; return *this; \
   } \
-  static ptr create(std::string nm, const Cls &value) { \
+  static sptr create(std::string nm, const Cls &value) { \
     return std::make_shared<UniformValueT>(nm, value); \
   } \
-  ptr clone() const override { \
+  sptr clone() const override { \
     return std::make_shared<UniformValueT>(id, value); \
   }
 
-template<> struct UniformValueT<CachedSpotLights> : public UniformValue
-{
+template<> struct UniformValueT<CachedSpotLights> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedSpotLights)
 
-    void applyValue(GLUniform::ptr uniform,int index=0) override
+    void applyValue(GLUniform::sptr uniform,int index=0) override
     {
         if (index < 0) index = 0;
         const auto& entry = value[index];
@@ -124,11 +137,11 @@ template<> struct UniformValueT<CachedSpotLights> : public UniformValue
         }
     }
 };
-template<> struct UniformValueT<CachedSpotLightShadows> : public UniformValue
-{
+
+template<> struct UniformValueT<CachedSpotLightShadows> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedSpotLightShadows)
 
-    void applyValue(GLUniform::ptr uniform,int index=0) override
+    void applyValue(GLUniform::sptr uniform,int index=0) override
     {
         if (index < 0) index = 0;
         const auto& entry = value[index];
@@ -148,11 +161,10 @@ template<> struct UniformValueT<CachedSpotLightShadows> : public UniformValue
         }
     }
 };
-template<> struct UniformValueT<CachedDirectionalLights> : public UniformValue
-{
+template<> struct UniformValueT<CachedDirectionalLights> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedDirectionalLights)
 
-    void applyValue(GLUniform::ptr uniform, int index = 0) override
+    void applyValue(GLUniform::sptr uniform, int index = 0) override
     {
 
         if (index < 0) index = 0;
@@ -167,11 +179,11 @@ template<> struct UniformValueT<CachedDirectionalLights> : public UniformValue
         }
     }
 };
-template<> struct UniformValueT<CachedDirectionalLightShadows> : public UniformValue
-{
+
+template<> struct UniformValueT<CachedDirectionalLightShadows> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedDirectionalLightShadows)
 
-    void applyValue(GLUniform::ptr uniform, int index = 0) override
+    void applyValue(GLUniform::sptr uniform, int index = 0) override
     {
         if (index < 0) index = 0;
         const auto& entry = value[index];
@@ -192,11 +204,11 @@ template<> struct UniformValueT<CachedDirectionalLightShadows> : public UniformV
 
     }
 };
-template<> struct UniformValueT<CachedHemisphereLights> : public UniformValue
-{
+
+template<> struct UniformValueT<CachedHemisphereLights> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedHemisphereLights)
 
-    void applyValue(GLUniform::ptr uniform, int index = 0) override
+    void applyValue(GLUniform::sptr uniform, int index = 0) override
     {
         if (index < 0) index = 0;
         const auto& entry = value[index];
@@ -214,11 +226,10 @@ template<> struct UniformValueT<CachedHemisphereLights> : public UniformValue
     }
 };
 
-template<> struct UniformValueT<CachedRectAreaLights> : public UniformValue
-{
+template<> struct UniformValueT<CachedRectAreaLights> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedRectAreaLights)
 
-    void applyValue(GLUniform::ptr uniform, int index = 0) override
+    void applyValue(GLUniform::sptr uniform, int index = 0) override
     {
         if (index < 0) index = 0;
         const auto& entry = value[index];
@@ -239,11 +250,11 @@ template<> struct UniformValueT<CachedRectAreaLights> : public UniformValue
 
     }
 };
-template<> struct UniformValueT<CachedPointLights> : public UniformValue
-{
+
+template<> struct UniformValueT<CachedPointLights> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedPointLights)
 
-    void applyValue(GLUniform::ptr uniform, int index = 0) override
+    void applyValue(GLUniform::sptr uniform, int index = 0) override
     {
 
         if (index < 0) index = 0;
@@ -264,11 +275,11 @@ template<> struct UniformValueT<CachedPointLights> : public UniformValue
 
     }
 };
-template<> struct UniformValueT<CachedPointLightShadows> : public UniformValue
-{
+
+template<> struct UniformValueT<CachedPointLightShadows> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedPointLightShadows)
 
-    void applyValue(GLUniform::ptr uniform, int index = 0) override
+    void applyValue(GLUniform::sptr uniform, int index = 0) override
     {
         if (index < 0) index = 0;
         const auto& entry = value[index];

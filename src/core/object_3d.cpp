@@ -4,6 +4,7 @@
 #include "object_3d.h"
 #include "quaternion.h"
 #include "buffer_geometry.h"
+#include "mesh_basic_material.h"
 
 namespace object3d {
 Vector3 _v1;
@@ -482,15 +483,13 @@ void Object3D::updateWorldMatrix(bool updateParents, bool updateChildren){
 
         matrixWorld.copy(matrix);
 
-    }
-    else {
+    } else {
 
         matrixWorld.multiplyMatrices(parent->matrixWorld, matrix);
 
     }
 
     // update children
-
     if (updateChildren ==  true) {
         for (auto child : children) {
             child->updateWorldMatrix(false, true);

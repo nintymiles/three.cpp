@@ -10,21 +10,21 @@
 #include <vector>
 #include <memory>
 
-template<typename Type>
-class InterleavedBuffer : public BufferAttribute<Type> {
+template<typename T>
+class InterleavedBuffer : public BufferAttribute<T> {
 public:
-    using ptr = std::shared_ptr<InterleavedBuffer>;
-    std::vector<Type> _array;
+    using sptr = std::shared_ptr<InterleavedBuffer>;
+    std::vector<T> _array;
 
     unsigned stride;
 
-    InterleavedBuffer() : BufferAttribute(), stride(0) {
+    InterleavedBuffer() : BufferAttribute<T>(), stride(0) {
         this->usage = Usage::StaticDrawUsage;
     }
-    InterleavedBuffer(const InterleavedBuffer& source) : BufferAttribute(source) {
+    InterleavedBuffer(const InterleavedBuffer& source) : BufferAttribute<T>(source) {
         stride = source.stride;
     }
-    InterleavedBuffer(const std::vector<Type>& array,unsigned stride) : _array(array),stride(stride){
+    InterleavedBuffer(const std::vector<T>& array, unsigned stride) : _array(array), stride(stride){
         this->updateRange.start = 0;
         this->updateRange.count = -1;
         this->count = array.size() / stride;
@@ -34,7 +34,7 @@ public:
         return std::make_shared<InterleavedBuffer>();
     }
 
-    static sptr create(const std::vector<Type>& array, unsigned stride) {
+    static sptr create(const std::vector<T>& array, unsigned stride) {
         return std::make_shared<InterleavedBuffer>(array, stride);
     }
     InterleavedBuffer& copyAt(unsigned index1, const InterleavedBuffer& attribute, unsigned index2) {
@@ -51,7 +51,7 @@ public:
         return *this;
     }
 
-    InterleavedBuffer& set(std::vector<Type> value, unsigned offset) {
+    InterleavedBuffer& set(std::vector<T> value, unsigned offset) {
         for (unsigned i = offset; i < value.size(); i++) {
             _array.push_back(value[i - offset]);
         }
@@ -64,7 +64,7 @@ public:
     }
 
     InterleavedBuffer& copy(const InterleavedBuffer& source) {
-        BufferAttribute::copy(source);
+        BufferAttribute<T>::copy(source);
         if (source._array.size() > 0) {
             _array.reset(source._array.size());
             std::copy(source._array.begin(), source._array.end(), _array.begin());

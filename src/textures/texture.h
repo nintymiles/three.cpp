@@ -5,7 +5,6 @@
 #ifndef THREE_CPP_SRC_TEXTURE_H
 #define THREE_CPP_SRC_TEXTURE_H
 
-#include "event_dispatcher.h"
 #include "constants.h"
 #include "math_utils.h"
 #include "vector2.h"

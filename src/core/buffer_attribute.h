@@ -29,7 +29,6 @@ class BufferAttribute {
 private:
     bool _needsUpdate;
 
-
 public:
     using sptr = std::shared_ptr<BufferAttribute>;
 

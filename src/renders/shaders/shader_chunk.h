@@ -121,7 +121,7 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"fog_fragment",ShaderLibID::fog_fragment},
 };
 
-static const std::unordered_map<ShaderLibID,const char*> ShaderChunk = {
+static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::alphamap_fragment,shader_chunk::alphamap_fragment},
         {ShaderLibID::alphamap_pars_fragment,shader_chunk::alphamap_pars_fragment},
         {ShaderLibID::alphatest_fragment,shader_chunk::alphatest_fragment},
@@ -187,7 +187,7 @@ namespace shaderlib_name {
 }
 
 const char* getShaderChunk(ShaderLibID shaderLibId){
-    return ShaderChunk.at(shaderLibId);
+    return ShaderChunkMap.at(shaderLibId);
 };
 
 

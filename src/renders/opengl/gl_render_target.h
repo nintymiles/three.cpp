@@ -7,6 +7,7 @@
 
 #include "common_types.h"
 #include "depth_texture.h"
+#include "vector4.h"
 
 #include <unordered_map>
 #include <memory>

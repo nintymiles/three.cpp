@@ -39,7 +39,7 @@ public:
 
     void endShadows();
 
-    void setState(std::vector<Plane>& planes, bool clipIntersection, bool clipShadows, const Camera::ptr& camera, MaterialProperties& cache, bool fromCache);
+    void setState(std::vector<Plane>& planes, bool clipIntersection, bool clipShadows, const Camera::sptr& camera, MaterialProperties& cache, bool fromCache);
 
 };
 

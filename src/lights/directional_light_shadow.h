@@ -2,18 +2,13 @@
 // Created by seanren on 11/20/2022.
 //
 
-#ifndef THREE_CPP_POINT_LIGHT_SHADOW_H
-#define THREE_CPP_POINT_LIGHT_SHADOW_H
+//如果guard header和其它重复，会导致相关内容无法加载
+//#ifndef THREE_CPP_POINT_LIGHT_SHADOW_H
+//#define THREE_CPP_POINT_LIGHT_SHADOW_H
+#ifndef THREE_CPP_DIRECTIONAL_LIGHT_SHADOW_H
+#define THREE_CPP_DIRECTIONAL_LIGHT_SHADOW_H
 
 #include "light_shadow.h"
-//#include "point_light.h"
-#include "perspective_camera.h"
-#include "orthographic_camera.h"
-
-#include "matrix4.h"
-#include "vector4.h"
-#include "vector3.h"
-#include "vector2.h"
 
 class DirectionalLightShadow : public LightShadow {
 public:
@@ -54,4 +49,4 @@ public:
 //};
 
 
-#endif //THREE_CPP_POINT_LIGHT_SHADOW_H
+#endif //THREE_CPP_DIRECTIONAL_LIGHT_SHADOW_H

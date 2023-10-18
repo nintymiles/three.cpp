@@ -5,65 +5,155 @@
 #ifndef THREE_CPP_GL_RENDER_TARGET_H
 #define THREE_CPP_GL_RENDER_TARGET_H
 
-#include "event_dispatcher.h"
+//#include "event_dispatcher.h"
 #include "vector4.h"
+#include "constants.h"
+#include "texture.h"
+#include "depth_texture.h"
 
-struct RenderOptions{
+struct GLRenderTargetParameter {
+    TextureMapping mapping = TextureMapping::UVMapping;
+    Wrapping wrapS = Wrapping::ClampToEdgeWrapping;
+    Wrapping wrapT = Wrapping::ClampToEdgeWrapping;
+    TextureFilter magFilter = TextureFilter::LinearFilter;
+    TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter;
+    PixelFormat format = PixelFormat::RGBAFormat;
+    TextureDataType type = TextureDataType::UnsignedByteType;
+    int anisotropy = 1;
+    TextureEncoding encoding = TextureEncoding::LinearEncoding;
     bool generateMipmaps = false;
-    int internalFormat;
-    int minFilter;  //enum default linearFilter
     bool depthBuffer = true;
     bool stencilBuffer = false;
-    int depthTexture;
-    int samples;
-
+    DepthTexture::sptr depthTexture = nullptr;
 };
-
-/*
- In options, we can specify:
- * Texture parameters for an auto-generated target texture
- * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
-*/
-class GLRenderTarget:EventDispatcher{
+class GLRenderTarget {
+    static size_t renderTargetId;
 public:
-    bool isGLRenderTarget = true;
-    double width,height,depth = 1;
-    RenderOptions* options;
-    Vector4d viewport,scissor;
-    bool scissorTest=false;
-    //viewport,scissor,texture,depthBuffer,stencilBuffer
+    using sptr = std::shared_ptr<GLRenderTarget>;
 
-    GLRenderTarget(double height,double width,RenderOptions* options):height(height),width(width),
-                        viewport(0,0,width,height),scissor(0,0,width,height),options(options){};
+    std::string type;
+    size_t id;
 
 
-    GLRenderTarget &setSize(double width, double height, double depth = 1) {
 
-        if (this->width != width || this->height != height || this->depth != depth) {
+    bool isGLMultiviewRenderTarget = false;
 
-            width = width;
-            height = height;
-            depth = depth;
+    int numViews = 0;
 
-            //texture.image.width = width;
-            //texture.image.height = height;
-            //texture.image.depth = depth;
+    sole::uuid uuid = sole::uuid1();
 
-            dispose();
-        }
+    size_t width = 0;
 
-        //viewport.set( 0, 0, width, height );
-        //scissor.set( 0, 0, width, height );
+    size_t height = 0;
 
-        return *this;
+    Vector4f scissor;
+
+    bool scissorTest = false;
+
+    Vector4f viewport;
+
+    Texture::sptr texture = nullptr;
+
+    bool depthBuffer = false;
+
+    bool stencilBuffer = false;
+
+    DepthTexture::sptr depthTexture = nullptr;
+
+    GLuint samples = 0;
+
+    //ThreeDataTable options;
+    std::unordered_map<std::string, int> options;
+
+    bool isGLMultisampleRenderTarget = false;
+    bool isGLCubeRenderTarget = false;
+
+    GLRenderTarget() : id(renderTargetId++){
+        type = "GLRenderTarget";
     }
 
-    GLRenderTarget& dispose() {
-        dispatchEvent({type: "dispose"});
-        return *this;
-    }
+    GLRenderTarget(size_t width, size_t height,GLRenderTargetParameter* options = nullptr);
 
+    GLRenderTarget(GLRenderTarget& source);
+
+    bool isEmpty()  const {
+        return id == std::numeric_limits<size_t>::infinity() || id == 0;
+    }
+    virtual ~GLRenderTarget() = default;
+
+    void setSize(size_t width, size_t height);
+
+    GLRenderTarget& clone(GLRenderTarget* target);
+
+    GLRenderTarget& copy(const GLRenderTarget& source);
+
+    virtual void dispose();
+
+    threecpp::Signal<void(GLRenderTarget&)> onDispose;
+
+
+
+    GLRenderTarget& operator = (const GLRenderTarget& source) {
+        return copy(*this);
+    }
 };
+
+//struct RenderOptions{
+//    bool generateMipmaps = false;
+//    int internalFormat;
+//    int minFilter;  //enum default linearFilter
+//    bool depthBuffer = true;
+//    bool stencilBuffer = false;
+//    int depthTexture;
+//    int samples;
+//
+//};
+//
+///*
+// In options, we can specify:
+// * Texture parameters for an auto-generated target texture
+// * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
+//*/
+//class GLRenderTarget:EventDispatcher{
+//public:
+//    bool isGLRenderTarget = true;
+//    double width,height,depth = 1;
+//    RenderOptions* options;
+//    Vector4d viewport,scissor;
+//    bool scissorTest=false;
+//    //viewport,scissor,texture,depthBuffer,stencilBuffer
+//
+//    GLRenderTarget(double height,double width,RenderOptions* options):height(height),width(width),
+//                        viewport(0,0,width,height),scissor(0,0,width,height),options(options){};
+//
+//
+//    GLRenderTarget &setSize(double width, double height, double depth = 1) {
+//
+//        if (this->width != width || this->height != height || this->depth != depth) {
+//
+//            width = width;
+//            height = height;
+//            depth = depth;
+//
+//            //texture.image.width = width;
+//            //texture.image.height = height;
+//            //texture.image.depth = depth;
+//
+//            dispose();
+//        }
+//
+//        //viewport.set( 0, 0, width, height );
+//        //scissor.set( 0, 0, width, height );
+//
+//        return *this;
+//    }
+//
+//    GLRenderTarget& dispose() {
+//        dispatchEvent({type: "dispose"});
+//        return *this;
+//    }
+//
+//};
 
 //import { EventDispatcher } from '../core/EventDispatcher.js';
 //import { Texture } from '../textures/Texture.js';

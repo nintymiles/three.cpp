@@ -9,7 +9,10 @@
 
 #include "gl_headers.h"
 #include "gl_programs.h"
+#include "gl_lights.h"
 #include "sole.h"
+#include "common_types.h"
+#include "fog.h"
 
 struct Properties{
     GLuint image_textureCube = 0;
@@ -31,7 +34,7 @@ struct MaterialProperties {
     int version=-1;
     GLProgram::sptr program;
     int lightsStateVersion;
-    Fog::ptr fog;
+    Fog::sptr fog;
     std::vector<float> clippingState;
     bool needsLights = false;
     bool receiveShadow = false;
@@ -43,8 +46,8 @@ struct MaterialProperties {
     GLShader shader;
     TextureEncoding outputEncoding;
     std::vector<GLUniform::sptr> uniformsList;
-    Texture::ptr envMap;
-    Texture::ptr environment;
+    Texture::sptr envMap;
+    Texture::sptr environment;
 };
 
 class GLProperties {

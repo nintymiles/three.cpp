@@ -7,6 +7,7 @@
 #include "object_3d.h"
 #include "vector3.h"
 #include "matrix4.h"
+#include "mesh.h"
 
 #include "buffer_attribute.h"
 
@@ -323,7 +324,7 @@ Geometry& Geometry::fromBufferGeometry(BufferGeometry& geometry){
         this->vertices.push_back(Vector3().fromArrayVec(positions->array, i));
         if (colors != nullptr && colors->size > 0) {
 
-            this->colors.push_back(Color(threecpp::Colors::white).fromArray(colors->array, i));
+            this->colors.push_back(Color((unsigned)threecpp::Colors::white).fromArray((double*)colors->array.data(), i));
         }
     }
 
@@ -661,11 +662,13 @@ void Geometry::computeMorphNormals(){
 }
 
 void Geometry::computeBoundingBox(){
-    boundingBox.setFromPoints(&vertices[0],vertices.size());
+    //boundingBox.setFromPoints(&vertices[0],vertices.size());
+    boundingBox.setFromPoints(&vertices[0]);
 }
 
 void Geometry::computeBoundingSphere(){
-    boundingSphere.setFromPoints(&vertices[0],vertices.size());
+    //boundingSphere.setFromPoints(&vertices[0],vertices.size());
+    boundingSphere.setFromPoints(vertices, nullptr);
 }
 
 void Geometry::merge(Geometry& geometry, Matrix4* matrix, unsigned materialIndexOffset){
