@@ -9,7 +9,7 @@
 class Sprite : public Object3D {
 public:
     Vector2 center;
-    using ptr = std::shared_ptr<Sprite>;
+    using sptr = std::shared_ptr<Sprite>;
     Sprite(){}
 };
 

@@ -35,7 +35,7 @@
 #include <stdlib.h>    // for NULL
 #include <string>
 
-#include <pcre.h>
+#include <pcre/pcre.h>
 
 namespace pcrecpp {
 

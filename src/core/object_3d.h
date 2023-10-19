@@ -1,6 +1,6 @@
 #ifndef OBJECT_3D_H
 #define OBJECT_3D_H
-#include "event_dispatcher.h"
+
 #include "layers.h"
 #include "math_utils.h"
 #include "vector3.h"

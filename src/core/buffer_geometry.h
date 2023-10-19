@@ -4,7 +4,6 @@
 #include "vector3.h"
 #include "vector2.h"
 #include "box3.h"
-#include "event_dispatcher.h"
 #include "buffer_attribute.h"
 #include "sphere.h"
 #include "object_3d.h"

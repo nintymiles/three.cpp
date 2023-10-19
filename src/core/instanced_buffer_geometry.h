@@ -18,7 +18,7 @@ struct InstancedGroup {
 
 class InstancedBufferGeometry : public BufferGeometry {
 public:
-    using ptr = std::shared_ptr<InstancedBufferGeometry>;
+    using sptr = std::shared_ptr<InstancedBufferGeometry>;
 
     std::vector<InstancedGroup> groups;
 

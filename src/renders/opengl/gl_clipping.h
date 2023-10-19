@@ -8,9 +8,11 @@
 #include "camera.h"
 #include "plane.h"
 #include "gl_properties.h"
+#include "material.h"
 
 #include "matrix3.h"
 
+class MaterialProperties;
 class GLClipping {
 private:
     int numGlobalPlanes = 0;

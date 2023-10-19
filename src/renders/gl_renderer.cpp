@@ -20,6 +20,7 @@
 #include "sprite.h"
 #include "sprite_material.h"
 #include "lod.h"
+#include "compressed_texture.h"
 
 GLRenderer::GLRenderer(int width, int height){
     initGLContext(width, height);
@@ -144,7 +145,7 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
     if (!material->isShaderMaterial && !material->isRawShaderMaterial || material->clipping) {
         materialProperties.numClippingPlanes = _clipping.numPlanes;
         materialProperties.numIntersection = _clipping.numIntersection;
-        uniforms.set("clippingPlanes", _clipping.uniform);
+        uniforms->set("clippingPlanes", _clipping.uniform);
     }
     materialProperties.environment = instanceOf<MeshStandardMaterial>(material.get()) ? scene->environment : nullptr;
     materialProperties.fog = scene->fog;
@@ -153,30 +154,47 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
     materialProperties.lightsStateVersion =lightsStateVersion;
 
     if (materialProperties.needsLights) {
-        uniforms.set("ambientLightColor",lights.state.ambient);
-        uniforms.set("lightProbe",lights.state.probe);
-        uniforms.set("directionalLights",lights.state.directional);
-        uniforms.set("directionalLightShadows",lights.state.directionalShadow);
-        uniforms.set("spotLights",lights.state.spot);
-        uniforms.set("spotLightShadows",lights.state.spotShadow);
-        uniforms.set("rectAreaLights",lights.state.rectArea);
-        uniforms.set("pointLights",lights.state.point);
-        uniforms.set("pointLightShadows",lights.state.pointShadow);
-        uniforms.set("hemisphereLights",lights.state.hemi);
+//        uniforms.set("ambientLightColor",lights.state.ambient);
+//        uniforms.set("lightProbe",lights.state.probe);
+//        uniforms.set("directionalLights",lights.state.directional);
+//        uniforms.set("directionalLightShadows",lights.state.directionalShadow);
+//        uniforms.set("spotLights",lights.state.spot);
+//        uniforms.set("spotLightShadows",lights.state.spotShadow);
+//        uniforms.set("rectAreaLights",lights.state.rectArea);
+//        uniforms.set("pointLights",lights.state.point);
+//        uniforms.set("pointLightShadows",lights.state.pointShadow);
+//        uniforms.set("hemisphereLights",lights.state.hemi);
+//
+//        uniforms.set("directionalShadowMap",lights.state.directionalShadowMap);
+//        uniforms.set("directionalShadowMatrix",lights.state.directionalShadowMatrix);
+//        uniforms.set("spotShadowMap",lights.state.spotShadowMap);
+//        uniforms.set("spotShadowMatrix",lights.state.spotShadowMatrix);
+//        uniforms.set("pointShadowMap",lights.state.pointShadowMap);
+//        uniforms.set("pointShadowMatrix",lights.state.pointShadowMatrix);
+        uniforms->set("ambientLightColor",lights.state.ambient);
+        uniforms->set("lightProbe",lights.state.probe);
+        uniforms->set("directionalLights",lights.state.directional);
+        uniforms->set("directionalLightShadows",lights.state.directionalShadow);
+        uniforms->set("spotLights",lights.state.spot);
+        uniforms->set("spotLightShadows",lights.state.spotShadow);
+        uniforms->set("rectAreaLights",lights.state.rectArea);
+        uniforms->set("pointLights",lights.state.point);
+        uniforms->set("pointLightShadows",lights.state.pointShadow);
+        uniforms->set("hemisphereLights",lights.state.hemi);
 
-        uniforms.set("directionalShadowMap",lights.state.directionalShadowMap);
-        uniforms.set("directionalShadowMatrix",lights.state.directionalShadowMatrix);
-        uniforms.set("spotShadowMap",lights.state.spotShadowMap);
-        uniforms.set("spotShadowMatrix",lights.state.spotShadowMatrix);
-        uniforms.set("pointShadowMap",lights.state.pointShadowMap);
-        uniforms.set("pointShadowMatrix",lights.state.pointShadowMatrix);
+        uniforms->set("directionalShadowMap",lights.state.directionalShadowMap);
+        uniforms->set("directionalShadowMatrix",lights.state.directionalShadowMatrix);
+        uniforms->set("spotShadowMap",lights.state.spotShadowMap);
+        uniforms->set("spotShadowMatrix",lights.state.spotShadowMatrix);
+        uniforms->set("pointShadowMap",lights.state.pointShadowMap);
+        uniforms->set("pointShadowMatrix",lights.state.pointShadowMatrix);
     }
 
     //auto progUniforms = materialProperties->get<GLProgram::sptr>("program")->getUniforms();
     GLProgram::sptr program = materialProperties.program;
     GLUniforms::sptr progUniforms = program->getUniforms();
 
-    std::vector<GLUniform::sptr> uniformList = progUniforms->seqWithValue(uniforms);
+    std::vector<GLUniform::sptr> uniformList = progUniforms->seqWithValue(*uniforms);
 
     materialProperties.uniformsList = uniformList;
 }
@@ -241,7 +259,7 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
 
     GLProgram::sptr program = materialProperties.program;
     GLUniforms::sptr p_uniforms = program->getUniforms();
-    UniformValues& m_uniforms = materialProperties.uniforms;
+    UniformValues::sptr m_uniforms = materialProperties.uniforms;
 
     bool refreshProgram = false;
     bool refreshMaterial = false;
@@ -249,23 +267,40 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
 
 
     if (materialProperties.needsLights) {
-        m_uniforms.set("ambientLightColor", lights.state.ambient);
-        m_uniforms.set("lightProbe", lights.state.probe);
-        m_uniforms.set("directionalLights", lights.state.directional);
-        m_uniforms.set("directionalLightShadows", lights.state.directionalShadow);
-        m_uniforms.set("spotLights", lights.state.spot);
-        m_uniforms.set("spotLightShadows", lights.state.spotShadow);
-        m_uniforms.set("rectAreaLights", lights.state.rectArea);
-        m_uniforms.set("pointLights", lights.state.point);
-        m_uniforms.set("pointLightShadows", lights.state.pointShadow);
-        m_uniforms.set("hemisphereLights", lights.state.hemi);
+//        m_uniforms.set("ambientLightColor", lights.state.ambient);
+//        m_uniforms.set("lightProbe", lights.state.probe);
+//        m_uniforms.set("directionalLights", lights.state.directional);
+//        m_uniforms.set("directionalLightShadows", lights.state.directionalShadow);
+//        m_uniforms.set("spotLights", lights.state.spot);
+//        m_uniforms.set("spotLightShadows", lights.state.spotShadow);
+//        m_uniforms.set("rectAreaLights", lights.state.rectArea);
+//        m_uniforms.set("pointLights", lights.state.point);
+//        m_uniforms.set("pointLightShadows", lights.state.pointShadow);
+//        m_uniforms.set("hemisphereLights", lights.state.hemi);
+//
+//        m_uniforms.set("directionalShadowMap", lights.state.directionalShadowMap);
+//        m_uniforms.set("directionalShadowMatrix", lights.state.directionalShadowMatrix);
+//        m_uniforms.set("spotShadowMap", lights.state.spotShadowMap);
+//        m_uniforms.set("spotShadowMatrix", lights.state.spotShadowMatrix);
+//        m_uniforms.set("pointShadowMap", lights.state.pointShadowMap);
+//        m_uniforms.set("pointShadowMatrix", lights.state.pointShadowMatrix);
+        m_uniforms->set("ambientLightColor", lights.state.ambient);
+        m_uniforms->set("lightProbe", lights.state.probe);
+        m_uniforms->set("directionalLights", lights.state.directional);
+        m_uniforms->set("directionalLightShadows", lights.state.directionalShadow);
+        m_uniforms->set("spotLights", lights.state.spot);
+        m_uniforms->set("spotLightShadows", lights.state.spotShadow);
+        m_uniforms->set("rectAreaLights", lights.state.rectArea);
+        m_uniforms->set("pointLights", lights.state.point);
+        m_uniforms->set("pointLightShadows", lights.state.pointShadow);
+        m_uniforms->set("hemisphereLights", lights.state.hemi);
 
-        m_uniforms.set("directionalShadowMap", lights.state.directionalShadowMap);
-        m_uniforms.set("directionalShadowMatrix", lights.state.directionalShadowMatrix);
-        m_uniforms.set("spotShadowMap", lights.state.spotShadowMap);
-        m_uniforms.set("spotShadowMatrix", lights.state.spotShadowMatrix);
-        m_uniforms.set("pointShadowMap", lights.state.pointShadowMap);
-        m_uniforms.set("pointShadowMatrix", lights.state.pointShadowMatrix);
+        m_uniforms->set("directionalShadowMap", lights.state.directionalShadowMap);
+        m_uniforms->set("directionalShadowMatrix", lights.state.directionalShadowMatrix);
+        m_uniforms->set("spotShadowMap", lights.state.spotShadowMap);
+        m_uniforms->set("spotShadowMatrix", lights.state.spotShadowMatrix);
+        m_uniforms->set("pointShadowMap", lights.state.pointShadowMap);
+        m_uniforms->set("pointShadowMatrix", lights.state.pointShadowMatrix);
     }
 
     if (state->useProgram(program->program)) {
@@ -402,24 +437,24 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
 
         if (materialProperties.needsLights)
         {
-            markUniformsLightsNeedsUpdate(m_uniforms, refreshLights);
+            markUniformsLightsNeedsUpdate(*m_uniforms, refreshLights);
         }
 
         if (scene->fog != nullptr && material->fog) {
-            materials.refreshUniformsFog(m_uniforms, *scene->fog);
+            materials.refreshUniformsFog(*m_uniforms, *scene->fog);
         }
 
-        materials.refreshMaterialUniforms(m_uniforms, material, _pixelRatio, _height);
+        materials.refreshMaterialUniforms(*m_uniforms, material, _pixelRatio, _height);
 
         std::vector<GLUniform::sptr> uniformsList = materialProperties.uniformsList;
 
-        GLUniforms::upload(uniformsList, m_uniforms);
+        GLUniforms::upload(uniformsList, *m_uniforms);
 
     }
 
     if (instanceOf<ShaderMaterial>(material.get()) && material->uniformsNeedUpdate == true) {
         std::vector<GLUniform::sptr> uniformsList = materialProperties.uniformsList;
-        GLUniforms::upload(uniformsList, m_uniforms);
+        GLUniforms::upload(uniformsList, *m_uniforms);
 
         //WebGLUniforms.upload(_gl, materialProperties.uniformsList, m_uniforms, textures);
         material->uniformsNeedUpdate = false;
@@ -591,7 +626,7 @@ void GLRenderer::renderObjects(const std::vector<RenderItem::sptr>& renderList, 
         }
     }
 }
-void GLRenderer::renderObject(const Object3D::sptr& object, Scene::sptr& scene, const Camera::sptr& camera, const BufferGeometry::sptr& geometry, const Material::sptr& material, DrawRange* group)
+void GLRenderer::renderObject(const Object3D::sptr& object, Scene::sptr& scene, const Camera::sptr& camera, const BufferGeometry::sptr& geometry, const Material::sptr& material, threecpp::DrawRange* group)
 {
 
     object->onBeforeRender.emitSignal(*this, scene, camera, object, geometry,material,nullptr, NULL);
@@ -927,7 +962,7 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
     auto rangeCount = geometry->drawRange.count * rangeFactor;
 
     auto groupStart = geometryGroup != NULL ? geometryGroup->start * rangeFactor : 0;
-    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : (unsigned)std::numeric_limits<unsigned>::infinity;
+    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : std::numeric_limits<unsigned>::infinity();
 
     auto drawStart = std::max(rangeStart, groupStart);
     auto drawEnd =   std::min(std::min(dataCount, rangeStart + rangeCount), groupStart + groupCount) - 1;

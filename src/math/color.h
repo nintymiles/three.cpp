@@ -5,7 +5,6 @@
 #ifndef THREE_CPP_COLOR_H
 #define THREE_CPP_COLOR_H
 
-#include <map>
 #include <unordered_map>
 #include <string>
 #include <cmath>

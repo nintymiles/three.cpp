@@ -110,6 +110,7 @@ std::pair<std::string,std::string> getEncodingComponents( EncodingComponents enc
     }
 }
 
+class LibUniformValues;
 class GLShader {
 public:
     using sptr = std::shared_ptr<GLShader>;
@@ -124,11 +125,11 @@ public:
 
     unsigned shader = -1;
 
-    UniformValues uniforms;
+    std::shared_ptr<LibUniformValues> uniforms;
 
     GLShader() :type(GL_VERTEX_SHADER){}
 
-    GLShader(const char* vertexShader, const char* fragmentShader, const LibUniformValues& uniforms)
+    GLShader(const char* vertexShader, const char* fragmentShader, const std::shared_ptr<LibUniformValues>& uniforms)
             : type(GL_VERTEX_SHADER), vertexShader(vertexShader), fragmentShader(fragmentShader), uniforms(uniforms) {}
 
     GLShader(unsigned type, const std::string& code) {
@@ -146,7 +147,7 @@ public:
         return std::make_shared<GLShader>();
     }
 
-    UniformValues& getUniforms() {
+    std::shared_ptr<LibUniformValues>& getUniforms() {
         return uniforms;
     }
 

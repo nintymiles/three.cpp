@@ -13,7 +13,7 @@ public:
 
     int count = 0;
 
-    using ptr = std::shared_ptr<InstancedMesh>;
+    using sptr = std::shared_ptr<InstancedMesh>;
 
     InstancedMesh() : Mesh() {
         isInstancedMesh = true;

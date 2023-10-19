@@ -5,7 +5,7 @@
 
 #include "scene.h"
 
-const RenderItem::sptr& GLRenderList::getNextRenderItem(const Object3D::ptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material,
+const RenderItem::sptr& GLRenderList::getNextRenderItem(const Object3D::sptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material,
                                                         int groupOrder, float z, threecpp::DrawRange* group){
     int i = renderItemsIndex;
     if ((renderItems.size()==0) ||(renderItemsIndex > (renderItems.size()-1))) {
@@ -34,7 +34,7 @@ const RenderItem::sptr& GLRenderList::getNextRenderItem(const Object3D::ptr& obj
     }
 }
 
-void GLRenderList::push(const Object3D::ptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material,
+void GLRenderList::push(const Object3D::sptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material,
                         int groupOrder, float z, threecpp::DrawRange* group){
     auto renderItem = getNextRenderItem(object, geometry, material, groupOrder, z, group);
 
@@ -43,7 +43,7 @@ void GLRenderList::push(const Object3D::ptr& object, const BufferGeometry::sptr&
     else
         opaque.push_back(renderItem);
 }
-void GLRenderList::unshift(const Object3D::ptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material, int groupOrder, float z,
+void GLRenderList::unshift(const Object3D::sptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material, int groupOrder, float z,
                            threecpp::DrawRange* group){
     auto renderItem = getNextRenderItem(object, geometry, material, groupOrder, z, group);
 
@@ -86,19 +86,19 @@ void GLRenderList::finish(){
 
 void GLRenderLists::onSceneDispose(const Scene& scene){
     if (count(scene.uuid) > 0) {
-        std::shared_ptr<std::unordered_map<sole::uuid, GLRenderList::ptr>> cameraMapPtr = this->at(scene.uuid);
+        std::shared_ptr<std::unordered_map<sole::uuid, GLRenderList::sptr>> cameraMapPtr = this->at(scene.uuid);
         cameraMapPtr->clear();
         this->erase(scene.uuid);
     }
 
 }
 
-const GLRenderList::ptr& GLRenderLists::get(ScenePtr scene, CameraPtr camera){
-    GLRenderList::ptr list = nullptr;
-    std::shared_ptr<std::unordered_map<sole::uuid, GLRenderList::ptr>> cameras;
+const GLRenderList::sptr& GLRenderLists::get(ScenePtr scene, CameraPtr camera){
+    GLRenderList::sptr list = nullptr;
+    std::shared_ptr<std::unordered_map<sole::uuid, GLRenderList::sptr>> cameras;
     if (count(scene->uuid) == 0) {
         list = std::make_shared<GLRenderList>();
-        cameras = std::make_shared<std::unordered_map<sole::uuid, GLRenderList::ptr>>();
+        cameras = std::make_shared<std::unordered_map<sole::uuid, GLRenderList::sptr>>();
         cameras->insert({ camera->uuid,list });
 
         this->insert({ scene->uuid,cameras });

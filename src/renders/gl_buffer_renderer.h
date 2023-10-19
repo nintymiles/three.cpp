@@ -86,7 +86,7 @@ public:
 
     virtual void render(const GLint start, const GLsizei count) override {
         glDrawArrays(mode, start, count);
-        info->update(count, (unsigned)mode);
+        info->update(count, (unsigned)mode,count);
         GLBufferRendererInterface::render(start, count);
     }
 

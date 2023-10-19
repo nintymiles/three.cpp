@@ -12,6 +12,8 @@
 #include "scene.h"
 #include "gl_renderer.h"
 #include "timer.h"
+#include "gl_program.h"
+#include "gl_clipping.h"
 
 using namespace std;
 TextureEncoding getTextureEncodingFromMap(const Texture::sptr& map){
@@ -58,7 +60,7 @@ int GLPrograms::getMaxBones(const SkinnedMesh& skinnedMesh)
 
  }      */
 
-GLPrograms::GLPrograms(GLCubeMap& cubeMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, GLClipping& clipping)
+GLPrograms::GLPrograms(GLCubeMap& cubeMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping)
         :cubeMaps(cubeMaps),extensions(extensions),capabilities(capabilities),bindingStates(bindingStates),clipping(clipping){
     isGLES3 = capabilities->isGLES3;
     logarithmicDepthBuffer = capabilities->logarithmicDepthBuffer;
@@ -194,8 +196,8 @@ std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& rendere
     parameters->numPointLightShadows =lights.state.pointShadowMap.size();
     parameters->numSpotLightShadows =lights.state.spotShadowMap.size();
 
-    parameters->numClippingPlanes = clipping.numPlanes;
-    parameters->numClipIntersection = clipping.numIntersection;
+    parameters->numClippingPlanes = clipping->numPlanes;
+    parameters->numClipIntersection = clipping->numIntersection;
 
     parameters->dithering =material->dithering;
 
@@ -352,7 +354,9 @@ GLProgram::sptr GLPrograms::acquireProgram(GLRenderer& renderer,const ProgramPar
         }
     }
     if (program == nullptr) {
-        program = std::make_shared<GLProgram>(renderer, extensions, code, parameters,bindingStates);
+        //todo:fix here by using make_shared
+        GLProgram glProgram(renderer, extensions, code, parameters,bindingStates);
+        program = std::shared_ptr<GLProgram>(&glProgram);
         programs.push_back(program);
     }
     return program;
@@ -371,14 +375,12 @@ void GLPrograms::releaseProgram(GLProgram::sptr& program)
     }
 }
 
-UniformValues GLPrograms::getUniforms(const Material::sptr& material)
-{
-
+std::shared_ptr<UniformValues> GLPrograms::getUniforms(const Material::sptr& material){
     if (!material->shaderId.empty()) {
         GLShader shader = getShader(material->shaderId);
-        return shader.getUniforms();
+        return UniformValues::sptr();//todo:fix this std::make_shared<UniformValues>(shader.getUniforms());
     }
     else {
-        return *(material->uniforms);
+        return (material->uniforms);
     }
 }

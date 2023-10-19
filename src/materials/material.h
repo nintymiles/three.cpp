@@ -5,7 +5,6 @@
 #ifndef THREE_CPP_SRC_MATERIAL_H
 #define THREE_CPP_SRC_MATERIAL_H
 
-#include "event_dispatcher.h"
 #include "constants.h"
 #include "color.h"
 #include "math_utils.h"

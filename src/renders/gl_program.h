@@ -34,6 +34,7 @@ class GLRenderer;
 }*/
 
 class GLBindingStates;
+class GLUniforms;
 
 class GLProgram {
     static unsigned programId;
@@ -105,7 +106,7 @@ public:
     GLShader vertexShader;
     GLShader fragmentShader;
 
-    GLUniforms::sptr cachedUniforms;
+    std::shared_ptr<GLUniforms> cachedUniforms;
 
     std::unordered_map<std::string, GLint> cachedAttributes;
 
@@ -125,7 +126,7 @@ public:
             this->program = 0;
         }
     }	*/
-    GLUniforms::sptr getUniforms();
+    std::shared_ptr<GLUniforms> getUniforms();
 
     std::unordered_map<std::string, GLint>& getAttributes();
 

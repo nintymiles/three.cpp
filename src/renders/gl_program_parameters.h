@@ -10,6 +10,7 @@
 
 #include <unordered_map>
 
+class UniformValues;
 struct ProgramParameters {
     using sptr = std::shared_ptr<ProgramParameters>;
     std::string name = "";
@@ -104,7 +105,9 @@ struct ProgramParameters {
     GLSLVersion glslVersion;
     std::string indexOfAttributeName;
     std::string customProgramCacheKey;
-    UniformValues uniforms;
+
+    //UniformValues uniforms;
+    std::shared_ptr<UniformValues> uniforms;
 };
 
 

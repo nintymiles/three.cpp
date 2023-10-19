@@ -7,8 +7,8 @@
 
 #include "gl_headers.h"
 #include "vector4.h"
-
 #include "constants.h"
+#include "material.h"
 
 #include <memory>
 
@@ -554,6 +554,7 @@ public:
         currentBlending = blending;
         currentPremultipliedAlpha = false;
     }
+
     void setMaterial(const Material& material, bool frontFaceCW=false) {
         //material.side == Side::DoubleSide ? disable(GL_CULL_FACE) : enable(GL_CULL_FACE);
 

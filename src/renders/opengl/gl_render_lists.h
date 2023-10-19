@@ -48,8 +48,6 @@ private:
     const RenderItem::sptr& getNextRenderItem(const Object3D::sptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material,
                                               int groupOrder, float z, threecpp::DrawRange* group);
 public:
-    using sptr = std::shared_ptr<GLRenderList>;
-
     int renderItemsIndex = 0;
 
     std::vector<RenderItem::sptr> opaque;
@@ -65,6 +63,8 @@ public:
     std::function<bool(RenderItem::sptr, RenderItem::sptr)> customOpaqueSort;
 
     std::function<bool(RenderItem::sptr, RenderItem::sptr) > customTransparentSort;
+
+    using sptr = std::shared_ptr<GLRenderList>;
 
     virtual ~GLRenderList() = default;
 

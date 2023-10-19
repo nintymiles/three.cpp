@@ -25,7 +25,7 @@ public :
     }
     virtual void render(const GLint start, const GLsizei count) override {
         glDrawElements(mode, count, type, (const size_t *)(start * bytesPerElement));
-        info->update(count, mode);
+        info->update(count, mode,count);
         GLBufferRendererInterface::render(start,count);
     }
 

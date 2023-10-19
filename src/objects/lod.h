@@ -8,7 +8,7 @@
 
 class Camera;
 struct LevelStruct {
-    using ptr = std::shared_ptr<LevelStruct>;
+    using sptr = std::shared_ptr<LevelStruct>;
     float distance;
     Object3D::sptr object;
     LevelStruct() {}
@@ -21,7 +21,7 @@ private:
     Vector3 _v1;
     Vector3 _v2;
 public:
-    using ptr = std::shared_ptr<LOD>;
+    using sptr = std::shared_ptr<LOD>;
 
     bool autoUpdate = true;
 

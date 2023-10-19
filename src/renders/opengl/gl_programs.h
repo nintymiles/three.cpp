@@ -9,13 +9,12 @@
 #include <vector>
 
 #include "texture.h"
-#include "gl_programs.h"
 #include "gl_extensions.h"
 #include "gl_capabilities.h"
 #include "gl_binding_states.h"
-#include "gl_clipping.h"
 #include "light.h"
-#include "gl_program.h"
+//#include "gl_program.h"
+//#include "gl_clipping.h"
 
 #include "gl_program_parameters.h"
 //#include "gl_cubemap.h"
@@ -27,6 +26,8 @@ class Scene;
 class Object3D;
 class SkinnedMesh;
 class GLRenderer;
+class GLProgram;
+class GLClipping;
 
 class GLCubeMap;
 
@@ -89,14 +90,14 @@ protected:
 
     GLBindingStates::sptr bindingStates;
 
-    GLClipping& clipping;
+    std::shared_ptr<GLClipping> clipping;
 
 public :
     using sptr = std::shared_ptr<GLPrograms>;
 
-    std::vector<GLProgram::sptr> programs;
+    std::vector<std::shared_ptr<GLProgram>> programs;
 
-    GLPrograms(GLCubeMap& cubeMaps,const GLExtensions::sptr& extensions,const GLCapabilities::sptr& capabilities,const GLBindingStates::sptr& bindingStates,GLClipping& clipping);
+    GLPrograms(GLCubeMap& cubeMaps,const GLExtensions::sptr& extensions,const GLCapabilities::sptr& capabilities,const GLBindingStates::sptr& bindingStates,std::shared_ptr<GLClipping>& clipping);
 
     virtual ~GLPrograms() = default;
 
@@ -104,11 +105,11 @@ public :
 
     std::string getProgramCacheKey(const Material& material, const ProgramParameters& parameters);
 
-    GLProgram::sptr acquireProgram(GLRenderer& renderer,const ProgramParameters& parameters, const std::string& code);
+    std::shared_ptr<GLProgram> acquireProgram(GLRenderer& renderer,const ProgramParameters& parameters, const std::string& code);
 
-    void releaseProgram(GLProgram::sptr& program);
+    void releaseProgram(std::shared_ptr<GLProgram>& program);
 
-    UniformValues getUniforms(const Material::sptr& material);
+    std::shared_ptr<UniformValues> getUniforms(const Material::sptr& material);
 
 };
 

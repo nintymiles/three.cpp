@@ -161,6 +161,7 @@ template<> struct UniformValueT<CachedSpotLightShadows> : public UniformValue{
         }
     }
 };
+
 template<> struct UniformValueT<CachedDirectionalLights> : public UniformValue{
     UNIFORM_STRUCT_BODY(CachedDirectionalLights)
 
@@ -331,8 +332,7 @@ public:
         }
     }
 
-    std::unordered_map<std::string, UniformValue::sptr,threecpp::StringHash> cloneValues() const
-    {
+    std::unordered_map<std::string, UniformValue::sptr,threecpp::StringHash> cloneValues() const{
         std::unordered_map<std::string, UniformValue::sptr,threecpp::StringHash> cloned;
 
         for (auto& entry : values) {
@@ -418,7 +418,7 @@ UniformValuesDelegate merged(std::initializer_list<std::string> id);
 class UniformValues {
     std::unordered_map<std::string, std::shared_ptr<UniformValue>,threecpp::StringHash> values;
 public:
-    using ptr = std::shared_ptr<UniformValues>;
+    using sptr = std::shared_ptr<UniformValues>;
 
     UniformValues() {}
 

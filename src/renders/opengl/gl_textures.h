@@ -6,12 +6,12 @@
 #define THREE_CPP_GL_TEXTURES_H
 
 #include "gl_extensions.h"
-#include "gl_properties.h"
 #include "gl_capabilities.h"
 #include "gl_info.h"
 #include "gl_state.h"
 
 class GLRenderTarget;
+class GLProperties;
 
 class GLTextures {
 
@@ -20,9 +20,9 @@ private:
 
     GLState::sptr state;
 
-    GLProperties::sptr properties;
+    std::shared_ptr<GLProperties> properties;
     GLCapabilities::sptr capabilities;
-    GLInfo::sptr info;
+    std::shared_ptr<GLInfo> info;
 
     bool isGLES3 = false;
 
@@ -41,7 +41,7 @@ private:
 public:
     using sptr = std::shared_ptr<GLTextures>;
 
-    GLTextures(GLExtensions::sptr& extensions, GLState::sptr& state, GLProperties::sptr& properties, GLCapabilities::sptr& capabilities, GLInfo::sptr& info);
+    GLTextures(GLExtensions::sptr& extensions, GLState::sptr& state, std::shared_ptr<GLProperties>& properties, GLCapabilities::sptr& capabilities, std::shared_ptr<GLInfo>& info);
 
     virtual ~GLTextures() = default;
 

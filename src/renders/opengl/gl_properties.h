@@ -34,22 +34,27 @@ struct Properties{
     GLint depthRenderbuffer=0;
 };
 
+class GLProgram;
+class GLUniform;
+
 struct MaterialProperties {
     int version=-1;
-    GLProgram::sptr program;
+    std::shared_ptr<GLProgram> program;
     int lightsStateVersion;
     Fog::sptr fog;
     std::vector<float> clippingState;
     bool needsLights = false;
     bool receiveShadow = false;
-    UniformValues uniforms;
+    //UniformValues uniforms;
+    std::shared_ptr<UniformValues> uniforms;
     LightsHash lightsHash;
     size_t numClippingPlanes = 0;
     size_t numIntersection = 0;
     std::string shaderID;
-    GLShader shader;
+    //GLShader shader;
+    std::shared_ptr<GLShader> shader;
     TextureEncoding outputEncoding;
-    std::vector<GLUniform::sptr> uniformsList;
+    std::vector<std::shared_ptr<GLUniform>> uniformsList;
     Texture::sptr envMap;
     Texture::sptr environment;
 };

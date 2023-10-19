@@ -13,7 +13,6 @@
 #include "buffer_geometry.h"
 #include "gl_capabilities.h"
 #include "gl_attributes.h"
-#include "gl_program.h"
 #include "material.h"
 
 #include <memory>
@@ -44,6 +43,8 @@ struct BindingStateStruct {
 using StateStruct = std::unordered_map<size_t, BindingStateStruct>;
 using ProgramStruct = std::unordered_map<size_t, StateStruct>;
 
+class GLProgram;
+
 class GLBindingStates {
 private:
     GLExtensions::sptr extensions;
@@ -59,7 +60,7 @@ private:
 
     void deleteVertexArrayObject(GLuint* vao);
 
-    BindingStateStruct& getBindingState(const Geometry::sptr& geometry, const GLProgram::sptr& program, const Material::sptr& material);
+    BindingStateStruct& getBindingState(const Geometry::sptr& geometry, const std::shared_ptr<GLProgram>& program, const Material::sptr& material);
 
     BindingStateStruct createBindingState(GLuint vao);
 
@@ -71,7 +72,7 @@ private:
 
     void vertexAttribPointer(GLuint index, GLint size, GLenum type, bool normalized, GLuint stride, GLuint offset);
 
-    void setupVertexAttributes(const Object3D::sptr& object, const Material::sptr& material, const GLProgram::sptr& program, const BufferGeometry::sptr& bufferGeometry);
+    void setupVertexAttributes(const Object3D::sptr& object, const Material::sptr& material, const std::shared_ptr<GLProgram>& program, const BufferGeometry::sptr& bufferGeometry);
 
 public :
     using sptr = std::shared_ptr<GLBindingStates>;
@@ -89,7 +90,7 @@ public :
 
     void initAttributes();
 
-    void setUp(const Object3D::sptr& object, const Material::sptr& material, const GLProgram::sptr& program, const BufferGeometry::sptr& geometry, const BufferAttribute<unsigned>::sptr& index);
+    void setUp(const Object3D::sptr& object, const Material::sptr& material, const std::shared_ptr<GLProgram>& program, const BufferGeometry::sptr& geometry, const BufferAttribute<unsigned>::sptr& index);
 
     void reset();
 
@@ -97,7 +98,7 @@ public :
 
     void releaseStatesOfGeometry(const Geometry::sptr& geometry);
 
-    void releaseStatesOfProgram(const GLProgram::sptr& program);
+    void releaseStatesOfProgram(const std::shared_ptr<GLProgram>& program);
 
     void enableAttribute(GLuint attribute);
 
