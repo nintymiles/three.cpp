@@ -9,8 +9,6 @@
 #include "geometry.h"
 //#include "line_basic_material.h"
 
-#include <list>
-
 class Line :public Object3D {
 public:
     using sptr = std::shared_ptr<Line>;

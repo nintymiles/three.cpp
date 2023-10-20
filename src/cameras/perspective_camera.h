@@ -43,7 +43,7 @@ public:
         updateProjectionMatrix();
     }
 
-    virtual PerspectiveCamera* clone() {
+    virtual PerspectiveCamera* clone(){
         return new PerspectiveCamera(*this);
     }
     virtual PerspectiveCamera& copy(PerspectiveCamera& camera, bool recursive) {

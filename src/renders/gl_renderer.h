@@ -11,6 +11,8 @@
 #include "matrix4.h"
 #include "vector2.h"
 #include "vector3.h"
+
+#include "gl_clipping.h"
 #include "gl_render_target.h"
 #include "gl_render_states.h"
 #include "gl_render_lists.h"

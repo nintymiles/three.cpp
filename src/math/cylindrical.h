@@ -43,6 +43,10 @@ class Vector3;
 //         return this;
 //     }
 
+    Cylindrical& clone(Cylindrical* c);
+
+    Cylindrical& copy(const Cylindrical& other);
+
      Cylindrical& setFromVector3 ( Vector3& v );
 
      Cylindrical& setFromCartesianCoords( double x,double y,double z ) {

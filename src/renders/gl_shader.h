@@ -125,11 +125,11 @@ public:
 
     unsigned shader = -1;
 
-    std::shared_ptr<LibUniformValues> uniforms;
+    LibUniformValues uniforms;
 
     GLShader() :type(GL_VERTEX_SHADER){}
 
-    GLShader(const char* vertexShader, const char* fragmentShader, const std::shared_ptr<LibUniformValues>& uniforms)
+    GLShader(const char* vertexShader, const char* fragmentShader, const LibUniformValues& uniforms)
             : type(GL_VERTEX_SHADER), vertexShader(vertexShader), fragmentShader(fragmentShader), uniforms(uniforms) {}
 
     GLShader(unsigned type, const std::string& code) {
@@ -147,7 +147,7 @@ public:
         return std::make_shared<GLShader>();
     }
 
-    std::shared_ptr<LibUniformValues>& getUniforms() {
+    LibUniformValues& getUniforms() {
         return uniforms;
     }
 

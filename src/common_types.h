@@ -1,11 +1,12 @@
 #ifndef SRC_COMMON_TYPES_H_
 #define SRC_COMMON_TYPES_H_
 
-#include <GLES3/gl3.h>
+#include "gl_headers.h"
 
 #include <unordered_map>
 #include <vector>
 #include <string_view>
+#include <string>
 
 namespace threecpp {
 
@@ -70,8 +71,7 @@ struct MipMap {
     int width, height;
 };
 
-struct GLViewPort
-{
+struct GLViewPort{
     float x;
     float y;
     float width;

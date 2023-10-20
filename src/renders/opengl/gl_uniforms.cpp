@@ -5,6 +5,7 @@
 
 #include "texture.h"
 #include "constants.h"
+#include "uniform_values.h"
 
 #include <array>
 #include <unordered_map>
