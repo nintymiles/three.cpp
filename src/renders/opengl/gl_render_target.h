@@ -84,8 +84,6 @@ public:
 
     threecpp::Signal<void(GLRenderTarget&)> onDispose;
 
-
-
     GLRenderTarget& operator = (const GLRenderTarget& source) {
         return copy(*this);
     }

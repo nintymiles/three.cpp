@@ -17,7 +17,6 @@ GLRenderTarget::GLRenderTarget(size_t width, size_t height ,GLRenderTargetParame
     viewport.set(0, 0, (float)width, (float)height);
 
     if (options != nullptr) {
-
         //this->options = *options;
         //std::copy(options->begin(), options->end(), this->options.begin());
         TextureMapping mapping = options->mapping;
@@ -113,6 +112,7 @@ GLRenderTarget& GLRenderTarget::copy(const GLRenderTarget& source){
 
     return *this;
 }
+
 void GLRenderTarget::dispose(){
     // must define to delete texture, and depthTexture
     onDispose.emitSignal(*this);

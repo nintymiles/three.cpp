@@ -345,7 +345,7 @@ class Vector3{
             return this->normalize().multiplyScalar( length );
         }
 
-        Vector3& lerp( Vector3& v, double alpha ) {
+        Vector3& lerp( const Vector3& v, double alpha ) {
             this->x += ( v.x - this->x ) * alpha;
             this->y += ( v.y - this->y ) * alpha;
             this->z += ( v.z - this->z ) * alpha;
