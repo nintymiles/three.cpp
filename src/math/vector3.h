@@ -61,7 +61,7 @@ class Vector3{
         //double x = 0,y = 0,z = 0;
         union {
             struct {
-                double x = 0,y = 0,z = 0;
+                double x,y,z;
             };
             double elements[3];
         };

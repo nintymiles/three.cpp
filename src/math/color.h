@@ -48,10 +48,10 @@ struct rgb_components{int r,g,b;};
 struct hsl_components{double h,s,l;};
 
 
-rgb_components _rgb = { r: 0, g: 0, b: 0 };
+rgb_components _rgb = { 0,0,0 };
 
-hsl_components _hslA = { h: 0, s: 0, l: 0 };
-hsl_components _hslB = { h: 0, s: 0, l: 0 };
+hsl_components _hslA = { 0, 0, 0 };
+hsl_components _hslB = { 0, 0, 0 };
 //std::shared_ptr<hsl_components> _hslB = std::make_shared<hsl_components>();
 
 class Color;

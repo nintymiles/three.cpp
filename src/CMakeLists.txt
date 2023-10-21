@@ -5,6 +5,8 @@ project (Three_cpp_lib)
 if(MSVC)
   #设置VC输入代码编码格式为utf-8
   set(CMAKE_C_FLAGS /source-charset:utf-8)
+  #增加macro定义NOMINMAX，去除windows.h中min/max宏影响
+  add_definitions(-DNOMINMAX)
 endif()
 
 find_package(Microsoft.GSL CONFIG)

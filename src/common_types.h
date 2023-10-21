@@ -3,6 +3,7 @@
 
 #include "gl_headers.h"
 
+#include <limits>
 #include <unordered_map>
 #include <vector>
 #include <string_view>
@@ -52,7 +53,7 @@ struct UpdateRange {
     size_t start;
     size_t count;
 
-    UpdateRange(size_t offset = 0, size_t count = std::numeric_limits<size_t>::max()) :start(offset), count(count) {}
+    UpdateRange(size_t offset = 0, size_t count = (std::numeric_limits<size_t>::max)()) :start(offset), count(count) {}
 };
 
 struct DrawRange {

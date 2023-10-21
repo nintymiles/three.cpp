@@ -80,6 +80,7 @@ struct MorphNormals {
 struct MorphNormal {
 
 };
+
 namespace geometry {
     static size_t _geometryId = 0;
 }
