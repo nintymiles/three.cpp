@@ -1,8 +1,10 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include<string>
 #include "gl_headers.h"
+
+#include<string>
+
 
 const std::string REVISION = "139dev";
 enum MOUSE { LEFT = 0, MIDDLE = 1, RIGHT = 2, ROTATE = 0, DOLLY = 1, PAN = 2 };

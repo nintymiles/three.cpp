@@ -9,7 +9,6 @@
 
 #include <GLES3/gl3.h>
 
-
 namespace threecpp{
 
 //单独的函数声明和定义一定要分开，否则被多次include后，就会出现duplicate symbols

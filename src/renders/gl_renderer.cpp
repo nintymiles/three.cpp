@@ -21,6 +21,10 @@
 #include "sprite_material.h"
 #include "lod.h"
 #include "compressed_texture.h"
+#include "gl_extensions.h"
+#include "gl_capabilities.h"
+#include "gl_binding_states.h"
+#include "gl_cubemap.h"
 
 GLRenderer::GLRenderer(int width, int height){
     initGLContext(width, height);
@@ -66,8 +70,8 @@ void GLRenderer::initGLContext(int width, int height){
     morphtargets = std::make_shared<GLMorphtargets>();
 
     bindingStates = std::make_shared<GLBindingStates>(extensions, attributes, capabilities);
-
-    programCache = std::make_shared<GLPrograms>(*cubeMaps,extensions, capabilities,bindingStates,_clipping);
+    //todo:fix this
+    programCache = std::make_shared<GLPrograms>(*cubeMaps, extensions, capabilities,bindingStates,_clipping);
 
     renderLists = std::make_shared<GLRenderLists>();
 
@@ -143,9 +147,9 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
     auto& uniforms = materialProperties.uniforms;
 
     if (!material->isShaderMaterial && !material->isRawShaderMaterial || material->clipping) {
-        materialProperties.numClippingPlanes = _clipping.numPlanes;
-        materialProperties.numIntersection = _clipping.numIntersection;
-        uniforms->set("clippingPlanes", _clipping.uniform);
+        materialProperties.numClippingPlanes = _clipping->numPlanes;
+        materialProperties.numIntersection = _clipping->numIntersection;
+        uniforms->set("clippingPlanes", _clipping->uniform);
     }
     materialProperties.environment = instanceOf<MeshStandardMaterial>(material.get()) ? scene->environment : nullptr;
     materialProperties.fog = scene->fog;
@@ -221,7 +225,7 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
         if (_localClippingEnabled || camera != _currentCamera) {
             auto useCache = camera == _currentCamera && material->id == _currentMaterialId;
 
-            _clipping.setState(material->clippingPlanes, material->clipIntersection, material->clipShadows, camera, materialProperties, useCache);
+            _clipping->setState(material->clippingPlanes, material->clipIntersection, material->clipShadows, camera, materialProperties, useCache);
         }
     }
 
@@ -239,8 +243,8 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
                 initMaterial(material, scene, object);
             }
         }
-        else if (materialProperties.numClippingPlanes != _clipping.numPlanes ||
-                 materialProperties.numIntersection != _clipping.numIntersection)
+        else if (materialProperties.numClippingPlanes != _clipping->numPlanes ||
+                 materialProperties.numIntersection != _clipping->numIntersection)
         {
             initMaterial(material, scene, object);
         }
@@ -1068,7 +1072,7 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
     _frustum.setFromProjectionMatrix(_projScreenMatrix);
 
     _localClippingEnabled = localClippingEnabled;
-    _clippingEnabled = _clipping.init(clippingPlanes, _localClippingEnabled, camera);
+    _clippingEnabled = _clipping->init(clippingPlanes, _localClippingEnabled, camera);
 
     currentRenderList = renderLists->get(scene, camera);
     currentRenderList->init();
@@ -1081,7 +1085,7 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
         currentRenderList->sort(customOpaqueSort,customTransparentSort);
     }
 
-    if (_clippingEnabled) _clipping.beginShadows();
+    if (_clippingEnabled) _clipping->beginShadows();
 
     auto shadowsArray = currentRenderState->state.shadowsArray;
 
@@ -1089,7 +1093,7 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
 
     currentRenderState->setupLights(camera);
 
-    if (_clippingEnabled) _clipping.endShadows();
+    if (_clippingEnabled) _clipping->endShadows();
 
     if (info->autoReset) info->reset();
 

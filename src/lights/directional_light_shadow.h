@@ -33,6 +33,8 @@ public:
         lightShadowType = LightShadowType::DirectionalLightShadow;
         return *this;
     }
+
+    virtual void updateMatrices(const Light& light, int viewportIndex=-1) override{}
 };
 
 

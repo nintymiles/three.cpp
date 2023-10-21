@@ -14,6 +14,7 @@
 #include "timer.h"
 #include "gl_program.h"
 #include "gl_clipping.h"
+#include "gl_cubemap.h"
 
 using namespace std;
 TextureEncoding getTextureEncodingFromMap(const Texture::sptr& map){

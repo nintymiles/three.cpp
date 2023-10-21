@@ -8,3 +8,4 @@
 DirectionalLightShadow::DirectionalLightShadow() : LightShadow(OrthographicCamera::create(-5, 5, 5, -5, 0.5f, 500.0f)) {
     lightShadowType = LightShadowType::DirectionalLightShadow;
 }
+

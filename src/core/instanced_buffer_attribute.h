@@ -16,18 +16,18 @@ public :
 
     int meshPerAttribute = 1;
 
-    InstancedBufferAttribute() : BufferAttribute(), meshPerAttribute(1) {}
+    InstancedBufferAttribute() : BufferAttribute<T>(), meshPerAttribute(1) {}
 
-    InstancedBufferAttribute(std::vector<T> array, unsigned itemSize, bool normalized, int meshPerAttribute) : BufferAttribute(array, itemSize, normalized), meshPerAttribute(meshPerAttribute){}
+    InstancedBufferAttribute(std::vector<T> array, unsigned itemSize, bool normalized, int meshPerAttribute) : BufferAttribute<T>(array, itemSize, normalized), meshPerAttribute(meshPerAttribute){}
 
-    InstancedBufferAttribute(const InstancedBufferAttribute& source) : BufferAttribute(source) {
+    InstancedBufferAttribute(const InstancedBufferAttribute& source) : BufferAttribute<T>(source) {
         meshPerAttribute = source.meshPerAttribute;
     }
     InstancedBufferAttribute* clone() {
         return new InstancedBufferAttribute(*this);
     }
     InstancedBufferAttribute* copy(const InstancedBufferAttribute& source) {
-        BufferAttribute::copy(source);
+        BufferAttribute<T>::copy(source);
         meshPerAttribute = source.meshPerAttribute;
         return *this;
     }

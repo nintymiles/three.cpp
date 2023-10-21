@@ -16,6 +16,7 @@
 #include "scene.h"
 #include "gl_objects.h"
 #include "light.h"
+//#include "uniform_values.h"
 
 #include <unordered_map>
 
@@ -58,7 +59,8 @@ private:
     template<typename T>
     void addUniformsValue(UniformValues& uniforms, const std::string& key,const T& val){
         //GLUniform::ptr uniform = GLUniform::create("value", val);
-        uniforms.set(key, val);
+        //todo:fix this
+        //uniforms.set(key, val);
     }
 
 public:

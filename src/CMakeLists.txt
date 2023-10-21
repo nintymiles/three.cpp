@@ -46,6 +46,9 @@ file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h)
 file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/*.cpp;${ROOT_DIR}/src/renders/opengl/*.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
 file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h)
 
+file(GLOB CONTROLS_SOURCE ${ROOT_DIR}/src/control/*.cpp)
+file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
+
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
 
@@ -76,6 +79,9 @@ source_group("Scenes" FILES ${SCENES_HEADER})
 source_group("Materials" FILES ${TEXTURES_SOURCE})
 source_group("Materials" FILES ${TEXTURES_HEADER})
 
+source_group("Controls" FILES ${CONTROLS_SOURCE})
+source_group("Controls" FILES ${CONTROLS_HEADER})
+
 file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE};
         ${CAMERAS_HEADER};${CAMERAS_SOURCE};
         ${CORE_SOURCE};${CORE_HEADER};
@@ -86,7 +92,8 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${SCENES_SOURCE};${SCENES_HEADER};
         ${GEOMETRIES_SOURCE};${GEOMETRIES_HEADER};
         ${MATERIALS_SOURCE};${MATERIALS_SOURCE};
-        ${RENDERS_SOURCE};${RENDERS_HEADER})
+        ${RENDERS_SOURCE};${RENDERS_HEADER};
+        ${CONTROLS_SOURCE};${CONTROLS_HEADER})
 
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
@@ -105,9 +112,10 @@ ${ROOT_DIR}/src/lights
 ${ROOT_DIR}/src/objects
 ${ROOT_DIR}/src/scenes
 ${ROOT_DIR}/src/geometries
-${ROOT_DIR}/src/renders/
+${ROOT_DIR}/src/renders
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders
+${ROOT_DIR}/src/control
 ${ROOT_DIR}/src/utils)
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误

@@ -12,11 +12,11 @@ private:
     GLRenderer& renderer;
     std::unordered_map<std::string, Texture::sptr> cubemaps;
 public:
-    using ptr = std::shared_ptr<GLCubeMap>;
+    using sptr = std::shared_ptr<GLCubeMap>;
 
     GLCubeMap(GLRenderer& renderer): renderer(renderer){}
 
-    static ptr create(GLRenderer& renderer) {
+    static sptr create(GLRenderer& renderer) {
         return std::make_shared<GLCubeMap>(renderer);
     }
 

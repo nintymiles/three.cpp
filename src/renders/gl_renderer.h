@@ -33,6 +33,7 @@
 #include "gl_shadow_map.h"
 #include "gl_materials.h"
 
+
 #include "camera.h"
 #include "scene.h"
 #include "mesh_basic_material.h"
@@ -89,7 +90,7 @@ private:
 
     Frustum _frustum;
 
-    GLClipping _clipping;
+    GLClipping::sptr _clipping;
 
     bool _clippingEnabled = false;
     bool _localClippingEnabled = false;
@@ -103,7 +104,7 @@ private:
 
     GLBindingStates::sptr bindingStates;
 
-    GLCubeMap::ptr cubeMaps;
+    GLCubeMap::sptr cubeMaps;
 
     void initGLContext(int width,int height);
 
