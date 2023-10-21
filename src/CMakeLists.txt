@@ -54,6 +54,9 @@ file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
 
+source_group("Math" FILES ${MATH_SOURCE})
+source_group("Math" FILES ${MATH_HEADER})
+
 source_group("Cameras" FILES ${CAMERAS_SOURCE})
 source_group("Cameras" FILES ${CAMERAS_HEADER})
 

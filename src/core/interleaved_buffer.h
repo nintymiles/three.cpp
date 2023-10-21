@@ -21,9 +21,11 @@ public:
     InterleavedBuffer() : BufferAttribute<T>(), stride(0) {
         this->usage = Usage::StaticDrawUsage;
     }
+
     InterleavedBuffer(const InterleavedBuffer& source) : BufferAttribute<T>(source) {
         stride = source.stride;
     }
+
     InterleavedBuffer(const std::vector<T>& array, unsigned stride) : _array(array), stride(stride){
         this->updateRange.start = 0;
         this->updateRange.count = -1;
@@ -37,6 +39,7 @@ public:
     static sptr create(const std::vector<T>& array, unsigned stride) {
         return std::make_shared<InterleavedBuffer>(array, stride);
     }
+
     InterleavedBuffer& copyAt(unsigned index1, const InterleavedBuffer& attribute, unsigned index2) {
         index1 *= stride;
         index2 *= attribute.stride;

@@ -305,7 +305,7 @@ class Matrix4{
 		return *this;
 	}
 
-    //rotate theta degress around x axis
+    //rotate theta degrees around x axis
 	Matrix4& makeRotationX(double theta){
 
 		const double c = cos(theta), s = sin(theta);
@@ -367,14 +367,14 @@ class Matrix4{
 		return *this;
 	}
 
-	Matrix4& makePerspective(double left,double right,double top,double bottom,double near,double far){
-		const double x = 2 * near / ( right - left );
-		const double y = 2 * near / ( top - bottom );
+	Matrix4& makePerspective(double left, double right, double top, double bottom, double nearVal, double farVal){
+		const double x = 2 * nearVal / (right - left);
+		const double y = 2 * nearVal / (top - bottom);
 
 		const double a = ( right + left ) / ( right - left );
 		const double b = ( top + bottom ) / ( top - bottom );
-		const double c = - ( far + near ) / ( far - near );
-		const double d = - 2 * far * near / ( far - near );
+		const double c = - ( farVal + nearVal ) / ( farVal - nearVal );
+		const double d = - 2 * farVal * nearVal / ( farVal - nearVal );
 
 		elements[ 0 ] = x;	elements[ 4 ] = 0;	elements[ 8 ] = a;	elements[ 12 ] = 0;
 		elements[ 1 ] = 0;	elements[ 5 ] = y;	elements[ 9 ] = b;	elements[ 13 ] = 0;
@@ -384,23 +384,23 @@ class Matrix4{
 		return *this;
 	}
 
-    Matrix4& makePerspective(double fov,double aspect,double near,double far){
-        const double top = near * tan( (MathUtils::DEG2RAD) * 0.5 * fov );
+    Matrix4& makePerspective(double fov, double aspect, double nearVal, double farVal){
+        const double top = nearVal * tan( MathUtils::DEG2RAD * 0.5 * fov );
         const double height = 2 * top;
         const double width = aspect * height;
         const double left = - 0.5 * width;
 
-        return makePerspective(left,left+width,top,top-height,near,far);
+        return makePerspective(left,left+width, top,top-height, nearVal, farVal);
     }
 
-	Matrix4& makeOrthographic(double left,double right,double top,double bottom,double near,double far){
+	Matrix4& makeOrthographic(double left, double right, double top, double bottom, double nearVal, double farVal){
 		const double w = 1.0 / ( right - left );
 		const double h = 1.0 / ( top - bottom );
-		const double p = 1.0 / ( far - near );
+		const double p = 1.0 / (farVal - nearVal );
 
 		const double x = ( right + left ) * w;
 		const double y = ( top + bottom ) * h;
-		const double z = ( far + near ) * p;
+		const double z = ( farVal + nearVal ) * p;
 
 		elements[ 0 ] = 2 * w;	elements[ 4 ] = 0;	elements[ 8 ] = 0;	elements[ 12 ] = - x;
 		elements[ 1 ] = 0;	elements[ 5 ] = 2 * h;	elements[ 9 ] = 0;	elements[ 13 ] = - y;

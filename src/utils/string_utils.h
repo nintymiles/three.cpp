@@ -33,14 +33,14 @@ namespace string_utils{
         std::string delim;
     };
 
-    std::string join(const std::vector<std::string>& strVec,std::string delim){
-        auto concatStrObj = std::for_each(strVec.cbegin(),strVec.cend(),(delim!="")?JoinOperation<std::string>(delim):JoinOperation<std::string>());
-        return concatStrObj.getSum();
-    }
+    //std::string join(const std::vector<std::string>& strVec,std::string delim){
+    //    auto concatStrObj = std::for_each(strVec.cbegin(),strVec.cend(),(delim!="")?JoinOperation<std::string>(delim):JoinOperation<std::string>());
+    //    return concatStrObj.getSum();
+    //}
 
-    std::string join(const std::vector<std::string>& strVec){
-        return join(strVec,"");
-    }
+    //std::string join(const std::vector<std::string>& strVec){
+    //    return join(strVec,"");
+    //}
 
     static inline std::vector<std::string> split(std::string str, char delimiter) {
         std::vector<std::string> internal;

@@ -7,6 +7,8 @@
 
 #include "material.h"
 
+#include <memory>
+
 class ShaderMaterial : public Material{
 
 public:

@@ -18,9 +18,10 @@
 #include <memory>
 #include <unordered_map>
 
+namespace threecpp {
 struct CacheData {
-    BufferAttribute<float>::sptr attribute;
-    InterleavedBuffer<float>::sptr data;
+std::shared_ptr<BufferAttribute<float>> attribute;
+std::shared_ptr<InterleavedBuffer<float>> data;
 };
 
 struct BindingStateStruct {
@@ -35,12 +36,14 @@ struct BindingStateStruct {
     std::unordered_map<AttributeNameKey, CacheData> attributes;
     BufferAttribute<unsigned>::sptr index;
 
-    bool equals(const BindingStateStruct& other) {
+    bool equals(const BindingStateStruct &other) {
         return uuid == other.uuid;
     }
 };
 
-using StateStruct = std::unordered_map<size_t, BindingStateStruct>;
+}
+
+using StateStruct = std::unordered_map<size_t, threecpp::BindingStateStruct>;
 using ProgramStruct = std::unordered_map<size_t, StateStruct>;
 
 class GLProgram;
@@ -60,9 +63,9 @@ private:
 
     void deleteVertexArrayObject(GLuint* vao);
 
-    BindingStateStruct& getBindingState(const Geometry::sptr& geometry, const std::shared_ptr<GLProgram>& program, const Material::sptr& material);
+    threecpp::BindingStateStruct& getBindingState(const Geometry::sptr& geometry, const std::shared_ptr<GLProgram>& program, const Material::sptr& material);
 
-    BindingStateStruct createBindingState(GLuint vao);
+    threecpp::BindingStateStruct createBindingState(GLuint vao);
 
     bool needsUpdate(const BufferGeometry::sptr& bufferGeometry, const BufferAttribute<unsigned>::sptr index);
 
@@ -78,8 +81,8 @@ public :
     using sptr = std::shared_ptr<GLBindingStates>;
 
     std::unordered_map<size_t, ProgramStruct> bindingStates;
-    BindingStateStruct defaultState;
-    BindingStateStruct currentState;
+    threecpp::BindingStateStruct defaultState;
+    threecpp::BindingStateStruct currentState;
 
     GLBindingStates(const GLExtensions::sptr& extensions, const GLAttributes::sptr& attributes, const GLCapabilities::sptr& capabilities);
 

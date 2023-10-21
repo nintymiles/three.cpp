@@ -23,7 +23,7 @@ void GLBindingStates::deleteVertexArrayObject(GLuint* vao){
     glDeleteVertexArrays(1, vao);
 }
 
-BindingStateStruct& GLBindingStates::getBindingState(const Geometry::sptr& geometry, const GLProgram::sptr& program, const Material::sptr& material){
+threecpp::BindingStateStruct& GLBindingStates::getBindingState(const Geometry::sptr& geometry, const GLProgram::sptr& program, const Material::sptr& material){
     bool wireframe = material->wireframe;
 
     if (bindingStates.count(geometry->id) == 0) {
@@ -41,7 +41,7 @@ BindingStateStruct& GLBindingStates::getBindingState(const Geometry::sptr& geome
     if (stateMap.count(wireframe) == 0) {
         GLuint vao;
         createVertexArrayObject(&vao);
-        BindingStateStruct state = createBindingState(vao);
+        threecpp::BindingStateStruct state = createBindingState(vao);
         stateMap.insert({ wireframe,state });
     }
 
@@ -49,12 +49,12 @@ BindingStateStruct& GLBindingStates::getBindingState(const Geometry::sptr& geome
 
 }
 
-BindingStateStruct GLBindingStates::createBindingState(GLuint vao){
+threecpp::BindingStateStruct GLBindingStates::createBindingState(GLuint vao){
     vector<GLuint> newAttributes = vector<GLuint>(maxVertexAttributes,0);
     vector<GLuint> enabledAttributes = vector<GLuint>(maxVertexAttributes, 0);
     vector<GLuint> attributeDivisors= vector<GLuint>(maxVertexAttributes, 0);
 
-    BindingStateStruct state;
+    threecpp::BindingStateStruct state;
 
     state.uuid = sole::uuid1();
     state.newAttributes = newAttributes;
@@ -67,7 +67,7 @@ BindingStateStruct GLBindingStates::createBindingState(GLuint vao){
 }
 
 bool GLBindingStates::needsUpdate(const BufferGeometry::sptr& bufferGeometry, const BufferAttribute<unsigned>::sptr index){
-    std::unordered_map<AttributeNameKey, CacheData> cachedAttributes = currentState.attributes;
+    std::unordered_map<AttributeNameKey, threecpp::CacheData> cachedAttributes = currentState.attributes;
 
     for(auto items : bufferGeometry->attributes) {
 
@@ -79,7 +79,7 @@ bool GLBindingStates::needsUpdate(const BufferGeometry::sptr& bufferGeometry, co
         if (cachedAttribute.attribute != geometryAttribute) return true;
 
         if (instanceOf<InterleavedBufferAttribute<float>>(geometryAttribute.get())) {
-            auto interAttr = dynamic_pointer_cast<InterleavedBufferAttribute<float>>(geometryAttribute);
+            auto interAttr = std::dynamic_pointer_cast<InterleavedBufferAttribute<float>>(geometryAttribute);
             if (cachedAttribute.data != interAttr->data) return true;
         }
     }
@@ -91,14 +91,14 @@ bool GLBindingStates::needsUpdate(const BufferGeometry::sptr& bufferGeometry, co
 
 void GLBindingStates::saveCache(const BufferGeometry::sptr& bufferGeometry, const BufferAttribute<unsigned>::sptr& index){
 
-    std::unordered_map<AttributeNameKey, CacheData> cache;
+    std::unordered_map<AttributeNameKey, threecpp::CacheData> cache;
     for (auto item : bufferGeometry->attributes) {
         auto attribute = item.second;
-        CacheData data;
+        threecpp::CacheData data;
         data.attribute = attribute;
         if (instanceOf<InterleavedBufferAttribute<float>>(attribute.get())) {
-            auto interAttr = dynamic_pointer_cast<InterleavedBufferAttribute<float>>(attribute);
-            data.data = dynamic_pointer_cast<InterleavedBuffer<float>>(interAttr->data);
+            auto interAttr = std::dynamic_pointer_cast<InterleavedBufferAttribute<float>>(attribute);
+            data.data = std::dynamic_pointer_cast<InterleavedBuffer<float>>(interAttr->data);
         }
         cache.insert({ item.first,data });
     }
@@ -310,7 +310,7 @@ GLBindingStates::~GLBindingStates(){
         for (auto programId = programMap.begin(); programId != programMap.end();) {
             StateStruct& stateMap = programId->second;
             for (auto stateId = stateMap.begin(); stateId != stateMap.end();) {
-                BindingStateStruct& binding = stateId->second;
+                threecpp::BindingStateStruct& binding = stateId->second;
                 deleteVertexArrayObject(&binding.vao);
                 stateMap.erase(stateId);
                 stateId++;
@@ -340,7 +340,7 @@ void GLBindingStates::setUp(const Object3D::sptr& object, const Material::sptr& 
     bool updateBuffers = false;
 
     if (vaoAvailable) {
-        BindingStateStruct state = getBindingState(geometry, program, material);
+        threecpp::BindingStateStruct state = getBindingState(geometry, program, material);
         if (!currentState.equals(state)) {
             currentState = state;
             bindVertexArrayObject(currentState.vao);
@@ -410,7 +410,7 @@ void GLBindingStates::releaseStatesOfGeometry(const Geometry::sptr& geometry){
     for (auto programId = programMap.begin(); programId != programMap.end();) {
         StateStruct& stateMap = programId->second;
         for (auto boolId = stateMap.begin(); boolId != stateMap.end();) {
-            BindingStateStruct& binding = boolId->second;
+            threecpp::BindingStateStruct& binding = boolId->second;
             deleteVertexArrayObject(&binding.vao);
             stateMap.erase(boolId);
             boolId++;
@@ -429,7 +429,7 @@ void GLBindingStates::releaseStatesOfProgram(const GLProgram::sptr& program){
         StateStruct& stateMap = programMap[program->id];
 
         for (auto boolId = stateMap.begin(); boolId != stateMap.end();) {
-            BindingStateStruct& binding = boolId->second;
+            threecpp::BindingStateStruct& binding = boolId->second;
             deleteVertexArrayObject(&binding.vao);
             stateMap.erase(boolId);
             boolId++;

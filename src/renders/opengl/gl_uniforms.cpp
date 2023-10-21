@@ -157,6 +157,7 @@ std::array<float, 16> mat4Array;
 std::array<float, 9> mat3Array;
 std::array<float, 4> mat2Array;
 }
+
 using namespace uniform;
 std::vector<GLuint> GLUniform::allocTextUnits(GLuint n){
     std::vector<GLuint> units(n);

@@ -7,8 +7,6 @@
 #include "shader_chunk.h"
 #include "uniform_values.h"
 
-#include <memory>
-
 ShaderMaterial::ShaderMaterial() : Material(){
     type = "ShaderMaterial";
     name = "ShaderMaterial";
