@@ -98,7 +98,7 @@ Vector3& Vector3::setFromMatrixScale(Matrix4& m){
 	return this->set(sx,sy,sz);
 }
 
-Vector3& Vector3::applyMatrix4(Matrix4& m) {
+Vector3& Vector3::applyMatrix4(const Matrix4& m) {
     const double x = this->x, y = this->y, z = this->z;
 
     const double w = 1 / (m.elements[ 3 ] * x + m.elements[ 7 ] * y + m.elements[ 11 ] * z + m.elements[ 15 ]);

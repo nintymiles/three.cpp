@@ -4,9 +4,11 @@
 
 #include "shader_lib.h"
 
+#include "texture.h"
 #include "shader_chunk.h"
 #include "common_types.h"
 #include "uniform_values.h"
+#include "constants.h"
 
 class ShaderLib {
 private:
@@ -271,7 +273,6 @@ public:
     virtual ~ShaderLib() = default;
 
     GLShader& getShader(const std::string& id) {
-
         return shaderLib[id];
     }
 

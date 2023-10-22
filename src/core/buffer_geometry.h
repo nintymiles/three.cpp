@@ -1,16 +1,15 @@
 #ifndef SRC_CORE_BUFFER_GEOMETRY_H_
 #define SRC_CORE_BUFFER_GEOMETRY_H_
 
+#include "geometry.h"
 #include "vector3.h"
 #include "vector2.h"
 #include "box3.h"
-#include "buffer_attribute.h"
 #include "sphere.h"
-#include "object_3d.h"
 #include "matrix4.h"
 #include "matrix3.h"
-#include "math_utils.h"
 #include "common_types.h"
+#include "buffer_attribute.h"
 
 #include <string>
 #include <vector>

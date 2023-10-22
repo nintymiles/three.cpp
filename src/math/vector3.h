@@ -245,7 +245,7 @@ class Vector3{
 //			return *this;
 //		}
 
-		Vector3& add(Vector3& vec) {
+		Vector3& add(const Vector3& vec) {
 			return addScaledVector(vec,1);
 		}
 
@@ -265,7 +265,7 @@ class Vector3{
 			return *this;
 		}
 
-		Vector3& addScaledVector(Vector3& v,double s) {
+		Vector3& addScaledVector(const Vector3& v,double s) {
 			this->x += v.x * s;
 			this->y += v.y * s;
 			this->z += v.z * s;
@@ -273,7 +273,7 @@ class Vector3{
 			return *this;
 		}
 
-		Vector3& sub(Vector3& v) {
+		Vector3& sub(const Vector3& v) {
 			this->x -= v.x;
 			this->y -= v.y;
 			this->z -= v.z;
@@ -281,7 +281,7 @@ class Vector3{
 			return *this;
 		}
 
-		Vector3& subVectors(Vector3& a,Vector3& b) {
+		Vector3& subVectors(const Vector3& a,const Vector3& b) {
 			this->x = a.x - b.x;
 			this->y = a.y - b.y;
 			this->z = a.z - b.z;
@@ -314,7 +314,7 @@ class Vector3{
 		}
 
 		//模版的返回值，可以借助auto实现简化
-		double dot(const Vector3& v){
+		double dot(const Vector3& v) const{
 			return this->x * v.x + this->y * v.y + this->z * v.z;
 		}
 
@@ -374,7 +374,7 @@ class Vector3{
 
         }
 
-        Vector3& min(Vector3& v) {
+        Vector3& min(const Vector3& v) {
 
             this->x = fmin(this->x, v.x);
             this->y = fmin(this->y, v.y);
@@ -383,7 +383,7 @@ class Vector3{
             return *this;
         }
 
-        Vector3& max(Vector3& v) {
+        Vector3& max(const Vector3& v) {
             this->x = fmax(this->x, v.x);
             this->y = fmax(this->y, v.y);
             this->z = fmax(this->z, v.z);
@@ -505,7 +505,7 @@ class Vector3{
             return sqrt(this->distanceToSquared(v));
         }
 
-        double distanceToSquared(Vector3& v){
+        double distanceToSquared(const Vector3& v){
             const double dx = this->x - v.x, dy = this->y - v.y, dz = this->z - v.z;
 
             return dx * dx + dy * dy + dz * dz;
@@ -632,7 +632,7 @@ class Vector3{
 
         Vector3& setFromMatrixScale(Matrix4& m);
 
-        Vector3& applyMatrix4(Matrix4& m);
+        Vector3& applyMatrix4(const Matrix4& m);
 
         Vector3& transformDirection(Matrix4& m);
 

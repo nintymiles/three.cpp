@@ -3,6 +3,7 @@
 //
 #include "buffer_geometry.h"
 
+#include "object_3d.h"
 #include "direct_geometry.h"
 #include "box3.h"
 #include "math_utils.h"
@@ -89,19 +90,18 @@ BufferGeometry::BufferGeometry(const BufferGeometry& source) : Geometry(source){
 
 }
 
-BufferGeometry::BufferGeometry(const BufferAttribute<float>::sptr& position, const BufferAttribute<float>::sptr& color) : BufferGeometry()
-{
+BufferGeometry::BufferGeometry(const BufferAttribute<float>::sptr& position, const BufferAttribute<float>::sptr& color) : BufferGeometry(){
 
     this->setAttribute(AttributeName::position,position);
     this->setAttribute(AttributeName::color,color);
 
 }
-const BufferAttribute<unsigned>::sptr& BufferGeometry::getIndex()
-{
+
+const BufferAttribute<unsigned>::sptr& BufferGeometry::getIndex(){
     return index;
 }
-BufferGeometry& BufferGeometry::setIndex(const BufferAttribute<unsigned>::sptr& indices)
-{
+
+BufferGeometry& BufferGeometry::setIndex(const BufferAttribute<unsigned>::sptr& indices){
     this->index = indices;
 
     return *this;
@@ -168,8 +168,7 @@ BufferGeometry& BufferGeometry::setSkinWeightAttribute(const BufferAttribute<flo
     return *this;
 }*/
 
-BufferAttribute<float>::sptr& BufferGeometry::getAttribute(AttributeName name)
-{
+BufferAttribute<float>::sptr& BufferGeometry::getAttribute(AttributeName name){
     return attributes[{name, 0}];
     /*switch (name) {
     case AttributeName::normal:
@@ -197,8 +196,8 @@ BufferAttribute<float>::sptr& BufferGeometry::getAttribute(AttributeName name)
         return nullptr;
     }*/
 }
-BufferAttribute<float>::sptr& BufferGeometry::getAttribute(const std::string& name)
-{
+
+BufferAttribute<float>::sptr& BufferGeometry::getAttribute(const std::string& name){
     if (name == "position")
         return getAttribute(AttributeName::position);
     else if (name == "normal")
@@ -225,8 +224,7 @@ BufferAttribute<float>::sptr& BufferGeometry::getAttribute(const std::string& na
 }
 
 
-void BufferGeometry::deleteAttribute(AttributeName name)
-{
+void BufferGeometry::deleteAttribute(AttributeName name){
     attributes.erase({ name,0 });
     /*switch (name) {
     case AttributeName::normal:
@@ -275,21 +273,20 @@ void BufferGeometry::deleteAttribute(AttributeName name)
     }*/
 }
 
-void BufferGeometry::addGroup(const unsigned start, const unsigned count, const int materialIndex)
-{
+void BufferGeometry::addGroup(const unsigned start, const unsigned count, const int materialIndex){
     groups.push_back(threecpp::DrawRange(start,count,materialIndex));
 }
-void BufferGeometry::clearGroups()
-{
+
+void BufferGeometry::clearGroups(){
     groups.clear();
 }
-void BufferGeometry::setDrawRange(const unsigned start, const unsigned count)
-{
+
+void BufferGeometry::setDrawRange(const unsigned start, const unsigned count){
     this->drawRange.start = start;
     this->drawRange.count = count;
 }
-BufferGeometry& BufferGeometry::applyMatrix4(const Matrix4& matrix)
-{
+
+BufferGeometry& BufferGeometry::applyMatrix4(const Matrix4& matrix){
 
     BufferAttribute<float>::sptr position = getAttribute(AttributeName::position);
 
@@ -336,48 +333,48 @@ BufferGeometry& BufferGeometry::applyMatrix4(const Matrix4& matrix)
 
     return *this;
 }
-BufferGeometry& BufferGeometry::rotateX(const float angle)
-{
+
+BufferGeometry& BufferGeometry::rotateX(const float angle){
     _m1.makeRotationX(angle);
 
     this->applyMatrix4(_m1);
 
     return *this;
 }
-BufferGeometry& BufferGeometry::rotateY(const float angle)
-{
+
+BufferGeometry& BufferGeometry::rotateY(const float angle){
     _m1.makeRotationY(angle);
 
     this->applyMatrix4(_m1);
 
     return *this;
 }
-BufferGeometry& BufferGeometry::rotateZ(const float angle)
-{
+
+BufferGeometry& BufferGeometry::rotateZ(const float angle){
     _m1.makeRotationZ(angle);
 
     this->applyMatrix4(_m1);
 
     return *this;
 }
-BufferGeometry& BufferGeometry::translate(const float x, const float y, const float z)
-{
+
+BufferGeometry& BufferGeometry::translate(const float x, const float y, const float z){
     _m1.makeTranslation(x, y, z);
 
     this->applyMatrix4(_m1);
 
     return *this;
 }
-BufferGeometry& BufferGeometry::scale(const float x, const float y, const float z)
-{
+
+BufferGeometry& BufferGeometry::scale(const float x, const float y, const float z){
     _m1.makeScale(x, y, z);
 
     this->applyMatrix4(_m1);
 
     return *this;
 }
-BufferGeometry& BufferGeometry::lookAt(const Vector3& vector)
-{
+
+BufferGeometry& BufferGeometry::lookAt(const Vector3& vector){
     _obj.lookAt(vector);
 
     _obj.updateMatrix();
@@ -386,8 +383,8 @@ BufferGeometry& BufferGeometry::lookAt(const Vector3& vector)
 
     return *this;
 }
-BufferGeometry& BufferGeometry::center()
-{
+
+BufferGeometry& BufferGeometry::center(){
     this->computeBoundingBox();
 
     //boundingBox.getCenter(&_offset);
@@ -398,8 +395,8 @@ BufferGeometry& BufferGeometry::center()
 
     return *this;
 }
-BufferGeometry& BufferGeometry::setFromObject(const Object3D& object)
-{
+
+BufferGeometry& BufferGeometry::setFromObject(const Object3D& object){
     auto geometry = object.geometry;
 
     if (object.isPoints || object.isLine) {
@@ -440,8 +437,7 @@ BufferGeometry& BufferGeometry::setFromObject(const Object3D& object)
 
         //}
 
-    }
-    else if (object.isMesh) {
+    } else if (object.isMesh) {
 
         if (geometry && geometry->isGeometry) {
 
@@ -452,8 +448,8 @@ BufferGeometry& BufferGeometry::setFromObject(const Object3D& object)
     }
     return *this;
 }
-BufferGeometry& BufferGeometry::setFromPoints(const std::vector<Vector3>&points)
-{
+
+BufferGeometry& BufferGeometry::setFromPoints(const std::vector<Vector3>&points){
     /*List<float> position = new List<float>();
 
 
@@ -474,8 +470,8 @@ BufferGeometry& BufferGeometry::setFromPoints(const std::vector<Vector3>&points)
 
     return *this;
 }
-BufferGeometry& BufferGeometry::updateFromObject(const Object3D& object)
-{
+
+BufferGeometry& BufferGeometry::updateFromObject(const Object3D& object){
     auto geometry = object.geometry;
 
     if (object.isMesh) {
@@ -510,7 +506,6 @@ BufferGeometry& BufferGeometry::updateFromObject(const Object3D& object)
         geometry = direct;
 
     }
-
 
     if (geometry->verticesNeedUpdate == true) {
 
@@ -602,8 +597,7 @@ BufferGeometry& BufferGeometry::updateFromObject(const Object3D& object)
     return *this;
 }
 
-BufferGeometry& BufferGeometry::fromGeometry(Geometry& geometry)
-{
+BufferGeometry& BufferGeometry::fromGeometry(Geometry& geometry){
     if (geometry.__directGeometry) geometry.__directGeometry.reset();
 
     geometry.__directGeometry = std::make_shared<DirectGeometry>();
@@ -612,8 +606,7 @@ BufferGeometry& BufferGeometry::fromGeometry(Geometry& geometry)
     return this->fromDirectGeometry(*geometry.__directGeometry);
 }
 
-BufferGeometry& BufferGeometry::fromDirectGeometry(DirectGeometry& geometry)
-{
+BufferGeometry& BufferGeometry::fromDirectGeometry(DirectGeometry& geometry){
     //float[] positions = new float[geometry.Vertices.Count * 3];
 
     //std::vector<float> _positions(geometry.vertices.size() * 3);
@@ -722,8 +715,8 @@ BufferGeometry& BufferGeometry::fromDirectGeometry(DirectGeometry& geometry)
     //}
     return *this;
 }
-void BufferGeometry::computeBoundingBox()
-{
+
+void BufferGeometry::computeBoundingBox(){
     /*if (this.BoundingBox == null)
     {
         this.BoundingBox = new Box3();
@@ -732,14 +725,12 @@ void BufferGeometry::computeBoundingBox()
     auto position = getAttribute(AttributeName::position);
     //var morphAttributesPosition = this.MorphAttributes["position"] as List<BufferAttribute<float>>;
 
-    if (position != nullptr)
-    {
+    if (position != nullptr){
         boundingBox.setFromBufferAttribute(*position);
 
         // process morph attributes if present
 
-        if (morphAttributes.size()>0)
-        {
+        if (morphAttributes.size()>0){
             for (auto& morph: morphAttributes)
             {
                 std::vector<BufferAttribute<float>::sptr> morphAttributelist = morphAttributes[morph.first];
@@ -750,20 +741,17 @@ void BufferGeometry::computeBoundingBox()
                 }
             }
         }
-    }
-    else
-    {
+    }else{
         boundingBox.makeEmpty();
     }
 
-    if (std::isnan(boundingBox.min.x) || std::isnan(boundingBox.min.y) || std::isnan(boundingBox.min.z))
-    {
+    if (std::isnan(boundingBox.min.x) || std::isnan(boundingBox.min.y) || std::isnan(boundingBox.min.z)){
         //TODO
         //Trace.TraceError("THREE.Core.BufferGeometry.ComputeBoundingBox : Compute min/max have Nan values. The \"Position\" attribute is likely to have NaN values.");
     }
 }
-void BufferGeometry::computeBoundingSphere()
-{
+
+void BufferGeometry::computeBoundingSphere(){
     /*if (this.BoundingSphere == null)
     {
         this.BoundingSphere = new Sphere();
@@ -838,8 +826,8 @@ void BufferGeometry::computeBoundingSphere()
         }
     }
 }
-void BufferGeometry::computeVertexNormals(bool areaWeighted)
-{
+
+void BufferGeometry::computeVertexNormals(bool areaWeighted){
     auto position = getAttribute(AttributeName::position);
     if (position != nullptr)
     {
@@ -954,8 +942,7 @@ void BufferGeometry::computeVertexNormals(bool areaWeighted)
     }
 }
 
-const BufferAttribute<unsigned>::sptr& BufferGeometry::mergeAttributeInt(const BufferAttribute<unsigned>::sptr& source, const BufferAttribute<unsigned>::sptr& target, int offset)
-{
+const BufferAttribute<unsigned>::sptr& BufferGeometry::mergeAttributeInt(const BufferAttribute<unsigned>::sptr& source, const BufferAttribute<unsigned>::sptr& target, int offset){
     auto positionArray1 = &source->array;
     auto positionArray2 = &target->array;
 
@@ -971,8 +958,7 @@ const BufferAttribute<unsigned>::sptr& BufferGeometry::mergeAttributeInt(const B
     return source;
 }
 
-const BufferAttribute<float>::sptr& BufferGeometry::mergeAttribute(const BufferAttribute<float>::sptr& source, const BufferAttribute<float>::sptr& target, int offset)
-{
+const BufferAttribute<float>::sptr& BufferGeometry::mergeAttribute(const BufferAttribute<float>::sptr& source, const BufferAttribute<float>::sptr& target, int offset){
     auto positionArray1 = &source->array;
     auto positionArray2 = &target->array;
 
@@ -988,8 +974,7 @@ const BufferAttribute<float>::sptr& BufferGeometry::mergeAttribute(const BufferA
     return source;
 }
 
-BufferGeometry& BufferGeometry::merge(BufferGeometry& geometry, int offset)
-{
+BufferGeometry& BufferGeometry::merge(BufferGeometry& geometry, int offset){
     index = mergeAttributeInt(index, geometry.index, offset);
     auto position = getAttribute(AttributeName::position);
     position = mergeAttribute(position, geometry.getAttribute(AttributeName::position), offset);
@@ -1059,16 +1044,16 @@ void BufferGeometry::normalizeNormals()
         normal->setXYZ(i, _vector.x, _vector.y, _vector.z);
     }
 }
-void BufferGeometry::computeFaceNormals()
-{
+
+void BufferGeometry::computeFaceNormals(){
     //backwards compatibility
 }
-BufferGeometry* BufferGeometry::clone()
-{
+
+BufferGeometry* BufferGeometry::clone(){
     return new BufferGeometry(*this);
 }
-BufferGeometry& BufferGeometry::copy(const BufferGeometry& source)
-{
+
+BufferGeometry& BufferGeometry::copy(const BufferGeometry& source){
     Geometry::copy(source);
 
     name = source.name;

@@ -662,8 +662,8 @@ void Geometry::computeMorphNormals(){
 }
 
 void Geometry::computeBoundingBox(){
-    //boundingBox.setFromPoints(&vertices[0],vertices.size());
-    boundingBox.setFromPoints(&vertices[0]);
+    boundingBox.setFromPoints(vertices,vertices.size());
+    //boundingBox.setFromPoints(&vertices[0]);
 }
 
 void Geometry::computeBoundingSphere(){

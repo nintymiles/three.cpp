@@ -5,11 +5,14 @@
 #ifndef THREE_CPP_SRC_TEXTURE_H
 #define THREE_CPP_SRC_TEXTURE_H
 
+#include "gl_headers.h"
+
 #include "constants.h"
+#include "common_types.h"
 #include "math_utils.h"
 #include "vector2.h"
+#include "matrix3.h"
 
-#include "common_types.h"
 #include "sole.h"
 #include "simplesignal.h"
 
@@ -17,8 +20,6 @@
 #include <string>
 #include <cstddef>
 #include <vector>
-
-#include <GLES3/gl3.h>
 
 class Texture {
     static size_t textureId;
@@ -112,6 +113,7 @@ public:
     void updateMatrix() {
         matrix.setUvTransform(offset.x, offset.y, repeat.x, repeat.y, rotation, center.x, center.y);
     }
+
     Texture* clone();
 
     Texture& copy(const Texture& source);

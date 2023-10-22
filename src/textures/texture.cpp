@@ -126,3 +126,7 @@ Texture& Texture::copy(const Texture& source){
 
     return *this;
 }
+
+void Texture::updateTexture(){
+
+}

@@ -14,6 +14,7 @@
 #include "gl_capabilities.h"
 #include "gl_attributes.h"
 #include "material.h"
+#include "object_3d.h"
 
 #include <memory>
 #include <unordered_map>

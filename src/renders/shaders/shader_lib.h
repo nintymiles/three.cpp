@@ -7,6 +7,8 @@
 
 #include "gl_shader.h"
 
+#include <string>
+
 GLShader& getShader(const std::string& id);
 
 #endif //THREE_CPP_SHADER_LIB_H

@@ -22,7 +22,7 @@ Sphere& Sphere::setFromPoints(std::vector<Vector3>& points, std::shared_ptr<Vect
     if(optionalCenter != nullptr){
         center.copy( *optionalCenter );
     }else {
-        _box.setFromPoints( points ).getCenter( center );
+        _box.setFromPoints( points,points.size() ).getCenter( center );
     }
 
     double maxRadiusSq = 0;
