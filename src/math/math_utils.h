@@ -19,7 +19,7 @@ namespace MathUtils {
     const double RAD2DEG = 180 / M_PI;
 
     template<typename T>
-    T clamp(T value, T min, T max) {
+    T inline clamp(T value, T min, T max) {
         return (T)fmax(min, fmin(max, value));
     }
 
@@ -27,12 +27,12 @@ namespace MathUtils {
     // compute euclidean modulo of m % n
     // https://en.wikipedia.org/wiki/Modulo_operation
     template<typename T>
-    T euclideanModulo( T n, T m ) {
+    T inline euclideanModulo( T n, T m ) {
         return fmod( ((fmod(n,m)) + m) , m );
     }
 
     template<typename T>
-    T random_gen() {
+    T inline random_gen() {
         std::default_random_engine generator;
         //std::uniform_int_distribution<T> distribution(0,1);
         std::uniform_real_distribution<T> distribution(0.0, 1.0);
@@ -127,11 +127,11 @@ namespace MathUtils {
     }
 
     // Random float from <-range/2, range/2> interval
-    float randFloatSpread( float range ) {
+    inline float randFloatSpread( float range ) {
         return range * ( 0.5 - random_gen<float>() );
     }
 
-    float lerp(double a, double b, double t){
+    inline float lerp(double a, double b, double t){
         return a + t * (b - a);
     }
 

@@ -2,8 +2,9 @@
 // Created by SeanR on 2022/10/6.
 //
 #include "buffer_geometry.h"
-#include "direct_geometry.h"
 
+#include "direct_geometry.h"
+#include "box3.h"
 #include "math_utils.h"
 
 namespace buffergeometry {

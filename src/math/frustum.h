@@ -12,11 +12,7 @@
 #include "matrix4.h"
 #include "sprite.h"
 
-namespace frustum {
-    Sphere _sphere;
-    Vector3 _vector;
-}
-using namespace frustum;
+
 
 class Frustum {
 public:
@@ -63,16 +59,7 @@ public:
         return *this;
     }
 
-    bool intersectsObject(Object3D& object){
-        auto geometry = object.geometry;
-
-        if (geometry->boundingSphere.isEmpty() == true)
-            geometry->computeBoundingSphere();
-
-        _sphere.copy(geometry->boundingSphere).applyMatrix4(object.matrixWorld);
-
-        return this->intersectsSphere(_sphere);
-    }
+    bool intersectsObject(Object3D& object);
 
     bool intersectsSprite(const Sprite& sprite){
         return false;

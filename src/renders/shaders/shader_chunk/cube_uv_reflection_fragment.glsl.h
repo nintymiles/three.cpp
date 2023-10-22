@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* cube_uv_reflection_fragment = R""""(
+const char* cube_uv_reflection_fragment = R""""(
 #ifdef ENVMAP_TYPE_CUBE_UV
 
 	#define cubeUV_minMipLevel 4.0

@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* lights_fragment_begin = R""""(
+const char* lights_fragment_begin = R""""(
 /**
  * This is a template that can be used to light a material, it uses pluggable
  * RenderEquations (RE)for specific lighting scenarios.

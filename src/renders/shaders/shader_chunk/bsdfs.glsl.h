@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char *bsdfs = R""""(
+const char *bsdfs = R""""(
 vec3 BRDF_Lambert( const in vec3 diffuseColor ) {
 
 	return RECIPROCAL_PI * diffuseColor;

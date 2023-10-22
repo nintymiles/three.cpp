@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* begin_vertex = R""""(
+const char* begin_vertex = R""""(
 vec3 transformed = vec3( position );
 )"""";
 

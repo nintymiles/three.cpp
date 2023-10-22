@@ -81,8 +81,8 @@ source_group("Textures" FILES ${TEXTURES_HEADER})
 source_group("Scenes" FILES ${SCENES_SOURCE})
 source_group("Scenes" FILES ${SCENES_HEADER})
 
-source_group("Materials" FILES ${TEXTURES_SOURCE})
-source_group("Materials" FILES ${TEXTURES_HEADER})
+source_group("Materials" FILES ${MATERIALS_SOURCE})
+source_group("Materials" FILES ${MATERIALS_HEADER})
 
 source_group("Controls" FILES ${CONTROLS_SOURCE})
 source_group("Controls" FILES ${CONTROLS_HEADER})
@@ -96,7 +96,7 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${TEXTURES_SOURCE};${TEXTURES_HEADER};
         ${SCENES_SOURCE};${SCENES_HEADER};
         ${GEOMETRIES_SOURCE};${GEOMETRIES_HEADER};
-        ${MATERIALS_SOURCE};${MATERIALS_SOURCE};
+        ${MATERIALS_SOURCE};${MATERIALS_HEADER};
         ${RENDERS_SOURCE};${RENDERS_HEADER};
         ${CONTROLS_SOURCE};${CONTROLS_HEADER})
 

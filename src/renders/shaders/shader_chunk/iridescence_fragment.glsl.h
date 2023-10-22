@@ -12,7 +12,7 @@ namespace shader_chunk {
  * n.  彩虹色; 放光彩; 晕色; 晕彩;
  */
 /*glsl*/
-char* iridescence_fragment = R""""(
+const char* iridescence_fragment = R""""(
 
 #ifdef USE_IRIDESCENCE
 

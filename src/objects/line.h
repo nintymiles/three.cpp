@@ -7,7 +7,9 @@
 
 #include "object_3d.h"
 #include "geometry.h"
-//#include "line_basic_material.h"
+
+#include <memory>
+#include <vector>
 
 class Line :public Object3D {
 public:

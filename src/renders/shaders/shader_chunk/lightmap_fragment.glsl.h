@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* lightmap_fragment = R""""(
+const char* lightmap_fragment = R""""(
 #ifdef USE_LIGHTMAP
 
 	vec4 lightMapTexel = texture2D( lightMap, vUv2 );

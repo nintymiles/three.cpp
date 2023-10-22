@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* fog_pars_fragment = R""""(
+const char* fog_pars_fragment = R""""(
 #ifdef USE_FOG
 
 	uniform vec3 fogColor;

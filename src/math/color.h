@@ -47,11 +47,6 @@
 struct rgb_components{int r,g,b;};
 struct hsl_components{double h,s,l;};
 
-
-rgb_components _rgb = { 0,0,0 };
-
-hsl_components _hslA = { 0, 0, 0 };
-hsl_components _hslB = { 0, 0, 0 };
 //std::shared_ptr<hsl_components> _hslB = std::make_shared<hsl_components>();
 
 class Color;
@@ -205,54 +200,9 @@ public:
         return  ss.str();
     }
 
-    hsl_components& getHSL( hsl_components& target, std::string colorSpace = ColorManagement::workingColorSpace() ) {
-        // h,s,l ranges are in 0.0 - 1.0
-        ColorManagement::fromWorkingColorSpace( toComponents( *this, _rgb ), colorSpace );
+    hsl_components& getHSL(hsl_components& target, std::string colorSpace = ColorManagement::workingColorSpace());
 
-        const int r = _rgb.r, g = _rgb.g, b = _rgb.b;
-
-        int max = std::max<int>( std::max<int>(r, g), b );
-        int min = std::min<int>( std::min<int>(r, g), b );
-
-        double  hue, saturation;
-        const double lightness = ( min + max ) / 2.0;
-
-        if ( min == max ) {
-            hue = 0;
-            saturation = 0;
-
-        } else {
-            const int delta = max - min;
-
-            saturation = lightness <= 0.5 ? delta / ( max + min ) : delta / ( 2 - max - min );
-
-            if(max==r)
-                hue = ( g - b ) / delta + ( g < b ? 6 : 0 );
-            else if(max == g)
-                hue = ( b - r ) / delta + 2;
-            else if(max == b)
-                hue = ( r - g ) / delta + 4;
-
-            hue /= 6;
-
-        }
-
-        target.h = hue;
-        target.s = saturation;
-        target.l = lightness;
-
-        return target;
-    }
-
-    rgb_components& getRGB( rgb_components& target, std::string colorSpace = LinearSRGBColorSpace ) {
-        ColorManagement::fromWorkingColorSpace( toComponents( *this, _rgb ), colorSpace );
-
-        target.r = _rgb.r;
-        target.g = _rgb.g;
-        target.b = _rgb.b;
-
-        return target;
-    }
+    rgb_components& getRGB(rgb_components& target, std::string colorSpace = LinearSRGBColorSpace);
 
 
     Color& multiplyScalar( double s ) {
@@ -273,15 +223,7 @@ public:
             return *this;
     }
 
-    Color& offsetHSL( double h, double s,double l ) {
-        this->getHSL( _hslA );
-
-        _hslA.h += h; _hslA.s += s; _hslA.l += l;
-
-        this->setHSL( _hslA.h, _hslA.s, _hslA.l );
-
-        return *this;
-    }
+    Color& offsetHSL(double h, double s, double l);
 
     Color& add( const Color& color ) {
         this->r += color.r;
@@ -332,18 +274,7 @@ public:
         return *this;
     }
 
-    Color& lerpHSL( Color& color, double alpha ) {
-        this->getHSL( _hslA );
-        color.getHSL( _hslB );
-
-        double h = MathUtils::lerp( _hslA.h, _hslB.h, alpha );
-        double s = MathUtils::lerp( _hslA.s, _hslB.s, alpha );
-        double l = MathUtils::lerp( _hslA.l, _hslB.l, alpha );
-
-        this->setHSL( h, s, l );
-
-        return *this;
-    }
+    Color& lerpHSL(Color& color, double alpha);
 
     bool equals( const Color& c ) {
         return ( c.r == r ) && ( c.g == g ) && ( c.b == b );
@@ -387,7 +318,7 @@ public:
 //对象内传递，则以reference为主
 using ColorSptr = std::shared_ptr<Color>;
 
-rgb_components& toComponents(Color& source,rgb_components& target){
+inline rgb_components& toComponents(Color& source,rgb_components& target){
     target.r = source.r;
     target.g = source.g;
     target.b = source.b;
@@ -395,7 +326,7 @@ rgb_components& toComponents(Color& source,rgb_components& target){
     return target;
 };
 
-double hue2rgb(double p,double q,double t ) {
+inline double hue2rgb(double p,double q,double t ) {
     if ( t < 0 ) t += 1;
     if ( t > 1 ) t -= 1;
     if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;

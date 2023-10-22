@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* displacementmap_pars_vertex = R""""(
+const char* displacementmap_pars_vertex = R""""(
 #ifdef USE_DISPLACEMENTMAP
 
 	uniform sampler2D displacementMap;

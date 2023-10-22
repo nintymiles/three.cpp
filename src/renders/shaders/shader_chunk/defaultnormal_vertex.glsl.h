@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* defaultnormal_vertex = R""""(
+const char* defaultnormal_vertex = R""""(
 vec3 transformedNormal = objectNormal;
 
 #ifdef USE_INSTANCING

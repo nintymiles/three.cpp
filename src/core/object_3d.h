@@ -787,4 +787,5 @@ public:
 //};
 
 using Object3DSptr = std::shared_ptr<Object3D>;
+
 #endif /* OBJECT_3D_H */

@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* envmap_common_pars_fragment = R""""(
+const char* envmap_common_pars_fragment = R""""(
 #ifdef USE_ENVMAP
 
 	uniform float envMapIntensity;

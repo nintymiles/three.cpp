@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* lightmap_pars_fragment = R""""(
+const char* lightmap_pars_fragment = R""""(
 #ifdef USE_LIGHTMAP
 
 	uniform sampler2D lightMap;

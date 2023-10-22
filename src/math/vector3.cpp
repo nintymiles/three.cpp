@@ -1,11 +1,11 @@
 #include "vector3.h"
+
 #include "quaternion.h"
 #include "euler.h"
 #include "matrix4.h"
 #include "matrix3.h"
-#include "cameras/camera.h"
-
-// #include "buffer_attribute.h"
+#include "camera.h"
+#include "buffer_attribute.h"
 
 //如果变量只是内部使用，那么不需要在头文件中定义，尤其是这种需要自身前置声明的交换存储变量
 static Quaternion _quaternion;

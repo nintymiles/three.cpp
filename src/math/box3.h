@@ -13,7 +13,7 @@ class Object3d;
 class Sphere;
 struct Plane;
 class Triangle;
-using std::vector;
+class Matrix4;
 
 class Box3 {
     private: 
@@ -31,7 +31,7 @@ class Box3 {
         }
 
 		//使用数组的地方同时提供vector实现
-        Box3& setFromVector(vector<double> vec) {
+        Box3& setFromVector(std::vector<double> vec) {
             //初始值为反方向数值极值
             double minX = DBL_MAX;
             double minY = DBL_MAX;

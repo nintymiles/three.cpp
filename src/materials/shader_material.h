@@ -8,6 +8,8 @@
 #include "material.h"
 
 #include <memory>
+#include <unordered_map>
+#include <string>
 
 class ShaderMaterial : public Material{
 

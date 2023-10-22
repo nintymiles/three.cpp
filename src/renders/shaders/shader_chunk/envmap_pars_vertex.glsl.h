@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* envmap_pars_vertex = R""""(
+const char* envmap_pars_vertex = R""""(
 #ifdef USE_ENVMAP
 
 	#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( PHONG ) || defined( LAMBERT )

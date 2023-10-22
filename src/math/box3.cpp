@@ -1,9 +1,11 @@
 #include "box3.h"
+
 #include "vector3.h"
-// #include "object_3d.h"
 #include "sphere.h"
 #include "plane.h"
 #include "triangle.h"
+#include "buffer_attribute.h"
+#include "matrix4.h"
 
 //std::shared_ptr<Box3> Box3::_box = std::make_shared<Box3>();
 //source of segment fault

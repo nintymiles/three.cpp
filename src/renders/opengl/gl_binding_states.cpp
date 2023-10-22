@@ -50,6 +50,8 @@ threecpp::BindingStateStruct& GLBindingStates::getBindingState(const Geometry::s
 }
 
 threecpp::BindingStateStruct GLBindingStates::createBindingState(GLuint vao){
+    using std::vector;
+
     vector<GLuint> newAttributes = vector<GLuint>(maxVertexAttributes,0);
     vector<GLuint> enabledAttributes = vector<GLuint>(maxVertexAttributes, 0);
     vector<GLuint> attributeDivisors= vector<GLuint>(maxVertexAttributes, 0);
@@ -324,6 +326,8 @@ GLBindingStates::~GLBindingStates(){
 }
 
 void GLBindingStates::initAttributes(){
+    using std::vector;
+
     if (currentState.newAttributes.size() == 0) {
         currentState.newAttributes = vector<GLuint>(maxVertexAttributes, 0);
         currentState.enabledAttributes = vector<GLuint>(maxVertexAttributes, 0);

@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* encodings_fragment = R""""(
+const char* encodings_fragment = R""""(
 gl_FragColor = linearToOutputTexel( gl_FragColor );
 )"""";
 

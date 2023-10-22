@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* aomap_fragment = R""""(
+const char* aomap_fragment = R""""(
 #ifdef USE_AOMAP
 
 	// reads channel R, compatible with a combined OcclusionRoughnessMetallic (RGB) texture

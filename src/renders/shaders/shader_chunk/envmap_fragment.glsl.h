@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* envmap_fragment = R""""(
+const char* envmap_fragment = R""""(
 #ifdef USE_ENVMAP
 
 	#ifdef ENV_WORLDPOS

@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* clearcoat_pars_fragment = R""""(
+const char* clearcoat_pars_fragment = R""""(
 #ifdef USE_CLEARCOATMAP
 
 	uniform sampler2D clearcoatMap;

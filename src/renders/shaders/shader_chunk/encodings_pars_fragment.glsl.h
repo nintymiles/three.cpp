@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* encodings_pars_fragment = R""""(
+const char* encodings_pars_fragment = R""""(
 
 vec4 LinearToLinear( in vec4 value ) {
 	return value;

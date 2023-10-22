@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* bumpmap_pars_fragment = R""""(
+const char* bumpmap_pars_fragment = R""""(
 #ifdef USE_BUMPMAP
 
 	uniform sampler2D bumpMap;

@@ -5,9 +5,13 @@
 #include "frustum.h"
 #include "box3.h"
 
-
-Sphere _sphere;
 Vector3 _frustum_vector;
+
+namespace frustum {
+Sphere _sphere;
+Vector3 _vector;
+}
+using namespace frustum;
 
 bool Frustum::intersectsBox( Box3& box ) {
     //const planes = this.planes;
@@ -27,4 +31,15 @@ bool Frustum::intersectsBox( Box3& box ) {
     }
 
     return true;
+}
+
+bool Frustum::intersectsObject(Object3D& object){
+    auto geometry = object.geometry;
+
+    if (geometry->boundingSphere.isEmpty() == true)
+        geometry->computeBoundingSphere();
+
+    _sphere.copy(geometry->boundingSphere).applyMatrix4(object.matrixWorld);
+
+    return this->intersectsSphere(_sphere);
 }

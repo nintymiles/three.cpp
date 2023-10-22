@@ -29,9 +29,9 @@ struct BindingStateStruct {
     size_t geometry;
     size_t program;
     bool wireframe;
-    vector<GLuint> newAttributes;
-    vector<GLuint> enabledAttributes;
-    vector<GLuint> attributeDivisors;
+    std::vector<GLuint> newAttributes;
+    std::vector<GLuint> enabledAttributes;
+    std::vector<GLuint> attributeDivisors;
     GLuint vao;
     std::unordered_map<AttributeNameKey, CacheData> attributes;
     BufferAttribute<unsigned>::sptr index;

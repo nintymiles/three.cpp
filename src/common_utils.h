@@ -16,15 +16,15 @@ namespace threecpp{
 //will occur duplicate symbols after included more than once
 std::runtime_error genOutOfRangeError(int index);
 
-void toUpperCase(std::string& str){
+inline void inline toUpperCase(std::string& str){
     std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 }
 
-void toLowerCase(std::string& str){
+inline void toLowerCase(std::string& str){
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 }
 
-void checkError() {
+inline void checkError() {
 #ifdef _DEBUG
     std::string errorCodeMessage;
     GLenum err = glGetError();

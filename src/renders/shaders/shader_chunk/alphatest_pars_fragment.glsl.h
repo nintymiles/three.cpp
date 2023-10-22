@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* alphatest_pars_fragment = R""""(
+const char* alphatest_pars_fragment = R""""(
 #ifdef USE_ALPHATEST
 	uniform float alphaTest;
 #endif

@@ -5,10 +5,9 @@
 
 #include <memory>
 
-using std::shared_ptr;
-
 class Matrix4;
 class Box3;
+class Plane;
 
 class Sphere {
 	public:
@@ -44,7 +43,7 @@ class Sphere {
 			return *this;
 		}
 
-		Sphere& setFromPoints(std::vector<Vector3>& points, shared_ptr<Vector3> optionalCenter);
+		Sphere& setFromPoints(std::vector<Vector3>& points, std::shared_ptr<Vector3> optionalCenter);
 
 
 		bool isEmpty() {
@@ -73,11 +72,7 @@ class Sphere {
 
         bool intersectsBox( Box3& box );
 
-		// intersectsPlane( plane ) {
-
-		// 	return Math.abs( plane.distanceToPoint( this.center ) ) <= this.radius;
-
-		// }
+		bool intersectsPlane(Plane& plane);
 
 		Vector3& clampPoint( Vector3& point, Vector3& target ) {
 			const double deltaLengthSq = center.distanceToSquared( point );

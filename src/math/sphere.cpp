@@ -6,13 +6,19 @@
 #include "box3.h"
 #include "vector3.h"
 #include "matrix4.h"
+#include "plane.h"
 
+#include <cmath>
+
+namespace __sphere {
 Box3 _box;
 Vector3 _sphere_v1;
 Vector3 _toFarthestPoint;
 Vector3 _toPoint;
+}
 
-Sphere& Sphere::setFromPoints(vector<Vector3>& points, shared_ptr<Vector3> optionalCenter) {
+using namespace __sphere;
+Sphere& Sphere::setFromPoints(std::vector<Vector3>& points, std::shared_ptr<Vector3> optionalCenter) {
     if(optionalCenter != nullptr){
         center.copy( *optionalCenter );
     }else {
@@ -79,6 +85,10 @@ Sphere& Sphere::unionSphere( Sphere& sphere ) {
 
 bool Sphere::intersectsBox( Box3& box ){
     return box.intersectsSphere( *this );
+}
+
+bool Sphere::intersectsPlane(Plane& plane){
+    return std::abs(plane.distanceToPoint(center)) <= radius;
 }
 
 Box3& Sphere::getBoundingBox( Box3& target ) {

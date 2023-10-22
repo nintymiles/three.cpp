@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* clipping_planes_vertex = R""""(
+const char* clipping_planes_vertex = R""""(
 #if NUM_CLIPPING_PLANES > 0
 
 	vClipPosition = - mvPosition.xyz;

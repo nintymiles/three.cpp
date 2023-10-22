@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* fog_pars_vertex = R""""(
+const char* fog_pars_vertex = R""""(
 #ifdef USE_FOG
 
 	varying float vFogDepth;

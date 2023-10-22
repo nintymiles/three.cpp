@@ -23,7 +23,6 @@ class Quaternion;
 class Euler;
 class Matrix3;
 class Matrix4;
-class Vector3;
 class Camera;
 template <typename T> class BufferAttribute;
 

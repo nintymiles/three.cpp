@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* gradientmap_pars_fragment = R""""(
+const char* gradientmap_pars_fragment = R""""(
 #ifdef USE_GRADIENTMAP
 
 	uniform sampler2D gradientMap;

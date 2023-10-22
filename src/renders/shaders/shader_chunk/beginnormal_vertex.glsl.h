@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* beginnormal_vertex = R""""(
+const char* beginnormal_vertex = R""""(
 vec3 objectNormal = vec3( normal );
 
 #ifdef USE_TANGENT

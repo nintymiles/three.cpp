@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* clearcoat_normal_fragment_begin = R""""(
+const char* clearcoat_normal_fragment_begin = R""""(
 #ifdef USE_CLEARCOAT
 
 	vec3 clearcoatNormal = geometryNormal;

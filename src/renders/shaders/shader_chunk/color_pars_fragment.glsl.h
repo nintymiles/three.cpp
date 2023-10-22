@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* color_pars_fragment = R""""(
+const char* color_pars_fragment = R""""(
 #if defined( USE_COLOR_ALPHA )
 
 	varying vec4 vColor;

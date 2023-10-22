@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-char* iridescence_pars_fragment = R""""(
+const char* iridescence_pars_fragment = R""""(
 #ifdef USE_IRIDESCENCEMAP
 
 	uniform sampler2D iridescenceMap;
