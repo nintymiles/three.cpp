@@ -768,8 +768,7 @@ void BufferGeometry::computeBoundingSphere(){
 
     auto position = getAttribute(AttributeName::position);
 
-    if (position != nullptr)
-    {
+    if (position != nullptr){
         auto center = boundingSphere.center;
 
         _box.setFromBufferAttribute(*position);
@@ -798,7 +797,7 @@ void BufferGeometry::computeBoundingSphere(){
 
         for (unsigned int i = 0; i < position->count; i++)
         {
-            _vector = _vector.fromBufferAttribute(*position, i);
+            _vector = _vector.fromBufferAttribute<float>(*position, i);
             maxRadiusSq = std::max<double>(maxRadiusSq, center.distanceToSquared(_vector));
         }
 
