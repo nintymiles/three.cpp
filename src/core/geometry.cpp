@@ -2,14 +2,16 @@
 // Created by SeanR on 2023/10/14.
 //
 #include "geometry.h"
+
 #include "buffer_geometry.h"
+#include "buffer_attribute.h"
 
 #include "object_3d.h"
 #include "vector3.h"
 #include "matrix4.h"
 #include "mesh.h"
 
-#include "buffer_attribute.h"
+#include <array>
 
 namespace geometry {
 Matrix4 _m1;

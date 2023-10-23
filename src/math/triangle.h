@@ -5,7 +5,7 @@
 #ifndef THREE_CPP_TRIANGLE_H
 #define THREE_CPP_TRIANGLE_H
 
-#include <gsl/gsl>
+//#include <gsl/gsl>
 
 #include "vector3.h"
 #include "vector2.h"
@@ -45,7 +45,7 @@ public:
         return *this;
     }
 
-    Triangle& setFromPointsAndIndices( gsl::span<Vector3> points, int i0, int i1, int i2 ) {
+    Triangle& setFromPointsAndIndices( std::vector<Vector3> points, int i0, int i1, int i2 ) {
         this->a.copy( points[ i0 ] );
         this->b.copy( points[ i1 ] );
         this->c.copy( points[ i2 ] );

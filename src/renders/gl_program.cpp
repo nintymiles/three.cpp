@@ -3,15 +3,16 @@
 //
 #include "gl_program.h"
 
-#include <pcre/pcrecpp.h>
-
 #include "pcrscpp.h"
 #include "material.h"
 #include "constants.h"
 #include "shader_chunk.h"
 #include "gl_renderer.h"
+#include "gl_binding_states.h"
+#include "gl_uniforms.h"
 
-#include <string>
+#include <pcre/pcre.h>
+#include <pcre/pcrecpp.h>
 
 unsigned GLProgram::programId = 0;
 

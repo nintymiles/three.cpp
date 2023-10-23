@@ -7,6 +7,7 @@
 #define THREE_CPP_SPHERICAL_HARMONICS3_H
 
 #include <vector>
+#include <array>
 
 #include "vector3.h"
 

@@ -12,7 +12,7 @@
 #include <sstream>
 #include <vector>
 
-#include <gsl/gsl>
+//#include <gsl/gsl>
 
 #include "math_utils.h"
 #include "common_utils.h"
@@ -575,16 +575,18 @@ class Vector3{
             return array;
         }
 
-        gsl::span<double> toSpanArray(gsl::span<double> array,int offset = 0){
-            array[offset] = this->x;
-            array[offset + 1] = this->y;
-            array[offset + 2] = this->z;
-
-            return array;
-        }
+//        gsl::span<double> toSpanArray(gsl::span<double> array,int offset = 0){
+//            array[offset] = this->x;
+//            array[offset + 1] = this->y;
+//            array[offset + 2] = this->z;
+//
+//            return array;
+//        }
 
         template<typename T>
         Vector3& fromBufferAttribute(BufferAttribute<T>& attribute,int index);
+
+        Vector3& fromBufferAttribute(BufferAttribute<float>& attribute,int index);
 
         Vector3& random() {
             this->x = MathUtils::random_gen<double>();

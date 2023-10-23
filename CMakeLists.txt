@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.12)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 # 这个策略貌似也没有太大的用处
 # if(POLICY CMP0042)

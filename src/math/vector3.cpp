@@ -8,9 +8,9 @@
 #include "buffer_attribute.h"
 
 //如果变量只是内部使用，那么不需要在头文件中定义，尤其是这种需要自身前置声明的交换存储变量
-static Quaternion _quaternion;
+Quaternion _quaternion;
 //std::shared_ptr<Vector3> _vector = std::make_shared<Vector3>();
-static Vector3 _vector{};
+Vector3 _vector{};
 
 //segmentation fault  /Users/rensean/Documents/MyGitWorkspace/three.cpp/build/bin/threelibcpp
 //上述错误出现在默认构造函数尝试以默认初始化的方法初始化自己
@@ -22,6 +22,14 @@ Vector3& Vector3::fromBufferAttribute(BufferAttribute<T>& attribute,int index){
      this->x = attribute.getX( index );
      this->y = attribute.getY( index );
      this->z = attribute.getZ( index );
+
+    return *this;
+}
+
+Vector3& Vector3::fromBufferAttribute(BufferAttribute<float>& attribute,int index){
+    this->x = attribute.getX( index );
+    this->y = attribute.getY( index );
+    this->z = attribute.getZ( index );
 
     return *this;
 }

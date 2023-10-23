@@ -9,9 +9,12 @@ if(MSVC)
   add_definitions(-DNOMINMAX)
 endif()
 
-find_package(Microsoft.GSL CONFIG)
+#add_definitions(-latomic;-lc++)
+add_definitions(-stdlib=libc++)
 
-file(GLOB TOP_SOURCE ${ROOT_DIR}/src/common_utils.cpp)
+#find_package(Microsoft.GSL CONFIG)
+
+file(GLOB TOP_SOURCE ${ROOT_DIR}/src/*.cpp)
 file(GLOB TOP_HEADER ${ROOT_DIR}/src/*.h)
 
 file(GLOB UTIL_SOURCE ${ROOT_DIR}/src/utils/*.cpp)
@@ -46,7 +49,7 @@ file(GLOB GEOMETRIES_SOURCE ${ROOT_DIR}/src/geometries/*.cpp)
 file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h)
 
 file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/*.cpp;${ROOT_DIR}/src/renders/opengl/*.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
-file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h)
+file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h;${ROOT_DIR}/src/renders/shaders/shader_lib/*.h)
 
 file(GLOB CONTROLS_SOURCE ${ROOT_DIR}/src/control/*.cpp)
 file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
@@ -100,11 +103,14 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${RENDERS_SOURCE};${RENDERS_HEADER};
         ${CONTROLS_SOURCE};${CONTROLS_HEADER})
 
+add_link_options("-stdlib=libc++")
 # 构建可执行程序
 ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
+#add_library(threelibcpp)
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
 target_sources(threelibcpp PRIVATE  ${IMGUI_SOURCE} ${THREECPP_SOURCE})
-target_include_directories(threelibcpp PRIVATE 
+target_include_directories(threelibcpp PRIVATE
+${ROOT_DIR}/include
 ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
@@ -144,13 +150,15 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   glfw.3.3
   GLESv2
   EGL
-  PRIVATE GSL)
+#  PRIVATE GSL
+  )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries
   TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   glfw3
   libGLESv2.dll.lib
   libEGL.dll.lib
-  GSL)
+#  GSL
+  )
 
 else()
   message(STATUS "TARGET_LINK_LIBRARIES Configuring on/for ${CMAKE_SYSTEM_NAME}")

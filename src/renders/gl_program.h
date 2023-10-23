@@ -5,9 +5,6 @@
 #ifndef THREE_CPP_SRC_RENDERS_GL_PROGRAM_H
 #define THREE_CPP_SRC_RENDERS_GL_PROGRAM_H
 
-
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/fmt.h>
 #include <string>
 #include <algorithm>
 #include <map>
@@ -22,9 +19,7 @@
 #include "string_utils.h"
 
 #include "gl_shader.h"
-//#include "gl_uniforms.h"
 #include "gl_program_parameters.h"
-//#include "gl_renderer.h"
 
 class Material;
 class GLRenderer;

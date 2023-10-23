@@ -1,8 +1,8 @@
 //
 // Created by SeanR on 2022/10/13.
 //
-
 #include "line.h"
+
 #include "buffer_geometry.h"
 #include "line_basic_material.h"
 
