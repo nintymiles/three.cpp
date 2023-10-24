@@ -83,8 +83,7 @@ namespace string_utils{
         std::string::size_type pos = 0;
         std::string::size_type offset = 0;
 
-        while ((pos = result.find(pattern, offset)) != std::string::npos)
-        {
+        while ((pos = result.find(pattern, offset)) != std::string::npos){
 
             result.replace(result.begin() + pos, result.begin() + pos + pattern.size(), replace);
 

@@ -7,10 +7,13 @@
 #include "camera.h"
 #include "buffer_attribute.h"
 
+namespace __vector3 {
 //如果变量只是内部使用，那么不需要在头文件中定义，尤其是这种需要自身前置声明的交换存储变量
-Quaternion _quaternion;
+    Quaternion _quaternion;
 //std::shared_ptr<Vector3> _vector = std::make_shared<Vector3>();
-Vector3 _vector{};
+    Vector3 _vector{};
+}
+using namespace __vector3;
 
 //segmentation fault  /Users/rensean/Documents/MyGitWorkspace/three.cpp/build/bin/threelibcpp
 //上述错误出现在默认构造函数尝试以默认初始化的方法初始化自己

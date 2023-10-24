@@ -59,6 +59,39 @@
 #include "shader_chunk/lights_fragment_end.glsl.h"
 #include "shader_chunk/lights_fragment_maps.glsl.h"
 
+#include "shader_lib/meshbasic_vert.h"
+#include "shader_lib/meshbasic_frag.h"
+#include "shader_lib/meshlambert_vert.h"
+#include "shader_lib/meshlambert_frag.h"
+#include "shader_lib/meshphong_vert.h"
+#include "shader_lib/meshphong_frag.h"
+#include "shader_lib/meshphysical_vert.h"
+#include "shader_lib/meshphysical_frag.h"
+#include "shader_lib/meshtoon_vert.h"
+#include "shader_lib/meshtoon_frag.h"
+#include "shader_lib/meshmatcap_vert.h"
+#include "shader_lib/meshmatcap_frag.h"
+#include "shader_lib/points_vert.h"
+#include "shader_lib/points_frag.h"
+#include "shader_lib/linedashed_vert.h"
+#include "shader_lib/linedashed_frag.h"
+#include "shader_lib/depth_vert.h"
+#include "shader_lib/depth_frag.h"
+#include "shader_lib/normal_vert.h"
+#include "shader_lib/normal_frag.h"
+#include "shader_lib/sprite_vert.h"
+#include "shader_lib/sprite_frag.h"
+#include "shader_lib/background_vert.h"
+#include "shader_lib/background_frag.h"
+#include "shader_lib/cube_vert.h"
+#include "shader_lib/cube_frag.h"
+#include "shader_lib/equirect_vert.h"
+#include "shader_lib/equirect_frag.h"
+#include "shader_lib/distanceRGBA_vert.h"
+#include "shader_lib/distanceRGBA_frag.h"
+#include "shader_lib/shadow_vert.h"
+#include "shader_lib/shadow_frag.h"
+
 
 static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"alphamap_fragment",ShaderLibID::alphamap_fragment},
@@ -114,7 +147,39 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"lights_fragment_end",ShaderLibID::lights_fragment_end},
         {"lights_fragment_maps",ShaderLibID::lights_fragment_maps},
         {"fog_fragment",ShaderLibID::fog_fragment},
-        {"fog_fragment",ShaderLibID::fog_fragment},
+        {"fog_pars_fragment",ShaderLibID::fog_pars_fragment},
+        {"meshbasic_vert",ShaderLibID::meshbasic_vert},
+        {"meshbasic_frag",ShaderLibID::meshbasic_frag},
+        {"meshlambert_vert",ShaderLibID::meshlambert_vert},
+        {"meshlambert_frag",ShaderLibID::meshlambert_frag},
+        {"meshphong_vert",ShaderLibID::meshphong_vert},
+        {"meshphong_frag",ShaderLibID::meshphong_frag},
+        {"meshphysical_vert",ShaderLibID::meshphysical_vert},
+        {"meshphysical_frag",ShaderLibID::meshphysical_frag},
+        {"meshtoon_vert",ShaderLibID::meshtoon_vert},
+        {"meshtoon_frag",ShaderLibID::meshtoon_frag},
+        {"meshmatcap_vert",ShaderLibID::meshmatcap_vert},
+        {"meshmatcap_frag",ShaderLibID::meshmatcap_frag},
+        {"points_vert",ShaderLibID::points_vert},
+        {"points_vert",ShaderLibID::points_frag},
+        {"linedashed_vert",ShaderLibID::linedashed_vert},
+        {"linedashed_frag",ShaderLibID::linedashed_frag},
+        {"depth_vert",ShaderLibID::depth_vert},
+        {"depth_frag",ShaderLibID::depth_frag},
+        {"normal_vert",ShaderLibID::normal_vert},
+        {"normal_frag",ShaderLibID::normal_frag},
+        {"sprite_vert",ShaderLibID::sprite_vert},
+        {"sprite_frag",ShaderLibID::sprite_frag},
+        {"background_vert",ShaderLibID::background_vert},
+        {"background_frag",ShaderLibID::background_frag},
+        {"cube_vert",ShaderLibID::cube_vert},
+        {"cube_frag",ShaderLibID::cube_frag},
+        {"equirect_vert",ShaderLibID::equirect_vert},
+        {"equirect_frag",ShaderLibID::equirect_frag},
+        {"distanceRGBA_vert",ShaderLibID::distanceRGBA_vert},
+        {"distanceRGBA_frag",ShaderLibID::distanceRGBA_frag},
+        {"shadow_vert",ShaderLibID::shadow_vert},
+        {"shadow_frag",ShaderLibID::shadow_frag},
 };
 
 static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
@@ -171,7 +236,41 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::lights_fragment_end,shader_chunk::lights_fragment_end},
         {ShaderLibID::lights_fragment_maps,shader_chunk::lights_fragment_maps},
         {ShaderLibID::fog_fragment,shader_chunk::fog_fragment},
-        {ShaderLibID::fog_fragment,shader_chunk::fog_fragment},
+        {ShaderLibID::fog_pars_fragment,shader_chunk::fog_pars_fragment},
+        {ShaderLibID::meshbasic_vert,meshbasic_vert},
+        {ShaderLibID::meshbasic_frag,meshbasic_frag},
+        {ShaderLibID::meshlambert_vert,meshlambert_vert},
+        {ShaderLibID::meshlambert_frag,meshlambert_frag},
+        {ShaderLibID::meshphong_vert,meshphong_vert},
+        {ShaderLibID::meshphong_frag,meshphong_frag},
+        {ShaderLibID::meshphysical_vert,meshphysical_vert},
+        {ShaderLibID::meshphysical_frag,meshphysical_frag},
+        {ShaderLibID::meshtoon_vert,meshtoon_vert},
+        {ShaderLibID::meshtoon_frag,meshtoon_frag},
+        {ShaderLibID::meshmatcap_vert,meshmatcap_vert},
+        {ShaderLibID::meshmatcap_frag, meshmatcap_frag},
+        {ShaderLibID::points_vert,points_vert},
+        {ShaderLibID::points_frag, points_frag},
+        {ShaderLibID::linedashed_vert,linedashed_vert},
+        {ShaderLibID::linedashed_frag, linedashed_frag},
+        {ShaderLibID::depth_vert,depth_vert},
+        {ShaderLibID::depth_frag, depth_frag},
+        {ShaderLibID::normal_vert,normal_vert},
+        {ShaderLibID::normal_frag, normal_frag},
+        {ShaderLibID::sprite_vert,sprite_vert},
+        {ShaderLibID::sprite_frag, sprite_frag},
+        {ShaderLibID::background_vert,background_vert},
+        {ShaderLibID::background_frag, background_frag},
+        {ShaderLibID::cube_vert,cube_vert},
+        {ShaderLibID::cube_frag, cube_frag},
+        {ShaderLibID::equirect_vert,equirect_vert},
+        {ShaderLibID::equirect_frag, equirect_frag},
+        {ShaderLibID::distanceRGBA_vert,distanceRGBA_vert},
+        {ShaderLibID::distanceRGBA_frag, distanceRGBA_frag},
+        {ShaderLibID::shadow_vert,shadow_vert},
+        {ShaderLibID::shadow_frag, shadow_frag},
+
+
 };
 
 namespace shaderlib_name {

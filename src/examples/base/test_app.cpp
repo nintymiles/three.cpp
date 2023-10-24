@@ -32,7 +32,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-#include <ecore/InitApplication.h>
+#include "init_application.h"
 
 
 ImGuiIO* demoIO;
@@ -69,11 +69,11 @@ int main(){
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return 0;
-    }
+//    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+//    {
+//        std::cout << "Failed to initialize GLAD" << std::endl;
+//        return 0;
+//    }
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -246,7 +246,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     display_w = width;
     display_h = height;
     if (currentDemoClass == nullptr) return;
-    currentDemoClass->controller->sizeChanged(Vector4(0, 0, width, height));
+    currentDemoClass->controller->sizeChanged(Vector4f(0, 0, width, height));
 
     if (currentDemoClass != nullptr)
         currentDemoClass->renderer->setViewport(0, 0, display_w, display_h);

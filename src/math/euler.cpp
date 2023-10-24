@@ -8,8 +8,11 @@
 
 // std::shared_ptr<Matrix4> _matrix; // = std::make_shared<Matrix4>(new Matrix4());
 // std::shared_ptr<Quaternion> _quaternion; //= std::make_shared<Quaternion>(new Quaternion());
-Matrix4 _matrix;
-Quaternion _quaternion;
+namespace __euler {
+    Matrix4 _matrix;
+    Quaternion _quaternion;
+}
+using namespace __euler;
 
 Euler& Euler::reorder(RotationOrder newOrder) {
     // WARNING: this discards revolution information -bhouston

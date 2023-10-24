@@ -797,7 +797,7 @@ void BufferGeometry::computeBoundingSphere(){
 
         for (unsigned int i = 0; i < position->count; i++)
         {
-            _vector = _vector.fromBufferAttribute<float>(*position, i);
+            _vector = _vector.fromBufferAttribute(*position, i);
             maxRadiusSq = std::max<double>(maxRadiusSq, center.distanceToSquared(_vector));
         }
 
