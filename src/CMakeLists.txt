@@ -7,11 +7,19 @@ if(MSVC)
   set(CMAKE_C_FLAGS /source-charset:utf-8)
   #增加macro定义NOMINMAX，去除windows.h中min/max宏影响
   add_definitions(-DNOMINMAX)
+
+  #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+  #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+  #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  #message("debugflag: ${CMAKE_CXX_FLAGS_DEBUG}")
+  #string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+  message("debugflag: ${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
+add_definitions(-DPCRE_STATIC)
 #add_definitions(-latomic;-lc++)
 #add_definitions(-stdlib=libc++;-D_LIBCPP_DEBUG=1)
-add_definitions(-stdlib=libc++)
+#add_definitions(-stdlib=libc++)
 
 #find_package(Microsoft.GSL CONFIG)
 
@@ -137,8 +145,10 @@ ${ROOT_DIR}/src/utils)
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
 if(MSVC)
   target_link_options(threelibcpp PUBLIC /DEBUG)
+  target_link_options(threelibcpp PUBLIC /NODEFAULTLIB:library)
   # 和上一个选项应该是等效的
-  # set_property(TARGET threelibcpp APPEND PROPERTY LINK_FLAGS "/NODEFAULTLIB:MSVCRT")
+  set_property(TARGET threelibcpp APPEND PROPERTY LINK_FLAGS "/NODEFAULTLIB:MSVCRT")
+
 endif()
 
 # TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
@@ -162,8 +172,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries
   TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   glfw3
+  #glfw3d.lib for static debug build lib
   libGLESv2.dll.lib
   libEGL.dll.lib
+  #pcrecppd.lib
+  #pcred.lib
 #  GSL
   )
 

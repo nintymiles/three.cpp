@@ -400,10 +400,11 @@ enum class NormalMapTypes {
     None = 2
 };
 
-// Color space string identifiers, matching CSS Color Module Level 4 and WebGPU names where available.
-const std::string NoColorSpace = "";
-const std::string SRGBColorSpace = "srgb";
-const std::string LinearSRGBColorSpace = "srgb-linear";
+
+constexpr char NoColorSpace[] = "";
+constexpr char SRGBColorSpace[] = "srgb";
+constexpr char LinearSRGBColorSpace[] = "srgb-linear";
+
 
 //const int ZeroStencilOp = 0;
 //const int KeepStencilOp = 7680;
@@ -662,8 +663,8 @@ enum class ShaderLibID : unsigned {
     unknown=999
 };
 
-const std::string GLSL1 = "100";
-const std::string GLSL3 = "300 es";
+constexpr char GLSL1[] = "100";
+constexpr char GLSL3[] = "300 es";
 
 enum class GLSLVersion {
     GLSL1,

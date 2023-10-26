@@ -59,9 +59,9 @@ private:
 
     std::string replaceClippingPlaneNums(std::string& str, const ProgramParameters& parameters);
 
-    std::string resolveIncludesRX(std::string& source);
+//    std::string resolveIncludesRX(std::string& source);
 
-    std::string includeReplacerRX(std::string& match);
+//    std::string includeReplacerRX(std::string& match);
 
     std::string resolveIncludes(std::string& source);
 

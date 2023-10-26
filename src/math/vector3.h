@@ -135,6 +135,19 @@ class Vector3{
                 default: throw std::runtime_error("index is out of range: " + std::to_string(n));break;
             }
         }
+
+        double& operator [] (unsigned char ch) {
+            switch (ch) {
+                case 'x':
+                    return x;
+                case 'y':
+                    return y;
+                case 'z':
+                    return z;
+                default: throw std::runtime_error("index is out of range: " + std::to_string(ch));break;
+            }
+        }
+
         const double& operator[](int n) const {
 //            switch ( n ) {
 //                case 0: return this->x;

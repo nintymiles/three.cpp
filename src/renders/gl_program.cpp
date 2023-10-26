@@ -3,7 +3,7 @@
 //
 #include "gl_program.h"
 
-#include "pcrscpp.h"
+//#include "pcrscpp.h"
 #include "material.h"
 #include "constants.h"
 #include "shader_chunk.h"
@@ -11,8 +11,8 @@
 #include "gl_binding_states.h"
 #include "gl_uniforms.h"
 
-#include <pcre/pcre.h>
-#include <pcre/pcrecpp.h>
+//#include <pcre/pcre.h>
+//#include <pcre/pcrecpp.h>
 
 unsigned GLProgram::programId = 0;
 
@@ -20,7 +20,7 @@ void sendDebugMessage(const std::wstring& name) {
     std::wcout << name << std::endl;
 }
 
-pcrscpp::replace pcrscpp_rs;
+//pcrscpp::replace pcrscpp_rs;
 
 GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions, const std::string& cacheKey, const ProgramParameters& parameters, const std::shared_ptr<GLBindingStates>& bindingStates)
         :renderer(renderer), bindingStates(bindingStates){
@@ -332,13 +332,13 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
         if (parameters.depthPacking!=DepthPackingStrategies::None)  prefixFragment << "#define DEPTH_PACKING " + std::to_string((int)parameters.depthPacking) << std::endl;
     }
-    pcrscpp_rs.remove_jobs();
-    vShader = resolveIncludesRX(vShader);
+    //pcrscpp_rs.remove_jobs();
+    vShader = resolveIncludes(vShader);
     vShader = replaceLightsNums(vShader, parameters);
     vShader = replaceClippingPlaneNums(vShader, parameters);
 
-    pcrscpp_rs.remove_jobs();
-    fShader = resolveIncludesRX(fShader);
+    //pcrscpp_rs.remove_jobs();
+    fShader = resolveIncludes(fShader);
     fShader = replaceLightsNums(fShader, parameters);
     fShader = replaceClippingPlaneNums(fShader, parameters);
 
@@ -840,32 +840,32 @@ std::string GLProgram::loopReplacer(std::smatch& match){
     return ss.str();
 }
 
-std::string GLProgram::resolveIncludesRX(std::string& source) {
-    pcrecpp::RE re(includePattern);
-    pcrecpp::StringPiece input(source);
-    std::string match;
-    std::string localSource = source;
-    while (re.FindAndConsume(&input, &match)) {
-
-        std::string result = includeReplacerRX(match);
-        pcrscpp_rs.add_job(includePattern, result, "");
-        pcrscpp_rs.replace_inplace(localSource);
-
-        pcrscpp_rs.pop_job_back();
-    }
-    return localSource;
-}
-
-std::string GLProgram::includeReplacerRX(std::string& match) {
-    std::string localSource = getShaderChunk(shaderlib_name::get(match));
-    std::string result;
-    result = resolveIncludesRX(localSource);
-    pcrscpp_rs.add_job(includePattern, result, "");
-    pcrscpp_rs.replace_inplace(result);
-    pcrscpp_rs.pop_job_back();
-
-    return result;
-}
+//std::string GLProgram::resolveIncludesRX(std::string& source) {
+//    pcrecpp::RE re(includePattern);
+//    pcrecpp::StringPiece input(source);
+//    std::string match;
+//    std::string localSource = source;
+//    while (re.FindAndConsume(&input, &match)) {
+//
+//        std::string result = includeReplacerRX(match);
+//        pcrscpp_rs.add_job(includePattern, result, "");
+//        pcrscpp_rs.replace_inplace(localSource);
+//
+//        pcrscpp_rs.pop_job_back();
+//    }
+//    return localSource;
+//}
+//
+//std::string GLProgram::includeReplacerRX(std::string& match) {
+//    std::string localSource = getShaderChunk(shaderlib_name::get(match));
+//    std::string result;
+//    result = resolveIncludesRX(localSource);
+//    pcrscpp_rs.add_job(includePattern, result, "");
+//    pcrscpp_rs.replace_inplace(result);
+//    pcrscpp_rs.pop_job_back();
+//
+//    return result;
+//}
 
 std::string GLProgram::generatePrecision(const ProgramParameters& parameter){
     std::stringstream ss;
