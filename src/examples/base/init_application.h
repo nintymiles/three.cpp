@@ -15,6 +15,10 @@
 
 #include "demo_scene.h"
 
+// settings
+extern int display_w;
+extern int display_h;
+
 ApplicationBase::sptr currentDemoClass;
 
 std::unordered_map<std::string, std::shared_ptr<ApplicationBase>> demoClasses;
@@ -56,7 +60,7 @@ static void ShowApplicationMenuBar() {
                 if (demoClasses.count("Demo-Scene") == 0)
                     demoClasses["Demo-Scene"] = std::make_shared<DemoScene>(display_w, display_h);
 
-                currentDemoClass = demoClasses["02-First-Scene"];
+                currentDemoClass = demoClasses["Demo-Scene"];
                 currentDemoClass->renderer->clear();
             }
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;

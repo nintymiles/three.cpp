@@ -52,6 +52,9 @@ void GLRenderer::initGLContext(int width, int height){
     _currentScissor = (_scissor * _pixelRatio).floor();
     _currentViewport = (_viewport * _pixelRatio).floor();
 
+    _clipping = std::make_shared<GLClipping>();
+    extensions = std::make_shared<GLExtensions>();
+
     state->scissor(_currentScissor);
     state->viewport(_currentViewport);
 

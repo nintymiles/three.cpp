@@ -91,6 +91,8 @@
 #include "shader_lib/distanceRGBA_frag.h"
 #include "shader_lib/shadow_vert.h"
 #include "shader_lib/shadow_frag.h"
+#include "shader_lib/vsm_vert.h"
+#include "shader_lib/vsm_frag.h"
 
 
 static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
@@ -180,6 +182,8 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"distanceRGBA_frag",ShaderLibID::distanceRGBA_frag},
         {"shadow_vert",ShaderLibID::shadow_vert},
         {"shadow_frag",ShaderLibID::shadow_frag},
+        {"vsm_vert",ShaderLibID::vsm_vert},
+        {"vsm_frag",ShaderLibID::vsm_frag},
 };
 
 static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
@@ -269,7 +273,8 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::distanceRGBA_frag, distanceRGBA_frag},
         {ShaderLibID::shadow_vert,shadow_vert},
         {ShaderLibID::shadow_frag, shadow_frag},
-
+        {ShaderLibID::vsm_vert,vsm_vert},
+        {ShaderLibID::vsm_frag, vsm_frag},
 
 };
 

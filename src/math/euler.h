@@ -34,26 +34,30 @@ class Euler{
         double x() const{return _x;}
         void x(double value){
             _x = value;
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
         }
 
         double y() const{return _y;}
         void y(double value){
             _y = value;
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
         }
 
         double z() const{return _z;}
         void z(double value){
             _z = value;
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
         }
 
 
         RotationOrder order() const{return _order;}
         void order(RotationOrder value){
             _order = value;
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
         }
 
         Euler& set(double x,double y,double z) {
@@ -61,7 +65,8 @@ class Euler{
             _x = x;
             _y = y;
             _z = z;
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
 
             return *this;
         }
@@ -72,7 +77,8 @@ class Euler{
             _z = z;
             _order = order;
 
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
 
             return *this;
         }
@@ -87,7 +93,8 @@ class Euler{
             _z = euler.z();
             _order = euler.order();
 
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
 
             return *this;
         }
@@ -110,7 +117,8 @@ class Euler{
             _z = array[ 2 ];
             _order = (RotationOrder)array[ 3 ];
 
-            _onChangeCallback();
+            //_onChangeCallback();
+            onChange.emitSignal(*this);
 
             return *this;
         }

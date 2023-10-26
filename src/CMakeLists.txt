@@ -10,6 +10,7 @@ if(MSVC)
 endif()
 
 #add_definitions(-latomic;-lc++)
+#add_definitions(-stdlib=libc++;-D_LIBCPP_DEBUG=1)
 add_definitions(-stdlib=libc++)
 
 #find_package(Microsoft.GSL CONFIG)
@@ -53,6 +54,9 @@ file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/ope
 
 file(GLOB CONTROLS_SOURCE ${ROOT_DIR}/src/control/*.cpp)
 file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
+
+file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
+file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
 
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
@@ -101,16 +105,16 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${GEOMETRIES_SOURCE};${GEOMETRIES_HEADER};
         ${MATERIALS_SOURCE};${MATERIALS_HEADER};
         ${RENDERS_SOURCE};${RENDERS_HEADER};
-        ${CONTROLS_SOURCE};${CONTROLS_HEADER})
+        ${CONTROLS_SOURCE};${CONTROLS_HEADER};
+        ${BASE_SOURCE};${BASE_HEADER})
 
-add_link_options("-stdlib=libc++")
+#add_link_options("-stdlib=libc++")
 # 构建可执行程序
-ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/main.cpp)
+ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/examples/base/test_app.cpp)
 #add_library(threelibcpp)
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
 target_sources(threelibcpp PRIVATE  ${IMGUI_SOURCE} ${THREECPP_SOURCE})
 target_include_directories(threelibcpp PRIVATE
-${ROOT_DIR}/include
 ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
@@ -127,6 +131,7 @@ ${ROOT_DIR}/src/renders
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders
 ${ROOT_DIR}/src/control
+${ROOT_DIR}/src/examples/base
 ${ROOT_DIR}/src/utils)
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
@@ -150,6 +155,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   glfw.3.3
   GLESv2
   EGL
+  pcrecpp
+  pcre
 #  PRIVATE GSL
   )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries

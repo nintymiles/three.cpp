@@ -123,7 +123,7 @@ class Vector3{
 				case 0: return this->x;
 				case 1: return this->y;
 				case 2: return this->z;
-				default: throw std::runtime_error("index is oudouble of range: " + std::to_string(index));break;
+				default: throw std::runtime_error("index is out of range: " + std::to_string(index));break;
 			}
 		}
 
@@ -132,7 +132,7 @@ class Vector3{
                 case 0: return this->x;
                 case 1: return this->y;
                 case 2: return this->z;
-                default: throw std::runtime_error("index is oudouble of range: " + std::to_string(n));break;
+                default: throw std::runtime_error("index is out of range: " + std::to_string(n));break;
             }
         }
         const double& operator[](int n) const {
@@ -140,7 +140,7 @@ class Vector3{
 //                case 0: return this->x;
 //                case 1: return this->y;
 //                case 2: return this->z;
-//                default: throw std::runtime_error("index is oudouble of range: " + std::to_string(n));break;
+//                default: throw std::runtime_error("index is out of range: " + std::to_string(n));break;
 //            }
             return operator[](n);
         }

@@ -10,6 +10,7 @@
 #include "trackball_control.h"
 #include "mesh_phong_material.h"
 #include "vector4.h"
+#include "mesh.h"
 
 #include <memory>
 

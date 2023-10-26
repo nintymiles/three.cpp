@@ -42,9 +42,14 @@ int main(){
     if(!glfwInit())
         return 1;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // 3
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5); // 3
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    const char* glsl_version = "#version 300 es"; //version必须匹配
+    //EGL也必须在mac上指定，否则glfw提示不存在，能找到EGL lib，意味着从/usr/local/lib中获得
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,4);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
     // glfw window creation
 // --------------------
@@ -81,7 +86,7 @@ int main(){
     demoIO = &io;
     ImGui::StyleColorsDark();
 
-    const char* glsl_version = "#version 460";
+    //const char* glsl_version = "#version 460";
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
