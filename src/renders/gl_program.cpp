@@ -68,8 +68,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         prefixFragment << customExtensions << customDefines << std::endl;
         if (!customExtensions.empty() || !customDefines.empty())
             prefixFragment << std::endl;
-    }
-    else {
+    } else {
 #ifdef OPENGL_ES_3_2
         prefixVertex << "#version 300 es" << std::endl;
 
@@ -213,6 +212,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
 #ifdef OPENGL_ES_3_2
         prefixFragment << "#version 300 es" << std::endl;
+        prefixFragment << generatePrecision(parameters) << std::endl;
 
 #else
         prefixFragment << "#version 440" << std::endl;
