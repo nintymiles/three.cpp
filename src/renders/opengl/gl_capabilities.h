@@ -156,7 +156,7 @@ public:
             if (p > 0)
                 return "mediump";
         }
-        return "highp";
+        return "mediump";
         //return "lowp";
     }
 

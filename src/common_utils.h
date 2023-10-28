@@ -67,7 +67,7 @@ inline void checkError() {
 //                    )";
 //                break;
         }
-        std::cout << "GLRenderBufferInterface Render Error :" << std::endl << errorCodeMessage << std::endl;
+        std::cout << " Render Error :" << std::endl << errorCodeMessage << std::endl;
     }
 #endif
 }

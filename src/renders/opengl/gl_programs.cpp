@@ -355,9 +355,10 @@ GLProgram::sptr GLPrograms::acquireProgram(GLRenderer& renderer,const ProgramPar
         }
     }
     if (program == nullptr) {
-        //todo:fix here by using make_shared
-        GLProgram glProgram(renderer, extensions, code, parameters,bindingStates);
-        program = std::shared_ptr<GLProgram>(&glProgram);
+        //cant create a local object,then assigned it to a sharedptr and worked
+        //GLProgram glProgram(renderer, extensions, code, parameters,bindingStates);
+
+        program = std::make_shared<GLProgram>(renderer, extensions, code, parameters,bindingStates);
         programs.push_back(program);
     }
     return program;
