@@ -379,9 +379,8 @@ void GLPrograms::releaseProgram(GLProgram::sptr& program)
 std::shared_ptr<UniformValues> GLPrograms::getUniforms(const Material::sptr& material){
     if (!material->shaderId.empty()) {
         GLShader shader = getShader(material->shaderId);
-        return UniformValues::sptr();//todo:fix this std::make_shared<UniformValues>(shader.getUniforms());
-    }
-    else {
+        return std::make_shared<UniformValues>(shader.getUniforms());//UniformValues::sptr();//todo:fix this std::make_shared<UniformValues>(shader.getUniforms());
+    } else {
         return (material->uniforms);
     }
 }

@@ -428,8 +428,8 @@ bool Box3::equals(const Box3& box){
 bool satForAxes(const std::vector<double> axes, const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& extents) {
 
     for (int i = 0, j = axes.size() - 3; i <= j; i += 3) {
-
-        box3::_testAxis.fromArrayVec<double>(axes, i);
+        //todo:fix this
+        box3::_testAxis.fromArray((float*)axes.data(), i);
         // project the aabb onto the seperating axis
         float r = extents.x * abs(box3::_testAxis.x) + extents.y * abs(box3::_testAxis.y) + extents.z * abs(box3::_testAxis.z);
         // project all 3 vertices of the triangle onto the seperating axis

@@ -93,7 +93,7 @@ public:
 		return *this;
 	}
 
-	Quaternion& setFromEuler(Euler& euler, bool update);
+	Quaternion& setFromEuler(const Euler& euler, bool update);
 	
 	Quaternion& setFromAxisAngle(const Vector3& axis, double angle);
 

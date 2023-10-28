@@ -284,9 +284,10 @@ public:
 
         triangle.set(a->point, b->point, c->point);
 
-        triangle.getNormal(normal);
-
-        triangle.getMidpoint(midPoint);
+        //todo:fix this
+        triangle.getNormal(&normal);
+        //todo:fix this
+        triangle.getMidpoint(&midPoint);
 
         area = triangle.getArea();
 

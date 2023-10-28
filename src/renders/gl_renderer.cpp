@@ -1044,6 +1044,7 @@ void GLRenderer::compile(Scene& scene, Camera& camera){}
 void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
     if (scene == nullptr || camera==nullptr) return;
 
+    //重置gl state，包括clear color，depth等设置
     bindingStates->resetDefaultState();
 
     GLRenderTarget::sptr renderTarget = nullptr;

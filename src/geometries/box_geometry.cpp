@@ -23,20 +23,15 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
     Vector3 vector;
 
     // generate vertices, normals and uvs
-
-    for (iy = 0; iy < gridY1; iy++)
-    {
-
+    for (iy = 0; iy < gridY1; iy++){
         auto y = iy * segmentHeight - heightHalf;
 
-        for (ix = 0; ix < gridX1; ix++)
-        {
+        for (ix = 0; ix < gridX1; ix++){
 
             auto x = ix * segmentWidth - widthHalf;
 
 
             // set values to correct vector component
-
             vector[u] = x * udir;
             vector[v] = y * vdir;
             vector[w] = depthHalf;
@@ -48,7 +43,6 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
 
 
             // set values to correct vector component
-
             vector[u] = 0;
             vector[v] = 0;
             vector[w] = depth > 0 ? 1 : -1;
@@ -58,8 +52,6 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
             _normals.push_back(vector.y);
             _normals.push_back(vector.z);
 
-
-
             // uvs
             _uvs.push_back(ix / gridX);
             _uvs.push_back(1 - (iy / gridY));
@@ -67,9 +59,7 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
             // counters
 
             vertexCounter += 1;
-
         }
-
     }
 
 
@@ -78,13 +68,8 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
     // 1. you need three indices to draw a single face
     // 2. a single segment consists of two faces
     // 3. so we need to generate six (2*3) indices per segment
-
-    for (iy = 0; iy < gridY; iy++)
-    {
-
-        for (ix = 0; ix < gridX; ix++)
-        {
-
+    for (iy = 0; iy < gridY; iy++){
+        for (ix = 0; ix < gridX; ix++){
             auto a = numberOfVertices + ix + gridX1 * iy;
             auto b = numberOfVertices + ix + gridX1 * (iy + 1);
             auto c = numberOfVertices + (ix + 1) + gridX1 * (iy + 1);
@@ -108,15 +93,12 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
     }
 
     // add a group to the geometry. this will ensure multi material support
-
     addGroup(groupStart, groupCount, materialIndex);
 
     // calculate new start value for groups
-
     groupStart += groupCount;
 
     // update total number of vertices
-
     numberOfVertices += vertexCounter;
 }
 

@@ -20,7 +20,7 @@ public:
     UniformsLib(){
         add("common",
             LibUniformValues({
-                                     value("diffuse",Color(0xeeeeee)),
+                                     value("diffuse",Color(0xeeeeeeu)),
                                      value("opacity",1.0f),
                                      value<Texture::sptr>("map",nullptr),
                                      value("uvTransform",Matrix3()),
@@ -105,13 +105,13 @@ public:
                         value("fogDensity",0.00025f),
                         value("fogNear",1.0f),
                         value("fogFar",2000.0f),
-                        value("fogColor",Color(0xffffff))
+                        value("fogColor",Color(0xffffffu))
                 }));
 
 
         add("lights", LibUniformValues(
                 {
-                        value("ambientLightColor",Color(0xffffff)),
+                        value("ambientLightColor",Color(0xffffffu)),
                         value("lightProbe",std::vector<Vector3>()),
 
                         value("directionalLights",CachedDirectionalLights(),{
@@ -130,7 +130,7 @@ public:
                         value("spotLights",CachedSpotLights(),{
                                 value("position",Vector3()),
                                 value("direction",Vector3()),
-                                value("color",Color(0xffffff)),
+                                value("color",Color(0xffffffU)),
                                 value("distance",0.0f),
                                 value("coneCos",0.0f),
                                 value("penumbraCos",0.0f),
@@ -146,7 +146,7 @@ public:
                         value("spotShadowMatrix",std::vector<Matrix4>()),
 
                         value("pointLights",CachedPointLights(),{
-                                value("color", Color(0xffffff)),
+                                value("color", Color(0xffffffu)),
                                 value("position", Vector3()),
                                 value("decay", 0.0f),
                                 value("distance", 0.0f)
@@ -179,7 +179,7 @@ public:
 
         add("points", LibUniformValues(
                 {
-                        value("diffuse",Color(0xeeeeee)),
+                        value("diffuse",Color(0xeeeeeeu)),
                         value("opacity",1.0f),
                         value("size",1.0f),
                         value<Texture::sptr>("map",nullptr),
@@ -189,7 +189,7 @@ public:
 
         add("sprite", LibUniformValues(
                 {
-                        value("diffuse",Color(0xeeeeee)),
+                        value("diffuse",Color(0xeeeeeeU)),
                         value("opacity",1.0f),
                         value("center",Vector2(0.5f,0.5f)),
                         value("rotation",0.0f),

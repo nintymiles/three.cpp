@@ -869,9 +869,9 @@ void BufferGeometry::computeVertexNormals(bool areaWeighted){
                 vB = indices[i + 1] * 3;
                 vC = indices[i + 2] * 3;
 
-                pA = Vector3().fromArrayVec(positionArray, vA);
-                pB = Vector3().fromArrayVec(positionArray, vB);
-                pC = Vector3().fromArrayVec(positionArray, vC);
+                pA = Vector3().fromArray(positionArray, vA);
+                pB = Vector3().fromArray(positionArray, vB);
+                pC = Vector3().fromArray(positionArray, vC);
 
                 cb.subVectors(pC, pB);
                 ab.subVectors(pA, pB);
@@ -898,9 +898,9 @@ void BufferGeometry::computeVertexNormals(bool areaWeighted){
             unsigned size = normal->array.size();
 
             for (unsigned int i = 0; i < position->size; i += 9){
-                pA = Vector3().fromArrayVec(positionArray, i);
-                pB = Vector3().fromArrayVec(positionArray, i + 3);
-                pC = Vector3().fromArrayVec(positionArray, i + 6);
+                pA = Vector3().fromArray(positionArray, i);
+                pB = Vector3().fromArray(positionArray, i + 3);
+                pC = Vector3().fromArray(positionArray, i + 6);
 
                 cb = pC - pB;
                 ab = pA - pB;

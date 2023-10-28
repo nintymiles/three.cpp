@@ -6,11 +6,11 @@
 
 size_t Face3::_faceId = 0;
 Face3::Face3() : a(0), b(0), c(0), materialIndex(0){
-    color = Color().setColorName("black");
+    color = Color().setColorName(threecpp::Colors::black);
     _id = Face3::_faceId++;
 }
 Face3::Face3(unsigned a, unsigned b, unsigned c)	: a(a), b(b), c(c), materialIndex(0){
-    color = Color().setColorName("black");
+    color = Color().setColorName(threecpp::Colors::black);
     _id = Face3::_faceId++;
 }
 Face3::Face3(unsigned a, unsigned b, unsigned c, Vector3 normal, Color color, unsigned materialIndex)	:a(a), b(b), c(c), normal(normal), color(color), materialIndex(materialIndex){
@@ -40,7 +40,7 @@ Face3::Face3(unsigned a, unsigned b, unsigned c, std::vector<Vector3>* normals, 
         vertexColors = *colors;
 
     if (vertexColors.size() == 0) {
-        Color color1 = Color().setColorName("black");
+        Color color1 = Color().setColorName(threecpp::Colors::black);
         color = color1;
     }
 }

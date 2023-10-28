@@ -151,6 +151,7 @@ protected:
     //std::unordered_map<std::string, std::string> nameRegistry;
 public :
     std::unordered_map<std::string, GLUniform::sptr,threecpp::StringHash> seq;
+    //std::unordered_map<std::string, GLUniform::sptr> seq;
     virtual ~GLUniformContainer() = default;
 
     /*UniformName registered(std::string name) {

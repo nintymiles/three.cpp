@@ -34,9 +34,9 @@ void Geometry::addFace(unsigned a, unsigned b, unsigned c, unsigned materialInde
 
     if (normals!=nullptr&&normals->size > 0)
     {
-        vertexNormals.push_back(Vector3().fromArrayVec(normals->array, a * 3));
-        vertexNormals.push_back(Vector3().fromArrayVec(normals->array, b * 3));
-        vertexNormals.push_back(Vector3().fromArrayVec(normals->array, c * 3));
+        vertexNormals.push_back(Vector3().fromArray(normals->array, a * 3));
+        vertexNormals.push_back(Vector3().fromArray(normals->array, b * 3));
+        vertexNormals.push_back(Vector3().fromArray(normals->array, c * 3));
     }
 
     auto face = Face3(a, b, c, &vertexNormals, &vertexColors, materialIndex);
@@ -288,6 +288,7 @@ Geometry& Geometry::lookAt(Vector3& vector)
 
     return *this;
 }
+
 Geometry& Geometry::fromBufferGeometry(BufferGeometry& geometry){
 
     auto indices = geometry.index != nullptr ? geometry.index->array : std::vector<unsigned>();
@@ -295,8 +296,7 @@ Geometry& Geometry::fromBufferGeometry(BufferGeometry& geometry){
 
     BufferAttribute<float>::sptr position = geometry.getAttribute(AttributeName::position);
 
-    if (position==nullptr)
-    {
+    if (position==nullptr){
         //Trace.TraceError("THREE.Core.Geometry.FromBufferGeometry():Position attribute required for conversion.");
         return *this;
     }
@@ -323,10 +323,10 @@ Geometry& Geometry::fromBufferGeometry(BufferGeometry& geometry){
     }
     for (unsigned int i = 0; i < positions->size; i += 3)
     {
-        this->vertices.push_back(Vector3().fromArrayVec(positions->array, i));
+        this->vertices.push_back(Vector3().fromArray(positions->array, i));
         if (colors != nullptr && colors->size > 0) {
 
-            this->colors.push_back(Color((unsigned)threecpp::Colors::white).fromArray((double*)colors->array.data(), i));
+            this->colors.push_back(Color((unsigned)threecpp::Colors::white).fromArray(colors->array, i));
         }
     }
 
@@ -390,8 +390,8 @@ Geometry& Geometry::fromBufferGeometry(BufferGeometry& geometry){
     return *this;
 
 }
-Geometry& Geometry::center()
-{
+
+Geometry& Geometry::center(){
     computeBoundingBox();
 
     boundingBox.getCenter(_offset).negate();

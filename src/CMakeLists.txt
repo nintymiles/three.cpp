@@ -16,7 +16,7 @@ if(MSVC)
   message("debugflag: ${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
-add_definitions(-DPCRE_STATIC)
+add_definitions(-D_DEBUG)
 #add_definitions(-latomic;-lc++)
 #add_definitions(-stdlib=libc++;-D_LIBCPP_DEBUG=1)
 #add_definitions(-stdlib=libc++)

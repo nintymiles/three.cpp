@@ -14,6 +14,9 @@
 //#include <pcre/pcre.h>
 //#include <pcre/pcrecpp.h>
 
+//todo:fix this
+#define OPENGL_ES_3_2
+
 unsigned GLProgram::programId = 0;
 
 void sendDebugMessage(const std::wstring& name) {

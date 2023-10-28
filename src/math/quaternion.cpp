@@ -54,7 +54,7 @@ Quaternion& Quaternion::setFromUnitVectors(Vector3& vFrom,Vector3& vTo){
 
 }
 
-Quaternion& Quaternion::setFromEuler(Euler& euler, bool update) {
+Quaternion& Quaternion::setFromEuler(const Euler& euler, bool update) {
 	const double x = euler.x(), y = euler.y(), z = euler.z();
 	const RotationOrder order = euler.order();
 	// http://www.mathworks.com/matlabcentral/fileexchange/

@@ -101,7 +101,7 @@ public:
     GLShader vertexShader;
     GLShader fragmentShader;
 
-    std::shared_ptr<GLUniforms> cachedUniforms;
+    GLUniforms::sptr cachedUniforms;
 
     std::unordered_map<std::string, GLint> cachedAttributes;
 

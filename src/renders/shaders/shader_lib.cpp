@@ -47,7 +47,7 @@ public:
                                     "fog",
                                     "lights"
                             }).add({
-                                           {"emissive",Color(0x000000)}
+                                           {"emissive",Color(0x000000U)}
                                    }
                      )
             )
@@ -67,8 +67,8 @@ public:
                                     "displacementmap",
                                     "fog",
                                     "lights"}).add({
-                                                           {"emissive",Color(0x000000)},
-                                                           {"specular",Color(0x111111)},
+                                                           {"emissive",Color(0x000000U)},
+                                                           {"specular",Color(0x111111U)},
                                                            {"shininess",30.0f}
                                                    })
             )
@@ -90,7 +90,7 @@ public:
                                     "metalnessmap",
                                     "fog",
                                     "lights" }).add({
-                                                            {"emissive",Color(0x000000)},
+                                                            {"emissive",Color(0x000000U)},
                                                             {"roughness",0.5f},
                                                             {"metalness",0.5f},
                                                             {"envMapIntensity",1.0f}
@@ -112,8 +112,8 @@ public:
                                     "gradientmap",
                                     "fog",
                                     "lights"}).add({
-                                                           {"emissive",Color(0x000000)},
-                                                           {"specular",Color(0x111111)},
+                                                           {"emissive",Color(0x000000U)},
+                                                           {"specular",Color(0x111111U)},
                                                            {"shininess",30.0f}
                                                    })
             )
@@ -231,7 +231,7 @@ public:
                      merged({
                                     "lights",
                                     "fog"}).add({
-                                                        {"color",Color(0x000000)},
+                                                        {"color",Color(0x000000U)},
                                                         {"opacity",1.0f}
                                                 })
             )
@@ -254,7 +254,7 @@ public:
                                     "metalnessmap",
                                     "fog",
                                     "lights"}).add({
-                                                           {"emissive",Color(0x000000)},
+                                                           {"emissive",Color(0x000000U)},
                                                            {"roughness",0.5f},
                                                            {"metalness",0.5f},
                                                            {"envMapIntensity",1.0f},
@@ -264,7 +264,7 @@ public:
                                                            {"clearcoatRoughnessMap",emptyTexture},
                                                            {"clearcoatNormalScale", Vector2(1, 1)},
                                                            {"clearcoatNormalMap", emptyTexture},
-                                                           {"sheen", Color(0x000000)},
+                                                           {"sheen", Color(0x000000U)},
                                                            {"transparency",1.0f}
                                                    })
             )

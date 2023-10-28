@@ -84,7 +84,7 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
 
         } else if (light->isLightProbe) {
             for (int j = 0; j < 9; j++) {
-                state.probe[j].addScaledVector(*light->sh.coefficients[j], intensity);
+                state.probe[j].addScaledVector(light->sh.coefficients[j], intensity);
             }
         }
         else if (light->type=="DirectionalLight") {

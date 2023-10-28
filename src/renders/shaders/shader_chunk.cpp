@@ -58,6 +58,54 @@
 #include "shader_chunk/lights_fragment_begin.glsl.h"
 #include "shader_chunk/lights_fragment_end.glsl.h"
 #include "shader_chunk/lights_fragment_maps.glsl.h"
+#include "shader_chunk/lights_toon_fragment.glsl.h"
+#include "shader_chunk/lights_toon_pars_fragment.glsl.h"
+#include "shader_chunk/lights_lambert_vertex.glsl.h"
+#include "shader_chunk/lights_pars_begin.glsl.h"
+#include "shader_chunk/lights_phong_fragment.glsl.h"
+#include "shader_chunk/lights_phong_pars_fragment.glsl.h"
+#include "shader_chunk/lights_physical_fragment.glsl.h"
+#include "shader_chunk/lights_physical_pars_fragment.glsl.h"
+#include "shader_chunk/logdepthbuf_fragment.glsl.h"
+#include "shader_chunk/logdepthbuf_pars_fragment.glsl.h"
+#include "shader_chunk/logdepthbuf_pars_vertex.glsl.h"
+#include "shader_chunk/logdepthbuf_vertex.glsl.h"
+#include "shader_chunk/uv_pars_vertex.glsl.h"
+#include "shader_chunk/uv_pars_fragment.glsl.h"
+#include "shader_chunk/uv_vertex.glsl.h"
+#include "shader_chunk/uv2_vertex.glsl.h"
+#include "shader_chunk/uv2_pars_fragment.glsl.h"
+#include "shader_chunk/uv2_pars_vertex.glsl.h"
+#include "shader_chunk/morphnormal_vertex.glsl.h"
+#include "shader_chunk/morphtarget_vertex.glsl.h"
+#include "shader_chunk/morphtarget_pars_vertex.glsl.h"
+#include "shader_chunk/map_fragment.glsl.h"
+#include "shader_chunk/map_pars_fragment.glsl.h"
+#include "shader_chunk/map_particle_fragment.glsl.h"
+#include "shader_chunk/map_particle_pars_fragment.glsl.h"
+#include "shader_chunk/metalnessmap_fragment.glsl.h"
+#include "shader_chunk/metalnessmap_pars_fragment.glsl.h"
+#include "shader_chunk/normal_fragment_begin.glsl.h"
+#include "shader_chunk/normal_fragment_maps.glsl.h"
+#include "shader_chunk/normalmap_pars_fragment.h"
+#include "shader_chunk/packing.glsl.h"
+#include "shader_chunk/project_vertex.glsl.h"
+#include "shader_chunk/premultiplied_alpha_fragment.glsl.h"
+#include "shader_chunk/skinbase_vertex.glsl.h"
+#include "shader_chunk/skinning_pars_vertex.glsl.h"
+#include "shader_chunk/skinning_vertex.glsl.h"
+#include "shader_chunk/skinnormal_vertex.glsl.h"
+#include "shader_chunk/shadowmap_pars_fragment.glsl.h"
+#include "shader_chunk/shadowmap_pars_vertex.glsl.h"
+#include "shader_chunk/shadowmap_vertex.glsl.h"
+#include "shader_chunk/shadowmask_pars_fragment.glsl.h"
+#include "shader_chunk/specularmap_fragment.glsl.h"
+#include "shader_chunk/specularmap_pars_fragment.glsl.h"
+#include "shader_chunk/tonemapping_fragment.glsl.h"
+#include "shader_chunk/tonemapping_pars_fragment.glsl.h"
+#include "shader_chunk/transmissionmap_fragment.glsl.h"
+#include "shader_chunk/transmissionmap_pars_fragment.glsl.h"
+#include "shader_chunk/worldpos_vertex.glsl.h"
 
 #include "shader_lib/meshbasic_vert.h"
 #include "shader_lib/meshbasic_frag.h"
@@ -148,8 +196,57 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"lights_fragment_begin",ShaderLibID::lights_fragment_begin},
         {"lights_fragment_end",ShaderLibID::lights_fragment_end},
         {"lights_fragment_maps",ShaderLibID::lights_fragment_maps},
+        {"lights_toon_fragment",ShaderLibID::lights_toon_fragment},
+        {"lights_toon_pars_fragment",ShaderLibID::lights_toon_pars_fragment},
+        {"lights_lambert_vertex",ShaderLibID::lights_lambert_vertex},
+        {"lights_pars_begin",ShaderLibID::lights_pars_begin},
+        {"lights_phong_fragment",ShaderLibID::lights_phong_fragment},
+        {"lights_phong_pars_fragment",ShaderLibID::lights_phong_pars_fragment},
+        {"lights_physical_fragment",ShaderLibID::lights_physical_fragment},
+        {"lights_physical_pars_fragment",ShaderLibID::lights_physical_pars_fragment},
+        {"normal_fragment_begin",ShaderLibID::normal_fragment_begin},
+        {"normal_fragment_maps",ShaderLibID::normal_fragment_maps},
+        {"normalmap_pars_fragment",ShaderLibID::normalmap_pars_fragment},
+        {"logdepthbuf_fragment",ShaderLibID::logdepthbuf_fragment},
+        {"logdepthbuf_pars_fragment",ShaderLibID::logdepthbuf_pars_fragment},
+        {"logdepthbuf_pars_vertex",ShaderLibID::logdepthbuf_pars_vertex},
+        {"logdepthbuf_vertex",ShaderLibID::logdepthbuf_vertex},
         {"fog_fragment",ShaderLibID::fog_fragment},
         {"fog_pars_fragment",ShaderLibID::fog_pars_fragment},
+        {"uv_pars_vertex",ShaderLibID::uv_pars_vertex},
+        {"uv_pars_fragment",ShaderLibID::uv_pars_fragment},
+        {"uv_vertex",ShaderLibID::uv_vertex},
+        {"uv2_pars_fragment",ShaderLibID::uv2_pars_fragment},
+        {"uv2_pars_vertex",ShaderLibID::uv2_pars_vertex},
+        {"uv2_vertex",ShaderLibID::uv2_vertex},
+        {"morphnormal_vertex",ShaderLibID::morphnormal_vertex},
+        {"morphtarget_vertex",ShaderLibID::morphtarget_vertex},
+        {"morphtarget_pars_vertex",ShaderLibID::morphtarget_pars_vertex},
+        {"map_fragment",ShaderLibID::map_fragment},
+        {"map_pars_fragment",ShaderLibID::map_pars_fragment},
+        {"map_particle_fragment",ShaderLibID::map_particle_fragment},
+        {"map_particle_pars_fragment",ShaderLibID::map_particle_pars_fragment},
+        {"metalnessmap_fragment",ShaderLibID::metalnessmap_fragment},
+        {"metalnessmap_pars_fragment",ShaderLibID::metalnessmap_pars_fragment},
+        {"project_vertex",ShaderLibID::project_vertex},
+        {"packing",ShaderLibID::packing},
+        {"premultiplied_alpha_fragment",ShaderLibID::premultiplied_alpha_fragment},
+        {"skinbase_vertex",ShaderLibID::skinbase_vertex},
+        {"skinning_pars_vertex",ShaderLibID::skinning_pars_vertex},
+        {"skinning_vertex",ShaderLibID::skinning_vertex},
+        {"skinnormal_vertex",ShaderLibID::skinnormal_vertex},
+        {"specularmap_fragment",ShaderLibID::specularmap_fragment},
+        {"specularmap_pars_fragment",ShaderLibID::specularmap_pars_fragment},
+        {"shadowmap_pars_fragment",ShaderLibID::shadowmap_pars_fragment},
+        {"shadowmap_pars_vertex",ShaderLibID::shadowmap_pars_vertex},
+        {"shadowmap_vertex",ShaderLibID::shadowmap_vertex},
+        {"shadowmask_pars_fragment",ShaderLibID::shadowmask_pars_fragment},
+        {"tonemapping_fragment",ShaderLibID::tonemapping_fragment},
+        {"tonemapping_pars_fragment",ShaderLibID::tonemapping_pars_fragment},
+        {"transmissionmap_fragment",ShaderLibID::transmissionmap_fragment},
+        {"transmissionmap_pars_fragment",ShaderLibID::transmissionmap_pars_fragment},
+        {"worldpos_vertex",ShaderLibID::worldpos_vertex},
+
         {"meshbasic_vert",ShaderLibID::meshbasic_vert},
         {"meshbasic_frag",ShaderLibID::meshbasic_frag},
         {"meshlambert_vert",ShaderLibID::meshlambert_vert},
@@ -239,8 +336,57 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::lights_fragment_begin,shader_chunk::lights_fragment_begin},
         {ShaderLibID::lights_fragment_end,shader_chunk::lights_fragment_end},
         {ShaderLibID::lights_fragment_maps,shader_chunk::lights_fragment_maps},
+        {ShaderLibID::lights_toon_fragment,shader_chunk::lights_toon_fragment},
+        {ShaderLibID::lights_toon_pars_fragment,shader_chunk::lights_toon_pars_fragment},
+        {ShaderLibID::lights_lambert_vertex,shader_chunk::lights_lambert_vertex},
+        {ShaderLibID::lights_pars_begin,shader_chunk::lights_pars_begin},
+        {ShaderLibID::lights_phong_fragment,shader_chunk::lights_phong_fragment},
+        {ShaderLibID::lights_phong_pars_fragment,shader_chunk::lights_phong_pars_fragment},
+        {ShaderLibID::lights_physical_fragment,shader_chunk::lights_physical_fragment},
+        {ShaderLibID::lights_physical_pars_fragment,shader_chunk::lights_physical_pars_fragment},
+        {ShaderLibID::logdepthbuf_vertex,shader_chunk::logdepthbuf_vertex},
+        {ShaderLibID::logdepthbuf_pars_vertex,shader_chunk::logdepthbuf_pars_vertex},
+        {ShaderLibID::logdepthbuf_pars_fragment,shader_chunk::logdepthbuf_pars_fragment},
+        {ShaderLibID::logdepthbuf_fragment,shader_chunk::logdepthbuf_fragment},
         {ShaderLibID::fog_fragment,shader_chunk::fog_fragment},
         {ShaderLibID::fog_pars_fragment,shader_chunk::fog_pars_fragment},
+        {ShaderLibID::uv_pars_vertex,shader_chunk::uv_pars_vertex},
+        {ShaderLibID::uv_pars_fragment,shader_chunk::uv_pars_fragment},
+        {ShaderLibID::uv_vertex,shader_chunk::uv_vertex},
+        {ShaderLibID::uv2_vertex,shader_chunk::uv2_vertex},
+        {ShaderLibID::uv2_pars_vertex,shader_chunk::uv2_pars_vertex},
+        {ShaderLibID::uv2_pars_fragment,shader_chunk::uv2_pars_fragment},
+        {ShaderLibID::morphnormal_vertex,shader_chunk::morphnormal_vertex},
+        {ShaderLibID::morphtarget_vertex,shader_chunk::morphtarget_vertex},
+        {ShaderLibID::morphtarget_pars_vertex,shader_chunk::morphtarget_pars_vertex},
+        {ShaderLibID::map_particle_pars_fragment,shader_chunk::map_particle_pars_fragment},
+        {ShaderLibID::map_particle_fragment,shader_chunk::map_particle_fragment},
+        {ShaderLibID::map_pars_fragment,shader_chunk::map_pars_fragment},
+        {ShaderLibID::map_fragment,shader_chunk::map_fragment},
+        {ShaderLibID::metalnessmap_pars_fragment,shader_chunk::metalnessmap_pars_fragment},
+        {ShaderLibID::metalnessmap_fragment,shader_chunk::metalnessmap_fragment},
+        {ShaderLibID::normal_fragment_begin,shader_chunk::normal_fragment_begin},
+        {ShaderLibID::normal_fragment_maps,shader_chunk::normal_fragment_maps},
+        {ShaderLibID::normalmap_pars_fragment,shader_chunk::normalmap_pars_fragment},
+        {ShaderLibID::packing,shader_chunk::packing},
+        {ShaderLibID::project_vertex,shader_chunk::project_vertex},
+        {ShaderLibID::premultiplied_alpha_fragment,shader_chunk::premultiplied_alpha_fragment},
+        {ShaderLibID::skinnormal_vertex,shader_chunk::skinnormal_vertex},
+        {ShaderLibID::skinning_vertex,shader_chunk::skinning_vertex},
+        {ShaderLibID::skinning_pars_vertex,shader_chunk::skinning_pars_vertex},
+        {ShaderLibID::skinbase_vertex,shader_chunk::skinbase_vertex},
+        {ShaderLibID::specularmap_pars_fragment,shader_chunk::specularmap_pars_fragment},
+        {ShaderLibID::specularmap_fragment,shader_chunk::specularmap_fragment},
+        {ShaderLibID::shadowmask_pars_fragment,shader_chunk::shadowmask_pars_fragment},
+        {ShaderLibID::shadowmap_vertex,shader_chunk::shadowmap_vertex},
+        {ShaderLibID::shadowmap_pars_vertex,shader_chunk::shadowmap_pars_vertex},
+        {ShaderLibID::shadowmap_pars_fragment,shader_chunk::shadowmap_pars_fragment},
+        {ShaderLibID::tonemapping_fragment,shader_chunk::tonemapping_fragment},
+        {ShaderLibID::tonemapping_pars_fragment,shader_chunk::tonemapping_pars_fragment},
+        {ShaderLibID::transmissionmap_fragment,shader_chunk::transmissionmap_fragment},
+        {ShaderLibID::transmissionmap_pars_fragment,shader_chunk::transmissionmap_pars_fragment},
+        {ShaderLibID::worldpos_vertex,shader_chunk::worldpos_vertex},
+
         {ShaderLibID::meshbasic_vert,meshbasic_vert},
         {ShaderLibID::meshbasic_frag,meshbasic_frag},
         {ShaderLibID::meshlambert_vert,meshlambert_vert},

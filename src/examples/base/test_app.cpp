@@ -3,13 +3,17 @@
 //
 
 #include <iostream>
-#include <GLFW/glfw3.h>
 #include "trackball_control.h"
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
-#include "gl_state.h"
+
+#include "gl_headers.h"
 #include <stdio.h>
+
+//使用cmake时，这个macro必须定义，xcode中则不需要，只需要imgui_impl_opengl3中定义此宏即可
+#define GLFW_INCLUDE_ES3
+#include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
@@ -44,12 +48,17 @@ int main(){
 
     const char* glsl_version = "#version 300 es"; //version必须匹配
     //EGL也必须在mac上指定，否则glfw提示不存在，能找到EGL lib，意味着从/usr/local/lib中获得
+//    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,1);
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,4);
+//    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+//    const char* glsl_version = "#version 300 es";
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,1);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,4);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1); //目前angle最高可以指定到opengl es 3.1
 
     // glfw window creation
 // --------------------
@@ -90,6 +99,13 @@ int main(){
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    std::cout << "GL_VERSION                  : " << glGetString( GL_VERSION ) << std::endl;
+    std::cout << "GL_VENDOR                   : " << glGetString( GL_VENDOR ) << std::endl;
+    std::cout << "GL_RENDERER                 : " << glGetString( GL_RENDERER ) << std::endl;
+    std::cout << "GL_SHADING_LANGUAGE_VERSION : " << glGetString( GL_SHADING_LANGUAGE_VERSION ) << std::endl;
+
+    std::cout << "GLFW_Info                 : " << glfwGetVersionString() << std::endl;
 
     io.Fonts->AddFontDefault();
     io.Fonts->AddFontFromFileTTF("Roboto-Medium.ttf", 16.0f);
