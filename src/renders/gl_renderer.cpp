@@ -526,19 +526,16 @@ void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& 
     if (visible) {
         if (instanceOf<Group>(object.get())) {
             groupOrder = object->renderOrder;
-        }
-        else if(instanceOf<LOD>(object.get())){
+        } else if(instanceOf<LOD>(object.get())){
             LOD::sptr lodObject = std::dynamic_pointer_cast<LOD>(object);
             if (lodObject->autoUpdate == true) lodObject->update(camera);
-        }
-        else if (instanceOf<Light>(object.get())) {
+        } else if (instanceOf<Light>(object.get())) {
             Light::sptr lightObject = std::dynamic_pointer_cast<Light>(object);
             currentRenderState->pushLight(lightObject);
             if (lightObject->castShadow) {
                 currentRenderState->pushShadow(lightObject);
             }
-        }
-        else if (instanceOf<Sprite>(object.get())) {
+        } else if (instanceOf<Sprite>(object.get())) {
             Sprite::sptr spriteObject = std::dynamic_pointer_cast<Sprite>(object);
             if (!spriteObject->frustumCulled || _frustum.intersectsSprite(*spriteObject)) {
                 if (sortObjects) {
@@ -550,11 +547,7 @@ void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& 
                     currentRenderList->push(spriteObject, geometry, material, groupOrder, _vector3.z, NULL);
                 }
             }
-        }
-            /*else if (is<ImmediateRenderObject>(object)) {
-
-            }*/
-        else if (instanceOf<Mesh>(object.get()) || instanceOf<Line>(object.get()) || instanceOf<Points>(object.get())) {
+        } else if (instanceOf<Mesh>(object.get()) || instanceOf<Line>(object.get()) || instanceOf<Points>(object.get())) {
             if (instanceOf<SkinnedMesh>(object.get())) {
                 SkinnedMesh::sptr skinObject = std::dynamic_pointer_cast<SkinnedMesh>(object);
                 if (skinObject->skeleton->frame != info->render.frame) {
@@ -586,7 +579,7 @@ void GLRenderer::projectObject(const std::shared_ptr<Object3D>& object, Camera& 
                     currentRenderList->push(object, geometry, material, groupOrder, _vector3.z, NULL);
                 }
             }
-        }
+        }/*else if (is<ImmediateRenderObject>(object)) {}*/
     }
 
     for (unsigned i = 0;i < object->children.size();i++) {
@@ -621,8 +614,7 @@ void GLRenderer::renderObjects(const std::vector<RenderItem::sptr>& renderList, 
                 }
             }
 
-        }
-        else {
+        } else {
             if (_currentArrayCamera != nullptr) {
                 _currentArrayCamera.reset();
                 _currentArrayCamera = nullptr;
@@ -631,8 +623,8 @@ void GLRenderer::renderObjects(const std::vector<RenderItem::sptr>& renderList, 
         }
     }
 }
-void GLRenderer::renderObject(const Object3D::sptr& object, Scene::sptr& scene, const Camera::sptr& camera, const BufferGeometry::sptr& geometry, const Material::sptr& material, threecpp::DrawRange* group)
-{
+
+void GLRenderer::renderObject(const Object3D::sptr& object, Scene::sptr& scene, const Camera::sptr& camera, const BufferGeometry::sptr& geometry, const Material::sptr& material, threecpp::DrawRange* group){
 
     object->onBeforeRender.emitSignal(*this, scene, camera, object, geometry,material,nullptr, NULL);
     currentRenderState = renderStates->get(scene, _currentArrayCamera != nullptr ? _currentArrayCamera : camera);
@@ -664,8 +656,7 @@ void GLRenderer::renderObjectImmediate(const Object3D::sptr& object, const GLPro
 
 
 
-GLRenderer::~GLRenderer()
-{
+GLRenderer::~GLRenderer(){
     if (programCache != nullptr && programCache->programs.size() > 0) {
         for (int i = 0;i < programCache->programs.size();i++) {
             auto p = programCache->programs[i];
@@ -673,6 +664,7 @@ GLRenderer::~GLRenderer()
                 glDeleteProgram(p->program);
         }
     }
+
     glDisable(GL_BLEND);
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
