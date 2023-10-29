@@ -257,8 +257,7 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
         else if (materialProperties.envMap != nullptr && materialProperties.envMap != envMap) {
             initMaterial(material, scene, object);
         }
-    }
-    else {
+    } else {
         initMaterial(material, scene, object);
         materialProperties.version = material->version;
         //std::cout << "material version:" << material->version << std::endl;
@@ -315,6 +314,7 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
         refreshMaterial = true;
         refreshLights = true;
     }
+
     if (material->id != _currentMaterialId) {
         _currentMaterialId = material->id;
 
@@ -326,7 +326,6 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
 
     if (refreshProgram || _currentCamera != camera) {
         //p_uniforms->setValue("projectionMatrix", camera->projectionMatrix);
-
         if (capabilities->logarithmicDepthBuffer) {
             float logDepthBufFC = (GLfloat)(2.0f / (log(camera->_far + 1.0f) / LN2));
             p_uniforms->setUniformValue("logDepthBufFC",logDepthBufFC);
@@ -341,9 +340,9 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
             refreshMaterial = true;		// set to true on material change
             refreshLights = true;		// remains set until update done
         }
+
         // load material specific uniforms
         // (shader material also gets them for the sake of genericity)
-
         if(instanceOf<ShaderMaterial>(material.get()) ||
            instanceOf<MeshPhongMaterial>(material.get()) ||
            instanceOf<MeshToonMaterial>(material.get()) ||
@@ -442,8 +441,7 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
         p_uniforms->setUniformValue("toneMappingExposure", toneMappingExposure);
         //p_uniforms->setUniformValue("toneMappingWhitePoint, toneMappingWhitePoint);
 
-        if (materialProperties.needsLights)
-        {
+        if (materialProperties.needsLights){
             markUniformsLightsNeedsUpdate(*m_uniforms, refreshLights);
         }
 
@@ -1119,18 +1117,15 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
         renderObjects(transparentObjects, scene, camera);
 
     //scene->onAfterRender.emitSignal(*this, *scene, *camera,nullObject,NULL);
-
     if (_currentRenderTarget != nullptr) {
         // Generate mipmap if we're using any kind of mipmap filtering
-
         textures->updateRenderTargetMipmap(*_currentRenderTarget);
 
         // resolve multisample renderbuffers to a single-sample texture if necessary
-
         textures->updateMultisampleRenderTarget(*_currentRenderTarget);
     }
-    // Ensure depth buffer writing is enabled so it can be cleared on next render
 
+    // Ensure depth buffer writing is enabled so it can be cleared on next render
     state->depthBuffer.setTest(true);
     state->depthBuffer.setMask(true);
     state->colorBuffer.setMask(true);
@@ -1189,8 +1184,7 @@ void GLRenderer::setRenderTarget(const GLRenderTarget::sptr& renderTarget, int a
         _currentViewport.copy(renderTarget->viewport);
         _currentScissor.copy(renderTarget->scissor);
         _currentScissorTest = renderTarget->scissorTest;
-    }
-    else {
+    } else {
         _currentViewport.copy(_viewport).multiplyScalar(_pixelRatio).floor();
         _currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).floor();
         _currentScissorTest = _scissorTest;
