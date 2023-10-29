@@ -170,14 +170,16 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 #  PRIVATE GSL
   )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries
+  LINK_DIRECTORIES(${ROOT_DIR}/lib/win64) #添加动态连接库的路径
   TARGET_LINK_LIBRARIES(threelibcpp PUBLIC
   glfw3
   #glfw3d.lib for static debug build lib
+  #angel相关dll要不拷贝到系统路径，要不拷贝到执行目录，lib用于编译引用，dll用于链接执行
   libGLESv2.dll.lib
   libEGL.dll.lib
   #pcrecppd.lib
   #pcred.lib
-#  GSL
+  #GSL
   )
 
 else()
