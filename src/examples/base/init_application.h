@@ -14,6 +14,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "demo_scene.h"
+#include "demo_scene2.h"
 
 // settings
 extern int display_w;
@@ -61,6 +62,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Demo-Scene"] = std::make_shared<DemoScene>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Demo-Scene"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("Demo-Scene2", "")) {
+                if (demoClasses.count("Demo-Scene2") == 0)
+                    demoClasses["Demo-Scene2"] = std::make_shared<DemoScene2>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Demo-Scene2"];
                 currentDemoClass->renderer->clear();
             }
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;

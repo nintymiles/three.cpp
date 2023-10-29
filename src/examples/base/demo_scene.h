@@ -21,7 +21,7 @@ public :
     PlaneGeometry::sptr planeGeometry;
     DemoScene(int x, int y) : ApplicationBase(x, y) {
         isPerspective = true;
-        renderer->setClearColor(Color().setHex(0xEEEEEE));
+        renderer->setClearColor(Color().setHex(0xffffff));
         renderer->shadowMap->enabled = true;
 
         camera = std::make_shared<PerspectiveCamera>(45.0f, screenX / screenY, 0.1f, 1000.0f);
@@ -42,7 +42,7 @@ public :
         controller->dynamicDampingFactor = 0.3f;
 
         scene = std::make_shared<Scene>();
-        scene->setBackgroundColor(Color().setHex(0xffffff));
+        scene->setBackgroundColor(Color().setHex(0x000000));
 
         planeGeometry = std::make_shared<PlaneGeometry>(60, 40,1,1);
         auto planeMaterial = std::make_shared<MeshPhongMaterial>();
@@ -62,9 +62,8 @@ public :
         spotLight->castShadow = true;
         scene->add(spotLight);
 
-
-
     }
+
     void addCube(); //{
     //	auto cubeSize = ceil(random() * 3);
     //	auto cubeGeometry = std::make_shared<BoxGeometry>(cubeSize, cubeSize, cubeSize);
@@ -78,6 +77,7 @@ public :
     //	cube->castShadow = true;
     //	scene->add(cube);
     //}
+
     void removeCube();/* {
 		if (scene->children.size() == 0) return;
 		auto lastObject = scene->children[scene->children.size() - 1];
@@ -87,6 +87,7 @@ public :
 			scene->children.shrink_to_fit();
 		}
 	}*/
+
     virtual void render() override;
 
     virtual void showControls() override;/* {
