@@ -58,7 +58,7 @@ int main(){
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1); //目前angle最高可以指定到opengl es 3.1
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0); //目前angle最高可以指定到opengl es 3.1,mac上只能到3.0
 
     // glfw window creation
 // --------------------
