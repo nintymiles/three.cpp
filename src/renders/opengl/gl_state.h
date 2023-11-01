@@ -295,7 +295,8 @@ public:
         attributeDivisors.resize(maxVertexAttributes);
 
         emptyTextures[(GLuint)TextureTarget::Texture2D] = createTexture(TextureTarget::Texture2D, TextureTarget::Texture2D, 1);
-        emptyTextures[(GLuint)TextureTarget::cubeMap] = createTexture(TextureTarget::cubeMap, TextureTarget::cubeMapNegativeX, 6);
+        //original emptyTextures[(GLuint)TextureTarget::cubeMap] = createTexture(TextureTarget::cubeMap, TextureTarget::cubeMapNegativeX, 6);
+        emptyTextures[(GLuint)TextureTarget::cubeMap] = createTexture(TextureTarget::cubeMap, TextureTarget::cubeMapPositiveX, 6);
 
         colorBuffer.setClear(0, 0, 0, 1);
         depthBuffer.setClear(1);
