@@ -165,8 +165,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   glfw.3.3
   GLESv2
   EGL
-  pcrecpp
-  pcre
+  #pcrecpp
+  #pcre
 #  PRIVATE GSL
   )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries
