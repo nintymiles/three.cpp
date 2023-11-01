@@ -21,24 +21,24 @@ project (Three.cpp)
 message(STATUS "BINARY dir " ${PROJECT_BINARY_DIR})
 message(STATUS "SOURCE dir " ${PROJECT_SOURCE_DIR})
 
-include(FetchContent)
-
-# In this example we are picking a specific tag.
-# You can also pick a specific commit, if you need to.
-FetchContent_Declare(GSL
-    GIT_REPOSITORY "https://github.com/microsoft/GSL"
-    GIT_TAG "v3.1.0"
-)
-FetchContent_MakeAvailable(GSL)
-
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG release-1.12.1
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+#include(FetchContent)
+#
+## In this example we are picking a specific tag.
+## You can also pick a specific commit, if you need to.
+#FetchContent_Declare(GSL
+#    GIT_REPOSITORY "https://github.com/microsoft/GSL"
+#    GIT_TAG "v3.1.0"
+#)
+#FetchContent_MakeAvailable(GSL)
+#
+#FetchContent_Declare(
+#  googletest
+#  GIT_REPOSITORY https://github.com/google/googletest.git
+#  GIT_TAG release-1.12.1
+#)
+## For Windows: Prevent overriding the parent project's compiler/linker settings
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#FetchContent_MakeAvailable(googletest)
 
 # 定义工程根目录; CMAKE_SOURCE_DIR为内建变量，表示工程根目录的CMakeLists.txt文件路径
 SET(ROOT_DIR ${CMAKE_SOURCE_DIR})

@@ -108,10 +108,10 @@ int main(){
     std::cout << "GLFW_Info                 : " << glfwGetVersionString() << std::endl;
 
     io.Fonts->AddFontDefault();
-    io.Fonts->AddFontFromFileTTF("Roboto-Medium.ttf", 16.0f);
-    io.Fonts->AddFontFromFileTTF("Cousine-Regular.ttf", 15.0f);
-    io.Fonts->AddFontFromFileTTF("DroidSans.ttf", 16.0f);
-    io.Fonts->AddFontFromFileTTF("ProggyTiny.ttf", 10.0f);
+//    io.Fonts->AddFontFromFileTTF("Roboto-Medium.ttf", 16.0f);
+//    io.Fonts->AddFontFromFileTTF("Cousine-Regular.ttf", 15.0f);
+//    io.Fonts->AddFontFromFileTTF("DroidSans.ttf", 16.0f);
+//    io.Fonts->AddFontFromFileTTF("ProggyTiny.ttf", 10.0f);
 
 
     //GLRenderer renderer;

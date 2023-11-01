@@ -17,7 +17,7 @@ class Vector4 {
             T elements[4];
         };
 
-		Vector4()=default;
+		Vector4(): x(0), y(0), z(0), w(1){}
         Vector4(T x,T y,T z,T w):x(x),y(y),z(z),w(w){};
         //only constructors take base initializers
         Vector4& set(T x,T y,T z,T w){

@@ -110,7 +110,7 @@ struct unary_function { // base class for unary functions
 
 namespace std {
     template<>
-class hash< sole::uuid > : public std::__1::unary_function< sole::uuid, size_t > {
+class hash< sole::uuid > : public std::unary_function< sole::uuid, size_t > {
     public:
         // hash functor: hash uuid to size_t value by pseudorandomizing transform
         size_t operator()( const sole::uuid &uuid ) const {

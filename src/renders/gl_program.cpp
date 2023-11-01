@@ -71,7 +71,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
     } else {
 #ifdef OPENGL_ES_3_2
         prefixVertex << "#version 300 es" << std::endl;
-
+        prefixVertex << generatePrecision(parameters) << std::endl;
 #else
         prefixVertex << "#version 440" << std::endl;
         prefixVertex << generatePrecision(parameters) << std::endl;

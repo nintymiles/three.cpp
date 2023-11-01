@@ -26,6 +26,9 @@
 #include "gl_binding_states.h"
 #include "gl_cubemap.h"
 
+#include <climits>
+
+
 GLRenderer::GLRenderer(int width, int height){
     initGLContext(width, height);
 }
@@ -713,36 +716,31 @@ GLRenderer::~GLRenderer(){
     glViewport(0, 0, _width, _height);
 }
 
-int GLRenderer::getPixelRatio()
-{
+int GLRenderer::getPixelRatio(){
     return _pixelRatio;
 }
 
-void GLRenderer::setPixelRatio(int value)
-{
+void GLRenderer::setPixelRatio(int value){
     _pixelRatio = value;
 }
 
-Vector2& GLRenderer::getDrawingBufferSize(Vector2& target)
-{
+Vector2& GLRenderer::getDrawingBufferSize(Vector2& target){
     target.set(_width * _pixelRatio, _height * _pixelRatio).floor();
     return target;
 }
 
-void GLRenderer::setDrawingBufferSize(float width, float height, int pixelRatio)
-{
+void GLRenderer::setDrawingBufferSize(float width, float height, int pixelRatio){
     _width = width;
     _height = height;
     _pixelRatio = pixelRatio;
 }
-Vector2& GLRenderer::getSize(Vector2& target)
-{
+
+Vector2& GLRenderer::getSize(Vector2& target){
     target.set(_width, _height);
     return target;
 }
 
-void GLRenderer::setSize(float width, float height, bool updateStyle)
-{
+void GLRenderer::setSize(float width, float height, bool updateStyle){
     _width = width;
     _height = height;
 
@@ -750,28 +748,24 @@ void GLRenderer::setSize(float width, float height, bool updateStyle)
 
 }
 
-Vector4f& GLRenderer::getCurrentViewport(Vector4f& target)
-{
+Vector4f& GLRenderer::getCurrentViewport(Vector4f& target){
     target.copy(_currentViewport);
     return target;
 }
 
-Vector4f& GLRenderer::getViewport(Vector4f& target)
-{
+Vector4f& GLRenderer::getViewport(Vector4f& target){
     target.copy(_viewport);
     return target;
 }
 
-void GLRenderer::setViewport(Vector4f& v)
-{
+void GLRenderer::setViewport(Vector4f& v){
     _viewport.copy(v);
     _currentViewport.copy(_viewport);
     _currentViewport.multiplyScalar(_pixelRatio).floor();
     state->viewport(_currentViewport);
 }
 
-void GLRenderer::setViewport(float x, float y, float width, float height)
-{
+void GLRenderer::setViewport(float x, float y, float width, float height){
     _viewport.set(x,y,width,height);
 
     //_scissor.set(0, 0, width, height);
@@ -787,28 +781,24 @@ void GLRenderer::setViewport(float x, float y, float width, float height)
     state->viewport(_currentViewport);
 }
 
-Vector4f& GLRenderer::getScissor(Vector4f& target)
-{
+Vector4f& GLRenderer::getScissor(Vector4f& target){
     target.copy(_scissor);
     return target;
 }
 
-void GLRenderer::setScissor(float x, float y, float width, float height)
-{
+void GLRenderer::setScissor(float x, float y, float width, float height){
     _scissor.set(x, y, width, height);
     _currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).floor();
     state->scissor(_currentScissor);
 }
 
-void GLRenderer::setScissor(Vector4f& v)
-{
+void GLRenderer::setScissor(Vector4f& v){
     _scissor.copy(v);
     _currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).floor();
     state->scissor(_currentScissor);
 }
 
-bool GLRenderer::getScissorTest()
-{
+bool GLRenderer::getScissorTest(){
     return _scissorTest;
 }
 
@@ -959,7 +949,7 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
     auto rangeCount = geometry->drawRange.count * rangeFactor;
 
     auto groupStart = geometryGroup != NULL ? geometryGroup->start * rangeFactor : 0;
-    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : std::numeric_limits<unsigned>::infinity();
+    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : (unsigned)std::numeric_limits<unsigned>::infinity;
 
     auto drawStart = std::max(rangeStart, groupStart);
     auto drawEnd =   std::min(std::min(dataCount, rangeStart + rangeCount), groupStart + groupCount) - 1;

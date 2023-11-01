@@ -28,7 +28,7 @@ class Euler{
 
         //无默认构造器，会导致undefined symbol错误，通常为默认构造函数声明而未定义导致
         //Undefined symbols for architecture arm64: "Euler::Euler()", referenced from
-        Euler()=default;
+        Euler():_x(0), _y(0), _z(0), _order(RotationOrder::XYZ){}
         Euler(double x,double y,double z,RotationOrder order = Euler::defaultOrder){}
 
         double x() const{return _x;}

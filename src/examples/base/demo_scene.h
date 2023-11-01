@@ -42,11 +42,11 @@ public :
         controller->dynamicDampingFactor = 0.3f;
 
         scene = std::make_shared<Scene>();
-        scene->setBackgroundColor(Color().setHex(0x000000));
+        scene->setBackgroundColor(Color().setHex(0xffffff));
 
         planeGeometry = std::make_shared<PlaneGeometry>(60, 40,1,1);
         auto planeMaterial = std::make_shared<MeshPhongMaterial>();
-        planeMaterial->color = Color().setHex(0xffffff);
+        planeMaterial->color = Color().setHex(0xff0000);
         plane = std::make_shared<Mesh>(planeGeometry, planeMaterial);
         plane->receiveShadow = true;
         plane->rotation.x((float)(-0.5f * M_PI));
