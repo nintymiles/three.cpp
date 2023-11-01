@@ -37,7 +37,7 @@ public :
 
     GLBufferRendererInterface(bool isGLES3 = false) : isGLES3(isGLES3) {}
     GLBufferRendererInterface(GLExtensions::sptr& extension, GLInfo::sptr& info, GLCapabilities::sptr& capabilities)
-            :extensions(extensions), info(info), capabilities(capabilities) {
+            :extensions(extension), info(info), capabilities(capabilities) {
         isGLES3 = capabilities->isGLES3;
     }
     virtual ~GLBufferRendererInterface() = default;
