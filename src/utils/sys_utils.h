@@ -1,9 +1,14 @@
 #ifndef SRC_UTILS_SYS_UTILS_H_
 #define SRC_UTILS_SYS_UTILS_H_
 
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
 #include <chrono>
+
+#ifdef _MSC_VER
+//#define _popen popen;
+#endif
 
 #define CMD_RESULT_BUF_SIZE 1024
 
@@ -12,8 +17,7 @@
  * result：命令输出结果
  * 函数返回：0 成功；-1 失败；
  */
-int execute_shell_command(const char *cmd, char *result)
-{
+int execute_shell_command(const char *cmd, char *result){
     int iRet = -1;
     char buf_ps[CMD_RESULT_BUF_SIZE];
     char ps[CMD_RESULT_BUF_SIZE] = {0};
@@ -21,22 +25,18 @@ int execute_shell_command(const char *cmd, char *result)
 
     strcpy(ps, cmd);
 
-    if((ptr = popen(ps, "r")) != NULL)
-    {
-        while(fgets(buf_ps, sizeof(buf_ps), ptr) != NULL)
-        {
+    if((ptr = fopen(ps, "r")) != NULL){
+        while(fgets(buf_ps, sizeof(buf_ps), ptr) != NULL){
            strcat(result, buf_ps);
-           if(strlen(result) > CMD_RESULT_BUF_SIZE)
-           {
+           if(strlen(result) > CMD_RESULT_BUF_SIZE){
                break;
            }
         }
-        pclose(ptr);
+
+        fclose(ptr);
         ptr = NULL;
         iRet = 0;  // 处理成功
-    }
-    else
-    {
+    }else{
         printf("popen %s error\n", ps);
         iRet = -1; // 处理失败
     }
@@ -44,8 +44,7 @@ int execute_shell_command(const char *cmd, char *result)
     return iRet;
 }
 
-std::string execute_shell_command_with_result(const char *cmd)
-{
+std::string execute_shell_command_with_result(const char *cmd){
     char cBuf[CMD_RESULT_BUF_SIZE] = {0};
     std::string sCmdResult;
 
@@ -56,20 +55,16 @@ std::string execute_shell_command_with_result(const char *cmd)
     return sCmdResult;
 }
 
-void delay()
-{
+void delay(){
     auto start = std::chrono::high_resolution_clock::now();
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    while (true)
-    {
+    while (true){
         stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        if (duration.count() >= 15000)
-        {
+        if(duration.count() >= 15000){
             return;
-        }
-        else
+        }else
             continue;
     }
 }

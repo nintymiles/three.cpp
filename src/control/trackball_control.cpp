@@ -8,12 +8,9 @@ namespace control {
     using namespace threecpp;
 
     Vector2 TrackballControls::getMouseOnScreen(float pageX, float pageY){
-        //Vector4
-        //X->left, Y->top,Z->width, W->height
         return Vector2(
                 (pageX - screen.x) / screen.z,
                 (pageY - screen.y) / screen.w);
-
 
     }
 
@@ -70,8 +67,7 @@ namespace control {
 
         float angle = (float)acos(rotateStart.dot(rotateEnd) / rotateStart.length() / rotateEnd.length());
 
-        if (angle > 0)
-        {
+        if (angle > 0){
             axis.crossVectors(rotateStart, rotateEnd).normalize();
 
             angle *= rotateSpeed;
@@ -83,12 +79,9 @@ namespace control {
 
             rotateEnd.applyQuaternion(quaternion);
 
-            if (staticMoving)
-            {
+            if (staticMoving){
                 rotateStart.copy(rotateEnd);
-            }
-            else
-            {
+            }else{
                 quaternion.setFromAxisAngle(axis, angle * (dynamicDampingFactor - 1.0f));
                 rotateStart.applyQuaternion(quaternion);
 
@@ -98,28 +91,20 @@ namespace control {
     }
 
     void TrackballControls::zoomCamera(){
-        if (state == STATE::TOUCH_ZOOM_PAN)
-        {
+        if (state == STATE::TOUCH_ZOOM_PAN){
             float factor = touchZoomDistanceStart / touchZoomDistanceEnd;
             touchZoomDistanceStart = touchZoomDistanceEnd;
             eye = eye * factor;
-        }
-        else
-        {
+        }else{
             float factor = (float)(1.0f + (zoomEnd.y - zoomStart.y) * zoomSpeed);
-            if (factor != 1.0f && factor > 0.0f)
-            {
+            if (factor != 1.0f && factor > 0.0f){
                 eye.multiplyScalar(factor);
             }
-            if (staticMoving)
-            {
+            if (staticMoving){
                 zoomStart.set(zoomEnd.x, zoomEnd.y);
-            }
-            else
-            {
+            }else{
                 zoomStart.y += (zoomEnd.y - zoomStart.y) * dynamicDampingFactor;
             }
-
         }
     }
 
@@ -131,8 +116,7 @@ namespace control {
         mouseChange.copy(panEnd);
         mouseChange.sub(panStart);
 
-        if (mouseChange.lengthSq() > 0)
-        {
+        if (mouseChange.lengthSq() > 0){
             mouseChange.multiplyScalar(eye.length() * panSpeed);
             pan.copy(eye);
             pan.cross(camera->up);
@@ -154,12 +138,9 @@ namespace control {
             this.camera.Position = Vector3.Add(this.camera.Position, pan);
             this.target = Vector3.Add(target, pan);
             */
-            if (staticMoving)
-            {
+            if (staticMoving){
                 panStart.copy(panEnd);
-            }
-            else
-            {
+            }else{
                 //mouseChange = panEnd - panStart;
                 //mouseChange = Vector2.Multiply(mouseChange, DynamicDampingFactor);
                 //panStart += mouseChange;
@@ -170,19 +151,16 @@ namespace control {
     }
 
     void TrackballControls::checkDistance(){
-        if (!noZoom || !noPan)
-        {
+        if (!noZoom || !noPan){
 
-            if (eye.lengthSq() > maxDistance * maxDistance)
-            {
+            if (eye.lengthSq() > maxDistance * maxDistance){
                 eye.normalize();
                 eye.multiplyScalar(maxDistance);
 
                 camera->position = target + eye;
             }
 
-            if (eye.lengthSq() < minDistance * minDistance)
-            {
+            if (eye.lengthSq() < minDistance * minDistance){
                 eye.normalize();
 
                 eye.multiplyScalar(minDistance);
@@ -195,18 +173,15 @@ namespace control {
 
     void TrackballControls::update(){
         eye.subVectors(camera->position, target);
-        if (!noRotate)
-        {
+        if (!noRotate){
             rotateCamera();
         }
 
-        if (!noZoom)
-        {
+        if (!noZoom){
             zoomCamera();
         }
 
-        if (!noPan)
-        {
+        if (!noPan){
             panCamera();
         }
 
@@ -218,16 +193,12 @@ namespace control {
         // object.lookAt( target );
         camera->lookAt(target);
 
-
-
         // distanceToSquared
-        if ((lastPosition - camera->position).lengthSq() > 0.0f)
-        {
+        if ((lastPosition - camera->position).lengthSq() > 0.0f){
             //
             //   dispatchEvent( changeEvent );
 
             lastPosition.copy(camera->position);
-
         }
     }
 
@@ -269,18 +240,15 @@ namespace control {
 
             return;
 
-        }
-        else if (keyCode == keys[(byte)STATE::ROTATE] && !noRotate) {
+        }else if(keyCode == keys[(byte)STATE::ROTATE] && !noRotate) {
 
             keyState = STATE::ROTATE;
 
-        }
-        else if (keyCode == keys[(byte)STATE::ZOOM] && !noZoom) {
+        }else if(keyCode == keys[(byte)STATE::ZOOM] && !noZoom) {
 
             keyState = STATE::ZOOM;
 
-        }
-        else if (keyCode == keys[(byte)STATE::PAN] && !noPan) {
+        }else if(keyCode == keys[(byte)STATE::PAN] && !noPan) {
 
             keyState = STATE::PAN;
 
@@ -298,10 +266,8 @@ namespace control {
     void TrackballControls::mouseDown(unsigned button, float x, float y){
         if (!enabled) return;
 
-        if (state == STATE::NONE)
-        {
-            switch (button)
-            {
+        if (state == STATE::NONE){
+            switch (button){
                 case 0: //MouseButtons.Left
                     state = STATE::ROTATE;
                     break;
@@ -314,24 +280,15 @@ namespace control {
             }
         }
 
-        if (state == STATE::ROTATE && !noRotate)
-        {
-
+        if (state == STATE::ROTATE && !noRotate){
             rotateStart = getMouseProjectionOnBall(x, y);
             rotateEnd = rotateStart;
 
-        }
-        else if (state == STATE::ZOOM && !noZoom)
-        {
-
+        }else if(state == STATE::ZOOM && !noZoom){
             zoomStart = getMouseOnScreen(x, y);
             zoomEnd = zoomStart;
 
-
-        }
-        else if (state == STATE::PAN && !noPan)
-        {
-
+        }else if (state == STATE::PAN && !noPan){
             panStart = getMouseOnScreen(x, y);
             panEnd = panStart;
 
@@ -343,21 +300,13 @@ namespace control {
     void TrackballControls::mouseMove(float x, float y){
         if (!enabled) return;
 
-        if (state == STATE::ROTATE && !noRotate)
-        {
-
+        if (state == STATE::ROTATE && !noRotate){
             rotateEnd = getMouseProjectionOnBall(x, y);
 
-        }
-        else if (state == STATE::ZOOM && !noZoom)
-        {
-
+        }else if(state == STATE::ZOOM && !noZoom){
             zoomEnd = getMouseOnScreen(x, y);
 
-        }
-        else if (state == STATE::PAN && !noPan)
-        {
-
+        }else if(state == STATE::PAN && !noPan){
             panEnd = getMouseOnScreen(x, y);
 
         }
