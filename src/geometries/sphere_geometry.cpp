@@ -32,8 +32,7 @@ SphereBufferGeometry::SphereBufferGeometry(float radius, float widthSegments, fl
     Vector3 vertex;
     Vector3 normal;
 
-    for (int iy = 0; iy <= heightSegments; iy++)
-    {
+    for (int iy = 0; iy <= heightSegments; iy++){
 
         std::vector<unsigned> _verticesRow;
 

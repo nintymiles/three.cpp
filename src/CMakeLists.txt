@@ -66,6 +66,9 @@ file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
 
+file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/lines/*.cpp)
+file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/lines/*.h)
+
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
 
@@ -114,7 +117,8 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${MATERIALS_SOURCE};${MATERIALS_HEADER};
         ${RENDERS_SOURCE};${RENDERS_HEADER};
         ${CONTROLS_SOURCE};${CONTROLS_HEADER};
-        ${BASE_SOURCE};${BASE_HEADER})
+        ${BASE_SOURCE};${BASE_HEADER};
+        ${THREEJS_EXAMPLES_SOURCE};${THREEJS_EXAMPLES_HEADER})
 
 #add_link_options("-stdlib=libc++")
 # 构建可执行程序
@@ -139,8 +143,10 @@ ${ROOT_DIR}/src/renders
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders
 ${ROOT_DIR}/src/control
+${ROOT_DIR}/src/utils
 ${ROOT_DIR}/src/examples/base
-${ROOT_DIR}/src/utils)
+${ROOT_DIR}/src/examples/threejs/lines/
+)
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
 if(MSVC)
