@@ -748,17 +748,17 @@ void GLRenderer::setSize(float width, float height, bool updateStyle){
 
 }
 
-Vector4f& GLRenderer::getCurrentViewport(Vector4f& target){
+Vector4& GLRenderer::getCurrentViewport(Vector4& target){
     target.copy(_currentViewport);
     return target;
 }
 
-Vector4f& GLRenderer::getViewport(Vector4f& target){
+Vector4& GLRenderer::getViewport(Vector4& target){
     target.copy(_viewport);
     return target;
 }
 
-void GLRenderer::setViewport(Vector4f& v){
+void GLRenderer::setViewport(Vector4& v){
     _viewport.copy(v);
     _currentViewport.copy(_viewport);
     _currentViewport.multiplyScalar(_pixelRatio).floor();
@@ -781,7 +781,7 @@ void GLRenderer::setViewport(float x, float y, float width, float height){
     state->viewport(_currentViewport);
 }
 
-Vector4f& GLRenderer::getScissor(Vector4f& target){
+Vector4& GLRenderer::getScissor(Vector4& target){
     target.copy(_scissor);
     return target;
 }
@@ -792,7 +792,7 @@ void GLRenderer::setScissor(float x, float y, float width, float height){
     state->scissor(_currentScissor);
 }
 
-void GLRenderer::setScissor(Vector4f& v){
+void GLRenderer::setScissor(Vector4& v){
     _scissor.copy(v);
     _currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).floor();
     state->scissor(_currentScissor);

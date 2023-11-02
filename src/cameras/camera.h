@@ -49,7 +49,7 @@ public:
     */
     float _near = 0.1f;
 
-    Vector4f viewport;
+    Vector4 viewport;
 
     Camera();
 

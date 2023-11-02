@@ -32,7 +32,7 @@ public:
 
         isPerspective = true;
 
-        Vector4f screen = Vector4f(0, 0, screenX, screenY);
+        Vector4 screen = Vector4(0, 0, screenX, screenY);
         controller = std::make_shared<control::TrackballControls>(camera, screen);
 
         controller->staticMoving = false;
@@ -54,7 +54,7 @@ public:
         planeMaterial->color = Color().setHex(0xcccccc);
         auto plane = std::make_shared<Mesh>(planeGeometry, planeMaterial);
         plane->receiveShadow = true;
-        plane->rotation.x((float)(-0.5f * M_PI));
+        plane->rotation.setX((float)(-0.5f * M_PI));
 
         plane->position.set(15.0f, 0.0f, 0.0f);
 

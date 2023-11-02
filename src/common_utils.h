@@ -7,7 +7,8 @@
 #include <string>
 #include <algorithm>
 
-#include <GLES3/gl3.h>
+//#include <gles3/gl3.h>
+#include "gl_headers.h"
 
 namespace threecpp{
 

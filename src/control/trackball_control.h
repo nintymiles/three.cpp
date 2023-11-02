@@ -55,7 +55,7 @@ namespace control {
 
         Vector2 panEnd;
 
-        Vector4f screen;
+        Vector4 screen;
 
         Vector3 target0;
 
@@ -117,7 +117,7 @@ namespace control {
             zoom0 = 1;
         }
 
-        TrackballControls(const Camera::sptr &camera, const Vector4f &screen) : TrackballControls() {
+        TrackballControls(const Camera::sptr &camera, const Vector4 &screen) : TrackballControls() {
             this->camera = camera;
             this->screen = screen;
             target0.copy(target);
@@ -130,11 +130,11 @@ namespace control {
             return sptr(new TrackballControls());
         }
 
-        static sptr create(const Camera::sptr &camera, const Vector4f &screen) {
+        static sptr create(const Camera::sptr &camera, const Vector4 &screen) {
             return sptr(new TrackballControls(camera, screen));
         }
 
-        void initTrackballControls(const Camera::sptr &camera, const Vector4f &screen) {
+        void initTrackballControls(const Camera::sptr &camera, const Vector4 &screen) {
 
             target.set(0, 0, 0);
             lastPosition.set(0, 0, 0);
@@ -169,7 +169,7 @@ namespace control {
 
         void update();
 
-        void sizeChanged(const Vector4f &screen);
+        void sizeChanged(const Vector4 &screen);
 
         void reset();
 

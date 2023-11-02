@@ -11,6 +11,7 @@
 #include "buffer_attribute.h"
 #include "geometry.h"
 #include "material.h"
+#include "matrix4.h"
 
 #include <string>
 #include <memory>

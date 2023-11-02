@@ -1,247 +1,220 @@
-#ifndef VECTOR4_H
-#define VECTOR4_H
+//
+// Created by SeanR on 2023/10/29.
+//
 
-#include<exception>
-#include "quaternion.h"
-#include "matrix4.h"
+#ifndef THREE_CPP_VECTOR4_H
+#define THREE_CPP_VECTOR4_H
 
-template <typename T> 
+#include "osdecl.h"
+#include "math_utils.h"
+
+#include <cmath>
+#include <cassert>
+#include <algorithm>
+#include <sstream>
+
+template<typename T>
+class BufferAttribute;
+
+class Matrix3;
+class Matrix4;
+class Quaternion;
+
 class Vector4 {
-    public:
-        //public data member
-        //T x,y,z,w;
-        union {
-            struct {
-                T x,y,z,w;
-            };
-            T elements[4];
+
+public:
+    union {
+        struct {
+            float x, y, z, w;
         };
+        float elements[4];
+    };
+    Vector4() : x(0), y(0), z(0), w(1) {}
 
-		Vector4(): x(0), y(0), z(0), w(1){}
-        Vector4(T x,T y,T z,T w):x(x),y(y),z(z),w(w){};
-        //only constructors take base initializers
-        Vector4& set(T x,T y,T z,T w){
-            this->x = x;
-            this->y = y;
-            this->z = z;
-			this->w = w;
+    Vector4(const float x, const float y, const float z, const float w) : x(x), y(y), z(z), w(w) {}
 
-            return *this;
-        }
-		
-        Vector4& setScalar(T scalar){
-            this->x = scalar;
-            this->y = scalar;
-            this->z = scalar;
-
-            return *this;
-        }
-        Vector4& setX(T x){
-            this->x = x;
-            return *this;
-        }
-        Vector4& setY(T y){
-            this->y = y;
-            return *this;
-        }
-        Vector4& setZ(T z){
-            this->z = z;
-            return *this;
-        }
-        Vector4& setComponent(int index, T value){
-            switch (index)
-            {
-            case 0:this->x = value;break;
-            case 1:this->y = value;break;
-            case 2:this->z = value; break;
-            default:throw std::runtime_error("index is out of range: " + std::to_string(index));break;
-            }
-            return *this;
-        }
-	    T getComponent(int index) {
-		    switch ( index ) {
-			case 0: return this->x;
-			case 1: return this->y;
-			case 2: return this->z;
-			default: throw std::runtime_error("index is out of range: " + std::to_string(index));break;
-		}
-
-	}
-	Vector4 clone() {
-		return new Vector4(this->x,this->y,this->z);
-	}
-    
-    Vector4& copy(Vector4 v) {
-		*this = v;
-		return *this;
-	}
-    //操作符重载，不熟悉
-    Vector4& operator+=(const Vector4 rhs){
-        this += rhs;
-        return *this;
+    Vector4(const Vector4& vector)
+    {
+        memcpy(elements, vector.elements, sizeof(elements));
     }
-    Vector4& addVectors(Vector4 a,Vector4 b) {
-		this->x = a.x + b.x;
-		this->y = a.y + b.y;
-		this->z = a.z + b.z;
+    /**
+         * Sets value of this vector.
+         */
+    Vector4& set(const float x, const float y, const float z, const float w);
 
-		return *this;
-	}
+    /**
+     * Sets all values of this vector.
+     */
+    Vector4& setScalar(const float scalar);
 
-    Vector4& addScaledVector(Vector4 v,double s) {
-		this->x += v.x * s;
-		this->y += v.y * s;
-		this->z += v.z * s;
+    /**
+     * Sets X component of this vector.
+     */
+    Vector4& setX(const float x);
 
-		return *this;
-	}
+    /**
+     * Sets Y component of this vector.
+     */
+    Vector4& setY(const float y);
 
-    Vector4& sub(Vector4 v) {
-		this->x -= v.x;
-		this->y -= v.y;
-		this->z -= v.z;
+    /**
+     * Sets Z component of this vector.
+     */
+    Vector4& setZ(const float z);
 
-		return *this;
-	}
+    /**
+     * Sets w component of this vector.
+     */
+    Vector4& setW(const float w);
 
-	Vector4& subVectors(Vector4 a,Vector4 b) {
-		this->x = a.x - b.x;
-		this->y = a.y - b.y;
-		this->z = a.z - b.z;
+    Vector4& setComponent(const unsigned index, const float value);
 
-		return *this;
-	}
+    float getComponent(const unsigned index);
 
-    Vector4& multiply(Vector4 v) {
-		this->x *= v.x;
-		this->y *= v.y;
-		this->z *= v.z;
+    /**
+     * Clones this vector.
+     */
+    Vector4& clone();
 
-		return *this;
-	}
+    /**
+     * Copies value of v to this vector.
+     */
+    Vector4& copy(const Vector4& v);
 
-    Vector4& multiplyScalar(double scalar) {
-		this->x *= scalar;
-		this->y *= scalar;
-		this->z *= scalar;
+    /**
+     * Adds v to this vector.
+     */
+    Vector4& add(const Vector4& v);
 
-		return *this;
-	}
+    Vector4& addScalar(const float scalar);
 
-    Vector4& multiplyVectors(Vector4 a,Vector4 b) {
-		this->x = a.x * b.x;
-		this->y = a.y * b.y;
-		this->z = a.z * b.z;
+    /**
+     * Sets this vector to a + b.
+     */
+    Vector4& addVectors(const Vector4& a, const Vector4& b);
 
-		return *this;
-	}
+    Vector4& addScaledVector(const Vector4& v, const float s);
+    /**
+     * Subtracts v from this vector.
+     */
+    Vector4& sub(const Vector4& v);
 
-    //模版的返回值，可以借助auto实现简化
-	auto dot(Vector4 v) ->T{
-		return this->x * v.x + this->y * v.y + this->z * v.z;
-	}
+    Vector4& subScalar(const float s);
 
-    Vector4& applyQuaternion(Quaternion q) {
+    /**
+     * Sets this vector to a - b.
+     */
+    Vector4& subVectors(const Vector4& a, const Vector4& b);
 
-		const auto x = this->x, y = this->y, z = this->z;
-		const double qx = q.x(), qy = q.y(), qz = q.z(), qw = q.w();
+    /**
+     * Multiplies this vector by scalar s.
+     */
+    Vector4& multiplyScalar(const float s);
 
-		// calculate quat * vector
-		const auto ix = qw * x + qy * z - qz * y;
-		const auto iy = qw * y + qz * x - qx * z;
-		const auto iz = qw * z + qx * y - qy * x;
-		const auto iw = - qx * x - qy * y - qz * z;
+    Vector4& applyMatrix4(const Matrix4& m);
 
-		// calculate result * inverse quat
-		this->x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-		this->y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-		this->z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
+    /**
+     * Divides this vector by scalar s.
+     * Set vector to ( 0, 0, 0 ) if s == 0.
+     */
+    Vector4& divideScalar(const float s);
 
-		return *this;
-	}
+    /**
+     * http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
+     * @param q is assumed to be normalized
+     */
+    Vector4& setAxisAngleFromQuaternion(const Quaternion& q);
 
-	Vector4& setFromMatrixColumn(Matrix4 m, int index) {
-		return fromArray(m.elements, index * 4);
-	}
+    /**
+     * http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/index.htm
+     * @param m assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
+     */
+    Vector4& setAxisAngleFromRotationMatrix(const Matrix3& m);
 
-	Vector4& fromArray(T array[], int offset = 0 ) {
-		x = array[ offset ];
-		y = array[ offset + 1 ];
-		z = array[ offset + 2 ];
+    Vector4& min(const Vector4& v);
+    Vector4& max(const Vector4& v);
+    Vector4& clamp(const Vector4& min, const Vector4& max);
+    Vector4& clampScalar(const float min, const float max);
+    Vector4& floor();
+    Vector4& ceil();
+    Vector4& round();
+    Vector4& roundToZero();
 
-		return *this;
-	}
+    /**
+     * Inverts this vector.
+     */
+    Vector4& negate();
 
+    /**
+     * Computes dot product of this vector and v.
+     */
+    float dot(const Vector4& v);
 
+    /**
+     * Computes squared length of this vector.
+     */
+    float lengthSq() const;
 
+    /**
+     * Computes length of this vector.
+     */
+    float length() const ;
 
+    /**
+     * Computes the Manhattan length of this vector.
+     *
+     * @return {number}
+     *
+     * @see {@link http://en.wikipedia.org/wiki/Taxicab_geometry|Wikipedia: Taxicab Geometry}
+     */
+    float manhattanLength() const;
 
-	// TODO lengthSquared?
-	T lengthSq() {
-		return x * x + y * y + z * z;
-	}
+    /**
+     * Normalizes this vector.
+     */
+    Vector4& normalize();
+    /**
+     * Normalizes this vector and multiplies it by l.
+     */
+    Vector4& setLength(const float length);
 
-	T length() {
-		return sqrt(lengthSq());
-	}
+    /**
+     * Linearly interpolate between this vector and v with alpha factor.
+     */
+    Vector4& lerp(const Vector4& v, const float alpha);
 
-	T manhattanLength(){
-		return abs( this->x ) + abs( this->y ) + abs( this->z );
-	}
+    Vector4& lerpVectors(const Vector4& v1, const Vector4& v2, const float alpha);
 
-	T normalize() {
-		return divideScalar(length()?length():1);
-	}
+    /**
+     * Checks for strict equality of this vector and v.
+     */
+    bool equals(const Vector4& v);
 
-	T divideScalar(T scalar) {
-		return multiplyScalar(1 / scalar);
+    /**
+     * Sets this vector's x, y, z and w value from the provided array.
+     * @param array the source array.
+     * @param offset (optional) offset into the array. Default is 0.
+     */
+    Vector4& fromArray(const float* array, unsigned arrayLength, unsigned offset=0);
 
-	}
+    Vector4& fromArray(const std::vector<float> array, unsigned offset=0);
 
-    Vector4& floor(){
-        x = std::floor(x);
-        y = std::floor(y);
-        z = std::floor(z);
-        w = std::floor(w);
+    /**
+     * Returns an array [x, y, z, w], or copies x, y, z and w into the provided array.
+     * @param array (optional) array to store the vector to. If this is not provided, a new array will be created.
+     * @param offset (optional) optional offset into the array.
+     * @return The created or provided array.
+     */
+    const float* toArray(float * array, unsigned offset=0) const;
 
-        return *this;
+    std::string to_string() {
+        std::stringstream stream;
+        stream << "x=" << std::to_string(x) << ",y=" << std::to_string(y) << ",z=" << std::to_string(z)<<",w="<<std::to_string(w);
+        return stream.str();
     }
 
-// 	min( v ) {
-
-// 		this->x = Math.min( this->x, v.x );
-// 		this->y = Math.min( this->y, v.y );
-// 		this->z = Math.min( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-// 	max( v ) {
-
-// 		this->x = Math.max( this->x, v.x );
-// 		this->y = Math.max( this->y, v.y );
-// 		this->z = Math.max( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-	Vector4& crossVectors(Vector4 a,Vector4 b){
-
-		const T ax = a.x, ay = a.y, az = a.z;
-		const T bx = b.x, by = b.y, bz = b.z;
-
-		this->x = ay * bz - az * by;
-		this->y = az * bx - ax * bz;
-		this->z = ax * by - ay * bx;
-
-		return *this;
-	}
-
-    bool equals( const Vector4 &v ) {
- 		return ( ( v.x == this->x ) && ( v.y == this->y ) && ( v.z == this->z ) && ( v.z == this->w ) );
- 	}
+    template<typename T>
+    Vector4& fromBufferAttribute(BufferAttribute<T>& attribute, unsigned index, unsigned offset=0);
 
     bool operator !=(const Vector4& v) {
         return !equals(v);
@@ -251,563 +224,21 @@ class Vector4 {
         return equals(v);
     }
 
-    private:
-        
 };
 
-template<typename T>
-inline Vector4<T> operator *(const Vector4<T>& vector, float scalar){
-    Vector4<T> value(vector);
+inline Vector4 operator *(const Vector4& vector, float scalar){
+    Vector4 value(vector);
     value.multiplyScalar(scalar);
     return value;
 }
 
-template<typename T>
-inline Vector4<T> operator - (const Vector4<T>& a, const Vector4<T>& b){
+inline Vector4 operator - (const Vector4& a, const Vector4& b){
     float x = a.x - b.x;
     float y = a.y - b.y;
     float z = a.z - b.z;
     float w = a.w - b.w;
 
-    return Vector4<T>(x, y, z, w);
+    return Vector4(x, y, z, w);
 }
 
-
-
-// 	applyEuler( euler ) {
-
-// 		if ( ! ( euler && euler.isEuler ) ) {
-
-// 			console.error( 'THREE.Vector4: .applyEuler() now expects an Euler rotation rather than a Vector4 and order.' );
-
-// 		}
-
-// 		return *this-applyQuaternion( _quaternion.setFromEuler( euler ) );
-
-// 	}
-
-// 	applyAxisAngle( axis, angle ) {
-
-// 		return *this-applyQuaternion( _quaternion.setFromAxisAngle( axis, angle ) );
-
-// 	}
-
-// 	applyMatrix3( m ) {
-
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const e = m.elements;
-
-// 		this->x = e[ 0 ] * x + e[ 3 ] * y + e[ 6 ] * z;
-// 		this->y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ] * z;
-// 		this->z = e[ 2 ] * x + e[ 5 ] * y + e[ 8 ] * z;
-
-// 		return *this;
-
-// 	}
-
-// 	applyNormalMatrix( m ) {
-
-// 		return *this-applyMatrix3( m ).normalize();
-
-// 	}
-
-// 	applyMatrix4( m ) {
-
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const e = m.elements;
-
-// 		const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
-
-// 		this->x = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
-// 		this->y = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
-// 		this->z = ( e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] ) * w;
-
-// 		return *this;
-
-// 	}
-
-// 	applyQuaternion( q ) {
-
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const qx = q.x, qy = q.y, qz = q.z, qw = q.w;
-
-// 		// calculate quat * vector
-
-// 		const ix = qw * x + qy * z - qz * y;
-// 		const iy = qw * y + qz * x - qx * z;
-// 		const iz = qw * z + qx * y - qy * x;
-// 		const iw = - qx * x - qy * y - qz * z;
-
-// 		// calculate result * inverse quat
-
-// 		this->x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-// 		this->y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-// 		this->z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
-
-// 		return *this;
-
-// 	}
-
-// 	project( camera ) {
-
-// 		return *this-applyMatrix4( camera.matrixWorldInverse ).applyMatrix4( camera.projectionMatrix );
-
-// 	}
-
-// 	unproject( camera ) {
-
-// 		return *this-applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
-
-// 	}
-
-// 	transformDirection( m ) {
-
-// 		// input: THREE.Matrix4 affine matrix
-// 		// vector interpreted as a direction
-
-// 		const x = this->x, y = this->y, z = this->z;
-// 		const e = m.elements;
-
-// 		this->x = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z;
-// 		this->y = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z;
-// 		this->z = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z;
-
-// 		return *this-normalize();
-
-// 	}
-
-// 	divide( v ) {
-
-// 		this->x /= v.x;
-// 		this->y /= v.y;
-// 		this->z /= v.z;
-
-// 		return *this;
-
-// 	}
-
-// 	divideScalar( scalar ) {
-
-// 		return *this-multiplyScalar( 1 / scalar );
-
-// 	}
-
-// 	min( v ) {
-
-// 		this->x = Math.min( this->x, v.x );
-// 		this->y = Math.min( this->y, v.y );
-// 		this->z = Math.min( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-// 	max( v ) {
-
-// 		this->x = Math.max( this->x, v.x );
-// 		this->y = Math.max( this->y, v.y );
-// 		this->z = Math.max( this->z, v.z );
-
-// 		return *this;
-
-// 	}
-
-// 	clamp( min, max ) {
-
-// 		// assumes min < max, componentwise
-
-// 		this->x = Math.max( min.x, Math.min( max.x, this->x ) );
-// 		this->y = Math.max( min.y, Math.min( max.y, this->y ) );
-// 		this->z = Math.max( min.z, Math.min( max.z, this->z ) );
-
-// 		return *this;
-
-// 	}
-
-// 	clampScalar( minVal, maxVal ) {
-
-// 		this->x = Math.max( minVal, Math.min( maxVal, this->x ) );
-// 		this->y = Math.max( minVal, Math.min( maxVal, this->y ) );
-// 		this->z = Math.max( minVal, Math.min( maxVal, this->z ) );
-
-// 		return *this;
-
-// 	}
-
-// 	clampLength( min, max ) {
-// 		//length()函数返回的是Vector的长度
-// 		const length = this-length();
-
-// 		// (length||1)用来保证除数不为1
-// 		return *this-divideScalar( length || 1 ).multiplyScalar( Math.max( min, Math.min( max, length ) ) );
-
-// 	}
-
-// 	floor() {
-
-// 		this->x = Math.floor( this->x );
-// 		this->y = Math.floor( this->y );
-// 		this->z = Math.floor( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	ceil() {
-
-// 		this->x = Math.ceil( this->x );
-// 		this->y = Math.ceil( this->y );
-// 		this->z = Math.ceil( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	round() {
-
-// 		this->x = Math.round( this->x );
-// 		this->y = Math.round( this->y );
-// 		this->z = Math.round( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	roundToZero() {
-
-// 		this->x = ( this->x < 0 ) ? Math.ceil( this->x ) : Math.floor( this->x );
-// 		this->y = ( this->y < 0 ) ? Math.ceil( this->y ) : Math.floor( this->y );
-// 		this->z = ( this->z < 0 ) ? Math.ceil( this->z ) : Math.floor( this->z );
-
-// 		return *this;
-
-// 	}
-
-// 	negate() {
-
-// 		this->x = - this->x;
-// 		this->y = - this->y;
-// 		this->z = - this->z;
-
-// 		return *this;
-
-// 	}
-
-
-
-// 	// TODO lengthSquared?
-
-// 	lengthSq() {
-
-// 		return *this->x * this->x + this->y * this->y + this->z * this->z;
-
-// 	}
-
-// 	length() {
-
-// 		return Math.sqrt( this->x * this->x + this->y * this->y + this->z * this->z );
-
-// 	}
-
-// 	manhattanLength() {
-
-// 		return Math.abs( this->x ) + Math.abs( this->y ) + Math.abs( this->z );
-
-// 	}
-
-// 	normalize() {
-
-// 		return *this-divideScalar( this-length() || 1 );
-
-// 	}
-
-// 	setLength( length ) {
-
-// 		return *this-normalize().multiplyScalar( length );
-
-// 	}
-
-// 	lerp( v, alpha ) {
-
-// 		this->x += ( v.x - this->x ) * alpha;
-// 		this->y += ( v.y - this->y ) * alpha;
-// 		this->z += ( v.z - this->z ) * alpha;
-
-// 		return *this;
-
-// 	}
-
-// 	lerpVectors( v1, v2, alpha ) {
-
-// 		this->x = v1.x + ( v2.x - v1.x ) * alpha;
-// 		this->y = v1.y + ( v2.y - v1.y ) * alpha;
-// 		this->z = v1.z + ( v2.z - v1.z ) * alpha;
-
-// 		return *this;
-
-// 	}
-
-// 	cross( v, w ) {
-
-// 		if ( w !== undefined ) {
-
-// 			console.warn( 'THREE.Vector4: .cross() now only accepts one argument. Use .crossVectors( a, b ) instead.' );
-// 			return *this-crossVectors( v, w );
-
-// 		}
-
-// 		return *this-crossVectors( this, v );
-
-// 	}
-
-// 	crossVectors( a, b ) {
-
-// 		const ax = a.x, ay = a.y, az = a.z;
-// 		const bx = b.x, by = b.y, bz = b.z;
-
-// 		this->x = ay * bz - az * by;
-// 		this->y = az * bx - ax * bz;
-// 		this->z = ax * by - ay * bx;
-
-// 		return *this;
-
-// 	}
-
-// 	projectOnVector( v ) {
-
-// 		const denominator = v.lengthSq();
-
-// 		if ( denominator === 0 ) return *this-set( 0, 0, 0 );
-
-// 		const scalar = v.dot( this ) / denominator;
-
-// 		return *this-copy( v ).multiplyScalar( scalar );
-
-// 	}
-
-// 	projectOnPlane( planeNormal ) {
-
-// 		_buffer_attribute_vector.copy( this ).projectOnVector( planeNormal );
-
-// 		return *this-sub( _buffer_attribute_vector );
-
-// 	}
-
-// 	reflect( normal ) {
-
-// 		// reflect incident vector off plane orthogonal to normal
-// 		// normal is assumed to have unit length
-
-// 		return *this-sub( _buffer_attribute_vector.copy( normal ).multiplyScalar( 2 * this-dot( normal ) ) );
-
-// 	}
-
-// 	angleTo( v ) {
-
-// 		const denominator = Math.sqrt( this-lengthSq() * v.lengthSq() );
-
-// 		if ( denominator === 0 ) return Math.PI / 2;
-
-// 		const theta = this-dot( v ) / denominator;
-
-// 		// clamp, to handle numerical problems
-
-// 		return Math.acos( MathUtils.clamp( theta, - 1, 1 ) );
-
-// 	}
-
-// 	distanceTo( v ) {
-
-// 		return Math.sqrt( this-distanceToSquared( v ) );
-
-// 	}
-
-// 	distanceToSquared( v ) {
-
-// 		const dx = this->x - v.x, dy = this->y - v.y, dz = this->z - v.z;
-
-// 		return dx * dx + dy * dy + dz * dz;
-
-// 	}
-
-// 	manhattanDistanceTo( v ) {
-
-// 		return Math.abs( this->x - v.x ) + Math.abs( this->y - v.y ) + Math.abs( this->z - v.z );
-
-// 	}
-
-// 	setFromSpherical( s ) {
-
-// 		return *this-setFromSphericalCoords( s.radius, s.phi, s.theta );
-
-// 	}
-
-// 	setFromSphericalCoords( radius, phi, theta ) {
-
-// 		const sinPhiRadius = Math.sin( phi ) * radius;
-
-// 		this->x = sinPhiRadius * Math.sin( theta );
-// 		this->y = Math.cos( phi ) * radius;
-// 		this->z = sinPhiRadius * Math.cos( theta );
-
-// 		return *this;
-
-// 	}
-
-// 	setFromCylindrical( c ) {
-
-// 		return *this-setFromCylindricalCoords( c.radius, c.theta, c.y );
-
-// 	}
-
-// 	setFromCylindricalCoords( radius, theta, y ) {
-
-// 		this->x = radius * Math.sin( theta );
-// 		this->y = y;
-// 		this->z = radius * Math.cos( theta );
-
-// 		return *this;
-
-// 	}
-
-// 	setFromMatrixPosition( m ) {
-
-// 		const e = m.elements;
-
-// 		this->x = e[ 12 ];
-// 		this->y = e[ 13 ];
-// 		this->z = e[ 14 ];
-
-// 		return *this;
-
-// 	}
-
-// 	setFromMatrixScale( m ) {
-
-// 		const sx = this-setFromMatrixColumn( m, 0 ).length();
-// 		const sy = this-setFromMatrixColumn( m, 1 ).length();
-// 		const sz = this-setFromMatrixColumn( m, 2 ).length();
-
-// 		this->x = sx;
-// 		this->y = sy;
-// 		this->z = sz;
-
-// 		return *this;
-
-// 	}
-
-// 	setFromMatrixColumn( m, index ) {
-
-// 		return *this-fromArray( m.elements, index * 4 );
-
-// 	}
-
-// 	setFromMatrix3Column( m, index ) {
-
-// 		return *this-fromArray( m.elements, index * 3 );
-
-// 	}
-
-// 	setFromEuler( e ) {
-
-// 		this->x = e._x;
-// 		this->y = e._y;
-// 		this->z = e._z;
-
-// 		return *this;
-
-// 	}
-
-// 	equals( v ) {
-
-// 		return ( ( v.x === this->x ) && ( v.y === this->y ) && ( v.z === this->z ) );
-
-// 	}
-
-// 	fromArray( array, offset = 0 ) {
-
-// 		this->x = array[ offset ];
-// 		this->y = array[ offset + 1 ];
-// 		this->z = array[ offset + 2 ];
-
-// 		return *this;
-
-// 	}
-
-// 	toArray( array = [], offset = 0 ) {
-
-// 		array[ offset ] = this->x;
-// 		array[ offset + 1 ] = this->y;
-// 		array[ offset + 2 ] = this->z;
-
-// 		return array;
-
-// 	}
-
-// 	fromBufferAttribute( attribute, index, offset ) {
-
-// 		if ( offset !== undefined ) {
-
-// 			console.warn( 'THREE.Vector4: offset has been removed from .fromBufferAttribute().' );
-
-// 		}
-
-// 		this->x = attribute.getX( index );
-// 		this->y = attribute.getY( index );
-// 		this->z = attribute.getZ( index );
-
-// 		return *this;
-
-// 	}
-
-// 	random() {
-
-// 		this->x = Math.random();
-// 		this->y = Math.random();
-// 		this->z = Math.random();
-
-// 		return *this;
-
-// 	}
-
-// 	randomDirection() {
-
-// 		// Derived from https://mathworld.wolfram.com/SpherePointPicking.html
-
-// 		const u = ( Math.random() - 0.5 ) * 2;
-// 		const t = Math.random() * Math.PI * 2;
-// 		const f = Math.sqrt( 1 - u ** 2 );
-
-// 		this->x = f * Math.cos( t );
-// 		this->y = f * Math.sin( t );
-// 		this->z = u;
-
-// 		return *this;
-
-// 	}
-
-// 	*[ Symbol.iterator ]() {
-
-// 		yield this->x;
-// 		yield this->y;
-// 		yield this->z;
-
-// 	}
-
-// }
-
-// Vector4.prototype.isVector4 = true;
-
-// const _buffer_attribute_vector = /*@__PURE__*/ new Vector4();
-// const _quaternion = /*@__PURE__*/ new Quaternion();
-
-// export { Vector4 };
-
-
-//设置常用子类型的alias，以方便使用
-// element of type double precision float
-typedef Vector4<double> Vector4d;
-typedef Vector4<float> Vector4f;
-typedef Vector4<unsigned char> Vector4uc;
-
-#endif //Vector4_h
+#endif //THREE_CPP_VECTOR4_H

@@ -8,8 +8,9 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
-#include "gl_headers.h"
+//#include "gl_headers.h"
 #include <stdio.h>
+//#include <glad/glad.h>
 
 //使用cmake时，这个macro必须定义，xcode中则不需要，只需要imgui_impl_opengl3中定义此宏即可
 #define GLFW_INCLUDE_ES3
@@ -55,10 +56,16 @@ int main(){
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 //    const char* glsl_version = "#version 300 es";
+
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0); //目前angle最高可以指定到opengl es 3.1,mac上只能到3.0
+
+//    const char* glsl_version = "#version 460";
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // 3
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6); // 3
+//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // glfw window creation
 // --------------------
@@ -83,8 +90,7 @@ int main(){
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-//    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-//    {
+//    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
 //        std::cout << "Failed to initialize GLAD" << std::endl;
 //        return 0;
 //    }
@@ -267,7 +273,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     display_w = width;
     display_h = height;
     if (currentDemoClass == nullptr) return;
-    currentDemoClass->controller->sizeChanged(Vector4f(0, 0, width, height));
+    currentDemoClass->controller->sizeChanged(Vector4(0, 0, width, height));
 
     if (currentDemoClass != nullptr)
         currentDemoClass->renderer->setViewport(0, 0, display_w, display_h);

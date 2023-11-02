@@ -26,7 +26,7 @@ add_definitions(-D_DEBUG)
 file(GLOB TOP_SOURCE ${ROOT_DIR}/src/*.cpp)
 file(GLOB TOP_HEADER ${ROOT_DIR}/src/*.h)
 
-file(GLOB UTIL_SOURCE ${ROOT_DIR}/src/utils/*.cpp)
+file(GLOB UTIL_SOURCE ${ROOT_DIR}/src/utils/*.cpp;${ROOT_DIR}/src/utils/*.c)
 file(GLOB UTIL_HEADER ${ROOT_DIR}/src/utils/*.h)
 
 file(GLOB_RECURSE CORE_SOURCE ${ROOT_DIR}/src/core/*.cpp)
@@ -177,6 +177,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到tra
   #angel相关dll要不拷贝到系统路径，要不拷贝到执行目录，lib用于编译引用，dll用于链接执行
   libGLESv2.dll.lib
   libEGL.dll.lib
+  GLADd.lib
   #pcrecppd.lib
   #pcred.lib
   #GSL

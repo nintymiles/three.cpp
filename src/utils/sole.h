@@ -96,21 +96,22 @@ namespace sole
 #pragma warning(disable:4127)
 #endif
 
-#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+//#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 // STRUCT TEMPLATE unary_function
-namespace std {
-template <class _Arg, class _Result>
-struct unary_function { // base class for unary functions
-    using argument_type = _Arg;
-    using result_type = _Result;
-};
-}
-#endif
+//namespace sole {
+//template <class _Arg, class _Result>
+//struct unary_function { // base class for unary functions
+//    using argument_type = _Arg;
+//    using result_type = _Result;
+//};
+//}
+//#endif
 
 
 namespace std {
     template<>
-class hash< sole::uuid > : public std::unary_function< sole::uuid, size_t > {
+    //class hash< sole::uuid > : public sole::unary_function< sole::uuid, size_t > {
+    class hash< sole::uuid > {
     public:
         // hash functor: hash uuid to size_t value by pseudorandomizing transform
         size_t operator()( const sole::uuid &uuid ) const {

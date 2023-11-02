@@ -70,7 +70,7 @@ Vector3& Vector3::setFromMatrix3Column(const Matrix3& matrix, unsigned index){
 }
 
 Vector3& Vector3::applyQuaternion(const Quaternion& q){
-    const float qx = q.x(), qy = q.y(), qz = q.z(), qw = q.w();
+    const float qx = q.getX(), qy = q.getY(), qz = q.getZ(), qw = q.getW();
 
     // calculate quat * vector
     float ix = qw * x + qy * z - qz * y,

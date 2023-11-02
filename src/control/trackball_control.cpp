@@ -231,7 +231,7 @@ namespace control {
         }
     }
 
-    void TrackballControls::sizeChanged(const Vector4f& screen){
+    void TrackballControls::sizeChanged(const Vector4& screen){
         //Vector4
         //X->left, Y->top,Z->width, W->height
         this->screen.copy(screen);

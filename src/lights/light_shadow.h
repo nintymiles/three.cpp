@@ -53,7 +53,7 @@ public:
 
     unsigned viewportCount = 1;
 
-    std::vector<Vector4f> viewports = { {Vector4f(0,0,1,1)} };
+    std::vector<Vector4> viewports = { {Vector4(0,0,1,1)} };
 
     CameraPtr camera;
 
@@ -104,7 +104,7 @@ public:
         return viewportCount;
     }
 
-    Vector4f& getViewport(int viewportIndex) {
+    Vector4& getViewport(int viewportIndex) {
         return viewports[viewportIndex];
     }
 

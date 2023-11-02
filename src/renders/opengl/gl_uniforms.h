@@ -90,7 +90,7 @@ public:
 
     void setValue(const Vector3& v);
 
-    void setValue(const Vector4f& v);
+    void setValue(const Vector4& v);
 
     void setValue(const Matrix3& v);
 
@@ -106,7 +106,7 @@ public:
 
     void setValue(const std::vector<Vector3>& v);
 
-    void setValue(const std::vector<Vector4f>& v);
+    void setValue(const std::vector<Vector4>& v);
 
     void setValue(const std::vector<Matrix3>& v);
 

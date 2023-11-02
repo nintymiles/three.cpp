@@ -274,7 +274,6 @@ public:
     }
 
     Color& setHSL(float h, float s, float l) {
-
         // h,s,l ranges are in 0.0 - 1.0
         h = math::euclideanModulo(h, 1);
         s = math::clamp<float>(s, 0.0f, 1.0f);
@@ -284,8 +283,7 @@ public:
 
             r = g = b = l;
 
-        }
-        else {
+        } else {
 
             auto p = l <= 0.5f ? l * (1 + s) : l + s - (l * s);
             auto q = (2 * l) - p;

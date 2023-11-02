@@ -6,5 +6,5 @@
 #define THREE_CPP_GL_HEADERS_H
 
 #include <GLES3/gl3.h>
-
+//#include <glad/glad.h>
 #endif //THREE_CPP_GL_HEADERS_H

@@ -26,7 +26,7 @@ Camera::Camera(const Camera& camera) : Object3D(camera) {
 Vector3& Camera::getWorldDirection(Vector3& target){
     this->updateMatrixWorld(true);
 
-    double* e = matrixWorld.elements;
+    float* e = matrixWorld.elements;
 
     return target.set(-e[8], -e[9], -e[10]).normalize();
 

@@ -20,9 +20,9 @@ using namespace demoscene;
 void rotateChildrenCallback(Object3D& e) {
     if (instanceOf<Mesh>(&e)) {
         if (!instanceOf<PlaneGeometry>(e.geometry.get())) {
-            e.rotation.x(e.rotation.x() + rotationSpeed);
-            e.rotation.y(e.rotation.y() + rotationSpeed);
-            e.rotation.z(e.rotation.z() + rotationSpeed);
+            e.rotation.setX(e.rotation.getX() + rotationSpeed);
+            e.rotation.setY(e.rotation.getY() + rotationSpeed);
+            e.rotation.setZ(e.rotation.getZ() + rotationSpeed);
         }
     }
 }

@@ -215,7 +215,7 @@ void GLUniform::setValue(const Vector3& v){
     glUniform3fv(addr, 1, v.elements);
 }
 
-void GLUniform::setValue(const Vector4f& v){
+void GLUniform::setValue(const Vector4& v){
     glUniform4fv(addr, 1, v.elements);
 }
 
@@ -302,7 +302,7 @@ void GLUniform::setValue(const std::vector<Vector3>& v) {
     int error = glGetError();
 }
 
-void GLUniform::setValue(const std::vector<Vector4f>& v) {
+void GLUniform::setValue(const std::vector<Vector4>& v) {
     //std::vector<float> array4f = flatten(v);
     //setValue(array4f);
     glUniform4fv(addr, v.size(), reinterpret_cast<const float*>(v.data()));

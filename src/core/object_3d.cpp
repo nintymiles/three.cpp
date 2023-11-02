@@ -107,7 +107,7 @@ void Object3D::onRotationChange(const Euler& rotation){
 }
 
 void Object3D::onQuaternionChange(const Quaternion& quaternion){
-    rotation.setFromQuaternion(this->quaternion, RotationOrder::Default, false);
+    rotation.setFromQuaternion(this->quaternion, Euler::RotationOrder::Default, false);
 }
 
 void Object3D::applyMatrix4(Matrix4& matrix){
@@ -115,8 +115,8 @@ void Object3D::applyMatrix4(Matrix4& matrix){
 
     matrix.premultiply(matrix);
 
-    //matrix.decompose(&position, &quaternion, &scale);
-    matrix.decompose(position, quaternion, scale);
+    matrix.decompose(&position, &quaternion, &scale);
+    //matrix.decompose(position, quaternion, scale);
 
 }
 
@@ -236,7 +236,7 @@ void Object3D::lookAt(const Vector3& vector){
 
         _m1.extractRotation(parent->matrixWorld);
         _q1.setFromRotationMatrix(_m1);
-        quaternion.premultiply(_q1.invert());
+        quaternion.premultiply(_q1.inverse());
 
     }
 
@@ -378,8 +378,8 @@ Object3D& Object3D::copy(const Object3D& source,bool recursive){
 Vector3& Object3D::getWorldPosition(Vector3& target){
     updateMatrixWorld(true);
 
-    //float* e = matrixWorld.elements;
-    double* e = matrixWorld.elements;
+    float* e = matrixWorld.elements;
+    //double* e = matrixWorld.elements;
 
     return target.set(e[8], e[9], e[10]).normalize();
 }
@@ -387,8 +387,8 @@ Vector3& Object3D::getWorldPosition(Vector3& target){
 Quaternion& Object3D::getWorldQuaternion(Quaternion& target){
     updateMatrixWorld(true);
 
-//    matrixWorld.decompose(&_position, &target, &_scale);
-    matrixWorld.decompose(_position, target, _scale);
+    matrixWorld.decompose(&_position, &target, &_scale);
+    //matrixWorld.decompose(_position, target, _scale);
 
     return target;
 }
@@ -396,7 +396,7 @@ Quaternion& Object3D::getWorldQuaternion(Quaternion& target){
 Vector3& Object3D::getWorldScale(Vector3&& target){
     updateMatrixWorld(true);
 
-    matrixWorld.decompose(_position, _quaternion, target);
+    matrixWorld.decompose(&_position, &_quaternion, &target);
 
     return target;
 }
@@ -404,8 +404,8 @@ Vector3& Object3D::getWorldScale(Vector3&& target){
 Vector3& Object3D::getWorldDirection(Vector3& target){
     updateMatrixWorld(true);
 
-//    float* e = matrixWorld.elements;
-    double* e = matrixWorld.elements;
+    float* e = matrixWorld.elements;
+    //double* e = matrixWorld.elements;
 
     return target.set(e[8], e[9], e[10]).normalize();
 }

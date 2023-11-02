@@ -35,13 +35,13 @@ PointLightShadow::PointLightShadow() : LightShadow(PerspectiveCamera::create(90.
     frameExtents.copy(Vector2(4, 2));
     viewportCount = 6;
     this->viewports.resize(6);
-    std::vector<Vector4f> _viewports = {
-            Vector4f(2,1,1,1),
-            Vector4f(0,1,1,1),
-            Vector4f(3,1,1,1),
-            Vector4f(1,1,1,1),
-            Vector4f(3,0,1,1),
-            Vector4f(1,0,1,1)
+    std::vector<Vector4> _viewports = {
+            Vector4(2,1,1,1),
+            Vector4(0,1,1,1),
+            Vector4(3,1,1,1),
+            Vector4(1,1,1,1),
+            Vector4(3,0,1,1),
+            Vector4(1,0,1,1)
     };
 
     for (unsigned i = 0; i < viewports.size(); i++) {

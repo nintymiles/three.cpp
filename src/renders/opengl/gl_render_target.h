@@ -43,8 +43,8 @@ public:
     size_t height = 0;
     bool scissorTest = false;
 
-    Vector4f scissor;
-    Vector4f viewport;
+    Vector4 scissor;
+    Vector4 viewport;
 
     Texture::sptr texture = nullptr;
 

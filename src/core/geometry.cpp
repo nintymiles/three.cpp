@@ -46,9 +46,9 @@ void Geometry::addFace(unsigned a, unsigned b, unsigned c, unsigned materialInde
     if (uvs!=nullptr&&uvs->size > 0)
     {
         std::vector<Vector2> list2;
-        list2.push_back(Vector2().fromArrayVec(uvs->array, a * 2));
-        list2.push_back(Vector2().fromArrayVec(uvs->array, b * 2));
-        list2.push_back(Vector2().fromArrayVec(uvs->array, c * 2));
+        list2.push_back(Vector2().fromArray(uvs->array, a * 2));
+        list2.push_back(Vector2().fromArray(uvs->array, b * 2));
+        list2.push_back(Vector2().fromArray(uvs->array, c * 2));
         std::vector<std::vector<Vector2>> list1;
 
         list1.push_back(list2);
@@ -61,9 +61,9 @@ void Geometry::addFace(unsigned a, unsigned b, unsigned c, unsigned materialInde
     if (uvs2!=nullptr&&uvs2->size > 0)
     {
         std::vector<Vector2> list2;
-        list2.push_back(Vector2().fromArrayVec(uvs2->array, a * 2));
-        list2.push_back(Vector2().fromArrayVec(uvs2->array, b * 2));
-        list2.push_back(Vector2().fromArrayVec(uvs2->array, c * 2));
+        list2.push_back(Vector2().fromArray(uvs2->array, a * 2));
+        list2.push_back(Vector2().fromArray(uvs2->array, b * 2));
+        list2.push_back(Vector2().fromArray(uvs2->array, c * 2));
         std::vector<std::vector<Vector2>> list1;
         list1.push_back(list2);
         if (this->faceVertexUvs.size() == 1)

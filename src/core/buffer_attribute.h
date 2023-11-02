@@ -181,7 +181,7 @@ public:
 
     BufferAttribute& copyColor3sArray(const std::vector<Color>& colors);
 
-    BufferAttribute& copyVector4sArray(const std::vector<Vector4d> vectors);
+    BufferAttribute& copyVector4sArray(const std::vector<Vector4> vectors);
 
     BufferAttribute& applyMatrix3(const Matrix3& m);
 
@@ -330,7 +330,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::copyColor3sArray(const std:
 }
 
 template<typename Type>
-inline BufferAttribute<Type>& BufferAttribute<Type>::copyVector4sArray(std::vector<Vector4d> vectors)
+inline BufferAttribute<Type>& BufferAttribute<Type>::copyVector4sArray(std::vector<Vector4> vectors)
 {
     //Type* array = this->array;
     /*if (this->array.size() == 0 || this->array.size() != length)

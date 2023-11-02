@@ -18,7 +18,7 @@ public:
     struct ColorBuffer {
         bool locked = false;
         GLboolean currentColorMask = 0;
-        Vector4f currentColorClear = { 0,0,0,0 };
+        Vector4 currentColorClear = { 0,0,0,0 };
 
         ColorBuffer& setMask(bool _colorMask) {
             GLboolean colorMask = _colorMask ? 1 : 0;
@@ -39,7 +39,7 @@ public:
                 g *= a;
                 b *= a;
             }
-            Vector4f color(r, g, b, a);
+            Vector4 color(r, g, b, a);
 
             if (currentColorClear != color) {
                 glClearColor(r, g, b, a);
@@ -276,8 +276,8 @@ public:
 
     int currentTextureSlot;
 
-    Vector4f currentScissor;
-    Vector4f currentViewport;
+    Vector4 currentScissor;
+    Vector4 currentViewport;
 
     std::unordered_map<int, BoundTexture> currentBoundTextures;
     std::unordered_map<GLuint, GLuint> emptyTextures;
@@ -776,14 +776,14 @@ public:
         glTexImage3D(target, level, format, width, height, depth, border, format, type, &pixels[0]);
     }
 
-    void scissor(const Vector4f& scissor) {
+    void scissor(const Vector4& scissor) {
         if (currentScissor != scissor) {
             glScissor((GLint)scissor.x, (GLint)scissor.y, (GLsizei)scissor.z, (GLsizei)scissor.w);
             currentScissor.copy(scissor);
         }
     }
 
-    void viewport(const Vector4f& viewport) {
+    void viewport(const Vector4& viewport) {
         if (currentViewport != viewport) {
             glViewport((GLint)viewport.x, (GLint)viewport.y, (GLsizei)viewport.z, (GLsizei)viewport.w);
             currentViewport.copy(viewport);

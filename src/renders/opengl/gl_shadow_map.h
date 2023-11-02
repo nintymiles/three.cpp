@@ -27,7 +27,7 @@ private:
     Frustum _frustum;
     Vector2 _shadowMapSize;
     Vector2 _viewportSize;
-    Vector4f _viewport;
+    Vector4 _viewport;
     std::unordered_map<int, Material::sptr> _depthMaterials;
     std::unordered_map<int, Material::sptr> _distanceMaterials;
 

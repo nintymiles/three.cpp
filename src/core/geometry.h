@@ -178,11 +178,11 @@ public:
     /**
      * Array of skinning weights, matching number and order of vertices.
      */
-    std::vector<Vector4d> skinWeights;
+    std::vector<Vector4> skinWeights;
     /**
      * Array of skinning indices, matching number and order of vertices.
      */
-    std::vector<Vector4d> skinIndices;
+    std::vector<Vector4> skinIndices;
 
     std::vector<float> lineDistances;
     /**

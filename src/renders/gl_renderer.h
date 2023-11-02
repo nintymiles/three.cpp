@@ -56,11 +56,11 @@ private:
 
     GLCapabilities::GLCapabilitiesParameters capabilitiesParameter;
 
-    Vector4f _viewport;
-    Vector4f _scissor;
+    Vector4 _viewport;
+    Vector4 _scissor;
 
-    Vector4f _currentViewport;
-    Vector4f _currentScissor;
+    Vector4 _currentViewport;
+    Vector4 _currentScissor;
     bool _currentScissorTest;
 
     unsigned _frameBuffer;
@@ -229,15 +229,15 @@ public:
     */
     void setSize(float width, float height, bool updateStyle = false);
 
-    Vector4f& getCurrentViewport(Vector4f& target);
+    Vector4& getCurrentViewport(Vector4& target);
 
 
     /**
      * Copies the viewport into target.
      */
-    Vector4f& getViewport(Vector4f& target);
+    Vector4& getViewport(Vector4& target);
 
-    void setViewport(Vector4f& v);
+    void setViewport(Vector4& v);
 
     /**
     * Sets the viewport to render from (x, y) to (x + width, y + height).
@@ -249,14 +249,14 @@ public:
     /**
     * Copies the scissor area into target.
     */
-    Vector4f& getScissor(Vector4f& target);
+    Vector4& getScissor(Vector4& target);
 
     void setScissor(float x, float y, float width, float height);
     /**
      * Sets the scissor area from (x, y) to (x + width, y + height).
      */
 
-    void setScissor(Vector4f& v);
+    void setScissor(Vector4& v);
 
     /**
      * Returns true if scissor test is enabled; returns false otherwise.
