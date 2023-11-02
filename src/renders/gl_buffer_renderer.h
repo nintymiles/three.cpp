@@ -5,8 +5,10 @@
 #ifndef THREE_CPP_GL_BUFFER_RENDERER_H
 #define THREE_CPP_GL_BUFFER_RENDERER_H
 
-#include <GLES3/gl3.h>
+//#include <GLES3/gl3.h>
 #include <memory>
+
+#include "gl_headers.h"
 
 #include "gl_info.h"
 #include "gl_extensions.h"

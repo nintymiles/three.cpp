@@ -206,11 +206,13 @@ void GLUniform::setValue(const Color& c){
 }
 
 void GLUniform::setValue(const Vector2& v){
-    glUniform2fv(addr, 1, (float *)v.elements);
+    //float elements[2] = {512.0,512.0};
+    //float* elements2 = (float *)v.elements;
+    glUniform2fv(addr, 1, v.elements);
 }
 
 void GLUniform::setValue(const Vector3& v){
-    glUniform3fv(addr, 1, (float *)v.elements);
+    glUniform3fv(addr, 1, v.elements);
 }
 
 void GLUniform::setValue(const Vector4f& v){
