@@ -40,10 +40,10 @@ void GLLinesSphere::render(){
     for (int i = 0; i < scene->children.size(); i++ ) {
         auto object = scene->children[i];
         if ( object->isLine ) {
-            object->rotation.setY(timeInterval * ( i < 4 ? ( i + 1 ) : - ( i + 1 )));
+            object->rotation.setY(timeInterval * (i<4 ? (i+1) : -(i+1)));
             if ( i < 5 ) {
                 //注意sin函数要接受浮点类型，否则为0
-                float scale = originalScale * ( i / 5 + 1 ) * ( 1 + 0.5 * math::sin( 7.0 * timeInterval ) );
+                float scale = originalScale * (i / 5 + 1) * ( 1 + 0.5 * math::sin( 7.0 * timeInterval ) );
 
                 object->scale.x = object->scale.y = object->scale.z = scale;
             }
