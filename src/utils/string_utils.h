@@ -8,10 +8,19 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 
 namespace string_utils{
     //string split operation
     std::vector<std::string> split(const std::string& str, const std::string& delim);
+
+    inline void toUpperCase(std::string& str){
+        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+    }
+
+    inline void toLowerCase(std::string& str){
+        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    }
 
     template <typename T>
     class JoinOperation{
@@ -75,6 +84,7 @@ namespace string_utils{
 
         return s;
     }
+
     static inline std::string replace_all(
             std::string& message,
             const std::string& pattern,

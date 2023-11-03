@@ -17,6 +17,7 @@
 #include "demo_scene2.h"
 
 #include "gl_lines_sphere.h"
+#include "gl_loader_obj_mtl.h"
 
 // settings
 extern int display_w;
@@ -78,6 +79,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Lines-Sphere"] = std::make_shared<GLLinesSphere>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Lines-Sphere"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("Loader_Obj_Mtl", "")) {
+                if (demoClasses.count("Loader_Obj_Mtl") == 0)
+                    demoClasses["Loader_Obj_Mtl"] = std::make_shared<GLLoaderObjMtl>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Loader_Obj_Mtl"];
                 currentDemoClass->renderer->clear();
             }
 
