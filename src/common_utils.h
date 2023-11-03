@@ -17,14 +17,6 @@ namespace threecpp{
 //will occur duplicate symbols after included more than once
 std::runtime_error genOutOfRangeError(int index);
 
-inline void toUpperCase(std::string& str){
-    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-}
-
-inline void toLowerCase(std::string& str){
-    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-}
-
 inline void checkError() {
 #ifdef _DEBUG
     std::string errorCodeMessage;
@@ -32,27 +24,27 @@ inline void checkError() {
     if (err != GL_NO_ERROR) {
 
         switch (err) {
-            case  GL_INVALID_ENUM:
+            case GL_INVALID_ENUM:
                 errorCodeMessage = R"(GL_INVALID_ENUM
                         An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.
                     )";
                 break;
-            case  GL_INVALID_VALUE:
+            case GL_INVALID_VALUE:
                 errorCodeMessage = R"(GL_INVALID_VALUE
                         A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.
                     )";
                 break;
-            case  GL_INVALID_OPERATION:
+            case GL_INVALID_OPERATION:
                 errorCodeMessage = R"(GL_INVALID_OPERATION
                         The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.
                     )";
                 break;
-            case  GL_INVALID_FRAMEBUFFER_OPERATION:
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
                 errorCodeMessage = R"(GL_INVALID_FRAMEBUFFER_OPERATION
                         The framebuffer object is not complete. The offending command is ignored and has no other side effect than to set the error flag.
                     )";
                 break;
-            case  GL_OUT_OF_MEMORY:
+            case GL_OUT_OF_MEMORY:
                 errorCodeMessage = R"(GL_OUT_OF_MEMORY
                         There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded.
                     )";
@@ -73,7 +65,16 @@ inline void checkError() {
 #endif
 }
 
-} // namespace threecpp
+#ifdef _MSC_VER
+#include<io.h>
+#define access _access_s
+#else
+#include <unistd.h>
+#endif
+    bool FileExists(const std::string& fileName);
+    std::string getProgramPath();
 
+
+} // namespace threecpp
 
 #endif /* SRC_COMMON_UTILS_H_ */

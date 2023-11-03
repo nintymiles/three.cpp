@@ -66,8 +66,8 @@ file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
 
-file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/lines/*.cpp)
-file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/lines/*.h)
+file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/lines/*.cpp;${ROOT_DIR}/src/examples/loaders/*.cpp)
+file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/lines/*.h;${ROOT_DIR}/src/examples/loaders/*.h)
 
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
@@ -145,6 +145,7 @@ ${ROOT_DIR}/src/renders/shaders
 ${ROOT_DIR}/src/control
 ${ROOT_DIR}/src/utils
 ${ROOT_DIR}/src/examples/base
+${ROOT_DIR}/src/examples/loaders
 ${ROOT_DIR}/src/examples/threejs/lines/
 )
 
