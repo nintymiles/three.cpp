@@ -38,7 +38,7 @@ public:
         scene->add(ambientLight);
 
         auto spotLight = SpotLight::create(Color().setHex(0xffffff),0.8f);
-//        spotLight->position.set(-40, 60, -10);
+        spotLight->position.set(-20, 600, -10);
         spotLight->castShadow = true;
         scene->add(spotLight);
 
@@ -66,7 +66,7 @@ public:
         std::thread thread1([&](const std::string& filepath){
                            std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
                            OBJLoader loader;
-                           objGroup = loader.load(dir + "\\asset\\models\\obj\\walt\\" + filepath);
+                           objGroup = loader.load(dir + "\\asset\\models\\obj\\female02\\" + filepath);
                            objGroup->traverse([&](Object3D& o) {
                                o.material = meshMaterial;
                                if (instanceOf<Mesh>(&o) && o.materials.size() > 1) {
@@ -75,11 +75,13 @@ public:
                                        o.materials.push_back(meshMaterial);
                                }
                            });
-                           objGroup->scale.set(4, 4, 4);
+                           objGroup->scale.set(3, 3, 3);
+                           objGroup->position.setZ(-500);
+                           objGroup->position.setY(-350);
 
                            scene->add(objGroup);
                        }
-                ,std::string("WaltHead.obj"));
+                ,std::string("female02.obj"));
         thread1.join();
 
     }

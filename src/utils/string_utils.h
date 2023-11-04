@@ -58,7 +58,8 @@ namespace string_utils{
         std::stringstream ss(str);
         std::string temp;
         while (std::getline(ss, temp, delimiter)) {
-            internal.push_back(temp);
+            if(temp.size()>0)
+                internal.push_back(temp);
         }
         return internal;
     }

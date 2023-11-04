@@ -9,6 +9,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+
 using namespace std;
 
 MTLLoader::MaterialCreator::MaterialCreator(string path, MaterialCreatorOptions options)
@@ -251,6 +252,152 @@ Material::sptr MTLLoader::MaterialCreator::createMaterial(const string& material
     material->alphaMap = parameter.alphaMap;
     material->bumpScale = parameter.bumpScale;
     material->shininess = parameter.shininess;
+    material->opacity = parameter.opacity;
+    material->transparent = parameter.transparent;
+
+    this->materials[materialName] = material;
+
+    return material;
+}
+
+Material::sptr MTLLoader::MaterialCreator::createMaterialFromMaterialT(const tinyobj::material_t& materialT,const std::string& baseDir){
+    std::string materialName = materialT.name;
+
+    if (this->materials.count(materialName) > 0) {
+        return this->materials[materialName];
+    }
+
+//    auto mat = materialsInfo[materialName];
+
+    MTLParameters parameter;
+    parameter.name = materialName;
+    parameter.side = this->side;
+
+
+//    if (materialT.diffuse_texname.length() > 0) {
+//        std::string texture_filename = materialT.diffuse_texname;
+//        if (!threecpp::FileExists(texture_filename)) {
+//            // Append base dir.
+//            texture_filename = baseDir + "\\" + materialT.diffuse_texname;
+//            if (!threecpp::FileExists(texture_filename)) {
+//                std::cerr << "Unable to find file: " << materialT.diffuse_texname
+//                          << std::endl;
+//                exit(1);
+//            }
+//        }
+//        auto texture = loadTexture(texture_filename, TextureMapping::Unknown);
+//
+//        texture->repeat.copy(Vector2{1,1});
+//        texture->offset.copy(Vector2{0,0});
+//
+//        texture->wrapS = this->wrap;
+//        texture->wrapT = this->wrap;
+//
+//        parameter.map = texture;
+//
+////        // Only load the texture if it is not already loaded
+////        if (textures.find(mp->diffuse_texname) == textures.end()) {
+////            GLuint texture_id;
+////            int w, h;
+////            int comp;
+////
+////            std::string texture_filename = mp->diffuse_texname;
+////            if (!threecpp::FileExists(texture_filename)) {
+////                // Append base dir.
+////                texture_filename = base_dir + mp->diffuse_texname;
+////                if (!threecpp::FileExists(texture_filename)) {
+////                    std::cerr << "Unable to find file: " << mp->diffuse_texname
+////                              << std::endl;
+////                    exit(1);
+////                }
+////            }
+////
+////            unsigned char *image =
+////                    stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);
+////            if (!image) {
+////                std::cerr << "Unable to load texture: " << texture_filename
+////                          << std::endl;
+////                exit(1);
+////            }
+////            std::cout << "Loaded texture: " << texture_filename << ", w = " << w
+////                      << ", h = " << h << ", comp = " << comp << std::endl;
+////        }
+//
+//    }
+
+
+//    float n;
+//    for (auto key = mat.begin();key != mat.end();) {
+//        auto materialInfo = key->second;
+//        //if (materialInfo.isEmpty()) continue;
+//
+//        switch (key->first) {
+//            case MTLName::kd:
+//                parameter.color.fromArray(materialInfo.value, 3);
+//                break;
+//            case MTLName::ks:
+//                parameter.specular.fromArray(materialInfo.value, 3);
+//                break;
+//            case MTLName::ke:
+//                parameter.emissive.fromArray(materialInfo.value, 3);
+//                break;
+//            case MTLName::map_kd:
+//                setMapForType(parameter, MTLMapType::map, materialInfo.stringValue);
+//                break;
+//            case MTLName::map_ks:
+//                setMapForType(parameter, MTLMapType::specularMap, materialInfo.stringValue);
+//                break;
+//            case MTLName::map_ke:
+//                setMapForType(parameter, MTLMapType::emissiveMap, materialInfo.stringValue);
+//                break;
+//            case MTLName::norm:
+//                setMapForType(parameter, MTLMapType::normalMap, materialInfo.stringValue);
+//                break;
+//            case MTLName::map_bump:
+//                setMapForType(parameter, MTLMapType::bumpMap, materialInfo.stringValue);
+//                break;
+//            case MTLName::map_d:
+//                setMapForType(parameter, MTLMapType::alphaMap, materialInfo.stringValue);
+//                break;
+//            case MTLName::ns:
+//                parameter.shininess = atof(materialInfo.stringValue.c_str());
+//                break;
+//            case MTLName::d:
+//                n = atof(materialInfo.stringValue.c_str());
+//
+//                if (n < 1) {
+//                    parameter.opacity = n;
+//                    parameter.transparent = true;
+//                }
+//                break;
+//            case MTLName::tr:
+//                n = atof(materialInfo.stringValue.c_str());
+//                if (this->options.invertTrpproperty) n = 1 - n;
+//                if (n > 0) {
+//                    parameter.opacity = 1 - n;
+//                    parameter.transparent = true;
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//        key++;
+//    }
+
+    MeshPhongMaterial::sptr material = MeshPhongMaterial::create();
+    material->name = materialName;
+    material->side = parameter.side;
+    material->color = parameter.color;
+    material->specular = Color(materialT.specular[0],materialT.specular[1],materialT.specular[2]);
+    material->emissive = Color(materialT.emission[0],materialT.emission[1],materialT.emission[2]);
+    material->map = parameter.map;
+    material->specularMap = parameter.specularMap;
+    material->emissiveMap = parameter.emissiveMap;
+    material->normalMap = parameter.normalMap;
+    material->bumpMap = parameter.bumpMap;
+    material->alphaMap = parameter.alphaMap;
+    material->bumpScale = parameter.bumpScale;
+    material->shininess = materialT.shininess;
     material->opacity = parameter.opacity;
     material->transparent = parameter.transparent;
 

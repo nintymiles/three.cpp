@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include <filesystem>
+#include <tiny_obj_loader.h>
 
 #include "color.h"
 #include "vector2.h"
@@ -150,6 +151,8 @@ class MTLLoader {
 			Material::sptr create(const std::string& materialName);
 			
 			Material::sptr createMaterial(const std::string& materialName);
+
+            Material::sptr createMaterialFromMaterialT(const tinyobj::material_t& materialT,const std::string& baseDir);
 
 			Texture::sptr loadTexture(std::string filePath, TextureMapping mapping = TextureMapping::Unknown);
 		};
