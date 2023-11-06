@@ -18,6 +18,7 @@
 
 #include "gl_lines_sphere.h"
 #include "gl_loader_obj_mtl.h"
+#include "gl_buffer_geometry_attributes_none.h"
 
 // settings
 extern int display_w;
@@ -86,6 +87,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Loader_Obj_Mtl"] = std::make_shared<GLLoaderObjMtl>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Loader_Obj_Mtl"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("Buffer_geometry_attributes_none", "")) {
+                if (demoClasses.count("Buffer_geometry_attributes_none") == 0)
+                    demoClasses["Buffer_geometry_attributes_none"] = std::make_shared<GLBufferGeometryAttributesNone>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Buffer_geometry_attributes_none"];
                 currentDemoClass->renderer->clear();
             }
 

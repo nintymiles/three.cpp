@@ -147,6 +147,8 @@ void GLGeometries::update(const std::shared_ptr<BufferGeometry>& geometry){
         attributes->update<unsigned>(*geometry->index, GL_ELEMENT_ARRAY_BUFFER);
 
     for (auto attr = geometry->attributes.begin();attr != geometry->attributes.end();) {
+        if(attr->second == nullptr)
+            continue;
         attributes->update<float>(*attr->second,GL_ARRAY_BUFFER);
         attr++;
     }

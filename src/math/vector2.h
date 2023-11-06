@@ -347,7 +347,7 @@ public:
 
     float angle()
     {
-        float angle = std::atan2(-y, -x) + (float)std::_Pi;
+        float angle = std::atan2(-y, -x) + math_number::PI;
         return angle;
     }
 

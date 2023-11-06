@@ -349,7 +349,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
     fShader = unrollLoops(fShader);
 
     if (parameters.isGLES3 && parameters.isRawShaderMaterial) {
-        bool isGLSL3ShaderMaterial = false;
+        bool isGLSL3ShaderMaterial = true;
 
         // GLSL 3.0 conversion
 
@@ -357,15 +357,15 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
 #ifdef OPENGL_ES_3_2
         prefixVertex3 << "#version 300 es" << std::endl
-							 << generatePrecision(parameters) << std::endl
+//							 << generatePrecision(parameters) << std::endl
 #else
         prefixVertex3 << "#version 440" << std::endl
                       <<" precision highp float;" << std::endl
                       << "#define HIGH_PRECISION" << std::endl
-                      #endif
-                      << "#define attribute in" << std::endl
-                      << "#define varying out" << std::endl
-                      << "#define texture2D texture" << std::endl
+#endif
+//                      << "#define attribute in" << std::endl
+//                      << "#define varying out" << std::endl
+//                      << "#define texture2D texture" << std::endl
                       << prefixVertex.str() << std::endl;
         prefixVertex.swap(prefixVertex3);
 
@@ -374,25 +374,26 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         prefixFragment3
 #ifdef OPENGL_ES_3_2
                 << "#version 300 es" << std::endl
-					<< generatePrecision(parameters) << std::endl
+//					<< generatePrecision(parameters) << std::endl;
 #else
                 << "#version 440" << std::endl
                 <<"precision highp float;"<< std::endl
                 <<"#define HIGH_PRECISION"<< std::endl
                 #endif
-                << "#define varying in" << std::endl
-                << "out highp vec4 pc_fragColor;" << std::endl
-                << "#define gl_FragColor pc_fragColor" << std::endl
-                << "#define gl_FragDepthEXT gl_FragDepth" << std::endl
-                << "#define texture2D texture" << std::endl
-                << "#define textureCube texture" << std::endl
-                << "#define texture2DProj textureProj" << std::endl
-                << "#define texture2DLodEXT textureLod" << std::endl
-                << "#define texture2DProjLodEXT textureProjLod" << std::endl
-                << "#define textureCubeLodEXT textureLod" << std::endl
-                << "#define texture2DGradEXT textureGrad" << std::endl
-                << "#define texture2DProjGradEXT textureProjGrad" << std::endl
-                << "#define textureCubeGradEXT textureGrad" << std::endl;
+//                << "#define varying in" << std::endl
+//                << "out highp vec4 pc_fragColor;" << std::endl
+//                << "#define gl_FragColor pc_fragColor" << std::endl
+//                << "#define gl_FragDepthEXT gl_FragDepth" << std::endl
+//                << "#define texture2D texture" << std::endl
+//                << "#define textureCube texture" << std::endl
+//                << "#define texture2DProj textureProj" << std::endl
+//                << "#define texture2DLodEXT textureLod" << std::endl
+//                << "#define texture2DProjLodEXT textureProjLod" << std::endl
+//                << "#define textureCubeLodEXT textureLod" << std::endl
+//                << "#define texture2DGradEXT textureGrad" << std::endl
+//                << "#define texture2DProjGradEXT textureProjGrad" << std::endl
+//                << "#define textureCubeGradEXT textureGrad" << std::endl;
+                    << prefixFragment.str() << std::endl;
         prefixFragment.swap(prefixFragment3);
     }
 
@@ -403,15 +404,15 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
     std::string fragmentGlsl = prefixFragment.str();
 
     // for glsl Debug
-    //std::ofstream vshaderfile;
-    //vshaderfile.open(parameters.shaderName+"_vshader.txt", std::ios_base::out);
-    //vshaderfile << vertexGlsl;
-    //vshaderfile.close();
+    std::ofstream vshaderfile;
+    vshaderfile.open(parameters.shaderName+"_vshader.txt", std::ios_base::out);
+    vshaderfile << vertexGlsl;
+    vshaderfile.close();
 
-    //std::ofstream fshaderfile;
-    //fshaderfile.open(parameters.shaderName+"_fshader.txt", std::ios_base::out);
-    //fshaderfile << fragmentGlsl;
-    //fshaderfile.close();
+    std::ofstream fshaderfile;
+    fshaderfile.open(parameters.shaderName+"_fshader.txt", std::ios_base::out);
+    fshaderfile << fragmentGlsl;
+    fshaderfile.close();
 
     GLShader vertexShader = GLShader(GL_VERTEX_SHADER, vertexGlsl);
     GLShader fragmentShader = GLShader(GL_FRAGMENT_SHADER, fragmentGlsl);
