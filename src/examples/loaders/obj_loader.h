@@ -82,6 +82,10 @@ public:
 
     ObjectMaterial::ptr startMaterial(const std::string& name,std::vector<std::string>& libraries);
 
+    Object::ObjectMaterial::ptr Object::startMaterial(const std::string& name, size_t matEndPos);
+
+    Object::ObjectMaterial::ptr Object::startMaterial(const std::string& name, std::unordered_map<std::string,size_t>& materialCount);
+
     ObjectMaterial::ptr& finalize(bool end);
 
 };

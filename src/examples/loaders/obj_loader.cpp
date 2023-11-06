@@ -22,6 +22,8 @@
 #include "timer.h"
 #include "common_utils.h"
 
+#include <unordered_set>
+
 namespace objloader {
     Object::ObjectMaterial::ptr emptyMaterial = nullptr;
     static const int OBJ_SIZE = 1000 * 1000 * 1000 * 6;
@@ -59,7 +61,7 @@ Object::ObjectMaterial::ptr Object::startMaterial(const string& name, vector<str
 
     material->index = materials.size();
     material->name = name;
-    material->stringLib = libraries[libraries.size() - 1];
+    //material->stringLib = libraries[libraries.size() - 1];
     material->smooth = previous!=nullptr ? previous->smooth : smooth;
     material->groupStart = previous!=nullptr ? previous->groupEnd : 0;
     material->groupEnd = -1;
@@ -71,26 +73,51 @@ Object::ObjectMaterial::ptr Object::startMaterial(const string& name, vector<str
     return material;
 }
 
+Object::ObjectMaterial::ptr Object::startMaterial(const string& name, std::unordered_map<string,size_t>& materialCount){
+    auto previous = finalize(false);
+
+    if (previous!=nullptr && (previous->inherited || previous->groupCount <= 0)){
+        materials.erase(materials.begin() + previous->index);
+    }
+
+    Object::ObjectMaterial::ptr material = make_shared<Object::ObjectMaterial>();
+
+    material->index = materials.size();
+    material->name = name;
+    //material->stringLib = libraries[libraries.size() - 1];
+    material->smooth = previous!=nullptr ? previous->smooth : smooth;
+    material->groupStart = previous!=nullptr ? previous->groupEnd : 0;
+    material->groupEnd = materialCount[name] + material->groupStart;
+    material->groupCount = materialCount[name];
+    material->inherited = false;
+
+    materials.push_back(material);
+
+    return material;
+}
+
+
+
 Object::ObjectMaterial::ptr& Object::finalize(bool end){
     ObjectMaterial::ptr& lastMultiMaterial = this->currentMaterial();
     if (lastMultiMaterial!=nullptr && lastMultiMaterial->groupEnd == -1) {
-        lastMultiMaterial->groupEnd = geometry.vertices.size() / 3;
-        lastMultiMaterial->groupCount = lastMultiMaterial->groupEnd - lastMultiMaterial->groupStart;
+//        lastMultiMaterial->groupEnd = geometry.vertices.size() / 3;
+//        lastMultiMaterial->groupCount = lastMultiMaterial->groupEnd - lastMultiMaterial->groupStart;
         lastMultiMaterial->inherited = false;
     }
 
-    // Ignore objects tail materials if no face declarations followed them before a new o/g started.
-    if (end && materials.size() > 1) {
-
-        for (int mi = (int)materials.size() - 1; mi >= 0; mi--) {
-
-            if (materials[mi]->groupCount <= 0) {
-
-                materials.erase(materials.begin() + mi);
-
-            }
-        }
-    }
+//    // Ignore objects tail materials if no face declarations followed them before a new o/g started.
+//    if (end && materials.size() > 1) {
+//
+//        for (int mi = (int)materials.size() - 1; mi >= 0; mi--) {
+//
+//            if (materials[mi]->groupCount <= 0) {
+//
+//                materials.erase(materials.begin() + mi);
+//
+//            }
+//        }
+//    }
 
     // Guarantee at least one empty material, this makes the creation later more straight forward.
     if (end && materials.size() == 0) {
@@ -225,11 +252,11 @@ void ObjectState::startObject(const string& name, bool fromDeclaration){
     this->object->fromDeclaration = fromDeclaration != false;
 
 
-    if (previousMaterial!=nullptr && previousMaterial->name != ""){
-        Object::ObjectMaterial::ptr declared = previousMaterial->clone(0);
-        declared->inherited = true;
-        object->materials.push_back(declared);
-    }
+//    if (previousMaterial!=nullptr && previousMaterial->name != ""){
+//        Object::ObjectMaterial::ptr declared = previousMaterial->clone(0);
+//        declared->inherited = true;
+//        object->materials.push_back(declared);
+//    }
 
     this->objects.push_back(this->object);
 }
@@ -822,58 +849,58 @@ static bool LoadObjAndConvert(float bmin[3], float bmax[3],
     }
 
     // Load diffuse textures
-    {
-        for (size_t m = 0; m < materials.size(); m++) {
-            tinyobj::material_t* mp = &materials[m];
-
-            if (mp->diffuse_texname.length() > 0) {
-                // Only load the texture if it is not already loaded
-                if (textures.find(mp->diffuse_texname) == textures.end()) {
-                    GLuint texture_id;
-                    int w, h;
-                    int comp;
-
-                    std::string texture_filename = mp->diffuse_texname;
-                    if (!threecpp::FileExists(texture_filename)) {
-                        // Append base dir.
-                        texture_filename = base_dir + mp->diffuse_texname;
-                        if (!threecpp::FileExists(texture_filename)) {
-                            std::cerr << "Unable to find file: " << mp->diffuse_texname
-                                      << std::endl;
-                            exit(1);
-                        }
-                    }
-
-                    unsigned char* image =
-                            stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);
-                    if (!image) {
-                        std::cerr << "Unable to load texture: " << texture_filename
-                                  << std::endl;
-                        exit(1);
-                    }
-                    std::cout << "Loaded texture: " << texture_filename << ", w = " << w
-                              << ", h = " << h << ", comp = " << comp << std::endl;
-
-//                    glGenTextures(1, &texture_id);
-//                    glBindTexture(GL_TEXTURE_2D, texture_id);
-//                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//                    if (comp == 3) {
-//                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB,
-//                                     GL_UNSIGNED_BYTE, image);
-//                    } else if (comp == 4) {
-//                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
-//                                     GL_UNSIGNED_BYTE, image);
-//                    } else {
-//                        assert(0);  // TODO
+//    {
+//        for (size_t m = 0; m < materials.size(); m++) {
+//            tinyobj::material_t* mp = &materials[m];
+//
+//            if (mp->diffuse_texname.length() > 0) {
+//                // Only load the texture if it is not already loaded
+//                if (textures.find(mp->diffuse_texname) == textures.end()) {
+//                    GLuint texture_id;
+//                    int w, h;
+//                    int comp;
+//
+//                    std::string texture_filename = mp->diffuse_texname;
+//                    if (!threecpp::FileExists(texture_filename)) {
+//                        // Append base dir.
+//                        texture_filename = base_dir + mp->diffuse_texname;
+//                        if (!threecpp::FileExists(texture_filename)) {
+//                            std::cerr << "Unable to find file: " << mp->diffuse_texname
+//                                      << std::endl;
+//                            exit(1);
+//                        }
 //                    }
-//                    glBindTexture(GL_TEXTURE_2D, 0);
-                    stbi_image_free(image);
-                    textures.insert(std::make_pair(mp->diffuse_texname, texture_id));
-                }
-            }
-        }
-    }
+//
+//                    unsigned char* image =
+//                            stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);
+//                    if (!image) {
+//                        std::cerr << "Unable to load texture: " << texture_filename
+//                                  << std::endl;
+//                        exit(1);
+//                    }
+//                    std::cout << "Loaded texture: " << texture_filename << ", w = " << w
+//                              << ", h = " << h << ", comp = " << comp << std::endl;
+//
+////                    glGenTextures(1, &texture_id);
+////                    glBindTexture(GL_TEXTURE_2D, texture_id);
+////                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+////                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+////                    if (comp == 3) {
+////                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB,
+////                                     GL_UNSIGNED_BYTE, image);
+////                    } else if (comp == 4) {
+////                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
+////                                     GL_UNSIGNED_BYTE, image);
+////                    } else {
+////                        assert(0);  // TODO
+////                    }
+////                    glBindTexture(GL_TEXTURE_2D, 0);
+//                    stbi_image_free(image);
+//                    textures.insert(std::make_pair(mp->diffuse_texname, texture_id));
+//                }
+//            }
+//        }
+//    }
 
     bmin[0] = bmin[1] = bmin[2] = std::numeric_limits<float>::max();
     bmax[0] = bmax[1] = bmax[2] = -std::numeric_limits<float>::max();
@@ -890,6 +917,7 @@ static bool LoadObjAndConvert(float bmin[3], float bmax[3],
 
     tinyobj::attrib_t& attrib = regen_all_normals ? outattrib : inattrib;
     MTLLoader mtlLoader;
+    std::vector<std::string> emptyMaterialPathVec;
 
     {
         for (size_t s = 0; s < shapes.size(); s++) {
@@ -905,31 +933,36 @@ static bool LoadObjAndConvert(float bmin[3], float bmax[3],
                 computeSmoothingNormals(attrib, shapes[s], smoothVertexNormals);
             }
 
+            std::unordered_set<size_t> objMaterialSet;
             for (size_t f = 0; f < shapes[s].mesh.indices.size() / 3; f++) {
                 tinyobj::index_t idx0 = shapes[s].mesh.indices[3 * f + 0];
                 tinyobj::index_t idx1 = shapes[s].mesh.indices[3 * f + 1];
                 tinyobj::index_t idx2 = shapes[s].mesh.indices[3 * f + 2];
 
                 int current_material_id = shapes[s].mesh.material_ids[f];
+                objMaterialSet.insert(current_material_id);
 
+                //tinyobj::material_t currentMaterial;
                 if ((current_material_id < 0) ||
                     (current_material_id >= static_cast<int>(materials.size()))) {
                     // Invaid material ID. Use default material.
                     current_material_id = materials.size() - 1;  // Default material is added to the last item in `materials`.
+
+                    //currentMaterial = materials[current_material_id];
+                    //objState.object->startMaterial(currentMaterial.name);
+
+                    //objState.object->material_ts.push_back(currentMaterial);
+                    //objState.object->startMaterial(currentMaterial.name,emptyMaterialPathVec);
                 }
                 // if (current_material_id >= materials.size()) {
                 //    std::cerr << "Invalid material index: " << current_material_id <<
                 //    std::endl;
                 //}
-                //
-                tinyobj::material_t currentMaterial = materials[current_material_id];
-                //objState.object->startMaterial(currentMaterial.name);
 
-                objState.object->material_ts.push_back(currentMaterial);
 
                 float diffuse[3];
                 for (size_t i = 0; i < 3; i++) {
-                    diffuse[i] = currentMaterial.diffuse[i];
+                    diffuse[i] = materials[current_material_id].diffuse[i];
                 }
                 float tc[3][2];
                 if (attrib.texcoords.size() > 0) {
@@ -987,8 +1020,7 @@ static bool LoadObjAndConvert(float bmin[3], float bmax[3],
                     bmax[k] = std::max(v[2][k], bmax[k]);
                 }
 
-                float n[3][3];
-                {
+                float n[3][3];{
                     bool invalid_normal_index = false;
                     if (attrib.normals.size() > 0) {
                         int nf0 = idx0.normal_index;
@@ -1108,11 +1140,25 @@ static bool LoadObjAndConvert(float bmin[3], float bmax[3],
 //                printf("shape[%d] # of triangles = %d\n", static_cast<int>(s),
 //                       o.numTriangles);
 //            }
-
-            drawObjects->push_back(o);
+            std::unordered_map<std::string,size_t> materialCount;
+            for(auto iter=objMaterialSet.begin();iter!=objMaterialSet.end();iter++){
+                auto materialId = *iter;
+                auto materialName = materials[materialId].name;
+                materialCount[materialName] = 0;
+                for (size_t f = 0; f < shapes[s].mesh.indices.size() / 3; f++) {
+                    if(materialId == shapes[s].mesh.material_ids[f]) {
+                        materialCount[materialName] ++;
+                    }
+                }
+                objState.object->material_ts.push_back(materials[materialId]);
+                objState.object->startMaterial(materialName,materialCount);
+            }
             objState.finalize();
+            drawObjects->push_back(o);
         }
     }
+
+
 
     printf("bmin = %f, %f, %f\n", bmin[0], bmin[1], bmin[2]);
     printf("bmax = %f, %f, %f\n", bmax[0], bmax[1], bmax[2]);
@@ -1131,11 +1177,11 @@ Group::sptr OBJLoader::parse(const string& path){
 
     std::vector<DrawObject> gDrawObjects;
     float bmin[3], bmax[3];
-    std::vector<tinyobj::material_t> materials;
+    std::vector<tinyobj::material_t> tmaterials;
     std::map<std::string, GLuint> textures;
     std::vector<tinyobj::shape_t> shapes;
     tinyobj::attrib_t attrib;
-    if (false == LoadObjAndConvert(bmin, bmax, &gDrawObjects, materials, textures, state,
+    if (false == LoadObjAndConvert(bmin, bmax, &gDrawObjects, tmaterials, textures, state,
                                    path.c_str())) {
         //return -1;
         std::cerr << "Loading Obj:" << path << " failed!!!" << std::endl;
@@ -1306,8 +1352,8 @@ Group::sptr OBJLoader::parse(const string& path){
 
     Group::sptr container = Group::create();
 
-    container->materialLibraries = state.materialLibraries;
-
+//    container->materialLibraries = state.materialLibraries;
+//
 //    if (container->materialLibraries.size() > 0){
 //        MTLLoader mtlLoader;
 //        for (int i = 0; i < container->materialLibraries.size(); i++){
@@ -1435,8 +1481,8 @@ Group::sptr OBJLoader::parse(const string& path){
             }
 
             //todo:fix this
-            //material->flatShading = sourceMaterial->smooth ? false : true;
-            material->vertexColors = hasVertexColors ? true : false;
+            material->flatShading = false;//sourceMaterial->smooth ? false : true;
+            //material->vertexColors = hasVertexColors ? true : false;
 
             createdMaterials.push_back(material);
         }
@@ -1448,6 +1494,7 @@ Group::sptr OBJLoader::parse(const string& path){
             for (int mi = 0; mi < materials.size(); mi++){
 
                 auto sourceMaterial = materials[mi];
+                //bufferGeometry->addGroup(sourceMaterial., sourceMaterial->groupCount, mi);
                 bufferGeometry->addGroup(sourceMaterial->groupStart, sourceMaterial->groupCount, mi);
 
             }

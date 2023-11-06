@@ -66,22 +66,22 @@ public:
         std::thread thread1([&](const std::string& filepath){
                            std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
                            OBJLoader loader;
-                           objGroup = loader.load(dir + "\\asset\\models\\obj\\female02\\" + filepath);
-                           objGroup->traverse([&](Object3D& o) {
-                               o.material = meshMaterial;
-                               if (instanceOf<Mesh>(&o) && o.materials.size() > 1) {
-                                   int size = o.materials.size();
-                                   for (int i = 0; i < size; i++)
-                                       o.materials.push_back(meshMaterial);
-                               }
-                           });
+                           objGroup = loader.load(dir + "\\asset\\models\\obj\\" + filepath);
+//                           objGroup->traverse([&](Object3D& o) {
+//                               o.material = meshMaterial;
+//                               if (instanceOf<Mesh>(&o) && o.materials.size() > 1) {
+//                                   int size = o.materials.size();
+//                                   for (int i = 0; i < size; i++)
+//                                       o.materials.push_back(meshMaterial);
+//                               }
+//                           });
                            objGroup->scale.set(3, 3, 3);
-                           objGroup->position.setZ(-500);
-                           objGroup->position.setY(-350);
+//                           objGroup->position.setZ(-500);
+//                           objGroup->position.setY(-350);
 
                            scene->add(objGroup);
                        }
-                ,std::string("female02.obj"));
+                ,std::string("gopher.obj"));
         thread1.join();
 
     }

@@ -387,7 +387,7 @@ Material::sptr MTLLoader::MaterialCreator::createMaterialFromMaterialT(const tin
     MeshPhongMaterial::sptr material = MeshPhongMaterial::create();
     material->name = materialName;
     material->side = parameter.side;
-    material->color = parameter.color;
+    material->color = Color(materialT.diffuse[0],materialT.diffuse[1],materialT.diffuse[2]);//todo:fix? parameter.color;
     material->specular = Color(materialT.specular[0],materialT.specular[1],materialT.specular[2]);
     material->emissive = Color(materialT.emission[0],materialT.emission[1],materialT.emission[2]);
     material->map = parameter.map;
