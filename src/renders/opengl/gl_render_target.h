@@ -70,7 +70,7 @@ public:
     GLRenderTarget(GLRenderTarget& source);
 
     bool isEmpty()  const {
-        return id == std::numeric_limits<size_t>::infinity() || id == 0;
+        return id == std::numeric_limits<size_t>::max() || id == 0;
     }
     virtual ~GLRenderTarget() = default;
 

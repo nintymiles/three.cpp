@@ -206,9 +206,9 @@ public:
     using ptr = std::shared_ptr<Color>;
 
     Color() {
-        r = std::numeric_limits<float>::infinity();
-        g = std::numeric_limits<float>::infinity();
-        b = std::numeric_limits<float>::infinity();
+        r = std::numeric_limits<float>::max();
+        g = std::numeric_limits<float>::max();
+        b = std::numeric_limits<float>::max();
     }
 
     Color(float r, float g, float b) : r(r), g(g), b(b) {}
@@ -224,9 +224,9 @@ public:
         return r == source.r && g == source.g && b == source.b;
     }
     bool isNull() const {
-        return r == std::numeric_limits<float>::infinity() ||
-               g == std::numeric_limits<float>::infinity() ||
-               b == std::numeric_limits<float>::infinity();
+        return r == std::numeric_limits<float>::max() ||
+               g == std::numeric_limits<float>::max() ||
+               b == std::numeric_limits<float>::max();
     }
     Color& set(Color& value) {
         copy(value);

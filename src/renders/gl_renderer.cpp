@@ -949,7 +949,7 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
     auto rangeCount = geometry->drawRange.count * rangeFactor;
 
     auto groupStart = geometryGroup != NULL ? geometryGroup->start * rangeFactor : 0;
-    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : (unsigned)std::numeric_limits<unsigned>::infinity;
+    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : std::numeric_limits<unsigned>::max();
 
     auto drawStart = std::max(rangeStart, groupStart);
     auto drawEnd =   std::min(std::min(dataCount, rangeStart + rangeCount), groupStart + groupCount) - 1;

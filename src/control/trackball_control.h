@@ -82,7 +82,7 @@ namespace control {
         float dynamicDampingFactor = 0.2f;
 
         float minDistance = 0.0f;
-        float maxDistance = std::numeric_limits<float>::infinity();
+        float maxDistance = std::numeric_limits<float>::max();
 
 
         Camera::sptr camera;

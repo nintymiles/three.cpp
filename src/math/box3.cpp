@@ -15,8 +15,8 @@ Vector3 _f0, _f1, _f2;
 }
 
 Box3::Box3(){
-    min.set(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
-    max.set(-std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity());
+    min.set(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+    max.set(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 }
 
 Box3& Box3::set(const Vector3& min, const Vector3& max){
@@ -27,13 +27,13 @@ Box3& Box3::set(const Vector3& min, const Vector3& max){
 }
 
 Box3& Box3::setFromArray(const float* array, const unsigned length){
-    float minX = std::numeric_limits<float>::infinity();
-    float minY = std::numeric_limits<float>::infinity();
-    float minZ = std::numeric_limits<float>::infinity();
+    float minX = std::numeric_limits<float>::max();
+    float minY = std::numeric_limits<float>::max();
+    float minZ = std::numeric_limits<float>::max();
 
-    float maxX = -std::numeric_limits<float>::infinity();
-    float maxY = -std::numeric_limits<float>::infinity();
-    float maxZ = -std::numeric_limits<float>::infinity();
+    float maxX = -std::numeric_limits<float>::max();
+    float maxY = -std::numeric_limits<float>::max();
+    float maxZ = -std::numeric_limits<float>::max();
 
     for (unsigned i = 0; i < length; i += 3) {
 
@@ -58,13 +58,13 @@ Box3& Box3::setFromArray(const float* array, const unsigned length){
 }
 
 Box3& Box3::setFromBufferAttribute(const BufferAttribute<float>& attribute){
-    float minX = std::numeric_limits<float>::infinity();
-    float minY = std::numeric_limits<float>::infinity();
-    float minZ = std::numeric_limits<float>::infinity();
+    float minX = std::numeric_limits<float>::max();
+    float minY = std::numeric_limits<float>::max();
+    float minZ = std::numeric_limits<float>::max();
 
-    float maxX = -std::numeric_limits<float>::infinity();
-    float maxY = -std::numeric_limits<float>::infinity();
-    float maxZ = -std::numeric_limits<float>::infinity();
+    float maxX = -std::numeric_limits<float>::max();
+    float maxY = -std::numeric_limits<float>::max();
+    float maxZ = -std::numeric_limits<float>::max();
 
     for (int i = 0, l = attribute.count; i < l; i++) {
 
@@ -137,8 +137,8 @@ Box3& Box3::copy(const Box3& box){
 }
 
 Box3& Box3::makeEmpty(){
-    min.x = min.y = min.z = std::numeric_limits<float>::infinity();
-    max.x = max.y = max.z = -std::numeric_limits<float>::infinity();
+    min.x = min.y = min.z = std::numeric_limits<float>::max();
+    max.x = max.y = max.z = -std::numeric_limits<float>::max();
 
     return *this;
 }

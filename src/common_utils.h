@@ -10,6 +10,13 @@
 //#include <gles3/gl3.h>
 #include "gl_headers.h"
 
+#ifdef _MSC_VER
+#include<io.h>
+#define access _access_s
+#else
+#include <unistd.h>
+#endif
+
 namespace threecpp{
 
 //单独的函数声明和定义一定要分开，否则被多次include后，就会出现duplicate symbols
@@ -65,12 +72,7 @@ inline void checkError() {
 #endif
 }
 
-#ifdef _MSC_VER
-#include<io.h>
-#define access _access_s
-#else
-#include <unistd.h>
-#endif
+
     bool FileExists(const std::string& fileName);
     std::string getProgramPath();
 

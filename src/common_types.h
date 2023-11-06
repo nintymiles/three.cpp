@@ -58,9 +58,9 @@ struct UpdateRange {
 
 struct DrawRange {
     unsigned start =0;
-    unsigned count = std::numeric_limits<unsigned>::infinity();
+    unsigned count = std::numeric_limits<unsigned>::max();
     int materialIndex=-1;
-    DrawRange() :start(0), count(std::numeric_limits<unsigned>::infinity()), materialIndex(-1) {}
+    DrawRange() :start(0), count(std::numeric_limits<unsigned>::max()), materialIndex(-1) {}
     DrawRange(unsigned start, unsigned count, int materialIndex) : start(start), count(count), materialIndex(materialIndex) {}
     bool equals(const DrawRange& target) {
         return start == target.start && count == target.count && materialIndex == target.materialIndex;
