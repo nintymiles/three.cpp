@@ -8,6 +8,8 @@
 #include "light.h"
 #include "point_light_shadow.h"
 #include "color.h"
+#include "number.h"
+
 #include <string>
 #include <memory>
 
@@ -32,10 +34,10 @@ public:
     virtual PointLight& copy(const PointLight& source);
 
     virtual float power() override {
-        return (float)(this->intensity * 4 * M_PI);
+        return (float)(this->intensity * 4 * math_number::PI);
     }
     virtual void setPower(float value) override {
-        this->intensity = (float)(value / (4 * M_PI));
+        this->intensity = (float)(value / (4 * math_number::PI));
     }
 };
 

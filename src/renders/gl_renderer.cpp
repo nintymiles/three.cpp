@@ -12,7 +12,6 @@
 #include "points.h"
 #include "line.h"
 #include "skinned_mesh.h"
-#include "timer.h"
 #include "immediate_render_object.h"
 #include "mesh_phong_material.h"
 #include "mesh_toon_material.h"
@@ -26,8 +25,8 @@
 #include "gl_binding_states.h"
 #include "gl_cubemap.h"
 
-#include <climits>
-
+#include "number.h"
+#include "timer.h"
 
 GLRenderer::GLRenderer(int width, int height){
     initGLContext(width, height);
@@ -330,7 +329,7 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
     if (refreshProgram || _currentCamera != camera) {
         //p_uniforms->setValue("projectionMatrix", camera->projectionMatrix);
         if (capabilities->logarithmicDepthBuffer) {
-            float logDepthBufFC = (GLfloat)(2.0f / (log(camera->_far + 1.0f) / LN2));
+            float logDepthBufFC = (GLfloat)(2.0f / (log(camera->_far + 1.0f) / math_number::LN2));
             p_uniforms->setUniformValue("logDepthBufFC",logDepthBufFC);
         }
 

@@ -4,6 +4,8 @@
 
 #include "perspective_camera.h"
 
+#include "number.h"
+
 /**
 	 * Sets the FOV by focal length in respect to the current .filmGauge.
 	 *
@@ -16,7 +18,7 @@ void PerspectiveCamera::setFocalLength(float focalLength){
     // see http://www.bobatkins.com/photography/technical/field_of_view.html
     float vExtentSlope = 0.5f * getFilmHeight() / focalLength;
 
-    fov = RAD2DEG * 2 * atan(vExtentSlope);
+    fov = math_number::RAD2DEG * 2 * atan(vExtentSlope);
     updateProjectionMatrix();
 }
 
@@ -24,13 +26,13 @@ void PerspectiveCamera::setFocalLength(float focalLength){
  * Calculates the focal length from the current .fov and .filmGauge.
  */
 float PerspectiveCamera::getFocalLength(){
-    float vExtentSlope = tan(DEG2RAD * 0.5f * fov);
+    float vExtentSlope = tan(math_number::DEG2RAD * 0.5f * fov);
 
     return 0.5f * getFilmHeight() / vExtentSlope;
 }
 
 float PerspectiveCamera::getEffectiveFOV(){
-    return RAD2DEG * 2 * atan(tan(DEG2RAD * 0.5f * fov) / zoom);
+    return math_number::RAD2DEG * 2 * atan(tan(math_number::DEG2RAD * 0.5f * fov) / zoom);
 }
 
 float PerspectiveCamera::getFilmWidth()
@@ -107,7 +109,7 @@ void PerspectiveCamera::clearViewOffset(){
 void PerspectiveCamera::updateProjectionMatrix(){
     Camera::updateProjectionMatrix();
     //float near = this.near,
-    float top = _near * tan(DEG2RAD * 0.5f * fov) / zoom;
+    float top = _near * tan(math_number::DEG2RAD * 0.5f * fov) / zoom;
     float height = 2 * top;
     float width = aspect * height;
     float left = -0.5f * width;

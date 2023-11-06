@@ -6,6 +6,8 @@
 #include "gl_render_target.h"
 #include "gl_properties.h"
 
+#include "number.h"
+
 #include <cassert>
 
 namespace gltextures {
@@ -386,7 +388,7 @@ void GLTextures::generateMipmap(TextureTarget target, Texture& texture, GLsizei 
 
     auto& textureProperties = properties->getProperties(texture.uuid);
 
-    float v = (float)std::log(std::max(width, height)) * (float)std::log2(E);
+    float v = (float)std::log(std::max(width, height)) * (float)std::log2(math_number::E);
 
     textureProperties.maxMipLevel = v;
 }

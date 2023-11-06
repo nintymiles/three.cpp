@@ -8,16 +8,31 @@
 
 #include <cmath>
 #include <limits>
-namespace Number{
+namespace math_number{
     //when for const error: in-class initializer for static data member of type 'const double' requires 'constexpr' specifier [-Wstatic-float-init]
     constexpr double EPSILON = std::numeric_limits<double>::epsilon();
     constexpr double PI = M_PI;
+
+    constexpr float LN2 =0.6931471805599453094f;
+
+    constexpr float INF = std::numeric_limits<float>::infinity();
+
+    constexpr float E = 2.7182818284590451;
 
     constexpr double MAX = std::numeric_limits<double>::max();
     constexpr double MIN = std::numeric_limits<double>::min();
 
     constexpr int MAX_INT = std::numeric_limits<int>::max();
     constexpr int MIN_INT = std::numeric_limits<int>::min();
+
+    constexpr double DEG2RAD = M_PI / 180;
+    constexpr double RAD2DEG = 180 / M_PI;
+
+    constexpr float SQRT1_2 = 0.7071067811865476f;
+    constexpr float PI2 = (2 * M_PI);
+    constexpr float HalfPI = (M_PI / 2.0f);
+
+
 };
 
 

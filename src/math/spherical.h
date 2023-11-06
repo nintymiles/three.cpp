@@ -35,8 +35,8 @@ public:
 
     // restrict phi to be betwee EPS and PI-EPS
     Spherical& makeSafe() {
-        double EPS = Number::EPSILON;
-        phi = fmax( EPS, fmin( Number::PI - EPS, phi ) );
+        double EPS = math_number::EPSILON;
+        phi = fmax( EPS, fmin(math_number::PI - EPS, phi ) );
 
         return *this;
     }

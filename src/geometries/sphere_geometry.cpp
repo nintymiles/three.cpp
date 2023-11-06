@@ -3,6 +3,8 @@
 //
 #include "sphere_geometry.h"
 
+#include "number.h"
+
 SphereBufferGeometry::SphereBufferGeometry(float radius, float widthSegments, float heightSegments, float phiStart, float phiLength, float thetaStart, float thetaLength) : BufferGeometry(){
     radius = radius != 0 ? radius : 1;
 
@@ -14,12 +16,12 @@ SphereBufferGeometry::SphereBufferGeometry(float radius, float widthSegments, fl
     heightSegments = std::max(2.0f, floor(heightSegments));
 
     phiStart = !std::isnan(phiStart) ? phiStart : 0;
-    phiLength = !std::isnan(phiLength) ? phiLength : 2 * (float)M_PI; ;
+    phiLength = !std::isnan(phiLength) ? phiLength : 2 * (float)math_number::PI; ;
     thetaStart = !std::isnan(thetaStart) ? thetaStart : 0;
-    thetaLength = !std::isnan(thetaLength) ? thetaLength : (float)M_PI;
+    thetaLength = !std::isnan(thetaLength) ? thetaLength : (float)math_number::PI;
 
 
-    auto thetaEnd = std::min(thetaStart + thetaLength, (float)M_PI);
+    auto thetaEnd = std::min(thetaStart + thetaLength, (float)math_number::PI);
 
     std::vector<unsigned> _indices;
     std::vector<float> _vertices;
@@ -46,7 +48,7 @@ SphereBufferGeometry::SphereBufferGeometry(float radius, float widthSegments, fl
 
             uOffset = 0.5f / widthSegments;
 
-        } else if (iy == heightSegments && thetaEnd == (float)M_PI) {
+        } else if (iy == heightSegments && thetaEnd == (float)math_number::PI) {
 
             uOffset = -0.5f / widthSegments;
 
@@ -99,7 +101,7 @@ SphereBufferGeometry::SphereBufferGeometry(float radius, float widthSegments, fl
                 _indices.push_back(b);
                 _indices.push_back(d);
             }
-            if (iy != (int)(heightSegments - 1) || thetaEnd < M_PI) {
+            if (iy != (int)(heightSegments - 1) || thetaEnd < math_number::PI) {
                 _indices.push_back(b);
                 _indices.push_back(c);
                 _indices.push_back(d);

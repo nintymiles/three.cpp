@@ -4,6 +4,8 @@
 
 #include "trackball_control.h"
 
+#include "number.h"
+
 namespace control {
     using namespace threecpp;
 
@@ -24,7 +26,7 @@ namespace control {
         float length = mouseOnBall.length();
 
         if (noRoll){
-            if (length < SQRT1_2)
+            if (length < math_number::SQRT1_2)
                 mouseOnBall.z = (float)sqrt(1.0f - length * length);
             else
                 mouseOnBall.z = 0.5f / length;

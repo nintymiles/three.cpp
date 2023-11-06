@@ -4,13 +4,14 @@
 #include "spot_light_shadow.h"
 
 #include "perspective_camera.h"
+#include "number.h"
 
 SpotLightShadow::SpotLightShadow() :LightShadow(PerspectiveCamera::create(50.0f, 1.0f, 0.5f, 500.0f)) {
     lightShadowType = LightShadowType::SpotLightShadow;
 }
 
 void SpotLightShadow::updateMatrices(const Light& light, int viewportIndex){
-    float fov = (float)(180 / M_PI * 2 * light.angle);
+    float fov = (float)(180 / math_number::PI * 2 * light.angle);
     float aspect = shadowMapSize.x / shadowMapSize.y;
     float far = !std::isnan(light.distance)&& light.distance != 0 ? light.distance : camera->_far;
 

@@ -3,11 +3,13 @@
 //
 #include "lathe_geometry.h"
 
+#include "number.h"
+
 LatheBufferGeometry::LatheBufferGeometry(const std::vector<Vector3>& points, float segments, float phiStart, float phiLength) : BufferGeometry(){
     segments = !std::isnan(segments) ? floor(segments) : 12;
     phiStart = !std::isnan(phiStart)? phiStart : 0;
-    phiLength = !std::isnan(phiLength) ? phiLength : (float)M_PI * 2;
-    phiLength = clamp(phiLength,0.0f, (float)M_PI * 2);
+    phiLength = !std::isnan(phiLength) ? phiLength : (float)math_number::PI * 2;
+    phiLength = clamp(phiLength,0.0f, (float)math_number::PI * 2);
 
     this->points= points;
     this->segments= segments;
@@ -82,7 +84,7 @@ LatheBufferGeometry::LatheBufferGeometry(const std::vector<Vector3>& points, flo
 
     computeVertexNormals();
 
-    if (phiLength == (float)M_PI * 2)
+    if (phiLength == (float)math_number::PI * 2)
     {
 
         BufferAttribute<float>::sptr normals = getAttribute(AttributeName::normal);

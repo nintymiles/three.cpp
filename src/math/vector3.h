@@ -463,7 +463,7 @@ public:
     float angleTo(const Vector3& v) {
         float denominator = std::sqrt(lengthSq() * v.lengthSq());
 
-        if (denominator == 0) return M_PI / 2;
+        if (denominator == 0) return math_number::PI / 2;
 
         float theta = dot(v) / denominator;
 

@@ -16,8 +16,8 @@ class Raycaster {
         Ray ray;
         Camera* camera;
 
-		Raycaster(Vector3& origin,Vector3& direction,double near = 0,double far = Number::MAX):ray(Ray(origin,direction)),camera(
-            nullptr),near(near),far(far){}
+		Raycaster(Vector3& origin,Vector3& direction,double near = 0,double far = math_number::MAX): ray(Ray(origin, direction)), camera(
+            nullptr), near(near), far(far){}
 
 	// constructor( origin, direction, near = 0, far = Infinity ) {
 

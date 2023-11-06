@@ -4,6 +4,7 @@
 #include "spot_light.h"
 
 #include "spot_light_shadow.h"
+#include "number.h"
 
 SpotLight::SpotLight() : Light() {
     type = "SpotLight";
@@ -23,7 +24,7 @@ SpotLight::SpotLight(const Color& color, float intensity, float distance, float 
     this->target = std::make_shared<Object3D>();
     this->shadow = SpotLightShadow::create();
     this->distance = !std::isnan(distance) ? distance : 0;
-    this->angle = !std::isnan(angle) ? angle : (float)(M_PI / 3);
+    this->angle = !std::isnan(angle) ? angle : (float)(math_number::PI / 3);
     this->penumbra = !std::isnan(penumbra) ? penumbra : 0;
     this->decay = !std::isnan(decay) ? decay : 1;
 

@@ -4,12 +4,14 @@
 
 #include "torus_geometry.h"
 
+#include "number.h"
+
 TorusBufferGeometry::TorusBufferGeometry(float radius, float tube, float radialSegments, float tubularSegments, float arc) : BufferGeometry(){
     radius = radius != 0 ? radius : 1;
     tube = tube != 0 ? tube : 1;
     radialSegments = radialSegments != 0 ? floor(radialSegments) : 8;
     tubularSegments = tubularSegments != 0 ? floor(tubularSegments) : 6;
-    arc = arc != 0 ? arc : (float)M_PI * 2;
+    arc = arc != 0 ? arc : (float)math_number::PI * 2;
 
     std::vector<unsigned> _indices;
     std::vector<float> _vertices;
@@ -29,7 +31,7 @@ TorusBufferGeometry::TorusBufferGeometry(float radius, float tube, float radialS
         for (i = 0; i <= tubularSegments; i++){
 
             float u = i / (float)tubularSegments * (float)arc;
-            float v = j / (float)radialSegments * (float)M_PI * 2;
+            float v = j / (float)radialSegments * (float)math_number::PI * 2;
 
             // vertex
             vertex.x = (float)((radius + tube * cos(v)) * cos(u));

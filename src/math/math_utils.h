@@ -1,10 +1,7 @@
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
- 
-#ifdef _MSC_VER
-#define _USE_MATH_DEFINES 
-#include <math.h>
-#endif
+
+#include "number.h"
 
 #include <cmath>
 #include <random>
@@ -14,9 +11,6 @@
 #include <climits>
 
 namespace MathUtils {
-
-    const double DEG2RAD = M_PI / 180;
-    const double RAD2DEG = 180 / M_PI;
 
     template<typename T>
     T inline clamp(T value, T min, T max) {
@@ -148,11 +142,7 @@ namespace math {
 //#ifndef _MSC_VER
 //const float M_PI = PI;
 //#endif
-const float LN2 =0.6931471805599453094f;
 
-const float INF = std::numeric_limits<float>::infinity(); //std::numeric_limits<float>::infinity();
-
-const float E = 2.7182818284590451;
 
 template < typename T > inline T sqrt(T t) { return std::sqrt(t); }
 
@@ -264,15 +254,15 @@ inline bool isPowerOfTwo(int value) {
 }
 
 inline int upperPowerOfTwo(int value) {
-    return (int)pow(2.f, ceil(log((float)value) / LN2));
+    return (int)pow(2.f, ceil(log((float)value) / math_number::LN2));
 }
 
 inline int lowerPowerOfTwo(int value) {
-    return (int)pow(2.f, floor(log((float)value) / LN2));
+    return (int)pow(2.f, floor(log((float)value) / math_number::LN2));
 }
 
 inline int nearestPowerOfTwo(int value) {
-    return (int)pow(2.f, round(log((float)value) / LN2));
+    return (int)pow(2.f, round(log((float)value) / math_number::LN2));
 }
 
 //inline std::string generateUUID()
@@ -301,15 +291,13 @@ inline int nearestPowerOfTwo(int value) {
 //    return s;
 //}
 
-inline float euclideanModulo(float n, float m)
-{
+inline float euclideanModulo(float n, float m){
     if (m == 0) return (float)NAN;
     return std::fmod(std::fmod(n, m) + m, m);
     //return std::remainder((std::remainder(n, m) + m), m);
 }
 
-template <typename T> T lerp(T x, T y, T t)
-{
+template <typename T> T lerp(T x, T y, T t){
     return (1 - t) * x + t * y;
 }
 
@@ -323,8 +311,7 @@ template <typename T> T smoothstep(T x, T min, T max) {
     return x * x * (3 - 2 * x);
 }
 
-template <typename T> T smootherstep(T x, T min, T max)
-{
+template <typename T> T smootherstep(T x, T min, T max){
     if (x <= min) return 0;
     if (x >= max) return 1;
 
@@ -333,30 +320,22 @@ template <typename T> T smootherstep(T x, T min, T max)
     return x * x * x * (x * (x * 6 - 15) + 10);
 }
 
-inline double degToRad(double degrees)
-{
-    return degrees * M_PI / 180.0;
+inline double degToRad(double degrees){
+    return degrees * math_number::PI / 180.0;
 }
 
-inline double radToDeg(double radians)
-{
-    return radians * 180.0 / M_PI;
+inline double radToDeg(double radians){
+    return radians * 180.0 / math_number::PI;
 }
 
-inline int ceilPowerOfTwo(double value)
-{
+inline int ceilPowerOfTwo(double value){
     return (int)std::pow(2, std::ceil(std::log(value) / M_LN2));
 }
 
-inline int floorPowerOfTwo(double value)
-{
+inline int floorPowerOfTwo(double value){
     return (int)std::pow(2, std::floor(std::log(value) / M_LN2));
 }
-const float DEG2RAD = (float)M_PI / 180.0f;
-const float RAD2DEG = 180.0f / (float)M_PI;
-const float SQRT1_2 = 0.7071067811865476f;
-const float PI2 = (2 * 3.14159265358979323846f);
-const float HalfPI = (3.14159265358979323846f / 2.0f);
+
 }
 
 #endif //MATH_UTILS_H

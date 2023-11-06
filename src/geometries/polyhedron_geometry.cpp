@@ -121,8 +121,8 @@ void PolyhedronBufferGeometry::generateUVs(){
         vertex.y = _vertexBuffer[i + 1];
         vertex.z = _vertexBuffer[i + 2];
 
-        auto u = azimuth(vertex) / 2 / (float)M_PI + 0.5f;
-        auto v = inclination(vertex) / (float)M_PI + 0.5f;
+        auto u = azimuth(vertex) / 2 / (float)math_number::PI + 0.5f;
+        auto v = inclination(vertex) / (float)math_number::PI + 0.5f;
         _uvBuffer.push_back(u);
         _uvBuffer.push_back(1 - v);
 
