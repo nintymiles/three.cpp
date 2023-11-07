@@ -7,11 +7,13 @@
 
 #include "line_basic_material.h"
 
+#include "color.h"
+
 #include <string>
 
 class LineDashedMaterial : public LineBasicMaterial {
     float scale = 1.0f;
-    float dashSize = 3.0f;
+    float dashSize = 2.0f;
     float gapSize = 1.0f;
 public:
     LineDashedMaterial() : LineBasicMaterial(),scale(1), dashSize(3), gapSize(1) {
@@ -19,9 +21,15 @@ public:
         this->name = "LineDashedMaterial";
         shaderId = "dashed";
     }
+
+    LineDashedMaterial(const Color& color) : LineDashedMaterial(){
+        this->color.copy(color);
+    }
+
     LineDashedMaterial(const LineDashedMaterial& source) :LineBasicMaterial(source) {
         this->type = "LineDashedMaterial";
         this->name = "LineDashedMaterial";
+        shaderId = "dashed";
         scale = source.scale;
         dashSize = source.dashSize;
         gapSize = source.gapSize;
@@ -36,6 +44,14 @@ public:
         scale = source.scale;
         dashSize = source.dashSize;
         gapSize = source.gapSize;
+    }
+
+    static sptr create() {
+        return std::make_shared<LineDashedMaterial>();
+    }
+
+    static sptr create(const Color& color) {
+        return std::make_shared<LineDashedMaterial>(color);
     }
 };
 

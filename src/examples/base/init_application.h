@@ -17,6 +17,8 @@
 #include "demo_scene2.h"
 
 #include "gl_lines_sphere.h"
+#include "gl_lines_dashed.h"
+
 #include "gl_loader_obj_mtl.h"
 #include "gl_buffer_geometry_attributes_none.h"
 
@@ -82,11 +84,11 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["Lines-Sphere"];
                 currentDemoClass->renderer->clear();
             }
-            if (ImGui::MenuItem("Loader_Obj_Mtl", "")) {
-                if (demoClasses.count("Loader_Obj_Mtl") == 0)
-                    demoClasses["Loader_Obj_Mtl"] = std::make_shared<GLLoaderObjMtl>(display_w, display_h);
+            if (ImGui::MenuItem("Lines-Dashed", "")) {
+                if (demoClasses.count("Lines-Dashed") == 0)
+                    demoClasses["Lines-Dashed"] = std::make_shared<GLLinesDashed>(display_w, display_h);
 
-                currentDemoClass = demoClasses["Loader_Obj_Mtl"];
+                currentDemoClass = demoClasses["Lines-Dashed"];
                 currentDemoClass->renderer->clear();
             }
             if (ImGui::MenuItem("Buffer_geometry_attributes_none", "")) {
@@ -96,6 +98,13 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["Buffer_geometry_attributes_none"];
                 currentDemoClass->renderer->clear();
             }
+//            if (ImGui::MenuItem("Buffer_geometry_attributes_none", "")) {
+//                if (demoClasses.count("Buffer_geometry_attributes_none") == 0)
+//                    demoClasses["Buffer_geometry_attributes_none"] = std::make_shared<GLBufferGeometryAttributesNone>(display_w, display_h);
+//
+//                currentDemoClass = demoClasses["Buffer_geometry_attributes_none"];
+//                currentDemoClass->renderer->clear();
+//            }
 
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();

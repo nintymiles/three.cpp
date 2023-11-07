@@ -7,12 +7,13 @@
 
 #include "application_model.h"
 #include "color.h"
-#include "line_basic_material.h"
+#include "line_dashed_material.h"
 #include "line.h"
 
 #include "vector3.h"
 #include "math_utils.h"
 #include "geometry_utils.h"
+#include "catmull_rom_cuve3.h"
 
 #include <tuple>
 #include <vector>
@@ -35,10 +36,33 @@ public:
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x111111));
 
+        std::vector<Object3D::sptr> objects{};
+
         const int subdivisions = 6;
         const int recursion = 1;
 
         std::vector<Vector3> points = geometry_utils::hilbert3D(Vector3( 0, 0, 0 ), 25.0, recursion, 0, 1, 2, 3, 4, 5, 6, 7);
+        CatmullRomCurve3 spline = CatmullRomCurve3( points );
+
+
+        std::vector<Vector3> samples = spline.getPoints( points.size() * subdivisions );
+
+        BufferGeometry::sptr geometrySpline = BufferGeometry::create();
+        geometrySpline->setFromPoints( samples );
+
+        Line::sptr line = Line::create( geometrySpline, LineDashedMaterial::create());
+        line->computeLineDistances();
+
+        objects.push_back(line);
+        scene->add(line);
+
+        BufferGeometry::sptr geometryBox = box( 50, 50, 50 );
+
+        LineSegments::sptr lineSegments = LineSegments::create( geometryBox, LineDashedMaterial::create( Color(0xffaa00)) );
+        lineSegments->computeLineDistances();
+
+        objects.push_back( lineSegments );
+        scene->add( lineSegments );
 
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
@@ -59,36 +83,54 @@ public:
 
 
 private:
-    const float r = 450;
 
-    void rotateChildrenCallback(Object3D &e);
+    //void rotateChildrenCallback(Object3D &e);
 
-    BufferGeometry::sptr createGeometry() {
-        std::vector<float> vertices;
+    BufferGeometry::sptr box( float width, float height, float depth ) {
+        width = width * 0.5,
+        height = height * 0.5,
+        depth = depth * 0.5;
 
-        Vector3 vertex{};
+        BufferGeometry::sptr geometry = BufferGeometry::create();
+        std::vector<float> position{
+                -width, -height, -depth,
+                -width, height, -depth,
 
-        for ( int i = 0; i < 1500; i ++ ) {
-            vertex.x = math::random() * 2 - 1;
-            vertex.y = math::random() * 2 - 1;
-            vertex.z = math::random() * 2 - 1;
-            vertex.normalize();
-            vertex.multiplyScalar( r );
+                -width, height, -depth,
+                width, height, -depth,
 
-            vertices.push_back(vertex.x);
-            vertices.push_back(vertex.y);
-            vertices.push_back(vertex.z);
+                width, height, -depth,
+                width, -height, -depth,
 
-            vertex.multiplyScalar( math::random() * 0.09 + 1 );
+                width, -height, -depth,
+                -width, -height, -depth,
 
-            vertices.push_back(vertex.x);
-            vertices.push_back(vertex.y);
-            vertices.push_back(vertex.z);
-        }
+                -width, -height, depth,
+                -width, height, depth,
 
-        auto geometry = BufferGeometry::create();
-        //geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-        geometry->setAttribute(AttributeName::position,BufferAttribute<float>::create(vertices, 3));
+                -width, height, depth,
+                width, height, depth,
+
+                width, height, depth,
+                width, -height, depth,
+
+                width, -height, depth,
+                -width, -height, depth,
+
+                -width, -height, -depth,
+                -width, -height, depth,
+
+                -width, height, -depth,
+                -width, height, depth,
+
+                width, height, -depth,
+                width, height, depth,
+
+                width, -height, -depth,
+                width, -height, depth
+        };
+
+        geometry->setAttribute( AttributeName::position, BufferAttribute<float>::create( position, 3 ) );
 
         return geometry;
     }

@@ -34,7 +34,7 @@ Line& Line::computeLineDistances(){
     Vector3 _end;
     if (!geometry->isGeometry){
         // we assume non-indexed geometry
-        auto bgeometry = *std::dynamic_pointer_cast<BufferGeometry::sptr>(geometry);
+        BufferGeometry::sptr bgeometry = std::dynamic_pointer_cast<BufferGeometry>(geometry);
 
         if (bgeometry->index == nullptr){
 
@@ -94,13 +94,13 @@ LineSegments& LineSegments::computeLineDistances() {
     Vector3 _start;
     Vector3 _end;
     if (!geometry->isGeometry){
-        auto bgeometry = *std::dynamic_pointer_cast<BufferGeometry::sptr>(geometry);
+//        auto bgeometry = *std::dynamic_pointer_cast<BufferGeometry::sptr>(geometry);
+        auto bgeometry = std::dynamic_pointer_cast<BufferGeometry>(geometry);
         if (bgeometry->index == nullptr){
             BufferAttribute<float>::sptr positionAttribute = bgeometry->getAttribute(AttributeName::position);//(BufferAttribute<float>)(geometry as BufferGeometry).Attributes["position"];
             std::vector<float> lineDistances;// = new List<float>();
 
-            for (unsigned int i = 0; i < positionAttribute->count; i += 2)
-            {
+            for (unsigned int i = 0; i < positionAttribute->count; i += 2){
                 _start = _start.fromBufferAttribute(*positionAttribute, i);
                 _end = _end.fromBufferAttribute(*positionAttribute, i + 1);
 
@@ -120,8 +120,7 @@ LineSegments& LineSegments::computeLineDistances() {
         auto _vertices = &geometry->vertices;
         auto _lineDistances = &geometry->lineDistances;
 
-        for (int i = 0; i < _vertices->size(); i += 2)
-        {
+        for (int i = 0; i < _vertices->size(); i += 2){
             _start = _vertices->at(i);
             _end = _vertices->at(i + 1);
 

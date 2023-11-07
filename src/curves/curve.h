@@ -10,6 +10,10 @@
 #include "matrix4.h"
 #include "math_utils.h"
 
+#include <iostream>
+#include <string>
+#include <vector>
+
 /**
  * Extensible curve object.
  *
@@ -59,6 +63,8 @@ public:
     virtual Vector3 getPoint( float t,Vector3 *optionalTarget = nullptr ) {
         std::cout << 'THREE.Curve: .getPoint() not implemented.' << std::endl;
     }
+
+    virtual ~Curve() = default;
 
     // Get point at relative position in curve according to arc length
     // - u [0 .. 1]
@@ -150,7 +156,7 @@ public:
         std::vector<Vector3> points{};
 
         for ( int d = 0; d <= divisions; d ++ ) {
-            points.push_back( this->getPoint( d / divisions ) );
+            points.push_back( this->getPoint( d / (float)divisions ) );
         }
 
         return points;
