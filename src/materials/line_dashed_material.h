@@ -39,11 +39,14 @@ public:
     virtual LineDashedMaterial* clone() {
         return new LineDashedMaterial(*this);
     }
+
     virtual LineDashedMaterial& copy(const LineDashedMaterial& source) {
         LineBasicMaterial::copy(source);
         scale = source.scale;
         dashSize = source.dashSize;
         gapSize = source.gapSize;
+
+        return *this;
     }
 
     static sptr create() {

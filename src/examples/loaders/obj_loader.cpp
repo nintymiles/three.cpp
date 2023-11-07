@@ -62,7 +62,7 @@ Object::ObjectMaterial::sptr Object::startMaterial(const string& name, vector<st
 
     material->index = materials.size();
     material->name = name;
-    //material->stringLib = libraries[libraries.size() - 1];
+    material->stringLib = libraries[libraries.size() - 1];
     material->smooth = previous!=nullptr ? previous->smooth : smooth;
     material->groupStart = previous!=nullptr ? previous->groupEnd : 0;
     material->groupEnd = -1;
@@ -183,9 +183,16 @@ void ObjectState::addUV(int a, int b, int c){
     std::copy(src.begin() + b, src.begin() + b + 2, dst.end());
     std::copy(src.begin() + c, src.begin() + c + 2, dst.end()); */
 
-    addVector2(dst, src[a + 0], src[a + 1]);
-    addVector2(dst, src[b + 0], src[b + 1]);
-    addVector2(dst, src[c + 0], src[c + 1]);
+    //todo:fix this
+    if(src.size()>0) {
+        addVector2(dst, src[a + 0], src[a + 1]);
+        addVector2(dst, src[b + 0], src[b + 1]);
+        addVector2(dst, src[c + 0], src[c + 1]);
+    }else{
+//        addVector2(dst, 0, 0);
+//        addVector2(dst, 0, 0);
+//        addVector2(dst, 0, 0);
+    }
 
 }
 
@@ -200,9 +207,12 @@ void ObjectState::addNormal(int a, int b, int c){
     std::copy(src.begin() + b, src.begin() + b + 3, dst.end());
     std::copy(src.begin() + c, src.begin() + c + 3, dst.end());*/
 
-    addVector3(dst, src[a + 0], src[a + 1], src[a + 2]);
-    addVector3(dst, src[b + 0], src[b + 1], src[b + 2]);
-    addVector3(dst, src[c + 0], src[c + 1], src[c + 2]);
+    //todo:fix this
+    if(normals.size() > 0) {
+        addVector3(dst, src[a + 0], src[a + 1], src[a + 2]);
+        addVector3(dst, src[b + 0], src[b + 1], src[b + 2]);
+        addVector3(dst, src[c + 0], src[c + 1], src[c + 2]);
+    }
 
 }
 
@@ -672,7 +682,7 @@ Group::sptr OBJLoader::parse(const string& path){
         {
             string matFileName = line.substr(7);
             string directory = filePath;
-            string matPath = directory + "/" + matFileName;
+            string matPath = directory + threecpp::getFileSeparator() + matFileName;
             //state.Object.StartMaterial(matPath, state.MaterialLibraries);
             state.materialLibraries.push_back(matPath);
             continue;

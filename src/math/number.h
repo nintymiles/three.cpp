@@ -19,6 +19,9 @@ namespace math_number{
 
     constexpr float E = 2.7182818284590451;
 
+    constexpr double MAX_FLT = std::numeric_limits<float>::max();
+    constexpr double MIN_FLT = std::numeric_limits<float>::min();
+
     constexpr double MAX = std::numeric_limits<double>::max();
     constexpr double MIN = std::numeric_limits<double>::min();
 

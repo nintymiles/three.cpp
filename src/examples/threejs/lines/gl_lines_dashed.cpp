@@ -4,6 +4,8 @@
 
 #include "gl_lines_dashed.h"
 
+#include <chrono>
+
 namespace gl_line_dashed {
     void rotateChildrenCallback(Object3D &e) {
         std::chrono::time_point<std::chrono::steady_clock> time = std::chrono::steady_clock::now();

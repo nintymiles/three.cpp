@@ -61,7 +61,8 @@ public:
     // Virtual base class method to overwrite and implement in subclasses
     //	- t [0 .. 1]
     virtual Vector3 getPoint( float t,Vector3 *optionalTarget = nullptr ) {
-        std::cout << 'THREE.Curve: .getPoint() not implemented.' << std::endl;
+        std::cout << "THREE.Curve: .getPoint() not implemented." << std::endl;
+        return Vector3();
     }
 
     virtual ~Curve() = default;
@@ -236,7 +237,7 @@ public:
         // and in the direction of the minimum tangent xyz component
         normals.push_back(Vector3());
         binormals.push_back(Vector3()); //= new Vector3();
-        float min = math_number::MAX;
+        float min = math_number::MAX_FLT;
         const float tx = std::abs( tangents[ 0 ].x );
         const float ty = std::abs( tangents[ 0 ].y );
         const float tz = std::abs( tangents[ 0 ].z );
@@ -295,11 +296,9 @@ public:
 
         }
 
-        return {
-                tangents: tangents,
-                normals: normals,
-                binormals: binormals
-        };
+        return {tangents,
+                normals,
+                binormals};
 
     }
 

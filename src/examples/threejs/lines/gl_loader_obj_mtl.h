@@ -32,7 +32,7 @@ public:
         isPerspective = true;
 
         scene = std::make_shared<Scene>();
-        scene->setBackgroundColor(Color().set(0xffffff));
+        scene->setBackgroundColor(Color().set(0x000000));
 
         auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.4f);
         scene->add(ambientLight);
@@ -67,8 +67,8 @@ public:
                            std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
                            OBJLoader loader;
                            std::string relativeDir = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
-                                                    .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator());
-                                                    //.append("ninja").append(threecpp::getFileSeparator());
+                                                    .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator())
+                                                    .append("female02").append(threecpp::getFileSeparator());
                            objGroup = loader.load(dir + relativeDir + filepath);
 //                           objGroup->traverse([&](Object3D& o) {
 //                               o.material = meshMaterial;
@@ -84,7 +84,7 @@ public:
 
                            scene->add(objGroup);
                        }
-                ,std::string("emerald.obj"));
+                ,std::string("female02.obj"));
         thread1.join();
 
     }
