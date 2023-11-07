@@ -91,6 +91,13 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["Lines-Dashed"];
                 currentDemoClass->renderer->clear();
             }
+            if (ImGui::MenuItem("Obj-Mtl-Loader", "")) {
+                if (demoClasses.count("Obj-Mtl-Loader") == 0)
+                    demoClasses["Obj-Mtl-Loader"] = std::make_shared<GLLoaderObjMtl>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Obj-Mtl-Loader"];
+                currentDemoClass->renderer->clear();
+            }
             if (ImGui::MenuItem("Buffer_geometry_attributes_none", "")) {
                 if (demoClasses.count("Buffer_geometry_attributes_none") == 0)
                     demoClasses["Buffer_geometry_attributes_none"] = std::make_shared<GLBufferGeometryAttributesNone>(display_w, display_h);
@@ -98,13 +105,6 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["Buffer_geometry_attributes_none"];
                 currentDemoClass->renderer->clear();
             }
-//            if (ImGui::MenuItem("Buffer_geometry_attributes_none", "")) {
-//                if (demoClasses.count("Buffer_geometry_attributes_none") == 0)
-//                    demoClasses["Buffer_geometry_attributes_none"] = std::make_shared<GLBufferGeometryAttributesNone>(display_w, display_h);
-//
-//                currentDemoClass = demoClasses["Buffer_geometry_attributes_none"];
-//                currentDemoClass->renderer->clear();
-//            }
 
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();

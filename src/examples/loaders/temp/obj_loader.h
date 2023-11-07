@@ -70,6 +70,7 @@ public:
     ObjectGeometry geometry;
 
     std::vector<ObjectMaterial::ptr> materials;
+    std::vector<tinyobj::material_t> material_ts;
 
     bool smooth = true;
 
@@ -80,6 +81,10 @@ public:
     ObjectMaterial::ptr& currentMaterial();
 
     ObjectMaterial::ptr startMaterial(const std::string& name,std::vector<std::string>& libraries);
+
+    Object::ObjectMaterial::ptr startMaterial(const std::string& name, size_t matEndPos);
+
+    Object::ObjectMaterial::ptr startMaterial(const std::string& name, std::unordered_map<std::string,size_t>& materialCount);
 
     ObjectMaterial::ptr& finalize(bool end);
 
@@ -123,6 +128,11 @@ public:
     void startObject(const std::string& name, bool fromDeclaration);
 
     void finalize();
+
+    void addVertexPointFromArray(float src[3]);
+    void addNormalFromArray(float src[3]);
+    void addUVFromArray(float src[2]);
+    void addColorFromFloat(float a,float b,float c);
 
     void addVertexPoint(int a);
 

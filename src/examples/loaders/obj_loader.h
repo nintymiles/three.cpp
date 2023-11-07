@@ -9,7 +9,6 @@
 #include <limits>
 #include <memory>
 
-#include <tiny_obj_loader.h>
 #include <stb_image.h>
 
 class Object {
@@ -17,7 +16,7 @@ class Object {
 public:
     class ObjectMaterial {
     public:
-        using ptr = std::shared_ptr<ObjectMaterial>;
+        using sptr = std::shared_ptr<ObjectMaterial>;
 
         int index=-1;
 
@@ -33,7 +32,7 @@ public:
 
         bool smooth=false;
 
-        std::vector<ObjectMaterial::ptr> objMtlLib;
+        std::vector<ObjectMaterial::sptr> objMtlLib;
 
         std::string stringLib;
 
@@ -42,7 +41,7 @@ public:
         ~ObjectMaterial() = default;
 
         //clone
-        ObjectMaterial::ptr clone(int _index);
+        ObjectMaterial::sptr clone(int _index);
     };
 
     class ObjectGeometry {
@@ -69,8 +68,7 @@ public:
 
     ObjectGeometry geometry;
 
-    std::vector<ObjectMaterial::ptr> materials;
-    std::vector<tinyobj::material_t> material_ts;
+    std::vector<ObjectMaterial::sptr> materials;
 
     bool smooth = true;
 
@@ -78,15 +76,11 @@ public:
 
     ~Object() = default;
 
-    ObjectMaterial::ptr& currentMaterial();
+    ObjectMaterial::sptr& currentMaterial();
 
-    ObjectMaterial::ptr startMaterial(const std::string& name,std::vector<std::string>& libraries);
+    ObjectMaterial::sptr startMaterial(const std::string& name,std::vector<std::string>& libraries);
 
-    Object::ObjectMaterial::ptr startMaterial(const std::string& name, size_t matEndPos);
-
-    Object::ObjectMaterial::ptr startMaterial(const std::string& name, std::unordered_map<std::string,size_t>& materialCount);
-
-    ObjectMaterial::ptr& finalize(bool end);
+    ObjectMaterial::sptr& finalize(bool end);
 
 };
 
@@ -168,14 +162,6 @@ public:
     OBJLoader() {}
 
     ~OBJLoader() = default;
-
-//    static void computeSmoothingShapes(tinyobj::attrib_t &inattrib,
-//                                       std::vector<tinyobj::shape_t>& inshapes,
-//                                       std::vector<tinyobj::shape_t>& outshapes,
-//                                       tinyobj::attrib_t& outattrib);
-//
-//    static void computeAllSmoothingNormals(tinyobj::attrib_t& attrib,
-//                                           std::vector<tinyobj::shape_t>& shapes);
 
     void parseState(ObjectState& state);
 

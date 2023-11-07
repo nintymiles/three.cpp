@@ -32,7 +32,7 @@ public:
         isPerspective = true;
 
         scene = std::make_shared<Scene>();
-        scene->setBackgroundColor(Color().set(0x000000));
+        scene->setBackgroundColor(Color().set(0xffffff));
 
         auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.4f);
         scene->add(ambientLight);
@@ -66,7 +66,10 @@ public:
         std::thread thread1([&](const std::string& filepath){
                            std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
                            OBJLoader loader;
-                           objGroup = loader.load(dir + "\\asset\\models\\obj\\" + filepath);
+                           std::string relativeDir = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
+                                                    .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator());
+                                                    //.append("ninja").append(threecpp::getFileSeparator());
+                           objGroup = loader.load(dir + relativeDir + filepath);
 //                           objGroup->traverse([&](Object3D& o) {
 //                               o.material = meshMaterial;
 //                               if (instanceOf<Mesh>(&o) && o.materials.size() > 1) {
@@ -76,12 +79,12 @@ public:
 //                               }
 //                           });
                            objGroup->scale.set(3, 3, 3);
-//                           objGroup->position.setZ(-500);
-//                           objGroup->position.setY(-350);
+                           objGroup->position.setZ(-500);
+                           objGroup->position.setY(-350);
 
                            scene->add(objGroup);
                        }
-                ,std::string("gopher.obj"));
+                ,std::string("emerald.obj"));
         thread1.join();
 
     }

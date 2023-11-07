@@ -73,7 +73,18 @@ inline void checkError() {
 }
 
 
+    size_t getSystemTimeInMillis();
+
+    inline std::string getFileSeparator(){
+    #ifdef _WIN32
+        return "\\";
+    #else
+        return "/";
+    #endif
+    }
+
     bool FileExists(const std::string& fileName);
+
     std::string getProgramPath();
 
 
