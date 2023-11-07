@@ -8,9 +8,9 @@
 
 ## Demos
 
-| Name             | Desc                                                                    |
-|:-----------------|:------------------------------------------------------------------------|
-| [Lines-Sphere]() | ![Lines-Dashed demo](doc/images/Screen Shot 2023-11-07 at 12.49.15.png) |
-| [Lines-Dashed]() | ![Lines-Dashed demo](doc/images/Screen Shot 2023-11-07 at 11.31.59.png) |
+| Name             | Desc                                                                      |
+|:-----------------|:--------------------------------------------------------------------------|
+| [Lines-Sphere]() | ![Lines-Dashed demo](./doc/images/Screen Shot 2023-11-07 at 12.49.15.png) |
+| [Lines-Dashed]() | ![Lines-Dashed demo](./doc/images/Screen Shot 2023-11-07 at 11.31.59.png) |
 
 
