@@ -51,7 +51,7 @@ namespace string_utils{
     //    return join(strVec,"");
     //}
 
-    static inline std::vector<std::string> split(std::string str, char delimiter) {
+    inline std::vector<std::string> split(std::string str, char delimiter) {
         std::vector<std::string> internal;
         size_t size = str.find(delimiter);
         internal.reserve(size + 2);
@@ -65,28 +65,28 @@ namespace string_utils{
     }
 
     // trim from start (in place)
-    static inline void ltrim(std::string& s) {
+    inline void ltrim(std::string& s) {
         s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
             return !std::isspace(ch);
         }));
     }
 
     // trim from end (in place)
-    static inline void rtrim(std::string& s) {
+    inline void rtrim(std::string& s) {
         s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
             return !std::isspace(ch);
         }).base(), s.end());
     }
 
     // trim from both ends (in place)
-    static inline std::string& trim(std::string& s) {
+    inline std::string& trim(std::string& s) {
         ltrim(s);
         rtrim(s);
 
         return s;
     }
 
-    static inline std::string replace_all(
+    inline std::string replace_all(
             std::string& message,
             const std::string& pattern,
             const std::string& replace) {
@@ -102,6 +102,10 @@ namespace string_utils{
 
         }
         return result;
+    }
+
+    inline float parseFloat(std::string value){
+        return atof(value.c_str());
     }
 }
 

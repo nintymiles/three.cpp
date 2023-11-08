@@ -566,9 +566,8 @@ public:
         return *this;
 
     }
+
     Color& fromArray(const float* array, unsigned arrayLength,unsigned offset=0) {
-
-
         r = offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
         g = offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
         b = offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();

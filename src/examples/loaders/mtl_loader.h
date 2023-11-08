@@ -32,7 +32,8 @@ public:
         map_d,
         ns,
         d,
-        tr
+        tr,
+        illum
     };
     enum class MTLMapType : unsigned {
         map,
@@ -82,21 +83,22 @@ public:
     };
 
     struct MaterialInfo {
-        std::vector<float> Ks;
-        std::vector<float> Kd;
-        std::vector<float> Ke;
+//        std::vector<float> Ks;
+//        std::vector<float> Kd;
+//        std::vector<float> Ke;
+//        std::vector<float> Ka;
         float value[3];
         std::string stringValue;
-        std::string map_kd;
-        std::string map_ks;
-        std::string map_ke;
-        std::string norm;
-        std::string map_bump;
-        std::string bump;
-        std::string map_d;
-        int Ns = std::numeric_limits<int>::quiet_NaN();
-        int D = std::numeric_limits<int>::quiet_NaN();
-        int Tr = std::numeric_limits<int>::quiet_NaN();
+//        std::string map_kd;
+//        std::string map_ks;
+//        std::string map_ke;
+//        std::string norm;
+//        std::string map_bump;
+//        std::string bump;
+//        std::string map_d;
+//        int Ns = std::numeric_limits<int>::quiet_NaN();
+//        int D = std::numeric_limits<int>::quiet_NaN();
+//        int Tr = std::numeric_limits<int>::quiet_NaN();
     };
 
     struct TexParams {
@@ -111,7 +113,7 @@ public:
     public:
         using sptr = std::shared_ptr<MaterialCreator>;
 
-        std::filesystem::path filePath;
+        std::string filePath;
 
         MaterialCreatorOptions options;
 
@@ -137,7 +139,7 @@ public:
 
         MaterialCreator& setCrossOrigin(std::string value);
 
-        void setMaterials(std::unordered_map<std::string, MaterialsInfoMap>& materialsInfo);
+        void setMaterials(std::unordered_map<std::string, MaterialsInfoMap>& MaterialsInfoMap);
 
         std::unordered_map<std::string, MaterialsInfoMap> convert(std::unordered_map<std::string, MaterialsInfoMap>& materialsInfo);
 
@@ -145,6 +147,9 @@ public:
 
         TexParams getTextureParams(const std::string& value, MTLParameters& matParams);
 
+        static MaterialCreator::sptr create(){
+            return std::make_shared<MaterialCreator>();
+        }
         Material::sptr create(const std::string& materialName);
 
         Material::sptr createMaterial(const std::string& materialName);
@@ -156,7 +161,9 @@ public:
 
     std::string crossOrigin;
 
-    MaterialCreator multiMaterialCreator;
+    std::string mtlFilePath;
+
+    MaterialCreator::sptr multiMaterialCreator;
 
     MTLLoader() {}
 

@@ -56,6 +56,8 @@ public:
 
         std::string type;
 
+        bool hasUVIndices;
+
         ObjectGeometry() {}
 
         ~ObjectGeometry() = default;
@@ -98,7 +100,11 @@ class ObjectState {
 
     void addUV(int a, int b, int c);
 
+    void addDefaultUV();
+
     void addNormal(int a, int b, int c);
+
+    void addFaceNormal(int a, int b, int c);
 
 public:
     Object::sptr object;
@@ -123,24 +129,26 @@ public:
 
     void finalize();
 
-    void addVertexPointFromArray(float src[3]);
-    void addNormalFromArray(float src[3]);
-    void addUVFromArray(float src[2]);
-    void addColorFromFloat(float a,float b,float c);
+//    void addVertexPointFromArray(float src[3]);
+//    void addNormalFromArray(float src[3]);
+//    void addUVFromArray(float src[2]);
+//    void addColorFromFloat(float a,float b,float c);
 
     void addVertexPoint(int a);
 
     void addVertexLine(int a);
 
+    void addVertexColor(int a);
+
     void addUVLine(int a);
 
     void addPointGeometry(const std::vector<std::string>& _vertices);
 
-    void addPointGeometry(const std::vector<float>& _vertices);
+    //void addPointGeometry(const std::vector<float>& _vertices);
 
     void addLineGeometry(const std::vector<std::string>& _vertices, const std::vector<std::string>& _uvs = std::vector<std::string>());
 
-    void addLineGeometry(const std::vector<float>& _vertices, std::vector<float> _uvs = std::vector<float>());
+    //void addLineGeometry(const std::vector<float>& _vertices, std::vector<float> _uvs = std::vector<float>());
 
     void addFace(int a, int b, int c, int ua, int ub, int uc,int na,int nb,int nc);
 
