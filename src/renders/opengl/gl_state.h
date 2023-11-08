@@ -748,7 +748,7 @@ public:
     }
     void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const std::vector<unsigned char>& pixels)
     {
-        glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*) &pixels[0]);
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*)pixels.data());
     }
 
     void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type)

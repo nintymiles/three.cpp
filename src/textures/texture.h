@@ -100,7 +100,7 @@ public:
                       Wrapping wrapt = Wrapping::ClampToEdgeWrapping,
                       TextureFilter magFilter = TextureFilter::LinearFilter,
                       TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter,
-                      PixelFormat format = PixelFormat::RGBAFormat,
+                      PixelFormat format = PixelFormat::RGBFormat,
                       TextureDataType type = TextureDataType::UnsignedByteType,
                       unsigned anisotropy = 1,
                       TextureEncoding encoding = TextureEncoding::LinearEncoding) {

@@ -14,7 +14,7 @@ using namespace std;
 
 MTLLoader::MaterialCreator::MaterialCreator(string path, MaterialCreatorOptions options)
     :options(options) {
-    filePath = std::filesystem::path(path).parent_path();
+    filePath = path;//std::filesystem::path(path).parent_path();
     this->side = options.isEmpty() ? Side::FrontSide : options.side;
     this->wrap = options.isEmpty() ? Wrapping::RepeatWrapping : options.wrap;
 }
@@ -76,15 +76,15 @@ void MTLLoader::MaterialCreator::setMapForType(MTLParameters& parameter, MTLMapT
     //if ( params[ mapType ] ) return; // Keep the first encountered texture
 
     auto texParams = getTextureParams(value, parameter);
-    auto texFilePath = /**filePath + threecpp::getFileSeparator() + */value;
+    auto texFilePath = filePath + threecpp::getFileSeparator() + value;
     if(threecpp::FileExists(texFilePath)) {
         auto map = loadTexture(texFilePath, TextureMapping::Unknown);
 
         map->repeat.copy(texParams.scale);
         map->offset.copy(texParams.offset);
 
-        map->wrapS = this->wrap;
-        map->wrapT = this->wrap;
+//        map->wrapS = this->wrap;
+//        map->wrapT = this->wrap;
 
         switch (mapType) {
             case MTLMapType::map:

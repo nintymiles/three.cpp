@@ -32,13 +32,13 @@ public:
         isPerspective = true;
 
         scene = std::make_shared<Scene>();
-        scene->setBackgroundColor(Color().set(0x000000));
+        scene->setBackgroundColor(Color().set(0xffffff));
 
-        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.4f);
+        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.8f);
         scene->add(ambientLight);
 
         auto spotLight = SpotLight::create(Color().setHex(0xffffff),0.8f);
-        spotLight->position.set(-20, 600, -10);
+        spotLight->position.set(-20, 0, -10);
         spotLight->castShadow = true;
         scene->add(spotLight);
 
@@ -79,7 +79,7 @@ public:
 //                               }
 //                           });
                            objGroup->scale.set(3, 3, 3);
-                           objGroup->position.setZ(-500);
+                           objGroup->position.setZ(-300);
                            objGroup->position.setY(-350);
 
                            scene->add(objGroup);

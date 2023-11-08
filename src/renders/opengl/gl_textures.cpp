@@ -117,7 +117,9 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
     glPixelStorei(GL_UNPACK_ALIGNMENT, texture.unpackAlignment);
 
     bool needsPowerOfTwo = textureNeedsPowerOfTwo(texture) && isPowerOfTwo(texture) ==  false;
-    std::vector<unsigned char> image = resizeImage(texture.image, &texture.imageWidth,&texture.imageHeight,needsPowerOfTwo, maxTexturesize,texture.channel);
+    //todo:fix this
+    //std::vector<unsigned char> image = resizeImage(texture.image, &texture.imageWidth,&texture.imageHeight,needsPowerOfTwo, maxTexturesize,texture.channel);
+    std::vector<unsigned char> &image = texture.image;
 
     bool supportsMips = isPowerOfTwo(texture) ? isPowerOfTwo(texture) : isGLES3;
     PixelFormat glFormat = texture.format;
@@ -255,7 +257,7 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
             textureProperties.maxMipLevel = mipmaps.size() - 1;
         }
         else {
-            state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texture.imageWidth,texture.imageHeight,0,(GLenum)glFormat, (GLenum)glType, image);
+            state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texture.imageWidth,texture.imageHeight,0,(GLenum)glFormat, (GLenum)glType, image.data());
             textureProperties.maxMipLevel =0;
         }
 

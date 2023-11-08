@@ -15,12 +15,15 @@ public:
 
         int width, height, nrComponents;
 
+        stbi_set_flip_vertically_on_load(1);
+
         unsigned char* data = stbi_load(filePath.c_str(), &width, &height, &nrComponents, 0);
         std::vector<unsigned char> image(width * height * nrComponents);
 
         if (data) {
             std::memcpy(&image[0], data, width * height * nrComponents);
-            delete[] data;
+            //delete[] data;
+            stbi_image_free(data);
             PixelFormat format = PixelFormat::None;
             if (nrComponents == 1)
                 format = PixelFormat::RedFormat;
@@ -39,6 +42,8 @@ public:
             texture->wrapT = Wrapping::None;
             texture->wrapR = Wrapping::RepeatWrapping;
         }
+
+
         return texture;
 
     }
