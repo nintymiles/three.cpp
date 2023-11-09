@@ -300,6 +300,8 @@ namespace control {
     // if sender was unfocused, then you must focus that
     // if(sender.focused==false) sender.focus()
     void TrackballControls::mouseMove(float x, float y){
+        //Vector2 mPos = getMouseOnScreen(x,y);
+        mousePos.set(x - screen.x,y - screen.y);
         if (!enabled) return;
 
         if (state == STATE::ROTATE && !noRotate){

@@ -63,6 +63,8 @@ namespace control {
 
         Vector3 up0;
 
+        Vector2 mousePos;
+
         float zoom0;
     public:
         using sptr = std::shared_ptr<TrackballControls>;
@@ -154,6 +156,14 @@ namespace control {
             zoom0 = camera->zoom;
 
         }
+
+        Vector2 getMousePos(){
+            return mousePos;
+        };
+
+//        Vector2 getMousePosOnScreenBasedOnCenter(){
+//            return Vector2(mousePos.x - 0.5 * screen.z  ,mousePos.y - 0.5 * screen.w);
+//        };
 
         Vector2 getMouseOnScreen(float pageX, float pageY);
 

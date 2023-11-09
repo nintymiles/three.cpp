@@ -102,7 +102,7 @@ public:
 
     }
 
-    //virtual void render() override;
+    virtual void render() override;
 
     void loadObj(const Material::sptr& material,std::string path,Group::sptr& objGrp);
 

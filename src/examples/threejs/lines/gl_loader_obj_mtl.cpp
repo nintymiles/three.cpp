@@ -23,3 +23,14 @@ void GLLoaderObjMtl::loadObj(const Material::sptr& material,std::string path,Gro
     });
     objGrp->scale.set(4, 4, 4);
 }
+
+void GLLoaderObjMtl::render(){
+    Vector2 mousePos = controller->getMousePos();
+    camera->position.x += ( mousePos.x - camera->position.x ) * .05;
+    camera->position.y += ( mousePos.y - camera->position.y ) * .05;
+
+    //std::cout << "mouse.x:"<< mousePos.x << "|| mouse.y:" << mousePos.y << std::endl;
+    camera->lookAt( scene->position );
+
+    ApplicationBase::render();
+}

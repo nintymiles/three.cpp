@@ -76,7 +76,7 @@ void MTLLoader::MaterialCreator::setMapForType(MTLParameters& parameter, MTLMapT
     //if ( params[ mapType ] ) return; // Keep the first encountered texture
 
     auto texParams = getTextureParams(value, parameter);
-    auto texFilePath = filePath + threecpp::getFileSeparator() + value;
+    auto texFilePath = filePath + threecpp::getFileSeparator() + texParams.url;
     if(threecpp::FileExists(texFilePath)) {
         auto map = loadTexture(texFilePath, TextureMapping::Unknown);
 
@@ -114,16 +114,11 @@ MTLLoader::TexParams MTLLoader::MaterialCreator::getTextureParams(const string& 
     texParams.scale.set(1, 1);
     texParams.offset.set(0, 0);
 
-    string pattern = R"(\s+)";
-//    pcrecpp::RE re(pattern);
-//    pcrecpp::StringPiece input(value);
     std::string match;
-    std::string localSource = value;
+    std::string localV = value;
     int pos = -1;
-    vector<string> items;
-//    while (re.FindAndConsume(&input, &match)) {
-//        items.push_back(match);
-//    }
+    vector<string> items = string_utils::split(localV,' ');
+
     for (int i = 0;i < items.size();i++) {
         if (items[i].find("-bm", 0) != string::npos) {
             pos = i;

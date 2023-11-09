@@ -725,7 +725,7 @@ Group::sptr OBJLoader::parse(const string& path){
             // let name = result[ 0 ].slice( 1 ).trim();
             //todo:fix this?
 //            const name = ( ' ' + result[ 0 ].slice( 1 ).trim() ).slice( 1 );
-            auto name = line.substr(2);
+            auto name = line.size()>2?line.substr(2):" ";
             state.startObject(name, true);
             continue;
         }
