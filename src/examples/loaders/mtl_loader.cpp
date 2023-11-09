@@ -351,29 +351,38 @@ MTLLoader::MaterialCreator::sptr MTLLoader::parse(const string& text) {
                 if(key=="ke") {
                     mtlName = MTLName::ke;
                 }
-
+                currentInfoMap[mtlName] = mInfo;
 
             }else{
                 if(key=="d") {
                     mtlName = MTLName::d;
                     mInfo.stringValue = value;
+                    currentInfoMap[mtlName] = mInfo;
                 }
                 if(key=="illum") {
                     mtlName = MTLName::illum;
                     mInfo.stringValue = value;
+                    currentInfoMap[mtlName] = mInfo;
                 }
                 if(key=="ns") {
                     mtlName = MTLName::ns;
                     mInfo.stringValue = value;
+                    currentInfoMap[mtlName] = mInfo;
+                }
+                if(key=="ni") {
+                    mtlName = MTLName::ni;
+                    mInfo.stringValue = value;
+                    currentInfoMap[mtlName] = mInfo;
                 }
                 if(key=="map_kd"){
                     mtlName = MTLName::map_kd;
                     mInfo.stringValue = value;
+                    currentInfoMap[mtlName] = mInfo;
                 }
 
             }
 
-            currentInfoMap[mtlName] = mInfo;
+
         }
 
     }

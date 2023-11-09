@@ -31,6 +31,7 @@ public:
         bump,
         map_d,
         ns,
+        ni, //index of refraction
         d,
         tr,
         illum

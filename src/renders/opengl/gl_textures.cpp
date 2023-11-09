@@ -751,7 +751,6 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
                     if (texture.format != PixelFormat::RGBAFormat && texture.format != PixelFormat::RGBFormat) {
 
                         //if (glFormat != = null) {
-
                         state->compressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, j, glInternalFormat, mipmap.width, mipmap.height, mipmap.data);
 
                         /*}

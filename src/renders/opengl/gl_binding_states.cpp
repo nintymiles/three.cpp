@@ -166,7 +166,6 @@ void GLBindingStates::setupVertexAttributes(const Object3D::sptr& object, const 
                 Attribute attribute = attributes->get<float>(*geometryAttribute);
 
                 // TODO Attribute may not be available on context restore
-
                 if (attribute.isEmpty) continue;
 
                 auto buffer = attribute.buffer;

@@ -32,15 +32,15 @@ public:
         isPerspective = true;
 
         scene = std::make_shared<Scene>();
-        scene->setBackgroundColor(Color().set(0xffffff));
+        scene->setBackgroundColor(Color().set(0x000000));
 
         auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.4f);
 //        ambientLight->position.set(0, 0, 10);
         scene->add(ambientLight);
 
         auto pointLight = PointLight::create(Color().setHex(0xffffff),0.8f);
-//        spotLight->position.set(-20, 0, -200);
-//        spotLight->castShadow = true;
+        pointLight->position.set(30, 20, 50);
+        pointLight->castShadow = true;
         scene->add(pointLight);
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
@@ -69,24 +69,36 @@ public:
                            OBJLoader loader;
                            std::string relativeDir = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
                                                     .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator())
-                                                    .append("female02").append(threecpp::getFileSeparator());
+                                                    .append("male02").append(threecpp::getFileSeparator());
                            objGroup = loader.load(dir + relativeDir + filepath);
-//                           objGroup->traverse([&](Object3D& o) {
-//                               o.material = meshMaterial;
-//                               if (instanceOf<Mesh>(&o) && o.materials.size() > 1) {
-//                                   int size = o.materials.size();
-//                                   for (int i = 0; i < size; i++)
-//                                       o.materials.push_back(meshMaterial);
-//                               }
-//                           });
+
                            //objGroup->scale.set(3, 3, 3);
-                           //objGroup->position.setZ(-300);
+                           objGroup->position.setZ(-30);
                            objGroup->position.setY(-95);
+                           objGroup->position.setX(50);
 
                            scene->add(objGroup);
                        }
-                ,std::string("female02.obj"));
+                ,std::string("male02.obj"));
         thread1.join();
+
+        std::thread thread2([&](const std::string& filepath){
+                                std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
+                                OBJLoader loader;
+                                std::string relativeDir = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
+                                        .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator())
+                                        .append("female02").append(threecpp::getFileSeparator());
+                                objGroup = loader.load(dir + relativeDir + filepath);
+
+                                //objGroup->scale.set(3, 3, 3);
+                                objGroup->position.setZ(-30);
+                                objGroup->position.setY(-95);
+                                objGroup->position.setX(-50);
+
+                                scene->add(objGroup);
+                            }
+                ,std::string("female02.obj"));
+        thread2.join();
 
     }
 
