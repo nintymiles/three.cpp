@@ -34,11 +34,11 @@ public:
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
 
-        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.4f);
+        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.8f);
 //        ambientLight->position.set(0, 0, 10);
         scene->add(ambientLight);
 
-        auto pointLight = PointLight::create(Color().setHex(0xffffff),0.8f);
+        auto pointLight = PointLight::create(Color().setHex(0xffffff),1.0f);
         pointLight->position.set(30, 20, 50);
         pointLight->castShadow = true;
         scene->add(pointLight);
