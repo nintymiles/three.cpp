@@ -38,9 +38,9 @@ public:
             texture->imageHeight = height;
             texture->setNeedsUpdate(true);
             texture->channel = nrComponents;
-            texture->wrapS = Wrapping::None;
-            texture->wrapT = Wrapping::None;
-            texture->wrapR = Wrapping::RepeatWrapping;
+            texture->wrapS = Wrapping::ClampToEdgeWrapping;
+            texture->wrapT = Wrapping::ClampToEdgeWrapping;
+            texture->wrapR = Wrapping::ClampToEdgeWrapping;
         }
 
 

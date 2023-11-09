@@ -907,7 +907,8 @@ Group::sptr OBJLoader::parse(const string& path){
                     mtlLoader.load(mtlPath);
             }
             //mtlLoader.multiMaterialCreator->filePath = threecpp::getFileDir(filePath);
-            setMaterials(*mtlLoader.multiMaterialCreator);
+            if(mtlLoader.multiMaterialCreator!= nullptr)
+                setMaterials(*mtlLoader.multiMaterialCreator);
         }
 
         for (size_t i = 0; i < state.objects.size(); i++) {

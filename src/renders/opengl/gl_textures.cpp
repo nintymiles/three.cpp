@@ -9,6 +9,8 @@
 #include "number.h"
 
 #include <cassert>
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include <stb_image_resize.h>
 
 namespace gltextures {
     //ThreeDataTable _videoTextures;
@@ -117,9 +119,9 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
     glPixelStorei(GL_UNPACK_ALIGNMENT, texture.unpackAlignment);
 
     bool needsPowerOfTwo = textureNeedsPowerOfTwo(texture) && isPowerOfTwo(texture) ==  false;
-    //todo:fix this
-    //std::vector<unsigned char> image = resizeImage(texture.image, &texture.imageWidth,&texture.imageHeight,needsPowerOfTwo, maxTexturesize,texture.channel);
-    std::vector<unsigned char> &image = texture.image;
+    //todo:fix this - is resizeImage necessary?
+    std::vector<unsigned char> image = resizeImage(texture.image, &texture.imageWidth,&texture.imageHeight,needsPowerOfTwo, maxTexturesize,texture.channel);
+    //std::vector<unsigned char> &image = texture.image;
 
     bool supportsMips = isPowerOfTwo(texture) ? isPowerOfTwo(texture) : isGLES3;
     PixelFormat glFormat = texture.format;
@@ -133,7 +135,6 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
 
     if (texture.isDepthTexture) {
         // populate depth texture with dummy data
-
         glInternalFormat = GL_DEPTH_COMPONENT;
 
         if (texture.type == TextureDataType::FloatType) {
@@ -198,7 +199,6 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
 
         }
         else {
-
             state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texture.imageWidth, texture.imageHeight, 0, (GLenum)glFormat, (GLenum)glType, image);
             textureProperties.maxMipLevel= 0;
         }
@@ -212,12 +212,11 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
             if (texture.format != PixelFormat::RGBAFormat && texture.format !=  PixelFormat::RGBFormat) {
 
                 if (glFormat != PixelFormat::None) {
-
                     state->compressedTexImage2D(GL_TEXTURE_2D, i, glInternalFormat, mipmap.width, mipmap.height,mipmap.data);
 
                 }
                 /*else {
-                    console.warn('THREE.WebGLRenderer: Attempt to load unsupported compressed texture format in .uploadTexture()');
+                    console.warn('THREE.GLRenderer: Attempt to load unsupported compressed texture format in .uploadTexture()');
                 }*/
 
             }
@@ -290,7 +289,6 @@ void GLTextures::updateVideoTexture(Texture& texture){
         _videoTextures[texture.uuid] =frame;
     }
     /*if (_videoTextures.get(texture) != = frame) {
-
         _videoTextures.set(texture, frame);
         texture.update();
 
@@ -311,9 +309,9 @@ bool GLTextures::textureNeedsPowerOfTwo(Texture& texture){
 std::vector<unsigned char> GLTextures::resizeImage(std::vector<unsigned char> image, unsigned inwidth,unsigned inheight,unsigned outwidth, unsigned outheight,int nChannel){
     std::vector<unsigned char> output_image(outwidth * outheight * nChannel);
 
-    //output_image = (unsigned char*)malloc(outwidth * outheight*nChannel);
+    //output_image = (unsigned char*)malloc(outwidth * outheight * nChannel);
     //todo:fix here
-    //stbir_resize_uint8(&image[0], inwidth, inheight, 0, &output_image[0], outwidth, outheight, 0, nChannel);
+    stbir_resize_uint8(&image[0], inwidth, inheight, 0, output_image.data(), outwidth, outheight, 0, nChannel);
 
     return output_image;
 }

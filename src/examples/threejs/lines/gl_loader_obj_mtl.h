@@ -34,13 +34,14 @@ public:
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0xffffff));
 
-        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.8f);
+        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.4f);
+//        ambientLight->position.set(0, 0, 10);
         scene->add(ambientLight);
 
-        auto spotLight = SpotLight::create(Color().setHex(0xffffff),0.8f);
-        spotLight->position.set(-20, 0, -10);
-        spotLight->castShadow = true;
-        scene->add(spotLight);
+        auto pointLight = PointLight::create(Color().setHex(0xffffff),0.8f);
+//        spotLight->position.set(-20, 0, -200);
+//        spotLight->castShadow = true;
+        scene->add(pointLight);
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
         controller = std::make_shared<control::TrackballControls>(camera, screen);
@@ -78,9 +79,9 @@ public:
 //                                       o.materials.push_back(meshMaterial);
 //                               }
 //                           });
-                           objGroup->scale.set(3, 3, 3);
-                           objGroup->position.setZ(-300);
-                           objGroup->position.setY(-350);
+                           //objGroup->scale.set(3, 3, 3);
+                           //objGroup->position.setZ(-300);
+                           objGroup->position.setY(-95);
 
                            scene->add(objGroup);
                        }
