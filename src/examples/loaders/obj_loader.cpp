@@ -673,18 +673,18 @@ Group::sptr OBJLoader::parse(const string& path){
 
             state.addPointGeometry(pointData);
         }
-        else if(lineData[0] == "s"){
-            auto result = split(line, ' ');
-            if (result.size() > 1){
-                toLowerCase(result[1]);
-                state.object->smooth = (result[1] != "0" && result[1] != "off");
-            }else{
-                state.object->smooth = true;
-            }
-            auto& material = state.object->currentMaterial();
-            if (material->index != -1) material->smooth = state.object->smooth;
-            continue;
-        }
+//        else if(lineData[0] == "s"){
+//            auto result = split(line, ' ');
+//            if (result.size() > 1){
+//                toLowerCase(result[1]);
+//                state.object->smooth = (result[1] != "0" && result[1] != "off");
+//            }else{
+//                state.object->smooth = true;
+//            }
+//            auto& material = state.object->currentMaterial();
+//            if (material!=nullptr && material->index != -1) material->smooth = state.object->smooth;
+//            continue;
+//        }
         else if(lineData[0] == "s"){
             // smooth shading
 
@@ -713,7 +713,7 @@ Group::sptr OBJLoader::parse(const string& path){
                 state.object->smooth = true;
             }
             auto& material = state.object->currentMaterial();
-            if (material->index != -1) material->smooth = state.object->smooth;
+            if (material!=nullptr && material->index != -1) material->smooth = state.object->smooth;
             continue;
         }
         else if(lineData[0] == "o" || lineData[0] == "g"){

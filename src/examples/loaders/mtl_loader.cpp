@@ -237,6 +237,9 @@ Material::sptr MTLLoader::MaterialCreator::createMaterial(const string& material
         case MTLName::ns:
             parameter.shininess = atof(materialInfo.stringValue.c_str());
             break;
+        case MTLName::ni:
+            parameter.refractionRatio = atof(materialInfo.stringValue.c_str());
+            break;
         case MTLName::d:
             n = atof(materialInfo.stringValue.c_str());
 
@@ -274,6 +277,7 @@ Material::sptr MTLLoader::MaterialCreator::createMaterial(const string& material
     material->bumpScale = parameter.bumpScale;
     material->shininess = parameter.shininess;
     material->opacity = parameter.opacity;
+    material->refractionRatio = parameter.refractionRatio;
     material->transparent = parameter.transparent;
 
     this->materials[materialName] = material;

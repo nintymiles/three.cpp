@@ -59,6 +59,7 @@ public:
         float bumpScale=1.0f;
         float shininess=30.0f;
         float opacity=1.0f;
+        float refractionRatio = 0.0f;
         bool transparent=false;
     };
 

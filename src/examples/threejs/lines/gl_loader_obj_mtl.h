@@ -50,9 +50,9 @@ public:
         controller->rotateSpeed = 4.0f;
         controller->zoomSpeed = 3;
         controller->panSpeed = 3;
-        controller->noZoom = false;
-        controller->noPan = false;
-        controller->noRotate = false;
+        controller->noZoom = true;
+        controller->noPan = true;
+        controller->noRotate = true;
         controller->dynamicDampingFactor = 0.3f;
 
 
