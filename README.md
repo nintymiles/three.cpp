@@ -14,6 +14,6 @@
 | [Lines-Sphere]()    | ![Lines-Sphere demo](https://github.com/nintymiles/three.cpp/blob/6f40f177556fd77554bdc12adafa59f1a37ea0db/doc/images/Screen%20Shot%202023-11-07%20at%2012.49.15.png)   |
 | [Lines-Dashed]()    | ![Lines-Dashed demo](https://github.com/nintymiles/three.cpp/blob/6f40f177556fd77554bdc12adafa59f1a37ea0db/doc/images/Screen%20Shot%202023-11-07%20at%2011.31.59.png)   |
 | Loader              |                                                                                                                                                                         |
-| [Obj-Mtl-Loading]() | ![Loader-Obj-Mtl demo](https://github.com/nintymiles/three.cpp/blob/6f40f177556fd77554bdc12adafa59f1a37ea0db/doc/images/Screen%20Shot%202023-11-09%20at%2014.53.13.png) |
+| [Obj-Mtl-Loading]() | ![Loader-Obj-Mtl demo](https://github.com/nintymiles/three.cpp/blob/7e21d7a7d62a4ee6e3c99e5700b132e73da7ec76/doc/images/Screen%20Shot%202023-11-09%20at%2014.53.13.png) |
 
 
