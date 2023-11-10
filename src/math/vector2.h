@@ -223,6 +223,7 @@ public:
     Vector2& operator /= (const Vector2& v) {
         return divide(v);
     }
+
     Vector2& divideScalar(const float scalar)
     {
         return multiplyScalar(1 / scalar);
