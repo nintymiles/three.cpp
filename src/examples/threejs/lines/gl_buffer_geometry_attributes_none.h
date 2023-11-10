@@ -16,6 +16,7 @@
 #include "math_utils.h"
 
 #include "buffer_geometry.h"
+#include "uniform_values.h"
 
 #include <tuple>
 #include <vector>
@@ -29,8 +30,8 @@ public:
         renderer->shadowMap->enabled = true;
         //renderer->shadowMap->type = ShadowMapType::PCFSoftShadowMap;
 
-        camera = std::make_shared<PerspectiveCamera>(80.0f, screenX/screenY , 1.f, 3500.0f);
-        camera->position.set(0.0f, 0.0f, 1000.0f);
+        camera = std::make_shared<PerspectiveCamera>(27.0f, screenX/screenY , 1.f, 3500.0f);
+        camera->position.set(0.0f, 0.0f, 4.0f);
         //camera->lookAt(Vector3());
         isPerspective = true;
 
@@ -119,10 +120,14 @@ public:
         material->fragmentShader = fragmentShader;
         material->side = Side::DoubleSide;
         material->glslVersion = GLSLVersion::GLSL3;
+        material->uniforms = std::make_shared<UniformValues>();
+        material->uniforms->set("seed",42);
 
         Mesh::sptr mesh = Mesh::create( geometry, material );
         mesh->frustumCulled = false;
         scene->add( mesh );
+        scene->setBackgroundColor(Color().set(0x050505));
+        scene->fog = Fog::create( 0x050505, 2000, 3500 );
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
         controller = std::make_shared<control::TrackballControls>(camera, screen);
@@ -138,7 +143,9 @@ public:
 
     }
 
-    //virtual void render() override;
+    virtual void render() override;
+
+    virtual void showControls() override;
 
 
 private:
