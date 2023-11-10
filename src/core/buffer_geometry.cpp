@@ -23,7 +23,7 @@ BufferGeometry::BufferGeometry() :Geometry(){
     type = "BufferGeometry";
     drawRange.start = 0;
     drawRange.materialIndex = -1;
-    drawRange.count = (std::numeric_limits<unsigned>::max)();
+    drawRange.count = std::numeric_limits<unsigned>::quiet_NaN();  //std::numeric_limits<unsigned>::max()
 
     isGeometry = false;
 }
@@ -31,7 +31,7 @@ BufferGeometry::BufferGeometry(const BufferGeometry& source) : Geometry(source){
     type = "BufferGeometry";
     drawRange.start = 0;
     drawRange.materialIndex = -1;
-    drawRange.count = (std::numeric_limits<unsigned>::max)();//std::numeric_limits<unsigned>::max();
+    drawRange.count = std::numeric_limits<unsigned>::quiet_NaN();//std::numeric_limits<unsigned>::max();
 
     isGeometry = false;
 

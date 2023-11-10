@@ -146,42 +146,12 @@ void GLGeometries::update(const std::shared_ptr<BufferGeometry>& geometry){
     if (geometry->index)
         attributes->update<unsigned>(*geometry->index, GL_ELEMENT_ARRAY_BUFFER);
 
-    for (auto attr = geometry->attributes.begin();attr != geometry->attributes.end();) {
-        if(attr->second == nullptr)
-            continue;
-        attributes->update<float>(*attr->second,GL_ARRAY_BUFFER);
-        attr++;
+    for (auto attr = geometry->attributes.begin();attr != geometry->attributes.end();attr++) {
+        if(attr->second)
+            attributes->update<float>(*attr->second,GL_ARRAY_BUFFER);
+        //when attr++ puts here,you can't even break loop once by using continue
+        //attr++;
     }
-    /*if (geometry->position) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::position), GL_ARRAY_BUFFER);
-    }
-    if (geometry->normal) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::normal), GL_ARRAY_BUFFER);
-    }
-    if (geometry->color) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::color), GL_ARRAY_BUFFER);
-    }
-    if (geometry->uv) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::uv), GL_ARRAY_BUFFER);
-    }
-    if (geometry->uv2) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::uv2), GL_ARRAY_BUFFER);
-    }
-    if (geometry->tangent) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::tangent), GL_ARRAY_BUFFER);
-    }
-    if (geometry->bitangent) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::bitangent), GL_ARRAY_BUFFER);
-    }
-    if (geometry->lineDistance) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::lineDistance), GL_ARRAY_BUFFER);
-    }
-    if (geometry->skinIndex) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::skinIndex), GL_ARRAY_BUFFER);
-    }
-    if (geometry->skinWeight) {
-        attributes->update<float>(*geometry->getAttribute(AttributeName::skinWeight), GL_ARRAY_BUFFER);
-    }*/
 
     auto morphAttributes = geometry->morphAttributes;
     for (auto& attribute : morphAttributes) {

@@ -90,19 +90,7 @@ public :
 
     virtual void render() override;
 
-    virtual void showControls() override;/* {
-		ImGui::Begin("Controls");
-		ImGui::Text("This is Rotaion Speed Control box");
-		ImGui::SliderFloat("RotationSpeed", &rotationSpeed, 0.0f, 0.5f);
-		if (ImGui::Button("Add Cube")) {
-			addCube();
-		}
-		if (ImGui::Button("Remove Cube")) {
-			removeCube();
-		}
-		ImGui::Text("Number of Objects : %d", numberOfObjects);
-		ImGui::End();
-	}*/
+    virtual void showControls() override;
 };
 
 #endif //THREE_CPP_DEMO_SCENE_H

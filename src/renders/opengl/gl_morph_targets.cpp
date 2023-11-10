@@ -51,7 +51,7 @@ void GLMorphtargets::update(Object3D& object, BufferGeometry& geometry, Material
             workInfluences[i][1] = influences[i][1];
         }
         else {
-            workInfluences[i][0] = std::numeric_limits<unsigned>::max();
+            workInfluences[i][0] = std::numeric_limits<unsigned>::quiet_NaN();
             workInfluences[i][1] = 0;
         }
     }
@@ -71,7 +71,8 @@ void GLMorphtargets::update(Object3D& object, BufferGeometry& geometry, Material
         auto index = influence[0];
         auto value = influence[1];
 
-        if (index != std::numeric_limits<unsigned>::max() && value) {
+        //todo:fix this std::numeric_limits<unsigned>::max() = quiet_NaN()
+        if (index != std::numeric_limits<unsigned>::quiet_NaN() && value) {
             if (morphTargets!=nullptr && geometry.getAttribute(AttributeName::morphTarget, i) != morphTargets->at(index)) {
                 geometry.setAttribute(AttributeName::morphTarget, i, morphTargets->at(index));
             }

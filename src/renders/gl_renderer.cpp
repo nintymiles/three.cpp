@@ -888,19 +888,17 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
         updateBuffers = true;
     }*/
 
-
     std::shared_ptr<BufferAttribute<unsigned>> index = geometry->index;
     std::shared_ptr<BufferAttribute<float>> position = geometry->getAttribute(AttributeName::position);
 
-    if (index == nullptr) {
-        if (position == nullptr || position->count == 0) return;
-    }
-    else if (index->count == 0) {
-        return;
-    }
+//    if (index == nullptr) {
+//        if (position == nullptr || position->count == 0) return;
+//    }
+//    else if (index->count == 0) {
+//        return;
+//    }
 
     //
-
     auto rangeFactor = 1;
 
     if (material->wireframe ==  true) {
@@ -942,20 +940,20 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
 
     }*/
 
-    auto dataCount = (index !=  nullptr) ? index->count : position->count;
+    auto dataCount = (index !=  nullptr) ? index->count : (position!= nullptr?position->count:0);
 
     auto rangeStart = geometry->drawRange.start * rangeFactor;
     auto rangeCount = geometry->drawRange.count * rangeFactor;
 
     auto groupStart = geometryGroup != NULL ? geometryGroup->start * rangeFactor : 0;
-    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : std::numeric_limits<unsigned>::max();
+    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : std::numeric_limits<unsigned>::quiet_NaN();
 
     auto drawStart = std::max(rangeStart, groupStart);
-    auto drawEnd =   std::min(std::min(dataCount, rangeStart + rangeCount), groupStart + groupCount) - 1;
+    auto drawEnd =   std::max(std::max(dataCount, rangeStart + rangeCount), groupStart + groupCount);
 
-    auto drawCount = std::max((unsigned)0, drawEnd - drawStart + 1);
+    auto drawCount = std::max((unsigned)0, drawEnd - drawStart) ;
 
-    if (drawCount == 0) return;
+    if (drawCount <= 0) return;
 
     //
 
