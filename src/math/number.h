@@ -17,7 +17,7 @@ namespace math_number{
 
     constexpr float INF = std::numeric_limits<float>::infinity();
 
-    constexpr float E = 2.7182818284590451;
+    constexpr double E = 2.7182818284590451;
 
     constexpr double MAX_FLT = std::numeric_limits<float>::max();
     constexpr double MIN_FLT = std::numeric_limits<float>::min();
@@ -32,8 +32,8 @@ namespace math_number{
     constexpr double RAD2DEG = 180 / M_PI;
 
     constexpr float SQRT1_2 = 0.7071067811865476f;
-    constexpr float PI2 = (2 * M_PI);
-    constexpr float HalfPI = (M_PI / 2.0f);
+    constexpr double PI2 = (2 * M_PI);
+    constexpr double HalfPI = (M_PI / 2.0f);
 
 
 };

@@ -11,7 +11,7 @@
 
 
 struct Source {
-    std::string uuid = MathUtils::generate_uuid();
+    std::string uuid = math_utils::generate_uuid();
     int version = 0;
     uint8_t *data;
 

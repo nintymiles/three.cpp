@@ -192,7 +192,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到tra
   #angel相关dll要不拷贝到系统路径，要不拷贝到执行目录，lib用于编译引用，dll用于链接执行
   libGLESv2.dll.lib
   libEGL.dll.lib
-  GLADd.lib
+  #GLADd.lib
   #pcrecppd.lib
   #pcred.lib
   #GSL

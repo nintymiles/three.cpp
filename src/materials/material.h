@@ -306,12 +306,12 @@ public:
     /**
      * Sets the polygon offset factor. Default is 0.
      */
-    unsigned polygonOffsetFactor = 0.0f;
+    unsigned polygonOffsetFactor = 0;
 
     /**
      * Sets the polygon offset units. Default is 0.
      */
-    unsigned polygonOffsetUnits = 0.0f;
+    unsigned polygonOffsetUnits = 0;
 
     /**
      * Override the renderer's default precision for this material. Can be "highp", "mediump" or "lowp". Defaults is null.
