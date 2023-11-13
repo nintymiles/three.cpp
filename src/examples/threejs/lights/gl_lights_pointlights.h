@@ -96,6 +96,7 @@ public:
                            //objGroup->position.setZ(-30);
                            objGroup->position.setY(-30);
                            //objGroup->position.setX(50);
+                           //auto mesh = Mesh::create(objGroup->geometry,meshMaterial);
 
                            scene->add(objGroup);
                        }
