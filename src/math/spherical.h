@@ -51,7 +51,7 @@ public:
             phi = 0;
         } else {
             theta = atan2( x, z );
-            phi = acos( MathUtils::clamp<double>( y / radius, - 1, 1 ) );
+            phi = acos( math_utils::clamp<double>( y / radius, - 1, 1 ) );
         }
 
         return *this;
