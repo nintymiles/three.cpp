@@ -41,7 +41,7 @@ public:
         const int subdivisions = 6;
         const int recursion = 1;
 
-        std::vector<Vector3> points = geometry_utils::hilbert3D(Vector3( 0, 0, 0 ), 25.0, recursion, 0, 1, 2, 3, 4, 5, 6, 7);
+        std::vector<Vector3> points = geometry_utils::hilbert3D(Vector3( 0, 0, 0 ), 25, recursion, 0, 1, 2, 3, 4, 5, 6, 7);
         CatmullRomCurve3 spline = CatmullRomCurve3( points );
 
 
