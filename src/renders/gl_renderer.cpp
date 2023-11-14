@@ -441,8 +441,9 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
 
     if (refreshMaterial) {
         p_uniforms->setUniformValue("toneMappingExposure", toneMappingExposure);
-        //p_uniforms->setUniformValue("toneMappingWhitePoint, toneMappingWhitePoint);
+        p_uniforms->setUniformValue("toneMappingWhitePoint", toneMappingWhitePoint);
 
+        // 每次渲染前，需要检查材质参数，更新设置多光源数据
         if (materialProperties.needsLights){
             markUniformsLightsNeedsUpdate(*m_uniforms, refreshLights);
         }

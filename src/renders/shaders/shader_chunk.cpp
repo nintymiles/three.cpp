@@ -101,6 +101,8 @@
 #include "shader_chunk/shadowmask_pars_fragment.glsl.h"
 #include "shader_chunk/specularmap_fragment.glsl.h"
 #include "shader_chunk/specularmap_pars_fragment.glsl.h"
+#include "shader_chunk/roughnessmap_fragment.h"
+#include "shader_chunk/roughnessmap_pars_fragment.h"
 #include "shader_chunk/tonemapping_fragment.glsl.h"
 #include "shader_chunk/tonemapping_pars_fragment.glsl.h"
 #include "shader_chunk/transmissionmap_fragment.glsl.h"
@@ -241,6 +243,8 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"shadowmap_pars_vertex",ShaderLibID::shadowmap_pars_vertex},
         {"shadowmap_vertex",ShaderLibID::shadowmap_vertex},
         {"shadowmask_pars_fragment",ShaderLibID::shadowmask_pars_fragment},
+        {"roughnessmap_fragment",ShaderLibID::roughnessmap_fragment},
+        {"roughnessmap_pars_fragment",ShaderLibID::roughnessmap_pars_fragment},
         {"tonemapping_fragment",ShaderLibID::tonemapping_fragment},
         {"tonemapping_pars_fragment",ShaderLibID::tonemapping_pars_fragment},
         {"transmissionmap_fragment",ShaderLibID::transmissionmap_fragment},
@@ -381,6 +385,8 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::shadowmap_vertex,shader_chunk::shadowmap_vertex},
         {ShaderLibID::shadowmap_pars_vertex,shader_chunk::shadowmap_pars_vertex},
         {ShaderLibID::shadowmap_pars_fragment,shader_chunk::shadowmap_pars_fragment},
+        {ShaderLibID::roughnessmap_fragment,shader_chunk::roughnessmap_fragment},
+        {ShaderLibID::roughnessmap_pars_fragment,shader_chunk::roughnessmap_pars_fragment},
         {ShaderLibID::tonemapping_fragment,shader_chunk::tonemapping_fragment},
         {ShaderLibID::tonemapping_pars_fragment,shader_chunk::tonemapping_pars_fragment},
         {ShaderLibID::transmissionmap_fragment,shader_chunk::transmissionmap_fragment},

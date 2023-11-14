@@ -85,7 +85,7 @@ public:
 
         //material的解析还有问题，需要继续改进
         std::thread thread1([&](const std::string& filepath){
-                           std::string dir = std::filesystem::current_path().parent_path().parent_path().parent_path().string();
+                           std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
                            OBJLoader loader;
                            std::string relativeDir = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
                                                     .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator())

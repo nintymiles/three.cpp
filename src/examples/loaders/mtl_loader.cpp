@@ -2,6 +2,7 @@
 
 #include "texture.h"
 #include "mesh_phong_material.h"
+#include "mesh_standard_material.h"
 #include "texture_loader.h"
 
 #include <stdlib.h>
@@ -262,7 +263,7 @@ Material::sptr MTLLoader::MaterialCreator::createMaterial(const string& material
         key++;
     }
 
-    MeshPhongMaterial::sptr material = MeshPhongMaterial::create();
+    MeshStandardMaterial::sptr material = MeshStandardMaterial::create();
     material->name = parameter.name;
     material->side = parameter.side;
     material->color = parameter.color;

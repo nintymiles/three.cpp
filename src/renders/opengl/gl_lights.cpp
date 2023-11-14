@@ -82,7 +82,8 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
             color.multiplyScalar(intensity);
             state.ambient = color;
 
-        } else if (light->isLightProbe) {
+        }
+        else if (light->isLightProbe) {
             for (int j = 0; j < 9; j++) {
                 state.probe[j].addScaledVector(light->sh.coefficients[j], intensity);
             }

@@ -17,6 +17,7 @@
 #include "line.h"
 #include "points.h"
 #include "mesh_phong_material.h"
+#include "mesh_standard_material.h"
 #include "line_basic_material.h"
 #include "points_material.h"
 #include "string_utils.h"
@@ -981,7 +982,7 @@ Group::sptr OBJLoader::parse(const string& path){
                         material->size = 1;
                         material->sizeAttenuation = false;
                     } else {
-                        material = MeshPhongMaterial::create();
+                        material = MeshStandardMaterial::create();
                     }
 
                     material->name = sourceMaterial->name;
