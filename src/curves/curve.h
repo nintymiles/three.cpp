@@ -60,7 +60,7 @@ public:
 
     // Virtual base class method to overwrite and implement in subclasses
     //	- t [0 .. 1]
-    virtual Vector3 getPoint( float t,Vector3 *optionalTarget = nullptr ) {
+    virtual Vector3 getPoint( float t,Vector3Sptr optionalTarget = nullptr) {
         std::cout << "THREE.Curve: .getPoint() not implemented." << std::endl;
         return Vector3();
     }
@@ -69,9 +69,9 @@ public:
 
     // Get point at relative position in curve according to arc length
     // - u [0 .. 1]
-    Vector3 getPointAt( float u, Vector3 optionalTarget = Vector3{0,0,0} ) {
+    Vector3 getPointAt( float u, Vector3Sptr optionalTarget = nullptr ) {
         const float t = getUtoTmapping(u);
-        return getPoint( t, &optionalTarget );
+        return getPoint( t, optionalTarget );
     }
 
     // Given u ( 0 .. 1 ), get a t to find p. This gives you points which are equidistant
@@ -153,7 +153,7 @@ public:
     }
 
     // Get sequence of points using getPoint( t )
-    std::vector<Vector3> getPoints( int divisions = 5 ) {
+    std::vector<Vector3> getPoints( size_t divisions = 5 ) {
         std::vector<Vector3> points{};
 
         for ( int d = 0; d <= divisions; d ++ ) {
@@ -191,7 +191,7 @@ public:
     // In case any sub curve does not implement its tangent derivation,
     // 2 points a small delta apart will be used to find its gradient
     // which seems to give a reasonable approximation
-    Vector3 getTangent( float t, Vector3 optionalTarget ) {
+    Vector3 getTangent( float t, Vector3Sptr optionalTarget = nullptr) {
         const float delta = 0.0001;
         float t1 = t - delta;
         float t2 = t + delta;
@@ -204,14 +204,14 @@ public:
         Vector3 pt2 = this->getPoint( t2 );
 
         //todo:fix this
-        Vector3 tangent = optionalTarget; //|| Vector3() );
+        Vector3 tangent = optionalTarget != nullptr? *optionalTarget : Vector3(); //|| Vector3() );
 
         tangent.copy( pt2 ).sub( pt1 ).normalize();
 
         return tangent;
     }
 
-    Vector3 getTangentAt( float u, Vector3 optionalTarget ) {
+    Vector3 getTangentAt( float u, Vector3Sptr optionalTarget = nullptr ) {
         const float t = this->getUtoTmapping( u );
         return this->getTangent( t, optionalTarget );
     }
@@ -230,7 +230,7 @@ public:
         // compute the tangent vectors for each segment on the curve
         for ( int i = 0; i <= segments; i ++ ) {
             const float u = i / segments;
-            tangents.push_back(this->getTangentAt( u, Vector3()));
+            tangents.push_back(this->getTangentAt( u, nullptr));
         }
 
         // select an initial normal vector perpendicular to the first tangent vector,

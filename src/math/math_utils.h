@@ -10,10 +10,10 @@
 #include <numeric>
 #include <climits>
 
-namespace MathUtils {
+namespace math_utils{
 
     template<typename T>
-    T inline clamp(T value, T min, T max) {
+    inline T clamp(T value, T min, T max) {
         return (T)fmax(min, fmin(max, value));
     }
 
@@ -21,12 +21,12 @@ namespace MathUtils {
     // compute euclidean modulo of m % n
     // https://en.wikipedia.org/wiki/Modulo_operation
     template<typename T>
-    T inline euclideanModulo( T n, T m ) {
+    inline T euclideanModulo( T n, T m ) {
         return fmod( ((fmod(n,m)) + m) , m );
     }
 
     template<typename T>
-    T inline random_gen() {
+    inline T random_gen() {
         std::default_random_engine generator;
         //std::uniform_int_distribution<T> distribution(0,1);
         std::uniform_real_distribution<T> distribution(0.0, 1.0);
@@ -122,11 +122,16 @@ namespace MathUtils {
 
     // Random float from <-range/2, range/2> interval
     inline float randFloatSpread( float range ) {
-        return range * ( 0.5 - random_gen<float>() );
+        return range * ( 0.5f - random_gen<float>() );
     }
 
-    inline float lerp(double a, double b, double t){
-        return a + t * (b - a);
+//    inline float lerp(double a, double b, double t){
+//        return a + t * (b - a);
+//    }
+
+    template <typename T>
+    inline T lerp(T x, T y, T t){
+        return (1 - t) * x + t * y;
     }
 
 

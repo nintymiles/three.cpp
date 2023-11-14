@@ -208,9 +208,9 @@ void ObjectState::addUV(int a, int b, int c){
         addVector2(dst, src[b + 0], src[b + 1]);
         addVector2(dst, src[c + 0], src[c + 1]);
     }else{
-//        addVector2(dst, 0, 0);
-//        addVector2(dst, 0, 0);
-//        addVector2(dst, 0, 0);
+        addVector2(dst, 0, 0);
+        addVector2(dst, 0, 0);
+        addVector2(dst, 0, 0);
     }
 
 }

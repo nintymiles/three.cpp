@@ -69,8 +69,8 @@ file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
 
-file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/lines/*.cpp;${ROOT_DIR}/src/examples/loaders/*.cpp)
-file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/lines/*.h;${ROOT_DIR}/src/examples/loaders/*.h)
+file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/lights/*.cpp;${ROOT_DIR}/src/examples/threejs/lines/*.cpp;${ROOT_DIR}/src/examples/loaders/*.cpp)
+file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/lights/*.h;${ROOT_DIR}/src/examples/threejs/lines/*.h;${ROOT_DIR}/src/examples/loaders/*.h)
 
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
@@ -155,6 +155,7 @@ ${ROOT_DIR}/src/utils
 ${ROOT_DIR}/src/examples/base
 ${ROOT_DIR}/src/examples/loaders
 ${ROOT_DIR}/src/examples/threejs/lines/
+${ROOT_DIR}/src/examples/threejs/lights/
 )
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
@@ -192,7 +193,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到tra
   #angel相关dll要不拷贝到系统路径，要不拷贝到执行目录，lib用于编译引用，dll用于链接执行
   libGLESv2.dll.lib
   libEGL.dll.lib
-  GLADd.lib
+  #GLADd.lib
   #pcrecppd.lib
   #pcred.lib
   #GSL

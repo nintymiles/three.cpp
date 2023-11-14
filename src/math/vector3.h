@@ -24,6 +24,7 @@
 
 
 class Camera;
+
 template<typename T>
 class BufferAttribute;
 
@@ -115,6 +116,7 @@ public:
             case 0: return x;
             case 1: return y;
             case 2: return z;
+            default: break;
         }
     }
 
@@ -656,6 +658,9 @@ public:
     }
 
 };
+
+using Vector3Sptr = std::shared_ptr<Vector3>;
+
 inline Vector3 operator + (const Vector3& left, const Vector3& right) {
     Vector3 result(left);
     result += right;

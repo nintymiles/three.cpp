@@ -91,7 +91,7 @@ class CatmullRomCurve3: public Curve{
 public:
     CatmullRomCurve3( std::vector<Vector3> &points, bool closed = false, std::string curveType = "centripetal", float tension = 0.5 ):points(points),closed(closed),curveType(curveType),tension(tension) {}
 
-    virtual Vector3 getPoint( float t, Vector3 *optionalTarget = nullptr ) override;
+    virtual Vector3 getPoint( float t, Vector3Sptr optionalTarget = nullptr ) override;
 
     CatmullRomCurve3& copy( const CatmullRomCurve3 &source ) {
         Curve::copy( source );

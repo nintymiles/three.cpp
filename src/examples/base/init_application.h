@@ -22,6 +22,8 @@
 #include "gl_loader_obj_mtl.h"
 #include "gl_buffer_geometry_attributes_none.h"
 
+#include "gl_lights_pointlights.h"
+
 // settings
 extern int display_w;
 extern int display_h;
@@ -103,6 +105,14 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Buffer_geometry_attributes_none"] = std::make_shared<GLBufferGeometryAttributesNone>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Buffer_geometry_attributes_none"];
+                currentDemoClass->renderer->clear();
+            }
+
+            if (ImGui::MenuItem("Gl_Lights_PointLights", "")) {
+                if (demoClasses.count("Gl_Lights_PointLights") == 0)
+                    demoClasses["Gl_Lights_PointLights"] = std::make_shared<GLLightsPointLights>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Gl_Lights_PointLights"];
                 currentDemoClass->renderer->clear();
             }
 

@@ -14,7 +14,7 @@ namespace catmull_rom_curve3{
 
 using namespace catmull_rom_curve3;
 
-Vector3 CatmullRomCurve3::getPoint( float t, Vector3 *optionalTarget){
+Vector3 CatmullRomCurve3::getPoint( float t, Vector3Sptr optionalTarget){
     Vector3 point = optionalTarget == nullptr ? Vector3(): *optionalTarget;
 
     std::vector<Vector3>& points = this->points;
