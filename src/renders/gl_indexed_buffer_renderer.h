@@ -24,13 +24,13 @@ public :
         bytesPerElement = value.bytesPerElement;
     }
     virtual void render(const GLint start, const GLsizei count) override {
-        glDrawElements(mode, count, type, (const size_t *)(start * bytesPerElement));
+        glDrawElements(mode, count, type, (const unsigned *)(start * bytesPerElement));
         info->update(count, mode,count);
         GLBufferRendererInterface::render(start,count);
     }
 
     virtual void renderInstances(const Geometry& geometry, const GLint start, const GLsizei count, const GLint primcount) override {
-        glDrawElementsInstanced(mode, count, type, (const size_t*)(start * bytesPerElement), primcount);
+        glDrawElementsInstanced(mode, count, type, (const unsigned *)(start * bytesPerElement), primcount);
         info->update(count, mode, primcount);
         GLBufferRendererInterface::renderInstances(geometry,start, count,primcount);
     }

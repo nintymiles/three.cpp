@@ -9,7 +9,7 @@
 
 
 void GLLightsPointLights::render(){
-    float delta = timer.getDelta() /1000.0;
+    float delta = timer.getDelta();
     float time = threecpp::getSystemTimeInMillis()/1000.0;
 
     if(objGroup)
