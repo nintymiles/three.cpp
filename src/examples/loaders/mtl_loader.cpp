@@ -263,7 +263,8 @@ Material::sptr MTLLoader::MaterialCreator::createMaterial(const string& material
         key++;
     }
 
-    MeshStandardMaterial::sptr material = MeshStandardMaterial::create();
+//  MeshStandardMaterial::sptr material = MeshStandardMaterial::create(); //pbr着色器以per-fragment方式渲染，对光源不是太敏感
+    MeshPhongMaterial::sptr  material = MeshPhongMaterial::create();
     material->name = parameter.name;
     material->side = parameter.side;
     material->color = parameter.color;
