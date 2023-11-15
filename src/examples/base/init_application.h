@@ -23,6 +23,7 @@
 #include "gl_buffer_geometry_attributes_none.h"
 
 #include "gl_lights_pointlights.h"
+#include "gl_lights_physical.h"
 
 // settings
 extern int display_w;
@@ -63,7 +64,7 @@ static void ShowApplicationMenuBar() {
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Demo1")){
+        if (ImGui::BeginMenu("Basic")){
 
             if (ImGui::MenuItem("Demo-Scene", "")) {
                 if (demoClasses.count("Demo-Scene") == 0)
@@ -108,6 +109,13 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass->renderer->clear();
             }
 
+            if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
+            ImGui::EndMenu();
+
+        }
+
+        if (ImGui::BeginMenu("Lights")){
+
             if (ImGui::MenuItem("Gl_Lights_PointLights", "")) {
                 if (demoClasses.count("Gl_Lights_PointLights") == 0)
                     demoClasses["Gl_Lights_PointLights"] = std::make_shared<GLLightsPointLights>(display_w, display_h);
@@ -115,40 +123,18 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["Gl_Lights_PointLights"];
                 currentDemoClass->renderer->clear();
             }
+            if (ImGui::MenuItem("Gl_Lights_Physical", "")) {
+                if (demoClasses.count("Gl_Lights_Physical") == 0)
+                    demoClasses["Gl_Lights_Physical"] = std::make_shared<GLLightsPhysical>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Gl_Lights_Physical"];
+                currentDemoClass->renderer->clear();
+            }
 
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();
 
         }
-
-//        if (ImGui::BeginMenu("Chapter1"))
-//        {
-//
-//            if (ImGui::MenuItem("02-First-Scene", "")) {
-//                if (demoClasses.count("02-First-Scene") == 0)
-//                    demoClasses["02-First-Scene"] = std::make_shared<FirstScene>(display_w, display_h);
-//
-//                currentDemoClass = demoClasses["02-First-Scene"];
-//                currentDemoClass->renderer->clear();
-//            }
-//            if (ImGui::MenuItem("03-Material-Light", "")) {
-//                if (demoClasses.count("03-Material-Light") == 0)
-//                    demoClasses["03-Material-Light"] = std::make_shared<MaterialLight>(display_w, display_h);
-//                currentDemoClass = demoClasses["03-Material-Light"];
-//
-//                currentDemoClass->renderer->clear();
-//            }
-//            if (ImGui::MenuItem("04-Material-Light-Animation", "")) {
-//                if (demoClasses.count("04-Material-Light-Animation") == 0)
-//                    demoClasses["04-Material-Light-Animation"] = std::make_shared<MaterialLightAnimation>(display_w, display_h);
-//
-//                currentDemoClass = demoClasses["04-Material-Light-Animation"];
-//                currentDemoClass->renderer->clear();
-//            }
-//            if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
-//            ImGui::EndMenu();
-//
-//        }
 //        if (ImGui::BeginMenu("Chapter2")) {
 //            if (ImGui::MenuItem("01-Basic-Scene", "")) {
 //                if (demoClasses.count("01-Basic-Scene") == 0)
