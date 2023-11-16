@@ -8,7 +8,7 @@
 #include "box3.h"
 #include "math_utils.h"
 
-namespace buffergeometry {
+namespace buffer_geometry {
     Matrix4 _m1;
     Box3 _box;
     Box3 _boxMorphTargets;
@@ -17,7 +17,7 @@ namespace buffergeometry {
     Object3D _obj;
     BufferAttribute<float>::sptr emptyAttribute;
 }
-using namespace buffergeometry;
+using namespace buffer_geometry;
 
 BufferGeometry::BufferGeometry() :Geometry(){
     type = "BufferGeometry";
@@ -652,16 +652,12 @@ BufferGeometry& BufferGeometry::fromDirectGeometry(DirectGeometry& geometry){
         auto _uvs2 = BufferAttribute<float>::create(geometry.uvs2.size() * 2, 2);
         _uvs2->copyVector2sArray(geometry.uvs2);
         setAttribute(AttributeName::uv2,_uvs2);
-        //setAttribute<float>("uv2", _uvs2);
-        //float[] uvs2 = new float[geometry.uvs2.Count * 2];
-        //this.SetAttribute("uv2", new BufferAttribute<float>(uvs2, 2).CopyVector2sArray(geometry.uvs2.ToArray()));
     }
 
     // groups
     this->groups = geometry.groups;
 
     // morphPosition
-
     for (auto& it : geometry.morphPositionNormal) {
         std::vector<BufferAttribute<float>::sptr> array;
 
@@ -678,7 +674,6 @@ BufferGeometry& BufferGeometry::fromDirectGeometry(DirectGeometry& geometry){
     }
 
     //skinning
-
     if (geometry.skinIndices.size() > 0)
     {
         auto skinBuffer = BufferAttribute<float>::create(geometry.skinIndices.size() * 4, 4);
@@ -792,7 +787,6 @@ void BufferGeometry::computeBoundingSphere(){
 
         // second, try to find a boundingSphere with a radius smaller than the
         // boundingSphere of the boundingBox: sqrt(3) smaller in the best case
-
         float maxRadiusSq = 0;
 
         for (unsigned int i = 0; i < position->count; i++)
@@ -849,7 +843,6 @@ void BufferGeometry::computeVertexNormals(bool areaWeighted){
         }
 
         //auto normalArray = &normal->array;
-
         int vA, vB, vC;
         vA = vB = vC = 0;
 
@@ -1111,8 +1104,7 @@ BufferGeometry& BufferGeometry::copy(const BufferGeometry& source){
     return *this;
 }
 
-void BufferGeometry::toNonIndexed(const BufferGeometry::sptr& geometry2)
-{
+void BufferGeometry::toNonIndexed(const BufferGeometry::sptr& geometry2){
     if (index == nullptr)
     {
         //Trace.TraceError("THREE.Core.BufferGeometry.ToNonIndexed:Geometry is already non-indexed.");

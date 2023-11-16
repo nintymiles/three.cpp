@@ -13,10 +13,10 @@
 #include <string>
 #include <cmath>
 
-class SphereBufferGeometry : public BufferGeometry {
+class SphereGeometry : public BufferGeometry {
 public:
-    using sptr = std::shared_ptr<SphereBufferGeometry>;
-    SphereBufferGeometry(float radius = 0, float widthSegments = 0, float heightSegments = 0,
+    using sptr = std::shared_ptr<SphereGeometry>;
+    SphereGeometry(float radius = 0, float widthSegments = 0, float heightSegments = 0,
                          float phiStart = std::numeric_limits<float>::quiet_NaN(),
                          float phiLength = std::numeric_limits<float>::quiet_NaN(),
                          float thetaStart = std::numeric_limits<float>::quiet_NaN(),
@@ -28,30 +28,30 @@ public:
                       float phiLength = std::numeric_limits<float>::quiet_NaN(),
                       float thetaStart = std::numeric_limits<float>::quiet_NaN(),
                       float thetaLength = std::numeric_limits<float>::quiet_NaN()) {
-        return std::make_shared<SphereBufferGeometry>(radius,widthSegments,heightSegments,phiStart,phiLength,thetaStart,thetaLength);
-    }
-};
-
-
-class SphereGeometry : public Geometry {
-public:
-    using sptr = std::shared_ptr<SphereGeometry>;
-
-    SphereGeometry(float radius = 0, float widthSegments = 0, float heightSegments = 0,
-                   float phiStart = std::numeric_limits<float>::quiet_NaN(),
-                   float phiLength = std::numeric_limits<float>::quiet_NaN(),
-                   float thetaStart = std::numeric_limits<float>::quiet_NaN(),
-                   float thetaLength = std::numeric_limits<float>::quiet_NaN());
-
-
-    static sptr create(float radius = 0, float widthSegments = 0, float heightSegments = 0,
-                      float phiStart = std::numeric_limits<float>::quiet_NaN(),
-                      float phiLength = std::numeric_limits<float>::quiet_NaN(),
-                      float thetaStart = std::numeric_limits<float>::quiet_NaN(),
-                      float thetaLength = std::numeric_limits<float>::quiet_NaN()) {
         return std::make_shared<SphereGeometry>(radius,widthSegments,heightSegments,phiStart,phiLength,thetaStart,thetaLength);
     }
 };
+
+
+//class SphereGeometry : public Geometry {
+//public:
+//    using sptr = std::shared_ptr<SphereGeometry>;
+//
+//    SphereGeometry(float radius = 0, float widthSegments = 0, float heightSegments = 0,
+//                   float phiStart = std::numeric_limits<float>::quiet_NaN(),
+//                   float phiLength = std::numeric_limits<float>::quiet_NaN(),
+//                   float thetaStart = std::numeric_limits<float>::quiet_NaN(),
+//                   float thetaLength = std::numeric_limits<float>::quiet_NaN());
+//
+//
+//    static sptr create(float radius = 0, float widthSegments = 0, float heightSegments = 0,
+//                      float phiStart = std::numeric_limits<float>::quiet_NaN(),
+//                      float phiLength = std::numeric_limits<float>::quiet_NaN(),
+//                      float thetaStart = std::numeric_limits<float>::quiet_NaN(),
+//                      float thetaLength = std::numeric_limits<float>::quiet_NaN()) {
+//        return std::make_shared<SphereGeometry>(radius,widthSegments,heightSegments,phiStart,phiLength,thetaStart,thetaLength);
+//    }
+//};
 
 //struct SphereGeometryParameters{
 //    double radius,

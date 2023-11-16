@@ -5,7 +5,7 @@
 
 #include "number.h"
 
-SphereBufferGeometry::SphereBufferGeometry(float radius, float widthSegments, float heightSegments, float phiStart, float phiLength, float thetaStart, float thetaLength) : BufferGeometry(){
+SphereGeometry::SphereGeometry(float radius, float widthSegments, float heightSegments, float phiStart, float phiLength, float thetaStart, float thetaLength) : BufferGeometry(){
     radius = radius != 0 ? radius : 1;
 
     if (widthSegments == 0) widthSegments = 8;
@@ -116,9 +116,9 @@ SphereBufferGeometry::SphereBufferGeometry(float radius, float widthSegments, fl
     setAttribute(AttributeName::uv, BufferAttribute<float>::create(_uvs, 2));
 }
 
-SphereGeometry::SphereGeometry(float radius, float widthSegments, float heightSegments, float phiStart, float phiLength, float thetaStart, float thetaLength) : Geometry(){
-    SphereBufferGeometry::sptr bufferGeometry = SphereBufferGeometry::create(radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength);
-
-    this->fromBufferGeometry(*bufferGeometry);
-    this->mergeVertices();
-}
+//SphereGeometry::SphereGeometry(float radius, float widthSegments, float heightSegments, float phiStart, float phiLength, float thetaStart, float thetaLength) : Geometry(){
+//    SphereBufferGeometry::sptr bufferGeometry = SphereBufferGeometry::create(radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength);
+//
+//    this->fromBufferGeometry(*bufferGeometry);
+//    this->mergeVertices();
+//}

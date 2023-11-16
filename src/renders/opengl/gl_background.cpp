@@ -108,7 +108,7 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
         renderList.unshift(boxMesh, std::dynamic_pointer_cast<BufferGeometry>(boxMesh->geometry), boxMesh->material, 0, 0, nullptr);
     } else if (scene.isTexture) { //scene background is texture
         if (planeMesh == nullptr) {
-            PlaneBufferGeometry::sptr geometry = std::make_shared<PlaneBufferGeometry>(2, 2);
+            PlaneGeometry::sptr geometry = std::make_shared<PlaneGeometry>(2, 2);
             planeMesh = std::make_shared<Mesh>(geometry, std::make_shared<ShaderMaterial>());
             ShaderMaterial::sptr shaderMaterial = std::dynamic_pointer_cast<ShaderMaterial>(planeMesh->material);
             shaderMaterial->type = "BackgroundMaterial";

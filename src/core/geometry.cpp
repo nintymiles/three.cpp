@@ -188,7 +188,6 @@ Geometry::Geometry(const Geometry& source) :Geometry()
 }
 Geometry& Geometry::applyMatrix4(Matrix4& matrix)
 {
-    // TODO: ���⿡ return ���� �����մϴ�.
     Matrix3 normalMatrix = Matrix3().getNormalMatrix(matrix);
 
     for (unsigned i = 0;i<vertices.size();i++) {

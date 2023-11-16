@@ -24,13 +24,21 @@
 
 class GLLightsPhysical: public ApplicationBase{
     PointLight::sptr bulbLight;
+    Mesh::sptr ballMesh;
     HemisphereLight::sptr hemiLight;
     MeshStandardMaterial::sptr ballMat, cubeMat, floorMat,bulbMat;
 
     bool previousShadowMap = false;
 
     std::map<std::string,int> bulbLuminousPowers;
+    std::vector<std::string> bulbLuminousPowerNames;
     std::map<std::string,float> hemiLuminousIrradiances;
+    std::vector<std::string> hemiLuminousIrradianceNames;
+
+    bool shadows = true;
+    float exposure = 0.68;
+    std::string bulbPower;//: Object.keys( bulbLuminousPowers )[ 4 ],
+    std::string hemiIrradiance;//: Object.keys( hemiLuminousIrradiances )[ 0 ]
 
 public:
     GLLightsPhysical(int x, int y):ApplicationBase(x,y){}
@@ -82,7 +90,7 @@ public:
             hwDiffMap->wrapT = Wrapping::RepeatWrapping;
             hwDiffMap->anisotropy = 4;
             hwDiffMap->repeat.set( 10, 24 );
-//            hwDiffMap->encoding = TextureEncoding::sRGBEncoding;
+            //hwDiffMap->encoding = TextureEncoding::sRGBEncoding;
             floorMat->map = hwDiffMap;
             floorMat->needsUpdate = true;
         }
@@ -161,8 +169,10 @@ public:
         scene->add( floorMesh );
 
         SphereGeometry::sptr ballGeometry = SphereGeometry::create(0.25, 32, 32);
-        Mesh::sptr ballMesh = Mesh::create(ballGeometry, ballMat);
-        ballMesh->position.set( 1, 0.25, 1 );
+        //Mesh::sptr ballMesh = Mesh::create(ballGeometry, ballMat);
+        ballMesh = Mesh::create(ballGeometry, ballMat);
+        ballMesh->position.set( 1, 0.375, 1 );
+        ballMesh->scale.set(1.5,1.5,1.5);
         ballMesh->rotation.setY(math_number::PI);
         ballMesh->castShadow = true;
         scene->add( ballMesh );
@@ -194,6 +204,10 @@ public:
                 {"20 lm (4W)", 20},
                 {"Off", 0}
         };
+        for(auto item:bulbLuminousPowers)
+            bulbLuminousPowerNames.push_back(item.first);
+
+        bulbPower = bulbLuminousPowerNames[4];
 
         // ref for solar irradiances: https://en.wikipedia.org/wiki/Lux
         hemiLuminousIrradiances = {
@@ -209,6 +223,10 @@ public:
                 {"18000 lx (Daylight)", 18000},
                 {"50000 lx (Direct Sun)", 50000}
         };
+        for(auto item:hemiLuminousIrradiances)
+            hemiLuminousIrradianceNames.push_back(item.first);
+
+        hemiIrradiance = hemiLuminousIrradianceNames[0];
 
 //        const params = {
 //                shadows: true,
@@ -236,6 +254,8 @@ public:
     }
 
     virtual void render() override;
+
+    virtual void showControls() override;
 
 };
 

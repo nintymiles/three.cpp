@@ -4,7 +4,7 @@
 
 #include "plane_geometry.h"
 
-PlaneBufferGeometry::PlaneBufferGeometry(float width, float height, float widthSegments, float heightSegments) : BufferGeometry(){
+PlaneGeometry::PlaneGeometry(float width, float height, float widthSegments, float heightSegments) : BufferGeometry(){
     this->width= width;
     this->height= height;
     this->widthSegments= widthSegments;
@@ -85,22 +85,22 @@ PlaneBufferGeometry::PlaneBufferGeometry(float width, float height, float widthS
     setAttribute(AttributeName::uv,BufferAttribute<float>::create(_uvs, 2));
 }
 
-PlaneGeometry::PlaneGeometry(float width, float height, float widthSegments, float heightSegments) :Geometry(){
-    this->width= width;
-    this->height= height;
-    this->widthSegments= widthSegments;
-    this->heightSegments= heightSegments;
-
-    parameters.width = width;
-    parameters.height = height;
-    parameters.widthSegments = widthSegments;
-    parameters.heightSegments = heightSegments;
-
-
-    PlaneBufferGeometry::sptr bufferGeometry = PlaneBufferGeometry::create(width, height, widthSegments, heightSegments);
-
-    this->fromBufferGeometry(*bufferGeometry);
-    this->mergeVertices();
-
-    bufferGeometry.reset();
-}
+//PlaneGeometry::PlaneGeometry(float width, float height, float widthSegments, float heightSegments) :Geometry(){
+//    this->width= width;
+//    this->height= height;
+//    this->widthSegments= widthSegments;
+//    this->heightSegments= heightSegments;
+//
+//    parameters.width = width;
+//    parameters.height = height;
+//    parameters.widthSegments = widthSegments;
+//    parameters.heightSegments = heightSegments;
+//
+//
+//    PlaneBufferGeometry::sptr bufferGeometry = PlaneBufferGeometry::create(width, height, widthSegments, heightSegments);
+//
+//    this->fromBufferGeometry(*bufferGeometry);
+//    this->mergeVertices();
+//
+//    bufferGeometry.reset();
+//}
