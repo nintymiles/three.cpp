@@ -982,8 +982,8 @@ Group::sptr OBJLoader::parse(const string& path){
                         material->size = 1;
                         material->sizeAttenuation = false;
                     } else {
-                        material = MeshStandardMaterial::create();
-//                        material = MeshPhongMaterial::create();
+//                        material = MeshStandardMaterial::create();
+                        material = MeshPhongMaterial::create();
                     }
 
                     material->name = sourceMaterial->name;

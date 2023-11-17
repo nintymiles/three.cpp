@@ -18,6 +18,15 @@ std::string threecpp::getProgramPath(){
     return std::filesystem::current_path().string();
 }
 
+std::string threecpp::getProjectPath(){
+    auto currentPath = std::filesystem::current_path();
+    //std::string lastPath = currentPath.stem().string();
+    while(!(currentPath.filename().string() == "cmake-build-debug" || currentPath.filename().string() == "build")){
+        currentPath = currentPath.parent_path();
+    }
+    return currentPath.parent_path().string();
+}
+
 size_t threecpp::getSystemTimeInMillis() {
     std::chrono::time_point<std::chrono::steady_clock> time = std::chrono::steady_clock::now();
     auto timeInMillis = std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count();

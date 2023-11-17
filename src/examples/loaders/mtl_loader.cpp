@@ -263,11 +263,11 @@ Material::sptr MTLLoader::MaterialCreator::createMaterial(const string& material
         key++;
     }
 
-    MeshStandardMaterial::sptr material = MeshStandardMaterial::create(); //pbr着色器以per-fragment方式渲染，对光源不是太敏感
-    material->roughness = 0.8;
-    material->metalness = 0.2;
+//    MeshStandardMaterial::sptr material = MeshStandardMaterial::create(); //pbr着色器以per-fragment方式渲染，对光源不是太敏感
+//    material->roughness = 0.8;
+//    material->metalness = 0.2;
 
-//    MeshPhongMaterial::sptr  material = MeshPhongMaterial::create();
+    MeshPhongMaterial::sptr  material = MeshPhongMaterial::create();
     material->name = parameter.name;
     material->side = parameter.side;
     material->color = parameter.color;

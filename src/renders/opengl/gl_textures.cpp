@@ -58,8 +58,8 @@ void GLTextures::setTextureParameters(TextureTarget textureType, Texture& textur
 
         }
 
-        glTexParameteri((GLuint)textureType, GL_TEXTURE_MAG_FILTER, (GLuint)texture.magFilter);
-        glTexParameteri((GLuint)textureType, GL_TEXTURE_MIN_FILTER, (GLuint)texture.minFilter);
+        glTexParameterf((GLuint)textureType, GL_TEXTURE_MAG_FILTER, (GLuint)texture.magFilter);
+        glTexParameterf((GLuint)textureType, GL_TEXTURE_MIN_FILTER, (GLuint)texture.minFilter);
 
     } else {
         glTexParameteri((GLuint)textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -75,8 +75,8 @@ void GLTextures::setTextureParameters(TextureTarget textureType, Texture& textur
             console.warn('THREE.WebGLRenderer: Texture is not power of two. Texture.wrapS and Texture.wrapT should be set to THREE.ClampToEdgeWrapping.');
         }*/
 
-        glTexParameteri((GLuint)textureType, GL_TEXTURE_MAG_FILTER, (GLuint)texture.magFilter);
-        glTexParameteri((GLuint)textureType, GL_TEXTURE_MIN_FILTER, (GLuint)texture.minFilter);
+        glTexParameterf((GLuint)textureType, GL_TEXTURE_MAG_FILTER, (GLuint)texture.magFilter);
+        glTexParameterf((GLuint)textureType, GL_TEXTURE_MIN_FILTER, (GLuint)texture.minFilter);
 
         /*if (texture->minFilter != = NearestFilter && texture->minFilter != = LinearFilter) {
             console.warn('THREE.WebGLRenderer: Texture is not power of two. Texture.minFilter should be set to THREE.NearestFilter or THREE.LinearFilter.');
@@ -863,14 +863,12 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
     bool supportsMips = isPowerOfTwo(*renderTarget.texture) ? isPowerOfTwo(*renderTarget.texture) : isGLES3;
 
     // Handles WebGL2 RGBFormat fallback - #18858
-
     if (isGLES3&& renderTarget.texture->format == PixelFormat::RGBFormat && (renderTarget.texture->type == TextureDataType::FloatType || renderTarget.texture->type == TextureDataType::HalfFloatType)) {
         renderTarget.texture->format = PixelFormat::RGBAFormat;
         //console.warn('THREE.WebGLRenderer: Rendering to textures with RGB format is not supported. Using RGBA format instead.');
     }
 
     // Setup framebuffer
-
     if (isCube) {
         //renderTargetProperties.__webglFramebuffer = [];
         renderTargetProperties.framebuffers = std::vector<GLint>();
@@ -921,7 +919,6 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
                 }
 
                 glBindFramebuffer(GL_FRAMEBUFFER,0);
-
 
             }else {
                 //console.warn('THREE.WebGLRenderer: WebGLMultisampleRenderTarget can only be used with WebGL2.');

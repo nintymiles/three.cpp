@@ -18,7 +18,7 @@ protected:
     float depthSegments;
 };
 
-class BoxBufferGeometry : public BufferGeometry,public BoxGeometryParameter {
+class BoxGeometry : public BufferGeometry,public BoxGeometryParameter {
 private:
     std::vector<unsigned> _indices;
     std::vector<float> _vertices;
@@ -32,25 +32,25 @@ private:
 
 
 public:
-    using sptr = std::shared_ptr<BoxBufferGeometry>;
+    using sptr = std::shared_ptr<BoxGeometry>;
 
-    BoxBufferGeometry(float width = 0, float height = 0, float depth = 0, int widthSegments = 0, int heightSegments = 0, int depthSegments = 0);
+    BoxGeometry(float width = 0, float height = 0, float depth = 0, int widthSegments = 0, int heightSegments = 0, int depthSegments = 0);
 
 
     static sptr create(float width = 0, float height = 0, float depth = 0, int widthSegments = 0, int heightSegments = 0, int depthSegments = 0){
-        return std::make_shared<BoxBufferGeometry>(width,height,depth,widthSegments,heightSegments,depthSegments);
+        return std::make_shared<BoxGeometry>(width,height,depth,widthSegments,heightSegments,depthSegments);
     }
 };
 
-class BoxGeometry : public Geometry,public BoxGeometryParameter {
-public:
-    using sptr = std::shared_ptr<BoxGeometry>;
-    BoxGeometry(float width = 0, float height = 0, float depth = 0, int widthSegments = 0, int heightSegments = 0, int depthSegments = 0);
-
-    static sptr create(float width = 0, float height = 0, float depth = 0, int widthSegments = 0, int heightSegments = 0, int depthSegments = 0) {
-        return std::make_shared<BoxGeometry>(width, height, depth, widthSegments, heightSegments, depthSegments);
-    }
-};
+//class BoxGeometry : public Geometry,public BoxGeometryParameter {
+//public:
+//    using sptr = std::shared_ptr<BoxGeometry>;
+//    BoxGeometry(float width = 0, float height = 0, float depth = 0, int widthSegments = 0, int heightSegments = 0, int depthSegments = 0);
+//
+//    static sptr create(float width = 0, float height = 0, float depth = 0, int widthSegments = 0, int heightSegments = 0, int depthSegments = 0) {
+//        return std::make_shared<BoxGeometry>(width, height, depth, widthSegments, heightSegments, depthSegments);
+//    }
+//};
 
 //#include "buffer_geometry.h"
 //#include "buffer_attribute.h"

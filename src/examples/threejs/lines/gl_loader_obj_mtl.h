@@ -34,7 +34,7 @@ public:
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
 
-        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),0.8f);
+        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),1.f);
 //        ambientLight->position.set(0, 0, 10);
         scene->add(ambientLight);
 
@@ -52,7 +52,7 @@ public:
         controller->panSpeed = 3;
         controller->noZoom = true;
         controller->noPan = true;
-        controller->noRotate = true;
+        controller->noRotate = false;
         controller->dynamicDampingFactor = 0.3f;
 
 
@@ -64,8 +64,9 @@ public:
         meshMaterial->fog = true;
         meshMaterial->colorWrite = true;
 
+        std::string dir = threecpp::getProjectPath();
         std::thread thread1([&](const std::string& filepath){
-                           std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
+
                            OBJLoader loader;
                            std::string relativeDir = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
                                                     .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator())
@@ -83,7 +84,6 @@ public:
         thread1.join();
 
         std::thread thread2([&](const std::string& filepath){
-                                std::string dir = std::filesystem::current_path().parent_path().parent_path().string();
                                 OBJLoader loader;
                                 std::string relativeDir = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
                                         .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator())

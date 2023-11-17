@@ -87,6 +87,9 @@ inline void checkError() {
 
     std::string getProgramPath();
 
+    //todo:this path maybe not good for release
+    std::string getProjectPath();
+
     inline std::string getFileDir(const std::string& filepath) {
         if (filepath.find_last_of(getFileSeparator()) != std::string::npos)
             return filepath.substr(0, filepath.find_last_of(getFileSeparator()));

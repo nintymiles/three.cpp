@@ -59,7 +59,7 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
 
     if (scene.isCubeTexture || scene.isGLCubeRenderTarget || (scene.getBackgroundCubeTexture()!=nullptr && scene.getBackgroundCubeTexture()->mapping == TextureMapping::CubeReflectionMapping) || (scene.getBackgroundTexture()!=nullptr && scene.getBackgroundTexture()->mapping == TextureMapping::CubeReflectionMapping)) {
         if (boxMesh == nullptr) {
-            boxMesh = Mesh::create(std::make_shared<BoxBufferGeometry>(1, 1, 1), std::make_shared<ShaderMaterial>());
+            boxMesh = Mesh::create(std::make_shared<BoxGeometry>(1, 1, 1), std::make_shared<ShaderMaterial>());
             ShaderMaterial::sptr shaderMaterial = std::dynamic_pointer_cast<ShaderMaterial>(boxMesh->material);
             shaderMaterial->type = "BackgroundCubeMaterial";
             shaderMaterial->uniforms = std::make_shared<UniformValues>(getShader("cube").uniforms);
@@ -70,7 +70,7 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
             shaderMaterial->depthWrite = false;
             shaderMaterial->fog = false;
 
-            BoxBufferGeometry::sptr geometry = std::dynamic_pointer_cast<BoxBufferGeometry>(boxMesh->geometry);
+            BoxGeometry::sptr geometry = std::dynamic_pointer_cast<BoxGeometry>(boxMesh->geometry);
             geometry->deleteAttribute(AttributeName::normal);
             geometry->deleteAttribute(AttributeName::uv);
             //geometry->normal.reset();// geometry->deleteAttribute<float>("normal");

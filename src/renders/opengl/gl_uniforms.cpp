@@ -394,6 +394,11 @@ void GLUniforms::upload(const std::vector<GLUniform::sptr>& seq, UniformValues& 
 {
     for (auto& uniform : seq) {
         if (values.contains(uniform->id)) {
+//            std::cout << "uniform id " << uniform->id << std::endl;
+//            if(uniform->id == "pointShadowMap"){
+//                std::cout << "uniform value " << uniform.get() << std::endl;
+//                continue;
+//            }
             UniformValue& v = values[uniform->id];
             /*if (uniform->id == UniformName::directionalShadowMap)
                 std::cout << "DirectionalShadowMap" << std::endl;*/

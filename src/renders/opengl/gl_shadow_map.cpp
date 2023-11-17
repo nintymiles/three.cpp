@@ -343,7 +343,7 @@ void GLShadowMap::render(GLRenderer& renderer, const std::vector<Light::sptr>& l
             GLRenderTargetParameter pars;
             pars.minFilter = TextureFilter::NearestFilter;
             pars.magFilter = TextureFilter::NearestFilter;
-            pars.format = PixelFormat::RGBAFormat;
+            pars.format = PixelFormat::RGBFormat; //todo:fix this RGBAFormat
 
             shadow->shadowMap = std::make_shared<GLRenderTarget>(_shadowMapSize.x, _shadowMapSize.y, &pars);
 

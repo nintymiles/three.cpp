@@ -4,7 +4,7 @@
 
 #include "box_geometry.h"
 
-void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned char w, int udir, int vdir, float width, float height, float depth, int gridX, int gridY, int materialIndex){
+void BoxGeometry::buildPlane(unsigned char u, unsigned char v, unsigned char w, int udir, int vdir, float width, float height, float depth, int gridX, int gridY, int materialIndex){
     auto segmentWidth = width / gridX;
     auto segmentHeight = height / gridY;
 
@@ -57,7 +57,6 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
             _uvs.push_back(1 - (iy / gridY));
 
             // counters
-
             vertexCounter += 1;
         }
     }
@@ -76,7 +75,6 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
             auto d = numberOfVertices + (ix + 1) + gridX1 * iy;
 
             // faces
-
             _indices.push_back(a);
             _indices.push_back(b);
             _indices.push_back(d);
@@ -87,7 +85,6 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
 
             // increase counter
             groupCount += 6;
-
         }
 
     }
@@ -102,7 +99,7 @@ void BoxBufferGeometry::buildPlane(unsigned char u, unsigned char v, unsigned ch
     numberOfVertices += vertexCounter;
 }
 
-BoxBufferGeometry::BoxBufferGeometry(float width, float height, float depth, int widthSegments, int heightSegments, int depthSegments) : BufferGeometry(){
+BoxGeometry::BoxGeometry(float width, float height, float depth, int widthSegments, int heightSegments, int depthSegments) : BufferGeometry(){
     using std::floor;
 
     this->width= width;
@@ -132,20 +129,19 @@ BoxBufferGeometry::BoxBufferGeometry(float width, float height, float depth, int
     setAttribute(AttributeName::normal,BufferAttribute<float>::create(_normals, 3));
     setAttribute(AttributeName::uv,BufferAttribute<float>::create(_uvs, 2));
 
-
 }
 
-BoxGeometry::BoxGeometry(float width, float height, float depth, int widthSegments, int heightSegments, int depthSegments) : Geometry(){
-
-    this->width= width;
-    this->height= height;
-    this->depth= depth;
-    this->widthSegments= widthSegments;
-    this->heightSegments= heightSegments;
-    this->depthSegments= depthSegments;
-
-    BoxBufferGeometry::sptr bufferGeometry = BoxBufferGeometry::create(width, height, depth, widthSegments, heightSegments, depthSegments);
-
-    this->fromBufferGeometry(*bufferGeometry);
-    this->mergeVertices();
-}
+//BoxGeometry::BoxGeometry(float width, float height, float depth, int widthSegments, int heightSegments, int depthSegments) : Geometry(){
+//
+//    this->width= width;
+//    this->height= height;
+//    this->depth= depth;
+//    this->widthSegments= widthSegments;
+//    this->heightSegments= heightSegments;
+//    this->depthSegments= depthSegments;
+//
+//    BoxBufferGeometry::sptr bufferGeometry = BoxBufferGeometry::create(width, height, depth, widthSegments, heightSegments, depthSegments);
+//
+//    this->fromBufferGeometry(*bufferGeometry);
+//    this->mergeVertices();
+//}

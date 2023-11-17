@@ -79,7 +79,7 @@ public:
         floorMat->metalness=0.2;
         floorMat->bumpScale=0.0005;
 
-        std::string rootDir = std::filesystem::current_path().parent_path().parent_path().string();
+        std::string rootDir = threecpp::getProjectPath();
         std::string fileSeparator = threecpp::getFileSeparator();
         std::string resourceDir = rootDir.append(fileSeparator).append("asset").append(fileSeparator).append("textures").append(fileSeparator);
 
@@ -101,7 +101,8 @@ public:
 //            hwBumpMap->wrapT = Wrapping::RepeatWrapping;
 //            hwBumpMap->anisotropy = 4;
 //            hwBumpMap->repeat.set( 10, 24 );
-//            hwBumpMap->type = TextureDataType::FloatType;
+//            //hwBumpMap->type = TextureDataType::HalfFloatType;
+//            //hwBumpMap->encoding = TextureEncoding::sRGBEncoding;
 //            floorMat->bumpMap = hwBumpMap;
 //            floorMat->needsUpdate = true;
         }
@@ -138,6 +139,8 @@ public:
 //            bBumpMap->wrapT = Wrapping::RepeatWrapping;
 //            bBumpMap->anisotropy = 4;
 //            bBumpMap->repeat.set( 1, 1 );
+//            bBumpMap->type = TextureDataType::UnsignedByteType;
+//            bBumpMap->format = PixelFormat::RGBFormat;
 //            cubeMat->bumpMap = bBumpMap;
 //            cubeMat->needsUpdate = true;
         }
@@ -230,16 +233,6 @@ public:
 
         hemiIrradiance = hemiLuminousIrradianceNames[0];
 
-//        const params = {
-//                shadows: true,
-//                exposure: 0.68,
-//                bulbPower: Object.keys( bulbLuminousPowers )[ 4 ],
-//                hemiIrradiance: Object.keys( hemiLuminousIrradiances )[ 0 ]
-//        };
-
-
-
-
         Vector4 screen = Vector4(0, 0, screenX, screenY);
         controller = std::make_shared<control::TrackballControls>(camera, screen);
 
@@ -251,7 +244,6 @@ public:
         controller->noPan = true;
         controller->noRotate = false;
         controller->dynamicDampingFactor = 0.3f;
-
 
     }
 
