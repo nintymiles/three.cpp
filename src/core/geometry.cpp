@@ -330,7 +330,6 @@ Geometry& Geometry::fromBufferGeometry(BufferGeometry& geometry){
     }
 
     //var groups = geometry.Groups;
-
     if (geometry.groups.size() > 0)
     {
         for (unsigned int i = 0; i < geometry.groups.size(); i++)

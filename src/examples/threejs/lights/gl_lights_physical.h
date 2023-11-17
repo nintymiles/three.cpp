@@ -79,7 +79,7 @@ public:
         floorMat->metalness=0.2;
         floorMat->bumpScale=0.0005;
 
-        std::string rootDir = std::filesystem::current_path().parent_path().parent_path().parent_path().string();
+        std::string rootDir = std::filesystem::current_path().parent_path().parent_path().string();
         std::string fileSeparator = threecpp::getFileSeparator();
         std::string resourceDir = rootDir.append(fileSeparator).append("asset").append(fileSeparator).append("textures").append(fileSeparator);
 
@@ -101,6 +101,7 @@ public:
 //            hwBumpMap->wrapT = Wrapping::RepeatWrapping;
 //            hwBumpMap->anisotropy = 4;
 //            hwBumpMap->repeat.set( 10, 24 );
+//            hwBumpMap->type = TextureDataType::FloatType;
 //            floorMat->bumpMap = hwBumpMap;
 //            floorMat->needsUpdate = true;
         }
@@ -163,6 +164,7 @@ public:
         }
 
         PlaneGeometry::sptr floorGeometry = PlaneGeometry::create( 20, 20 );
+        floorGeometry->mergeVertices();
         Mesh::sptr floorMesh = Mesh::create(floorGeometry, floorMat );
         floorMesh->receiveShadow = true;
         floorMesh->rotation.setX(- math_number::PI/2.0);
