@@ -30,4 +30,4 @@
 | [Buffer-geometry-attributes-none]() | ![Buffer-geometry-attributes-none demo](doc/images/ScreenShot2023-11-10-14-55.png) |
 | Lights                              |                                                                                    |
 | [Lights-pointLights](),mtl解析有问题！    | ![Lights-pointLights](doc/images/20231113170525.png) |
-
+| [Lights-physical]()                 | ![Lights-pointLights](doc/images/20231117165351.png) |
