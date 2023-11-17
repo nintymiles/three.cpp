@@ -1,6 +1,6 @@
 
 namespace shader_chunk {
-const char *normal_fragment_maps = R"(
+const char *normal_pars_fragment = R"(
 
 #ifdef OBJECTSPACE_NORMALMAP
 

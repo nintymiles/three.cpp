@@ -592,7 +592,8 @@ enum class ShaderLibID : unsigned {
     morphtarget_vertex = 64,
     normal_fragment_begin = 65,
     normal_fragment_maps = 66,
-    normalmap_pars_fragment = 67,
+    normal_pars_fragment = 67,
+    normalmap_pars_fragment,
     clearcoat_normal_fragment_begin = 68,
     clearcoat_normal_fragment_maps = 69,
     clearcoat_pars_fragment = 70,
@@ -660,6 +661,7 @@ enum class ShaderLibID : unsigned {
     transmissionmap_pars_fragment=132,
     iridescence_fragment,
     iridescence_pars_fragment,
+    output_fragment,
     unknown=999
 };
 

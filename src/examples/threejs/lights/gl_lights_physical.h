@@ -97,14 +97,14 @@ public:
 
         auto hwBumpMap = textureLoader.load( resourceDir + "hardwood2_bump.jpg");
         if(hwBumpMap){ //todo:bump texture无法应用
-//            hwBumpMap->wrapS = Wrapping::RepeatWrapping;
-//            hwBumpMap->wrapT = Wrapping::RepeatWrapping;
-//            hwBumpMap->anisotropy = 4;
-//            hwBumpMap->repeat.set( 10, 24 );
-//            //hwBumpMap->type = TextureDataType::HalfFloatType;
-//            //hwBumpMap->encoding = TextureEncoding::sRGBEncoding;
-//            floorMat->bumpMap = hwBumpMap;
-//            floorMat->needsUpdate = true;
+            hwBumpMap->wrapS = Wrapping::RepeatWrapping;
+            hwBumpMap->wrapT = Wrapping::RepeatWrapping;
+            hwBumpMap->anisotropy = 4;
+            hwBumpMap->repeat.set( 10, 24 );
+            //hwBumpMap->type = TextureDataType::HalfFloatType;
+            //hwBumpMap->encoding = TextureEncoding::sRGBEncoding;
+            floorMat->bumpMap = hwBumpMap;
+            floorMat->needsUpdate = true;
         }
 
         auto hwRoughMap = textureLoader.load( resourceDir + "hardwood2_roughness.jpg");
@@ -135,14 +135,14 @@ public:
 
         auto bBumpMap = textureLoader.load( resourceDir + "brick_bump.jpg");
         if(bBumpMap){
-//            bBumpMap->wrapS = Wrapping::RepeatWrapping;
-//            bBumpMap->wrapT = Wrapping::RepeatWrapping;
-//            bBumpMap->anisotropy = 4;
-//            bBumpMap->repeat.set( 1, 1 );
+            bBumpMap->wrapS = Wrapping::RepeatWrapping;
+            bBumpMap->wrapT = Wrapping::RepeatWrapping;
+            bBumpMap->anisotropy = 4;
+            bBumpMap->repeat.set( 1, 1 );
 //            bBumpMap->type = TextureDataType::UnsignedByteType;
 //            bBumpMap->format = PixelFormat::RGBFormat;
-//            cubeMat->bumpMap = bBumpMap;
-//            cubeMat->needsUpdate = true;
+            cubeMat->bumpMap = bBumpMap;
+            cubeMat->needsUpdate = true;
         }
 
         ballMat = MeshStandardMaterial::create();

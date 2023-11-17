@@ -87,7 +87,9 @@
 #include "shader_chunk/metalnessmap_pars_fragment.glsl.h"
 #include "shader_chunk/normal_fragment_begin.glsl.h"
 #include "shader_chunk/normal_fragment_maps.glsl.h"
-#include "shader_chunk/normalmap_pars_fragment.h"
+#include "shader_chunk/normal_pars_fragment.glsl.h"
+#include "shader_chunk/normalmap_pars_fragment.glsl.h"
+//#include "shader_chunk/output_fragment.glsl.h"
 #include "shader_chunk/packing.glsl.h"
 #include "shader_chunk/project_vertex.glsl.h"
 #include "shader_chunk/premultiplied_alpha_fragment.glsl.h"
@@ -208,7 +210,9 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"lights_physical_pars_fragment",ShaderLibID::lights_physical_pars_fragment},
         {"normal_fragment_begin",ShaderLibID::normal_fragment_begin},
         {"normal_fragment_maps",ShaderLibID::normal_fragment_maps},
+        {"normal_pars_fragment",ShaderLibID::normal_pars_fragment},
         {"normalmap_pars_fragment",ShaderLibID::normalmap_pars_fragment},
+        {"output_fragment",ShaderLibID::output_fragment},
         {"logdepthbuf_fragment",ShaderLibID::logdepthbuf_fragment},
         {"logdepthbuf_pars_fragment",ShaderLibID::logdepthbuf_pars_fragment},
         {"logdepthbuf_pars_vertex",ShaderLibID::logdepthbuf_pars_vertex},
@@ -371,7 +375,9 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::metalnessmap_fragment,shader_chunk::metalnessmap_fragment},
         {ShaderLibID::normal_fragment_begin,shader_chunk::normal_fragment_begin},
         {ShaderLibID::normal_fragment_maps,shader_chunk::normal_fragment_maps},
+        {ShaderLibID::normal_pars_fragment,shader_chunk::normal_pars_fragment},
         {ShaderLibID::normalmap_pars_fragment,shader_chunk::normalmap_pars_fragment},
+        //{ShaderLibID::output_fragment,shader_chunk::output_fragment},
         {ShaderLibID::packing,shader_chunk::packing},
         {ShaderLibID::project_vertex,shader_chunk::project_vertex},
         {ShaderLibID::premultiplied_alpha_fragment,shader_chunk::premultiplied_alpha_fragment},
