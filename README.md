@@ -16,6 +16,8 @@
 - [x] 实现了2个线段绘制例子
 - [x] 迁移了obj/mtl loader，实现了obj/mtl解析加载功能，并实现一个例子
 - [x] 实现了一个buffer geometry，无顶点数据绘制例子
+- [x] 实现多点光源动态实例
+- [x] 实现基于光源的物理真实（PBR）渲染例子
 
 ## Demos
 
@@ -29,5 +31,5 @@
 | Buffer Geometry                     |                                                                                    |
 | [Buffer-geometry-attributes-none]() | ![Buffer-geometry-attributes-none demo](doc/images/ScreenShot2023-11-10-14-55.png) |
 | Lights                              |                                                                                    |
-| [Lights-pointLights](),mtl解析有问题！    | ![Lights-pointLights](doc/images/20231113170525.png) |
-| [Lights-physical]()                 | ![Lights-pointLights](doc/images/20231117165351.png) |
+| [Lights-pointLights](),mtl解析有问题！    | ![Lights-pointLights](doc/images/20231113170525.png)                               |
+| [Lights-physical]()                 | ![Lights-pointLights](doc/images/20231117165351.jpg)                               |
