@@ -1,10 +1,11 @@
-const char* points_frag =R"(
+const char* points_frag =R""(
 uniform vec3 diffuse;
 uniform float opacity;
 
 #include <common>
 #include <color_pars_fragment>
 #include <map_particle_pars_fragment>
+#include <alphatest_pars_fragment>
 #include <fog_pars_fragment>
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
@@ -23,12 +24,11 @@ void main() {
 
 	outgoingLight = diffuseColor.rgb;
 
-	gl_FragColor = vec4( outgoingLight, diffuseColor.a );
-
+	#include <output_fragment>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 
 }
-)";
+)"";

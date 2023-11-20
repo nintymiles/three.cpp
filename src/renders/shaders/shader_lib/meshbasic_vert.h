@@ -1,4 +1,4 @@
-const char* meshbasic_vert =R"(
+const char* meshbasic_vert =R""(
 #include <common>
 #include <uv_pars_vertex>
 #include <uv2_pars_vertex>
@@ -15,14 +15,15 @@ void main() {
 	#include <uv_vertex>
 	#include <uv2_vertex>
 	#include <color_vertex>
-	#include <skinbase_vertex>
+	#include <morphcolor_vertex>
 
-	#ifdef USE_ENVMAP
+	#if defined ( USE_ENVMAP ) || defined ( USE_SKINNING )
 
-	#include <beginnormal_vertex>
-	#include <morphnormal_vertex>
-	#include <skinnormal_vertex>
-	#include <defaultnormal_vertex>
+		#include <beginnormal_vertex>
+		#include <morphnormal_vertex>
+		#include <skinbase_vertex>
+		#include <skinnormal_vertex>
+		#include <defaultnormal_vertex>
 
 	#endif
 
@@ -31,11 +32,11 @@ void main() {
 	#include <skinning_vertex>
 	#include <project_vertex>
 	#include <logdepthbuf_vertex>
+	#include <clipping_planes_vertex>
 
 	#include <worldpos_vertex>
-	#include <clipping_planes_vertex>
 	#include <envmap_vertex>
 	#include <fog_vertex>
 
 }
-)";
+)"";

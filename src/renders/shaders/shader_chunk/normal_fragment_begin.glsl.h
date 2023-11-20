@@ -1,6 +1,6 @@
 
 namespace shader_chunk {
-const char *normal_fragment_begin = R"(
+const char *normal_fragment_begin = R""(
 float faceDirection = gl_FrontFacing ? 1.0 : - 1.0;
 
 #ifdef FLAT_SHADED
@@ -47,5 +47,5 @@ float faceDirection = gl_FrontFacing ? 1.0 : - 1.0;
 
 vec3 geometryNormal = normal;
 
-)";
+)"";
 }

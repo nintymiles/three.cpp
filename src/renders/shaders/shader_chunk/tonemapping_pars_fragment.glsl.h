@@ -3,7 +3,7 @@ namespace shader_chunk {
 const char *tonemapping_pars_fragment = R"(
 #ifndef saturate
 // <common> may have defined saturate() already
-#define saturate(a) clamp( a, 0.0, 1.0 )
+#define saturate( a ) clamp( a, 0.0, 1.0 )
 #endif
 
 uniform float toneMappingExposure;
@@ -15,7 +15,7 @@ vec3 LinearToneMapping( vec3 color ) {
 
 }
 
-// source: https://www.cs.utah.edu/~reinhard/cdrom/
+// source: https://www.cs.utah.edu/docs/techreports/2002/pdf/UUCS-02-001.pdf
 vec3 ReinhardToneMapping( vec3 color ) {
 
 	color *= toneMappingExposure;

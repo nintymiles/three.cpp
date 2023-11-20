@@ -1,4 +1,4 @@
-const char* equirect_frag =R"(
+const char* equirect_frag =R""(
 uniform sampler2D tEquirect;
 
 varying vec3 vWorldDirection;
@@ -11,12 +11,10 @@ void main() {
 
 	vec2 sampleUV = equirectUv( direction );
 
-	vec4 texColor = texture2D( tEquirect, sampleUV );
-
-	gl_FragColor = mapTexelToLinear( texColor );
+	gl_FragColor = texture2D( tEquirect, sampleUV );
 
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 
 }
-)";
+)"";

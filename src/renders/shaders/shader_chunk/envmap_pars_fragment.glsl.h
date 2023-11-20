@@ -8,12 +8,12 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* envmap_pars_fragment = R""""(
+const char* envmap_pars_fragment = R""(
 #ifdef USE_ENVMAP
 
 	uniform float reflectivity;
 
-	#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( PHONG ) || defined( LAMBERT )
+	#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( PHONG )
 
 		#define ENV_WORLDPOS
 
@@ -28,7 +28,7 @@ const char* envmap_pars_fragment = R""""(
 	#endif
 
 #endif
-)"""";
+)"";
 
 }
 

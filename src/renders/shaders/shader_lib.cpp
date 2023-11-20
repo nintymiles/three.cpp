@@ -163,7 +163,7 @@ public:
         );
 
         add("normal",
-            GLShader(getShaderChunk(ShaderLibID::normal_vert), getShaderChunk(ShaderLibID::normal_frag),
+            GLShader(getShaderChunk(ShaderLibID::meshnormal_vert), getShaderChunk(ShaderLibID::meshnormal_frag),
                      merged({
                                     "common",
                                     "bumpmap",

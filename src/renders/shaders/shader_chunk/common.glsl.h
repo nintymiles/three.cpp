@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* common = R""""(
+const char* common = R""(
 #define PI 3.141592653589793
 #define PI2 6.283185307179586
 #define PI_HALF 1.5707963267948966
@@ -27,7 +27,7 @@ vec3 pow2( const in vec3 x ) { return x*x; }
 float pow3( const in float x ) { return x*x*x; }
 float pow4( const in float x ) { float x2 = x*x; return x2*x2; }
 float max3( const in vec3 v ) { return max( max( v.x, v.y ), v.z ); }
-float average( const in vec3 v ) { return dot( v, vec3( 0.3333333 ) ); }
+float average( const in vec3 color ) { return dot( color, vec3( 0.3333 ) ); }
 
 // expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
 // do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
@@ -98,13 +98,12 @@ mat3 transposeMat3( const in mat3 m ) {
 
 }
 
-float luminance( const in vec3 rgb ) {
+// https://en.wikipedia.org/wiki/Relative_luminance
+float linearToRelativeLuminance( const in vec3 color ) {
 
-	// assumes rgb is in linear color space with sRGB primaries and D65 white point
+	vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );
 
-	const vec3 weights = vec3( 0.2126729, 0.7151522, 0.0721750 );
-
-	return dot( weights, rgb );
+	return dot( weights, color.rgb );
 
 }
 
@@ -125,7 +124,7 @@ vec2 equirectUv( in vec3 dir ) {
 	return vec2( u, v );
 
 }
-)"""";
+)"";
 
 }
 

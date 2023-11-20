@@ -1,6 +1,6 @@
 
 namespace shader_chunk {
-const char *normal_fragment_maps = R"(
+const char *normal_fragment_maps = R""(
 
 #ifdef OBJECTSPACE_NORMALMAP
 
@@ -40,5 +40,5 @@ const char *normal_fragment_maps = R"(
 	normal = perturbNormalArb( - vViewPosition, normal, dHdxy_fwd(), faceDirection );
 
 #endif
-)";
+)"";
 }

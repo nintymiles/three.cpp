@@ -1,4 +1,4 @@
-const char* linedashed_frag =R"(
+const char* linedashed_frag =R""(
 uniform vec3 diffuse;
 uniform float opacity;
 
@@ -31,12 +31,11 @@ void main() {
 
 	outgoingLight = diffuseColor.rgb; // simple shader
 
-	gl_FragColor = vec4( outgoingLight, diffuseColor.a );
-
+	#include <output_fragment>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 
 }
-)";
+)"";

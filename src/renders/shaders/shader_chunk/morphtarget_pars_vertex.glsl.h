@@ -1,20 +1,41 @@
 
 namespace shader_chunk {
-const char *morphtarget_pars_vertex = R"(
+const char *morphtarget_pars_vertex = R""(
 #ifdef USE_MORPHTARGETS
 
 	uniform float morphTargetBaseInfluence;
 
-	#ifndef USE_MORPHNORMALS
+	#ifdef MORPHTARGETS_TEXTURE
 
-		uniform float morphTargetInfluences[ 8 ];
+		uniform float morphTargetInfluences[ MORPHTARGETS_COUNT ];
+		uniform sampler2DArray morphTargetsTexture;
+		uniform ivec2 morphTargetsTextureSize;
+
+		vec4 getMorph( const in int vertexIndex, const in int morphTargetIndex, const in int offset ) {
+
+			int texelIndex = vertexIndex * MORPHTARGETS_TEXTURE_STRIDE + offset;
+			int y = texelIndex / morphTargetsTextureSize.x;
+			int x = texelIndex - y * morphTargetsTextureSize.x;
+
+			ivec3 morphUV = ivec3( x, y, morphTargetIndex );
+			return texelFetch( morphTargetsTexture, morphUV, 0 );
+
+		}
 
 	#else
 
-		uniform float morphTargetInfluences[ 4 ];
+		#ifndef USE_MORPHNORMALS
+
+			uniform float morphTargetInfluences[ 8 ];
+
+		#else
+
+			uniform float morphTargetInfluences[ 4 ];
+
+		#endif
 
 	#endif
 
 #endif
-)";
+)"";
 }

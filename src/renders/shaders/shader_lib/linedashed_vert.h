@@ -1,4 +1,4 @@
-const char* linedashed_vert =R"(
+const char* linedashed_vert =R""(
 uniform float scale;
 attribute float lineDistance;
 
@@ -16,6 +16,7 @@ void main() {
 	vLineDistance = scale * lineDistance;
 
 	#include <color_vertex>
+	#include <morphcolor_vertex>
 	#include <begin_vertex>
 	#include <morphtarget_vertex>
 	#include <project_vertex>
@@ -24,4 +25,4 @@ void main() {
 	#include <fog_vertex>
 
 }
-)";
+)"";

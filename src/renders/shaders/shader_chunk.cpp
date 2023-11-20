@@ -79,6 +79,7 @@
 #include "shader_chunk/morphnormal_vertex.glsl.h"
 #include "shader_chunk/morphtarget_vertex.glsl.h"
 #include "shader_chunk/morphtarget_pars_vertex.glsl.h"
+#include "shader_chunk/morphcolor_vertex.glsl.h"
 #include "shader_chunk/map_fragment.glsl.h"
 #include "shader_chunk/map_pars_fragment.glsl.h"
 #include "shader_chunk/map_particle_fragment.glsl.h"
@@ -87,9 +88,11 @@
 #include "shader_chunk/metalnessmap_pars_fragment.glsl.h"
 #include "shader_chunk/normal_fragment_begin.glsl.h"
 #include "shader_chunk/normal_fragment_maps.glsl.h"
+#include "shader_chunk/normal_vertex.glsl.h"
+#include "shader_chunk/normal_pars_vertex.glsl.h"
 #include "shader_chunk/normal_pars_fragment.glsl.h"
 #include "shader_chunk/normalmap_pars_fragment.glsl.h"
-//#include "shader_chunk/output_fragment.glsl.h"
+#include "shader_chunk/output_fragment.glsl.h"
 #include "shader_chunk/packing.glsl.h"
 #include "shader_chunk/project_vertex.glsl.h"
 #include "shader_chunk/premultiplied_alpha_fragment.glsl.h"
@@ -107,8 +110,8 @@
 #include "shader_chunk/roughnessmap_pars_fragment.h"
 #include "shader_chunk/tonemapping_fragment.glsl.h"
 #include "shader_chunk/tonemapping_pars_fragment.glsl.h"
-#include "shader_chunk/transmissionmap_fragment.glsl.h"
-#include "shader_chunk/transmissionmap_pars_fragment.glsl.h"
+#include "shader_chunk/transmission_fragment.glsl.h"
+#include "shader_chunk/transmission_pars_fragment.glsl.h"
 #include "shader_chunk/worldpos_vertex.glsl.h"
 
 #include "shader_lib/meshbasic_vert.h"
@@ -129,8 +132,8 @@
 #include "shader_lib/linedashed_frag.h"
 #include "shader_lib/depth_vert.h"
 #include "shader_lib/depth_frag.h"
-#include "shader_lib/normal_vert.h"
-#include "shader_lib/normal_frag.h"
+#include "shader_lib/meshnormal_vert.h"
+#include "shader_lib/meshnormal_frag.h"
 #include "shader_lib/sprite_vert.h"
 #include "shader_lib/sprite_frag.h"
 #include "shader_lib/background_vert.h"
@@ -210,6 +213,8 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"lights_physical_pars_fragment",ShaderLibID::lights_physical_pars_fragment},
         {"normal_fragment_begin",ShaderLibID::normal_fragment_begin},
         {"normal_fragment_maps",ShaderLibID::normal_fragment_maps},
+        {"normal_vertex",ShaderLibID::normal_vertex},
+        {"normal_pars_vertex",ShaderLibID::normal_pars_vertex},
         {"normal_pars_fragment",ShaderLibID::normal_pars_fragment},
         {"normalmap_pars_fragment",ShaderLibID::normalmap_pars_fragment},
         {"output_fragment",ShaderLibID::output_fragment},
@@ -225,6 +230,7 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"uv2_pars_fragment",ShaderLibID::uv2_pars_fragment},
         {"uv2_pars_vertex",ShaderLibID::uv2_pars_vertex},
         {"uv2_vertex",ShaderLibID::uv2_vertex},
+        {"morphcolor_vertex",ShaderLibID::morphcolor_vertex},
         {"morphnormal_vertex",ShaderLibID::morphnormal_vertex},
         {"morphtarget_vertex",ShaderLibID::morphtarget_vertex},
         {"morphtarget_pars_vertex",ShaderLibID::morphtarget_pars_vertex},
@@ -251,8 +257,8 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"roughnessmap_pars_fragment",ShaderLibID::roughnessmap_pars_fragment},
         {"tonemapping_fragment",ShaderLibID::tonemapping_fragment},
         {"tonemapping_pars_fragment",ShaderLibID::tonemapping_pars_fragment},
-        {"transmissionmap_fragment",ShaderLibID::transmissionmap_fragment},
-        {"transmissionmap_pars_fragment",ShaderLibID::transmissionmap_pars_fragment},
+        {"transmission_fragment",ShaderLibID::transmission_fragment},
+        {"transmission_pars_fragment",ShaderLibID::transmission_pars_fragment},
         {"worldpos_vertex",ShaderLibID::worldpos_vertex},
 
         {"meshbasic_vert",ShaderLibID::meshbasic_vert},
@@ -273,8 +279,8 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"linedashed_frag",ShaderLibID::linedashed_frag},
         {"depth_vert",ShaderLibID::depth_vert},
         {"depth_frag",ShaderLibID::depth_frag},
-        {"normal_vert",ShaderLibID::normal_vert},
-        {"normal_frag",ShaderLibID::normal_frag},
+        {"meshnormal_vert",ShaderLibID::meshnormal_vert},
+        {"meshnormal_frag",ShaderLibID::meshnormal_frag},
         {"sprite_vert",ShaderLibID::sprite_vert},
         {"sprite_frag",ShaderLibID::sprite_frag},
         {"background_vert",ShaderLibID::background_vert},
@@ -364,6 +370,7 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::uv2_vertex,shader_chunk::uv2_vertex},
         {ShaderLibID::uv2_pars_vertex,shader_chunk::uv2_pars_vertex},
         {ShaderLibID::uv2_pars_fragment,shader_chunk::uv2_pars_fragment},
+        {ShaderLibID::morphcolor_vertex,shader_chunk::morphcolor_vertex},
         {ShaderLibID::morphnormal_vertex,shader_chunk::morphnormal_vertex},
         {ShaderLibID::morphtarget_vertex,shader_chunk::morphtarget_vertex},
         {ShaderLibID::morphtarget_pars_vertex,shader_chunk::morphtarget_pars_vertex},
@@ -374,10 +381,12 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::metalnessmap_pars_fragment,shader_chunk::metalnessmap_pars_fragment},
         {ShaderLibID::metalnessmap_fragment,shader_chunk::metalnessmap_fragment},
         {ShaderLibID::normal_fragment_begin,shader_chunk::normal_fragment_begin},
+        {ShaderLibID::normal_vertex,shader_chunk::normal_vertex},
         {ShaderLibID::normal_fragment_maps,shader_chunk::normal_fragment_maps},
+        {ShaderLibID::normal_pars_vertex,shader_chunk::normal_pars_vertex},
         {ShaderLibID::normal_pars_fragment,shader_chunk::normal_pars_fragment},
         {ShaderLibID::normalmap_pars_fragment,shader_chunk::normalmap_pars_fragment},
-        //{ShaderLibID::output_fragment,shader_chunk::output_fragment},
+        {ShaderLibID::output_fragment,shader_chunk::output_fragment},
         {ShaderLibID::packing,shader_chunk::packing},
         {ShaderLibID::project_vertex,shader_chunk::project_vertex},
         {ShaderLibID::premultiplied_alpha_fragment,shader_chunk::premultiplied_alpha_fragment},
@@ -395,8 +404,8 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::roughnessmap_pars_fragment,shader_chunk::roughnessmap_pars_fragment},
         {ShaderLibID::tonemapping_fragment,shader_chunk::tonemapping_fragment},
         {ShaderLibID::tonemapping_pars_fragment,shader_chunk::tonemapping_pars_fragment},
-        {ShaderLibID::transmissionmap_fragment,shader_chunk::transmissionmap_fragment},
-        {ShaderLibID::transmissionmap_pars_fragment,shader_chunk::transmissionmap_pars_fragment},
+        {ShaderLibID::transmission_fragment,shader_chunk::transmission_fragment},
+        {ShaderLibID::transmission_pars_fragment,shader_chunk::transmission_pars_fragment},
         {ShaderLibID::worldpos_vertex,shader_chunk::worldpos_vertex},
 
         {ShaderLibID::meshbasic_vert,meshbasic_vert},
@@ -417,8 +426,8 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::linedashed_frag, linedashed_frag},
         {ShaderLibID::depth_vert,depth_vert},
         {ShaderLibID::depth_frag, depth_frag},
-        {ShaderLibID::normal_vert,normal_vert},
-        {ShaderLibID::normal_frag, normal_frag},
+        {ShaderLibID::meshnormal_vert, meshnormal_vert},
+        {ShaderLibID::meshnormal_frag, meshnormal_frag},
         {ShaderLibID::sprite_vert,sprite_vert},
         {ShaderLibID::sprite_frag, sprite_frag},
         {ShaderLibID::background_vert,background_vert},

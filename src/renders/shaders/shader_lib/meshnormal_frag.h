@@ -1,4 +1,11 @@
-const char* normal_frag =R"(
+//
+// Created by ultraman on 11/19/2023.
+//
+
+#ifndef THREE_CPP_MESHNORMAL_FRAG_H
+#define THREE_CPP_MESHNORMAL_FRAG_H
+
+const char* meshnormal_frag =R""(
 #define NORMAL
 
 uniform float opacity;
@@ -9,21 +16,9 @@ uniform float opacity;
 
 #endif
 
-#ifndef FLAT_SHADED
-
-	varying vec3 vNormal;
-
-	#ifdef USE_TANGENT
-
-		varying vec3 vTangent;
-		varying vec3 vBitangent;
-
-	#endif
-
-#endif
-
 #include <packing>
 #include <uv_pars_fragment>
+#include <normal_pars_fragment>
 #include <bumpmap_pars_fragment>
 #include <normalmap_pars_fragment>
 #include <logdepthbuf_pars_fragment>
@@ -38,5 +33,13 @@ void main() {
 
 	gl_FragColor = vec4( packNormalToRGB( normal ), opacity );
 
+	#ifdef OPAQUE
+
+		gl_FragColor.a = 1.0;
+
+	#endif
+
 }
-)";
+)"";
+
+#endif //THREE_CPP_MESHNORMAL_FRAG_H

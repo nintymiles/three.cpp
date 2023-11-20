@@ -1,4 +1,5 @@
-const char* distanceRGBA_frag =R"(
+const char* distanceRGBA_frag =R""(
+
 #define DISTANCE
 
 uniform vec3 referencePosition;
@@ -11,6 +12,7 @@ varying vec3 vWorldPosition;
 #include <uv_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
+#include <alphatest_pars_fragment>
 #include <clipping_planes_pars_fragment>
 
 void main () {
@@ -30,4 +32,5 @@ void main () {
 	gl_FragColor = packDepthToRGBA( dist );
 
 }
-)";
+
+)"";

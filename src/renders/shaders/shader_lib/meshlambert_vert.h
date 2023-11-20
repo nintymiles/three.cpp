@@ -1,4 +1,4 @@
-const char* meshlambert_vert =R"(
+const char* meshlambert_vert =R""(
 #define LAMBERT
 
 varying vec3 vLightFront;
@@ -28,6 +28,7 @@ void main() {
 	#include <uv_vertex>
 	#include <uv2_vertex>
 	#include <color_vertex>
+	#include <morphcolor_vertex>
 
 	#include <beginnormal_vertex>
 	#include <morphnormal_vertex>
@@ -48,4 +49,4 @@ void main() {
 	#include <shadowmap_vertex>
 	#include <fog_vertex>
 }
-)";
+)"";

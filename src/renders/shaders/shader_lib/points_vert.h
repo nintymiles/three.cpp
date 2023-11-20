@@ -1,4 +1,4 @@
-const char* points_vert =R"(
+const char* points_vert =R""(
 uniform float size;
 uniform float scale;
 
@@ -12,6 +12,7 @@ uniform float scale;
 void main() {
 
 	#include <color_vertex>
+	#include <morphcolor_vertex>
 	#include <begin_vertex>
 	#include <morphtarget_vertex>
 	#include <project_vertex>
@@ -32,4 +33,4 @@ void main() {
 	#include <fog_vertex>
 
 }
-)";
+)"";

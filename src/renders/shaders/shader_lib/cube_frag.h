@@ -1,4 +1,5 @@
-const char* cube_frag =R"(
+const char* cube_frag =R""(
+
 #include <envmap_common_pars_fragment>
 uniform float opacity;
 
@@ -18,4 +19,5 @@ void main() {
 	#include <encodings_fragment>
 
 }
-)";
+
+)"";

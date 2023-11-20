@@ -1,4 +1,5 @@
-const char* depth_vert =R"(
+const char* depth_vert =R""(
+
 #include <common>
 #include <uv_pars_vertex>
 #include <displacementmap_pars_vertex>
@@ -37,4 +38,5 @@ void main() {
 	vHighPrecisionZW = gl_Position.zw;
 
 }
-)";
+
+)"";

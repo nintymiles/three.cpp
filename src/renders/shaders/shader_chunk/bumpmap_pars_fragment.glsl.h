@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* bumpmap_pars_fragment = R""""(
+const char* bumpmap_pars_fragment = R""(
 #ifdef USE_BUMPMAP
 
 	uniform sampler2D bumpMap;
@@ -34,9 +34,11 @@ const char* bumpmap_pars_fragment = R""""(
 
 	vec3 perturbNormalArb( vec3 surf_pos, vec3 surf_norm, vec2 dHdxy, float faceDirection ) {
 
-		vec3 vSigmaX = dFdx( surf_pos.xyz );
-		vec3 vSigmaY = dFdy( surf_pos.xyz );
-		vec3 vN = surf_norm; // normalized
+		// Workaround for Adreno 3XX dFd*( vec3 ) bug. See #9988
+
+		vec3 vSigmaX = vec3( dFdx( surf_pos.x ), dFdx( surf_pos.y ), dFdx( surf_pos.z ) );
+		vec3 vSigmaY = vec3( dFdy( surf_pos.x ), dFdy( surf_pos.y ), dFdy( surf_pos.z ) );
+		vec3 vN = surf_norm;		// normalized
 
 		vec3 R1 = cross( vSigmaY, vN );
 		vec3 R2 = cross( vN, vSigmaX );
@@ -49,7 +51,7 @@ const char* bumpmap_pars_fragment = R""""(
 	}
 
 #endif
-)"""";
+)"";
 
 }
 

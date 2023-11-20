@@ -1,4 +1,4 @@
-const char* meshtoon_frag =R"(
+const char* meshtoon_frag =R""(
 #define TOON
 
 uniform vec3 diffuse;
@@ -13,6 +13,7 @@ uniform float opacity;
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
+#include <alphatest_pars_fragment>
 #include <aomap_pars_fragment>
 #include <lightmap_pars_fragment>
 #include <emissivemap_pars_fragment>
@@ -20,6 +21,7 @@ uniform float opacity;
 #include <fog_pars_fragment>
 #include <bsdfs>
 #include <lights_pars_begin>
+#include <normal_pars_fragment>
 #include <lights_toon_pars_fragment>
 #include <shadowmap_pars_fragment>
 #include <bumpmap_pars_fragment>
@@ -55,8 +57,7 @@ void main() {
 
 	vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
 
-	gl_FragColor = vec4( outgoingLight, diffuseColor.a );
-
+	#include <output_fragment>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
@@ -64,4 +65,4 @@ void main() {
 	#include <dithering_fragment>
 
 }
-)";
+)"";

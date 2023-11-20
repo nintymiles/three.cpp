@@ -1,4 +1,5 @@
-const char* depth_frag =R"(
+const char* depth_frag =R""(
+
 #if DEPTH_PACKING == 3200
 
 	uniform float opacity;
@@ -10,6 +11,7 @@ const char* depth_frag =R"(
 #include <uv_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
+#include <alphatest_pars_fragment>
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
 
@@ -47,4 +49,5 @@ void main() {
 	#endif
 
 }
-)";
+
+)"";
