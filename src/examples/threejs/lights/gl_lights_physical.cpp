@@ -18,10 +18,10 @@ void GLLightsPhysical::render(){
         previousShadowMap = shadows;
     }
 
-    bulbLight->setPower(bulbLuminousPowers[bulbPower]);
+    bulbLight->setPower(bulbLuminousPowers[bulbPowerSelIdx].second);
     bulbMat->emissiveIntensity = bulbLight->intensity / math::pow( 0.02, 2.0 ); // convert from intensity to irradiance at bulb surface
 
-    hemiLight->intensity = hemiLuminousIrradiances[ hemiIrradiance ];
+    hemiLight->intensity = hemiLuminousIrradiances[hemiIrradianceSelIdx].second;
     float time = threecpp::getSystemTimeInMillis() * 0.0005;
 
     bulbLight->position.y = math::cos( time ) * 0.75 + 1.25;
@@ -33,30 +33,33 @@ void GLLightsPhysical::render(){
 void GLLightsPhysical::showControls(){
     ImGui::Begin("Controls");
 
-    if (ImGui::BeginCombo("##bulbPower", bulbPower.c_str())) // The second parameter is the label previewed before opening the combo.
+    if (ImGui::BeginCombo("##hemiIrridance", hemiLuminousIrradiances.size()>0?hemiLuminousIrradiances[hemiIrradianceSelIdx].first.c_str():"")) // The second parameter is the label previewed before opening the combo.
     {
-        for (int n = 0; n < bulbLuminousPowerNames.size(); n++)
+        for (int n = 0; n < hemiLuminousIrradiances.size(); n++)
         {
-            bool is_selected = (bulbPower == bulbLuminousPowerNames[n]); // You can store your selection however you want, outside or inside your objects
-            if (ImGui::Selectable(bulbLuminousPowerNames[n].c_str(), is_selected))
-                bulbPower = bulbLuminousPowerNames[n];
+            bool is_selected = (hemiIrradianceSelIdx == n); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(hemiLuminousIrradiances[n].first.c_str(), is_selected))
+                hemiIrradianceSelIdx = n;
             if (is_selected)
                 ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
         }
         ImGui::EndCombo();
     }
-    if (ImGui::BeginCombo("##hemiIrridance", hemiIrradiance.c_str())) // The second parameter is the label previewed before opening the combo.
+
+
+    if (ImGui::BeginCombo("##bulbPower", bulbLuminousPowers.size()>0?bulbLuminousPowers[bulbPowerSelIdx].first.c_str():"")) // The second parameter is the label previewed before opening the combo.
     {
-        for (int n = 0; n < hemiLuminousIrradianceNames.size(); n++)
+        for (int n = 0; n < bulbLuminousPowers.size(); n++)
         {
-            bool is_selected = (hemiIrradiance == hemiLuminousIrradianceNames[n]); // You can store your selection however you want, outside or inside your objects
-            if (ImGui::Selectable(hemiLuminousIrradianceNames[n].c_str(), is_selected))
-                hemiIrradiance = hemiLuminousIrradianceNames[n];
+            bool is_selected = (bulbPowerSelIdx == n); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(bulbLuminousPowers[n].first.c_str(), is_selected))
+                bulbPowerSelIdx = n;
             if (is_selected)
                 ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
         }
         ImGui::EndCombo();
     }
+
     ImGui::SliderFloat("Exposure", &exposure, 0.0f, 1.f);
     ImGui::Checkbox("Shadows",&shadows);
     ImGui::End();

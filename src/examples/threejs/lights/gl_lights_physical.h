@@ -30,15 +30,17 @@ class GLLightsPhysical: public ApplicationBase{
 
     bool previousShadowMap = false;
 
-    std::map<std::string,int> bulbLuminousPowers;
-    std::vector<std::string> bulbLuminousPowerNames;
-    std::map<std::string,float> hemiLuminousIrradiances;
-    std::vector<std::string> hemiLuminousIrradianceNames;
+    std::vector<std::pair<std::string,int>> bulbLuminousPowers;
+    //std::vector<std::string> bulbLuminousPowerNames;
+    std::vector<std::pair<std::string,float>> hemiLuminousIrradiances;
+    //std::vector<std::string> hemiLuminousIrradianceNames;
 
     bool shadows = true;
     float exposure = 0.68;
-    std::string bulbPower;//: Object.keys( bulbLuminousPowers )[ 4 ],
-    std::string hemiIrradiance;//: Object.keys( hemiLuminousIrradiances )[ 0 ]
+//    std::string bulbPower;//: Object.keys( bulbLuminousPowers )[ 4 ],
+//    std::string hemiIrradiance;//: Object.keys( hemiLuminousIrradiances )[ 0 ]
+    int hemiIrradianceSelIdx = 4;
+    int bulbPowerSelIdx = 0;
 
 public:
     GLLightsPhysical(int x, int y):ApplicationBase(x,y){}
@@ -209,10 +211,11 @@ public:
                 {"20 lm (4W)", 20},
                 {"Off", 0}
         };
-        for(auto item:bulbLuminousPowers)
-            bulbLuminousPowerNames.push_back(item.first);
-
-        bulbPower = bulbLuminousPowerNames[4];
+//        for(auto item:bulbLuminousPowers)
+//            bulbLuminousPowerNames.push_back(item.first);
+//
+//        bulbPower = bulbLuminousPowerNames[4];
+        bulbPowerSelIdx = 4;
 
         // ref for solar irradiances: https://en.wikipedia.org/wiki/Lux
         hemiLuminousIrradiances = {
@@ -228,10 +231,11 @@ public:
                 {"18000 lx (Daylight)", 18000},
                 {"50000 lx (Direct Sun)", 50000}
         };
-        for(auto item:hemiLuminousIrradiances)
-            hemiLuminousIrradianceNames.push_back(item.first);
-
-        hemiIrradiance = hemiLuminousIrradianceNames[0];
+//        for(auto item:hemiLuminousIrradiances)
+//            hemiLuminousIrradianceNames.push_back(item.first);
+//
+//        hemiIrradiance = hemiLuminousIrradianceNames[0];
+        hemiIrradianceSelIdx = 0;
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
         controller = std::make_shared<control::TrackballControls>(camera, screen);
