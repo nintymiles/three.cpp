@@ -13,6 +13,7 @@
 #include "obj_loader.h"
 
 #include "timer.h"
+#include "trackball_control.h"
 
 #include <thread>
 #include <filesystem>
@@ -41,7 +42,11 @@ public:
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
 
+        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),.8f);
+        scene->add(ambientLight);
+
         SphereGeometry::sptr sphere = SphereGeometry::create( 0.5, 16, 8 );
+
 
         //lights setting
         light1 = PointLight::create( 0xff0040, 2, 50 );
@@ -63,16 +68,18 @@ public:
 
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
-        controller = std::make_shared<control::TrackballControls>(camera, screen);
+        //controller = std::make_shared<TrackballControls>(camera, screen);
+        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
+        controller = tcontroller;
 
-        controller->staticMoving = false;
-        controller->rotateSpeed = 4.0f;
-        controller->zoomSpeed = 3;
-        controller->panSpeed = 3;
-        controller->noZoom = true;
-        controller->noPan = true;
-        controller->noRotate = false;
-        controller->dynamicDampingFactor = 0.3f;
+        tcontroller->staticMoving = false;
+        tcontroller->rotateSpeed = 4.0f;
+        tcontroller->zoomSpeed = 3;
+        tcontroller->panSpeed = 3;
+        tcontroller->noZoom = true;
+        tcontroller->noPan = true;
+        tcontroller->noRotate = false;
+        tcontroller->dynamicDampingFactor = 0.3f;
 
 
         meshMaterial = MeshBasicMaterial::create();

@@ -10,7 +10,8 @@
 #include <limits>
 namespace math_number{
     //when for const error: in-class initializer for static data member of type 'const double' requires 'constexpr' specifier [-Wstatic-float-init]
-    constexpr double EPSILON = std::numeric_limits<double>::epsilon();
+    constexpr double EPSILON_DBL = std::numeric_limits<double>::epsilon();
+    constexpr float EPSILON = std::numeric_limits<float>::epsilon();
     constexpr double PI = M_PI;
 
     constexpr float LN2 =0.6931471805599453094f;

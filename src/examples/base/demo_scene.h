@@ -28,18 +28,19 @@ public :
         camera->position.set(-30.0f, 40.00f, 30.0f);
         camera->lookAt(Vector3());
 
-
         Vector4 screen = Vector4(0, 0, screenX, screenY);
-        controller = std::make_shared<control::TrackballControls>(camera, screen);
+        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
 
-        controller->staticMoving = true;
-        controller->rotateSpeed = 4.0f;
-        controller->zoomSpeed = 3;
-        controller->panSpeed = 3;
-        controller->noZoom = false;
-        controller->noPan = false;
-        controller->noRotate = false;
-        controller->dynamicDampingFactor = 0.3f;
+        tcontroller->staticMoving = true;
+        tcontroller->rotateSpeed = 4.0f;
+        tcontroller->zoomSpeed = 3;
+        tcontroller->panSpeed = 3;
+        tcontroller->noZoom = false;
+        tcontroller->noPan = false;
+        tcontroller->noRotate = false;
+        tcontroller->dynamicDampingFactor = 0.3f;
+
+        controller = tcontroller;
 
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().setHex(0xffffff));

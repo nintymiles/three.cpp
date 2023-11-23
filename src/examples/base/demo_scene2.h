@@ -33,16 +33,16 @@ public:
         isPerspective = true;
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
-        controller = std::make_shared<control::TrackballControls>(camera, screen);
+        controller = std::make_shared<TrackballControls>(camera, screen);
 
-        controller->staticMoving = false;
-        controller->rotateSpeed = 4.0f;
-        controller->zoomSpeed = 3;
-        controller->panSpeed = 3;
-        controller->noZoom = false;
-        controller->noPan = false;
-        controller->noRotate = false;
-        controller->dynamicDampingFactor = 0.3f;
+//        controller->staticMoving = false;
+//        controller->rotateSpeed = 4.0f;
+//        controller->zoomSpeed = 3;
+//        controller->panSpeed = 3;
+//        controller->noZoom = false;
+//        controller->noPan = false;
+//        controller->noRotate = false;
+//        controller->dynamicDampingFactor = 0.3f;
 
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0xffffff));

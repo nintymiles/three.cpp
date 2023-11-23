@@ -10,6 +10,7 @@
 #include "mesh_basic_material.h"
 
 #include "obj_loader.h"
+#include "trackball_control.h"
 
 #include <thread>
 #include <filesystem>
@@ -34,26 +35,27 @@ public:
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
 
-        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),1.f);
+        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),3.f);
 //        ambientLight->position.set(0, 0, 10);
         scene->add(ambientLight);
 
-        auto pointLight = PointLight::create(Color().setHex(0xffffff),1.0f);
+        auto pointLight = PointLight::create(Color().setHex(0xffffff),2.0f);
         pointLight->position.set(30, 20, 50);
         pointLight->castShadow = true;
         scene->add(pointLight);
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
-        controller = std::make_shared<control::TrackballControls>(camera, screen);
+        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
+        controller = tcontroller;
 
-        controller->staticMoving = false;
-        controller->rotateSpeed = 4.0f;
-        controller->zoomSpeed = 3;
-        controller->panSpeed = 3;
-        controller->noZoom = true;
-        controller->noPan = true;
-        controller->noRotate = false;
-        controller->dynamicDampingFactor = 0.3f;
+        tcontroller->staticMoving = false;
+        tcontroller->rotateSpeed = 4.0f;
+        tcontroller->zoomSpeed = 3;
+        tcontroller->panSpeed = 3;
+        tcontroller->noZoom = false;
+        tcontroller->noPan = false;
+        tcontroller->noRotate = false;
+        tcontroller->dynamicDampingFactor = 0.3f;
 
 
         meshMaterial = MeshBasicMaterial::create();

@@ -21,7 +21,7 @@ class Vector3;
 
 class Spherical{
 public:
-    double radius,phi,theta;
+    float radius,phi,theta;
 
     Spherical(double radius = 1.0, double phi = 0, double theta = 0): radius(radius), phi(phi), theta(theta){};
 
@@ -35,7 +35,7 @@ public:
 
     // restrict phi to be betwee EPS and PI-EPS
     Spherical& makeSafe() {
-        double EPS = math_number::EPSILON;
+        float EPS = math_number::EPSILON;
         phi = fmax( EPS, fmin(math_number::PI - EPS, phi ) );
 
         return *this;

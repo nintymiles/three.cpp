@@ -24,6 +24,7 @@
 
 #include "gl_lights_pointlights.h"
 #include "gl_lights_physical.h"
+#include "gl_lights_spotlight.h"
 
 // settings
 extern int display_w;
@@ -128,6 +129,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Gl_Lights_Physical"] = std::make_shared<GLLightsPhysical>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Gl_Lights_Physical"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("Gl_Lights_Spotlight", "")) {
+                if (demoClasses.count("Gl_Lights_Spotlight") == 0)
+                    demoClasses["Gl_Lights_Spotlight"] = std::make_shared<GLLightsSpotlight>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Gl_Lights_Spotlight"];
                 currentDemoClass->renderer->clear();
             }
 

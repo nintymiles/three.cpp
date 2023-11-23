@@ -5,6 +5,7 @@
 #ifndef THREE_CPP_TRACKBALL_CONTROL_H
 #define THREE_CPP_TRACKBALL_CONTROL_H
 
+#include "viewport_control.h"
 #include "vector2.h"
 #include "vector3.h"
 #include "vector4.h"
@@ -12,7 +13,6 @@
 
 #include "common_types.h"
 
-namespace control {
     enum class STATE : int {
         NONE = -1,
         ROTATE = 0,
@@ -22,7 +22,7 @@ namespace control {
         TOUCH_ZOOM_PAN = 4
     };
 
-    class TrackballControls {
+    class TrackballControls:public ViewPortControl {
     private:
         //{ 65 /*A*/, 83 /*S*/, 68 /*D*/ };
         threecpp::byte keys[3] = {65, 83, 68};
@@ -177,23 +177,24 @@ namespace control {
 
         void checkDistance();
 
-        void update();
 
-        void sizeChanged(const Vector4 &screen);
+        bool update() override;
 
-        void reset();
+        void sizeChanged(const Vector4 &screen) override;
 
-        void keydown(threecpp::byte keyCode);
+        void reset() override;
 
-        void keyup();
+        void keydown(threecpp::byte keyCode) override;
 
-        void mouseDown(unsigned button, float x, float y);
+        void keyup() override;
 
-        void mouseMove(float x, float y);
+        void mouseDown(unsigned button, float x, float y) override;
 
-        void mouseUp();
+        void mouseMove(float x, float y) override;
 
-        void mouseWheel(float delta);
+        void mouseUp() override;
+
+        void mouseWheel(float delta) override;
 
         void touchstart();
 
@@ -205,6 +206,6 @@ namespace control {
             this->state = (STATE) mouseState;
         }
     };
-}
+
 
 #endif //THREE_CPP_TRACKBALL_CONTROL_H

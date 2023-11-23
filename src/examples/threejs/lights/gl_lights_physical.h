@@ -18,6 +18,7 @@
 
 #include "timer.h"
 #include "number.h"
+#include "trackball_control.h"
 
 #include <thread>
 #include <filesystem>
@@ -98,7 +99,7 @@ public:
         }
 
         auto hwBumpMap = textureLoader.load( resourceDir + "hardwood2_bump.jpg");
-        if(hwBumpMap){ //todo:bump texture无法应用
+        if(hwBumpMap){
             hwBumpMap->wrapS = Wrapping::RepeatWrapping;
             hwBumpMap->wrapT = Wrapping::RepeatWrapping;
             hwBumpMap->anisotropy = 4;
@@ -238,16 +239,18 @@ public:
         hemiIrradianceSelIdx = 0;
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
-        controller = std::make_shared<control::TrackballControls>(camera, screen);
+        //controller = std::make_shared<TrackballControls>(camera, screen);
+        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
+        controller = tcontroller;
 
-        controller->staticMoving = false;
-        controller->rotateSpeed = 4.0f;
-        controller->zoomSpeed = 3;
-        controller->panSpeed = 3;
-        controller->noZoom = true;
-        controller->noPan = true;
-        controller->noRotate = false;
-        controller->dynamicDampingFactor = 0.3f;
+        tcontroller->staticMoving = false;
+        tcontroller->rotateSpeed = 4.0f;
+        tcontroller->zoomSpeed = 3;
+        tcontroller->panSpeed = 3;
+        tcontroller->noZoom = true;
+        tcontroller->noPan = true;
+        tcontroller->noRotate = false;
+        tcontroller->dynamicDampingFactor = 0.3f;
 
     }
 

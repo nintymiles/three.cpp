@@ -6,7 +6,7 @@
 
 #include "number.h"
 
-namespace control {
+
     using namespace threecpp;
 
     Vector2 TrackballControls::getMouseOnScreen(float pageX, float pageY){
@@ -173,7 +173,7 @@ namespace control {
         }
     }
 
-    void TrackballControls::update(){
+    bool TrackballControls::update(){
         eye.subVectors(camera->position, target);
         if (!noRotate){
             rotateCamera();
@@ -202,6 +202,8 @@ namespace control {
 
             lastPosition.copy(camera->position);
         }
+
+        return true;
     }
 
     void TrackballControls::sizeChanged(const Vector4& screen){
@@ -341,4 +343,3 @@ namespace control {
     void TrackballControls::touchend(){
         //TODO
     }
-}

@@ -9,11 +9,12 @@
 
 
 void GLLightsPointLights::render(){
-#ifdef _win32
-    float delta = timer.getDelta();
-#else
+#ifdef __APPLE__
     float delta = timer.getDelta()/1000.0; //no vsync for glfw on Mac
+#else
+    float delta = timer.getDelta();
 #endif
+
     float time = threecpp::getSystemTimeInMillis()/1000.0;
 
     if(objGroup)

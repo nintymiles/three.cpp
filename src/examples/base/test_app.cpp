@@ -1,13 +1,11 @@
 //
 // Created by SeanR on 2023/10/20.
 //
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 #include <iostream>
-#include "trackball_control.h"
-#include <imgui/imgui.h>
-#include <imgui/backends/imgui_impl_glfw.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
-
 //#include "gl_headers.h"
 #include <stdio.h>
 //#include <glad/glad.h>

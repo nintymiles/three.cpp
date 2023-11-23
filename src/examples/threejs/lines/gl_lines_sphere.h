@@ -13,6 +13,8 @@
 #include "vector3.h"
 #include "math_utils.h"
 
+#include "trackball_control.h"
+
 #include <tuple>
 #include <vector>
 
@@ -54,16 +56,17 @@ public:
         }
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
-        controller = std::make_shared<control::TrackballControls>(camera, screen);
+        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
+        controller = tcontroller;
 
-        controller->staticMoving = false;
-        controller->rotateSpeed = 4.0f;
-        controller->zoomSpeed = 3;
-        controller->panSpeed = 3;
-        controller->noZoom = false;
-        controller->noPan = false;
-        controller->noRotate = false;
-        controller->dynamicDampingFactor = 0.3f;
+        tcontroller->staticMoving = false;
+        tcontroller->rotateSpeed = 4.0f;
+        tcontroller->zoomSpeed = 3;
+        tcontroller->panSpeed = 3;
+        tcontroller->noZoom = false;
+        tcontroller->noPan = false;
+        tcontroller->noRotate = false;
+        tcontroller->dynamicDampingFactor = 0.3f;
 
     }
 

@@ -8,7 +8,7 @@
 #include "scene.h"
 #include "perspective_camera.h"
 #include "orthographic_camera.h"
-#include "trackball_control.h"
+#include "viewport_control.h"
 
 #include "gl_renderer.h"
 
@@ -22,7 +22,7 @@ public:
     std::shared_ptr<Camera> camera;
     std::shared_ptr<PerspectiveCamera> pcamera;
     std::shared_ptr<OrthographicCamera> ocamera;
-    std::shared_ptr<control::TrackballControls> controller;
+    std::shared_ptr<ViewPortControl> controller;
     std::shared_ptr<GLRenderer> renderer;
     int screenX;
     int screenY;
