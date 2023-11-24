@@ -319,7 +319,8 @@ void GLUniforms::initGLUniforms(GLuint program){
 
     glGetProgramiv(this->program, GL_ACTIVE_UNIFORMS, &n);
 
-    for (unsigned i = 0; i < n; i++) {
+    //if using unsigned type here for i,maybe lead to infinite loop
+    for (int i = 0; i < n; i++) {
         GLint size;
         GLsizei bufSize = 1024;
         GLsizei length;
