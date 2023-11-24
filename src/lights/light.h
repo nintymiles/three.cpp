@@ -9,6 +9,7 @@
 #include "color.h"
 #include "common_types.h"
 #include "light_shadow.h"
+#include "texture.h"
 #include "spherical_harmonics3.h"
 
 #include <string>
@@ -28,7 +29,7 @@ class Light : public Object3D {
 public:
     using sptr = std::shared_ptr<Light>;
 
-    using LightShadowPtr= std::shared_ptr<LightShadow>;
+    //using LightShadowPtr= std::shared_ptr<LightShadow>;
 
     Color color{(unsigned)threecpp::Colors::white};
 
@@ -49,6 +50,7 @@ public:
     float penumbra=0.0f;
 
     LightShadow::sptr shadow = nullptr;
+    Texture::sptr map = nullptr;
 
     Object3D::sptr target;
 

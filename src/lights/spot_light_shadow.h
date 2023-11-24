@@ -8,13 +8,21 @@
 #include "light.h"
 
 class SpotLightShadow : public LightShadow {
+
 public:
     using sptr = std::shared_ptr<SpotLightShadow>;
+    float focus;
 
     SpotLightShadow();
 
+    SpotLightShadow(Camera::sptr& camera):LightShadow(camera){}
+
     static sptr create() {
         return std::make_shared<SpotLightShadow>();
+    }
+
+    static sptr create(Camera::sptr& camera) {
+        return std::make_shared<SpotLightShadow>(camera);
     }
 
     virtual void updateMatrices(const Light& light, int viewportIndex = -1) override;

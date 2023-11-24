@@ -37,7 +37,6 @@ class LightShadow {
 
 public:
     using sptr = std::shared_ptr<LightShadow>;
-    using CameraPtr = std::shared_ptr<Camera>;
 
     size_t id;
 
@@ -55,7 +54,7 @@ public:
 
     std::vector<Vector4> viewports = { {Vector4(0,0,1,1)} };
 
-    CameraPtr camera;
+    Camera::sptr camera;
 
     float shadowBias = 0.0f;
 
@@ -78,7 +77,7 @@ public:
 
     LightShadow(): id(_shadowId++),lightShadowType(LightShadowType::LightShadow){}
 
-    LightShadow(const CameraPtr& camera) :id(_shadowId++), camera(camera), lightShadowType(LightShadowType::LightShadow) {}
+    LightShadow(const Camera::sptr& camera) :id(_shadowId++), camera(camera), lightShadowType(LightShadowType::LightShadow) {}
 
     LightShadow(const LightShadow& source);
 
@@ -86,7 +85,7 @@ public:
         return std::make_shared<LightShadow>();
     }
 
-    static sptr create(const CameraPtr& camera) {
+    static sptr create(const Camera::sptr& camera) {
         return std::make_shared<LightShadow>(camera);
     }
 

@@ -297,6 +297,7 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
         m_uniforms->set("directionalLights", lights.state.directional);
         m_uniforms->set("directionalLightShadows", lights.state.directionalShadow);
         m_uniforms->set("spotLights", lights.state.spot);
+        m_uniforms->set("spotLightMap", lights.state.spotLightMap);
         m_uniforms->set("spotLightShadows", lights.state.spotShadow);
         m_uniforms->set("rectAreaLights", lights.state.rectArea);
         m_uniforms->set("pointLights", lights.state.point);

@@ -286,8 +286,9 @@ void mouse_button_callback(GLFWwindow* window, int button,int action,int modes) 
 
     if (currentDemoClass == nullptr) return;
     if (demoIO->WantCaptureMouse) return;
-    bool lbutton_down=false;
+    bool lbutton_down = false;
     bool rbutton_down = false;
+    bool mbutton_down = false;
     switch (button) {
         case GLFW_MOUSE_BUTTON_LEFT :
             if (GLFW_PRESS == action)
@@ -301,16 +302,24 @@ void mouse_button_callback(GLFWwindow* window, int button,int action,int modes) 
             else
                 rbutton_down = false;
             break;
+        case GLFW_MOUSE_BUTTON_MIDDLE:
+            if (GLFW_PRESS == action)
+                mbutton_down = true;
+            else
+                mbutton_down = false;
+            break;
     }
 
-    if (lbutton_down || rbutton_down) {
+    if (lbutton_down || rbutton_down || mbutton_down) {
         double x, y;
         glfwGetCursorPos(window, &x, &y);
         if (lbutton_down) {
             currentDemoClass->controller->mouseDown(0, (int)x, (int)y);//ROTATE
+        }else if(rbutton_down){
+            currentDemoClass->controller->mouseDown(1, (int)x, (int)y);//DOLLY
+        }else {
+            currentDemoClass->controller->mouseDown(2, (int) x, (int) y); //PAN
         }
-        else
-            currentDemoClass->controller->mouseDown(2, (int)x, (int)y); // PAN
 
     }
     else {

@@ -20,10 +20,13 @@
 #include "obj_loader.h"
 #include "trackball_control.h"
 
+#include "helpers/spotlight_helper.h"
+
 #include <thread>
 
 class GLLightsSpotlight: public ApplicationBase{
     SpotLight::sptr spotLight;
+    SpotlightHelper::sptr spotlightHelper;
 
 public:
     GLLightsSpotlight(int x, int y):ApplicationBase(x,y){}
@@ -37,9 +40,10 @@ public:
         renderer->toneMapping = ToneMapping::ACESFilmicToneMapping;
         //renderer->setAnimationLoop( render );
 
-        camera = std::make_shared<PerspectiveCamera>(35.0f, screenX/screenY , .1f, 1000.0f);
-        camera->position.set( 76, 50, 10 );
-        camera->rotation.set( - 1.29, 1.15, 1.26 );
+        camera = std::make_shared<PerspectiveCamera>(55.0f, screenX/screenY , .1f, 1000.0f);
+        camera->position.set( 0, 10, 40 );
+        //camera->rotation.set( - 1.29, 1.15, 1.26 );
+//        camera->lookAt(Vector3(-10,18,0));
 
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
@@ -65,8 +69,8 @@ public:
         }
 
         spotLight = SpotLight::create( 0xffffff, 10 );
-        spotLight->position.set( 25, 50, 25 );
-        spotLight->angle = math_number::PI / 6;
+        spotLight->position.set( 15, 50, 25 );
+        spotLight->angle = math_number::PI / 1.1;
         spotLight->penumbra = 1;
         spotLight->decay = 2;
         spotLight->distance = 100;
@@ -79,6 +83,9 @@ public:
         spotLight->shadow->camera->_far = 200;
         //spotLight->shadow->focus = 1;
         scene->add( spotLight );
+
+        spotlightHelper = SpotlightHelper::create(spotLight);
+        scene->add(spotlightHelper);
 
         PlaneGeometry::sptr geometry = PlaneGeometry::create( 1000, 1000 );
         //MeshLambertMaterial::sptr material = MeshLambertMaterial::create( 0x808080 );
@@ -100,12 +107,19 @@ public:
                         .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator());
                 objGroup = loader.load(dir + relativeDir + filepath);
 
-                objGroup->scale.multiplyScalar( 0.1 );
-                objGroup->position.setZ(30);
-                objGroup->position.setY(0);
+                objGroup->scale.multiplyScalar( 0.012 );
+                objGroup->position.setZ(10);
+                objGroup->position.setY(15);
                 objGroup->position.setX(0);
-                objGroup->rotation.setY( - math_number::PI  );
-                objGroup->rotation.setZ( math_number::PI/2  );
+
+                objGroup->rotation.setX(  - math_number::PI * 0.1  );
+                objGroup->rotation.setY(  - math_number::PI * 0.995  );
+                objGroup->rotation.setZ(  math_number::PI  );
+
+                objGroup->updateMatrix();
+
+                objGroup->castShadow = true;
+                objGroup->receiveShadow = true;
 
                 scene->add(objGroup);
                             }
@@ -119,21 +133,23 @@ public:
         oController->update();
         controller = oController;
 
-        Vector4 screen = Vector4(0, 0, screenX, screenY);
-        //controller = std::make_shared<TrackballControls>(camera, screen);
-        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
-        controller = tcontroller;
-
-        tcontroller->staticMoving = false;
-        tcontroller->rotateSpeed = 2.0f;
-        tcontroller->zoomSpeed = 3;
-        tcontroller->panSpeed = 3;
-        tcontroller->noZoom = false;
-        tcontroller->noPan = false;
-        tcontroller->noRotate = false;
-        tcontroller->dynamicDampingFactor = 0.3f;
+//        Vector4 screen = Vector4(0, 0, screenX, screenY);
+//        //controller = std::make_shared<TrackballControls>(camera, screen);
+//        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
+//        controller = tcontroller;
+//
+//        tcontroller->staticMoving = false;
+//        tcontroller->rotateSpeed = 2.0f;
+//        tcontroller->zoomSpeed = 3;
+//        tcontroller->panSpeed = 3;
+//        tcontroller->noZoom = false;
+//        tcontroller->noPan = false;
+//        tcontroller->noRotate = false;
+//        tcontroller->dynamicDampingFactor = 0.3f;
 
     }
+
+    virtual void render() override;
 };
 
 

@@ -38,8 +38,8 @@ OrbitControl& OrbitControl::pan( float deltaX,float deltaY ) {
     Vector3 offset{};
 
     //if(instanceOf<PerspectiveCamera>(object.get())) {
-    if(std::dynamic_pointer_cast<PerspectiveCamera>(object)){
-        PerspectiveCamera::sptr pCamera = std::dynamic_pointer_cast<PerspectiveCamera>(object);
+    if(std::dynamic_pointer_cast<PerspectiveCamera>(camera)){
+        PerspectiveCamera::sptr pCamera = std::dynamic_pointer_cast<PerspectiveCamera>(camera);
         // perspective
         Vector3 position = pCamera->position;
         offset.copy( position ).sub( target );
@@ -49,14 +49,14 @@ OrbitControl& OrbitControl::pan( float deltaX,float deltaY ) {
         targetDistance *= math::tan( ( pCamera->fov / 2 ) * math_number::PI / 180.0 );
 
         // we use only clientHeight here so aspect ratio does not distort speed
-//            panLeft( 2 * deltaX * targetDistance / element.clientHeight, scope.object.matrix );
-//            panUp( 2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix );
+        panLeft( 2 * deltaX * targetDistance / screen.w, object->matrix );
+        panUp( 2 * deltaY * targetDistance / screen.w, object->matrix );
 
-    } else if (std::dynamic_pointer_cast<OrthographicCamera>(object)) { // orthographic
-        OrthographicCamera::sptr oCamera = std::dynamic_pointer_cast<OrthographicCamera>(object);
+    } else if (std::dynamic_pointer_cast<OrthographicCamera>(camera)) { // orthographic
+        OrthographicCamera::sptr oCamera = std::dynamic_pointer_cast<OrthographicCamera>(camera);
 
-//            panLeft( deltaX * ( oCamera->right - oCamera->left ) / oCamera->zoom / element.clientWidth, oCamera->matrix );
-//            panUp( deltaY * ( oCamera->top - oCamera->bottom ) / oCamera->zoom / element.clientHeight, oCamera->matrix );
+        panLeft( deltaX * ( oCamera->cameraRight - oCamera->left ) / oCamera->zoom / screen.w, oCamera->matrix );
+        panUp( deltaY * ( oCamera->top - oCamera->bottom ) / oCamera->zoom / screen.w, oCamera->matrix );
 
     } else {
         // camera neither orthographic nor perspective
@@ -69,10 +69,10 @@ OrbitControl& OrbitControl::pan( float deltaX,float deltaY ) {
 
 
 OrbitControl& OrbitControl::dollyOut( float dollyScale ) {
-    if (std::dynamic_pointer_cast<PerspectiveCamera>(this->object)) {
+    if (std::dynamic_pointer_cast<PerspectiveCamera>(this->camera)) {
         scale /= dollyScale;
-    }else if(std::dynamic_pointer_cast<OrthographicCamera>(this->object)) {
-        OrthographicCamera::sptr oCamera = std::dynamic_pointer_cast<OrthographicCamera>(this->object);
+    }else if(std::dynamic_pointer_cast<OrthographicCamera>(this->camera)) {
+        OrthographicCamera::sptr oCamera = std::dynamic_pointer_cast<OrthographicCamera>(this->camera);
         oCamera->zoom = fmax( minZoom, fmin( maxZoom, oCamera->zoom * dollyScale ) );
         oCamera->updateProjectionMatrix();
         zoomChanged = true;
@@ -84,10 +84,10 @@ OrbitControl& OrbitControl::dollyOut( float dollyScale ) {
 }
 
 OrbitControl& OrbitControl::dollyIn( float dollyScale ) {
-    if (std::dynamic_pointer_cast<PerspectiveCamera>(this->object)) {
+    if (std::dynamic_pointer_cast<PerspectiveCamera>(this->camera)) {
         scale *= dollyScale;
-    } else if (std::dynamic_pointer_cast<OrthographicCamera>(this->object)) {
-        OrthographicCamera::sptr oCamera = std::dynamic_pointer_cast<OrthographicCamera>(this->object);
+    } else if (std::dynamic_pointer_cast<OrthographicCamera>(this->camera)) {
+        OrthographicCamera::sptr oCamera = std::dynamic_pointer_cast<OrthographicCamera>(this->camera);
         oCamera->zoom = fmax( minZoom, fmin( maxZoom, oCamera->zoom / dollyScale ) );
         oCamera->updateProjectionMatrix();
         zoomChanged = true;
@@ -106,7 +106,7 @@ OrbitControl& OrbitControl::handleMouseMoveRotate() {
     rotateLeft( 2 * math_number::PI * rotateDelta.x / screen.w ); // yes, height
 
     rotateUp( 2 * math_number::PI * rotateDelta.y / screen.w );
-    rotateStart.copy( rotateEnd );
+    //rotateStart.copy( rotateEnd );
     update();
     return *this;
 }
@@ -121,7 +121,7 @@ OrbitControl& OrbitControl::handleMouseMoveDolly() {
         dollyIn( getZoomScale() );
     }
 
-    dollyStart.copy( dollyEnd );
+    //dollyStart.copy( dollyEnd );
     update();
 
     return *this;
@@ -131,7 +131,7 @@ OrbitControl& OrbitControl::handleMouseMovePan() {
     //panEnd.set( event.clientX, event.clientY );
     panDelta.subVectors( panEnd, panStart ).multiplyScalar( panSpeed );
     pan( panDelta.x, panDelta.y );
-    panStart.copy( panEnd );
+    //panStart.copy( panEnd );
     update();
     return *this;
 }
@@ -209,17 +209,17 @@ void OrbitControl::mouseDown(unsigned button, float x, float y){
     switch (state) {
         case STATE::ROTATE:
             if ( enableRotate == false ) return;
-            rotateStart = getMouseOnScreen(x, y);
+            rotateStart.set(x,y);
             rotateEnd = rotateStart;
             break;
         case STATE::DOLLY:
             if ( enableZoom == false ) return;
-            dollyStart = getMouseOnScreen(x, y);
+            dollyStart.set(x,y);
             dollyEnd = dollyStart;
             break;
         case STATE::PAN:
             if ( enablePan == false ) return;
-            panStart = getMouseOnScreen(x, y);
+            panStart.set(x,y);
             panEnd = panStart;
             break;
 
@@ -248,13 +248,13 @@ void OrbitControl::mouseMove(float x, float y){
     if (!enabled) return;
 
     if (state == STATE::ROTATE && !noRotate){
-        rotateEnd = getMouseOnScreen(x, y);
+        rotateEnd.set(x,y);
         handleMouseMoveRotate();
     }else if(state == STATE::DOLLY && !noZoom){
-        dollyEnd = getMouseOnScreen(x, y);
+        dollyEnd.set(x,y);
         handleMouseMoveDolly();
     }else if(state == STATE::PAN && !noPan){
-        panEnd = getMouseOnScreen(x, y);
+        panEnd.set(x,y);
         handleMouseMovePan();
     }
 }

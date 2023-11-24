@@ -162,6 +162,7 @@ struct GLLightsState {
     std::vector<Matrix4> directionalShadowMatrix;
 
     std::vector<SpotLight::sptr> spot;
+    std::vector<Texture::sptr> spotLightMap;
     std::vector<SpotLightShadow::sptr> spotShadow;
     std::vector<Texture::sptr> spotShadowMap;
     std::vector<Matrix4> spotShadowMatrix;

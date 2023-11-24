@@ -29,18 +29,19 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
 
     int numDirectionalShadows = 0;
     int numPointShadows = 0;
+    int numSpotMaps = 0;
     int numSpotShadows = 0;
 
     Matrix4 viewMatrix = camera->matrixWorldInverse;
     std::sort(lights.begin(), lights.end(), shadowCastingLightsFirst);
 
     //resetStates();
-
     state.directional.clear();
     state.directionalShadow.clear();
     state.directionalShadowMap.clear();
     state.directionalShadowMatrix.clear();
     state.spot.clear();
+    state.spotLightMap.clear();
     state.spotShadow.clear();
     state.spotShadowMap.clear();
     state.spotShadowMatrix.clear();
@@ -56,6 +57,7 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
     state.directionalShadowMap.shrink_to_fit();
     state.directionalShadowMatrix.shrink_to_fit();
     state.spot.shrink_to_fit();
+    state.spotLightMap.shrink_to_fit();
     state.spotShadow.shrink_to_fit();
     state.spotShadowMap.shrink_to_fit();
     state.spotShadowMatrix.shrink_to_fit();
@@ -142,9 +144,24 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
             uniforms->penumbra =(float)(cos(light->angle * (1 - light->penumbra)));
             uniforms->decay =light->decay;
 
+            auto shadow = light->shadow;
+
+            if ( light->map ) {
+                state.spotLightMap.push_back(light->map);
+
+//                state.spotLightMap[ numSpotMaps ] = light.map;
+                numSpotMaps ++;
+
+//                // make sure the lightMatrix is up to date
+//                // TODO : do it if required only
+//                shadow.updateMatrices( light );
+//                if ( light.castShadow ) numSpotShadowsWithMaps ++;
+
+            }
+
             if (light->castShadow) {
 
-                auto shadow = light->shadow;
+
 
                 auto shadowUniforms = shadowCache.get(light);
 

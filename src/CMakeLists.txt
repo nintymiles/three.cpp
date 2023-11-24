@@ -60,6 +60,9 @@ file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h)
 file(GLOB CURVES_SOURCE ${ROOT_DIR}/src/curves/*.cpp)
 file(GLOB CURVES_HEADER ${ROOT_DIR}/src/curves/*.h)
 
+file(GLOB HELPERS_SOURCE ${ROOT_DIR}/src/helpers/*.cpp)
+file(GLOB HELPERS_HEADER ${ROOT_DIR}/src/helpers/*.h)
+
 file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/*.cpp;${ROOT_DIR}/src/renders/opengl/*.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
 file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h;${ROOT_DIR}/src/renders/shaders/shader_lib/*.h)
 
@@ -99,6 +102,9 @@ source_group("Geometries" FILES ${GEOMETRIES_HEADER})
 source_group("Curves" FILES ${CURVES_SOURCE})
 source_group("Curves" FILES ${CURVES_HEADER})
 
+source_group("Helpers" FILES ${HELPERS_SOURCE})
+source_group("Helpers" FILES ${HELPERS_HEADER})
+
 source_group("Textures" FILES ${TEXTURES_SOURCE})
 source_group("Textures" FILES ${TEXTURES_HEADER})
 
@@ -121,6 +127,7 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${SCENES_SOURCE};${SCENES_HEADER};
         ${GEOMETRIES_SOURCE};${GEOMETRIES_HEADER};
         ${CURVES_SOURCE};${CURVES_HEADER};
+        ${HELPERS_SOURCE};${HELPERS_HEADER};
         ${MATERIALS_SOURCE};${MATERIALS_HEADER};
         ${RENDERS_SOURCE};${RENDERS_HEADER};
         ${CONTROLS_SOURCE};${CONTROLS_HEADER};
@@ -147,6 +154,7 @@ ${ROOT_DIR}/src/objects
 ${ROOT_DIR}/src/scenes
 ${ROOT_DIR}/src/geometries
 ${ROOT_DIR}/src/curves
+${ROOT_DIR}/src/helpers
 ${ROOT_DIR}/src/renders
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders

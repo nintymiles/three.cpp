@@ -8,6 +8,7 @@
 
 SpotLightShadow::SpotLightShadow() :LightShadow(PerspectiveCamera::create(50.0f, 1.0f, 0.5f, 500.0f)) {
     lightShadowType = LightShadowType::SpotLightShadow;
+    focus = 1.0;
 }
 
 void SpotLightShadow::updateMatrices(const Light& light, int viewportIndex){
