@@ -126,7 +126,7 @@ public:
                 ,std::string("lucy100k.obj"));
         thread1.join();
 
-        std::shared_ptr<OrbitControl> oController = std::make_shared<OrbitControl>(camera, scene);
+        std::shared_ptr<OrbitControl> oController = std::make_shared<OrbitControl>(camera);
         oController->minDistance = 20;
         oController->maxDistance = 500;
         oController->target.set( 0, 18, 0 );

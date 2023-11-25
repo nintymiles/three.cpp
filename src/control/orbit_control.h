@@ -96,12 +96,9 @@ class OrbitControl:public ViewPortControl{
 public:
     using sptr = std::shared_ptr<OrbitControl>;
 
-    Object3D::sptr object;
+    //Object3D::sptr object;
 
     Camera::sptr camera;
-
-    enum ArrowKey{ ArrowLeft, ArrowUp, ArrowRight, ArrowDown };
-
 
     // Set to false to disable this control
     bool enabled = true;
@@ -179,9 +176,9 @@ public:
 //
 //        eye.set(0, 0, 0);
 //
-        //rotateStart.set(0, 0, 0);
+        rotateStart.set(0, 0);
 
-        //rotateEnd.set(0, 0, 0);
+        rotateEnd.set(0, 0);
 
         dollyStart.set(0, 0);
 
@@ -202,10 +199,10 @@ public:
         zoom0 = 1;
     }
 
-    OrbitControl(const Camera::sptr &camera, const Object3D::sptr &object) : OrbitControl(){
+    OrbitControl(const Camera::sptr &camera) : OrbitControl(){
         this->camera = camera;
         //this->screen = screen;
-        this->object = object;
+        //this->object = object;
 
         target0.copy(target);
         position0.copy(camera->position);

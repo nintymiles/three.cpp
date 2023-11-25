@@ -1,5 +1,5 @@
 //
-// Created by ultraman on 11/22/2023.
+// Created by SeanR on 11/22/2023.
 //
 
 #include "orbit_control.h"
@@ -24,7 +24,7 @@ OrbitControl& OrbitControl::panUp(float distance, Matrix4& objectMatrix) {
         v.setFromMatrixColumn( objectMatrix, 1 );
     } else {
         v.setFromMatrixColumn( objectMatrix, 0 );
-        v.crossVectors( object->up, v );
+        v.crossVectors( camera->up, v );
     }
 
     v.multiplyScalar( distance );
@@ -49,8 +49,8 @@ OrbitControl& OrbitControl::pan( float deltaX,float deltaY ) {
         targetDistance *= math::tan( ( pCamera->fov / 2 ) * math_number::PI / 180.0 );
 
         // we use only clientHeight here so aspect ratio does not distort speed
-        panLeft( 2 * deltaX * targetDistance / screen.w, object->matrix );
-        panUp( 2 * deltaY * targetDistance / screen.w, object->matrix );
+        panLeft( 2 * deltaX * targetDistance / screen.w, pCamera->matrix );
+        panUp( 2 * deltaY * targetDistance / screen.w, pCamera->matrix );
 
     } else if (std::dynamic_pointer_cast<OrthographicCamera>(camera)) { // orthographic
         OrthographicCamera::sptr oCamera = std::dynamic_pointer_cast<OrthographicCamera>(camera);
@@ -140,22 +140,24 @@ OrbitControl& OrbitControl::handleMouseMovePan() {
 
 void OrbitControl::reset(){
     state = STATE::NONE;
-//    keyState = STATE::NONE;
+    keyState = STATE::NONE;
 
     target.copy(target0);
+//    object->position.copy(position0);
+//    scope.object.zoom = scope.zoom0;
     camera->position.copy(position0);
     camera->up.copy(up0);
     camera->zoom = zoom0;
 
+//    scope.dispatchEvent( _changeEvent );
     camera->updateProjectionMatrix();
+//    camera->lookAt(target);
 
-//    eye.subVectors(camera->position, target);
-
-    camera->lookAt(target);
-
-    //_this.dispatchEvent(changeEvent);
     lastPosition.copy(camera->position);
     lastZoom = camera->zoom;
+
+    update();
+
 }
 
 void OrbitControl::sizeChanged(const Vector4& screen){
@@ -166,7 +168,8 @@ void OrbitControl::sizeChanged(const Vector4& screen){
     camera->updateProjectionMatrix();
 }
 
-void OrbitControl::keydown(byte keyCode){
+void OrbitControl::keydown(threecpp::byte keyCode){
+    using threecpp::byte;
     if (enabled == false) return;
 
     if (keyState != STATE::NONE) {
@@ -225,19 +228,6 @@ void OrbitControl::mouseDown(unsigned button, float x, float y){
 
     }
 
-//    if (state == STATE::ROTATE && !noRotate){
-//        rotateStart = getMouseProjectionOnBall(x, y);
-//        rotateEnd = rotateStart;
-//
-//    }else if(state == STATE::ZOOM && !noZoom){
-//        zoomStart = getMouseOnScreen(x, y);
-//        zoomEnd = zoomStart;
-//
-//    }else if (state == STATE::PAN && !noPan){
-//        panStart = getMouseOnScreen(x, y);
-//        panEnd = panStart;
-//
-//    }
 }
 
 // if sender was unfocused, then you must focus that
@@ -329,12 +319,12 @@ Vector3 OrbitControl::getMouseProjectionOnBall(float pageX, float pageY){
 bool OrbitControl::update() {
     Vector3 offset{}; // so camera.up is the orbit axis
 
-    Quaternion quat = Quaternion().setFromUnitVectors( object->up, Vector3( 0, 1, 0 ) );
+    Quaternion quat = Quaternion().setFromUnitVectors( camera->up, Vector3( 0, 1, 0 ) );
     Quaternion quatInverse = quat.clone().inverse();
 
     float twoPI = math_number::PI2;
 
-    Vector3& position = object->position;
+    Vector3& position = camera->position;
     offset.copy( position ).sub( target ); // rotate offset to "y-axis-is-up" space
 
     offset.applyQuaternion( quat ); // angle from z-axis around y-axis
@@ -387,7 +377,7 @@ bool OrbitControl::update() {
 
     offset.applyQuaternion( quatInverse );
     position.copy( target ).add( offset );
-    object->lookAt( target );
+    camera->lookAt( target );
 
     if ( enableDamping == true ) {
         sphericalDelta.theta *= 1 - dampingFactor;
@@ -402,11 +392,11 @@ bool OrbitControl::update() {
     // min(camera displacement, camera rotation in radians)^2 > EPS
     // using small-angle approximation cos(x/2) = 1 - x^2 / 8
 
-    if ( zoomChanged || lastPosition.distanceToSquared( object->position ) > EPS || 8 * ( 1 - lastQuaternion.dot( object->quaternion ) ) > EPS ) {
+    if ( zoomChanged || lastPosition.distanceToSquared( camera->position ) > EPS || 8 * ( 1 - lastQuaternion.dot( camera->quaternion ) ) > EPS ) {
         //todo:fix this event handle
         //scope.dispatchEvent( _changeEvent );
-        lastPosition.copy( object->position );
-        lastQuaternion.copy( object->quaternion );
+        lastPosition.copy( camera->position );
+        lastQuaternion.copy( camera->quaternion );
         zoomChanged = false;
         return true;
     }
