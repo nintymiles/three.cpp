@@ -11,7 +11,7 @@ typedef struct _SplineControlPoint {
     float x, y, z;
 } SplineControlPoint;
 
-class Plane;
+struct Plane;
 class Vector2;
 class Box3;
 

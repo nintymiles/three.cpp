@@ -9,6 +9,8 @@
 #include "vector3.h"
 #include "sphere.h"
 
+//warning C4099: “Plane”: 类型名称以前使用“class”现在使用的是“struct”
+//in consistent with forwarding declaration in other place -- class Plane
 struct Plane
 {
     //类内初始化不能使用括号方式，因为这样和函数声明冲突

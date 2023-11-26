@@ -452,8 +452,8 @@ void ObjectState::addFace(int a, int b, int c, int ua, int ub, int uc, int na, i
         addNormal(ia, ib, ic);
 
     }else{
+        // calc normal for vertex if without normal
         addFaceNormal(ia,ib,ic);
-
     }
 
     //uvs
@@ -637,15 +637,25 @@ Group::sptr OBJLoader::parse(const string& path){
 
             // Draw an edge between the first vertex and all subsequent vertices to form an n-gon
             auto& v1 = faceVertices[0];
+            int ua = numeric_limits<int>::quiet_NaN(),ub =numeric_limits<int>::quiet_NaN(),uc=numeric_limits<int>::quiet_NaN();
+            int na = numeric_limits<int>::quiet_NaN(),nb =numeric_limits<int>::quiet_NaN(),nc=numeric_limits<int>::quiet_NaN();
+            int v10 = parseInt(v1[0]), v11 = v1.size() > 1?parseInt(v1[1]):numeric_limits<int>::quiet_NaN(),v12 = v1.size() > 2?parseInt(v1[2]):numeric_limits<int>::quiet_NaN();
 
             for (int j = 1; j < faceVertices.size() - 1; j++){
                 auto& v2 = faceVertices[j];
                 auto& v3 = faceVertices[j + 1];
 
+                if(v1.size()>2){
+                    ua = v11,ub = parseInt(v2[1]),uc=parseInt(v3[1]);
+                    na = v12,nb = parseInt(v2[2]),nc=parseInt(v3[2]);
+                }else if(v1.size()>1){
+                    na = v11,nb = parseInt(v2[1]),nc=parseInt(v3[1]);
+                }
+
                 state.addFace(
-                        parseInt(v1[0]), parseInt(v2[0]), parseInt(v3[0]),
-                        v1.size() > 1 ? parseInt(v1[1]) : numeric_limits<int>::quiet_NaN(), v2.size() > 1 ? parseInt(v2[1]) : numeric_limits<int>::quiet_NaN(), v3.size() > 1 ? parseInt(v3[1]) : numeric_limits<int>::quiet_NaN(),
-                        v1.size() > 2 ? parseInt(v1[2]) : numeric_limits<int>::quiet_NaN(), v2.size() > 2 ? parseInt(v2[2]) : numeric_limits<int>::quiet_NaN(), v3.size() > 2 ? parseInt(v3[2]) : numeric_limits<int>::quiet_NaN()
+                        v10, parseInt(v2[0]), parseInt(v3[0]),
+                        ua,ub,uc,
+                        na,nb,nc
                 );
             }
         }
@@ -665,6 +675,7 @@ Group::sptr OBJLoader::parse(const string& path){
                     if (parts[1] != "") lineUVs.push_back(parts[1]);
                 }
             }
+
             state.addLineGeometry(lineVertices, lineUVs);
 
         }

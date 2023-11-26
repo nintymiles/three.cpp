@@ -253,7 +253,9 @@ GLShadowMap::GLShadowMap(GLObjects::sptr& objects, int maxTextureSize) : objects
     shadowMaterialVertical->fragmentShader.assign(getShaderChunk(ShaderLibID::vsm_frag));
 
     shadowMaterialHorizontal->copy(*shadowMaterialVertical);
-    shadowMaterialHorizontal->definesFloat.insert({ "HORIZONAL_PASS", 1 });
+    //todo:fix --> note: 查看对正在编译的函数 模板 实例化“std::pair<const std::string,float>::pair<const char(&)[15],int,0>(_Other1,_Other2 &&) noexcept(false)”的引用
+    //shadowMaterialHorizontal->definesFloat.insert({ "HORIZONAL_PASS", 1 });
+    shadowMaterialHorizontal->definesFloat["HORIZONAL_PASS"] = 1;
     type = ShadowMapType::PCFShadowMap;
 
     BufferGeometry::sptr fullScreenTri = BufferGeometry::create();
