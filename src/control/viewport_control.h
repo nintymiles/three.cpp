@@ -6,6 +6,7 @@
 #define THREE_CPP_VIEWPORT_CONTROL_H
 
 #include "vector4.h"
+#include "vector2.h"
 
 #include "common_types.h"
 
@@ -28,6 +29,10 @@ public:
     virtual void mouseUp() = 0;
 
     virtual void mouseWheel(float delta) = 0;
+
+    virtual Vector2 getMousePos(){
+        return Vector2(0,0);
+    }
 
 //    virtual void touchstart();
 //

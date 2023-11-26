@@ -388,7 +388,7 @@ public:
 
                     if (attribute != nullptr)
                     {
-                        for (int i = 0;i < attribute->count;i++)
+                        for (unsigned i = 0;i < attribute->count;i++)
                         {
                             point = Vector3();
                             point.fromBufferAttribute<float>(*attribute, i).applyMatrix4(node.matrixWorld);

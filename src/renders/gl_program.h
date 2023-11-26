@@ -23,10 +23,6 @@
 
 class Material;
 class GLRenderer;
-/*else {
-   array.push_back(parameters.get<std::string>("fragmentShader"));
-   array.push_back(parameters.get<std::string>("vertexShader"));
-}*/
 
 class GLBindingStates;
 class GLUniforms;

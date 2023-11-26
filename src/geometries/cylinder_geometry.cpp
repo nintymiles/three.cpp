@@ -88,7 +88,7 @@ void CylinderBufferGeometry::generateCap(bool top){
     int groupCount = 0;
 
     float radius = top ? this->radiusTop : this->radiusBottom;
-    float sign = top ? 1 : -1;
+    float sign = top ? 1.f : -1.f;
 
     centerIndexStart = index;
 
