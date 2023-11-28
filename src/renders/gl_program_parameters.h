@@ -42,10 +42,15 @@ struct ProgramParameters {
     TextureEncoding emissiveMapEncoding = TextureEncoding::Unknown;
     bool bumpMap = false;
     bool normalMap = false;
+    //todo:fix this
+    bool clearcoat = false;
     bool clearcoatMap = false;
     bool clearcoatRoughnessMap = false;
     bool objectSpaceNormalMap = false;
     bool tangentSpaceNormalMap = false;
+
+    bool decodeVideoTexture = false;
+
     bool clearcoatNormalMap = false;
     bool displacementMap = false;
     bool specularMap = false;
@@ -53,6 +58,10 @@ struct ProgramParameters {
     bool metalnessMap = false;
     bool gradientMap = false;
     bool alphaMap = false;
+
+    //todo:new para
+    bool opaque = false;
+
     Combine combine = Combine::None;
     bool vertexColors = false;
     bool vertexTangents = false;
@@ -75,10 +84,12 @@ struct ProgramParameters {
     int numDirLights = 0;
     int numPointLights = 0;
     int numSpotLights = 0;
+    int numSpotLightMaps = 0;
     int numHemiLights = 0;
     int numRectAreaLights = 0;
     int numDirLightShadows = 0;
     int numPointLightShadows =0;
+    int numSpotLightShadowsWithMaps =0;
     int numSpotLightShadows =0;
     bool shadowMapEnabled = false;
     ShadowMapType shadowMapType = ShadowMapType::NoneShadowMap;

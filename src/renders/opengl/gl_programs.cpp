@@ -105,36 +105,36 @@ std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& rendere
 
     //material->onBeforeCompile.emitSignal(*shaderobject, renderer);
 
-
     GLRenderTarget::sptr currentRenderTarget = renderer._currentRenderTarget;
 
     //int numMultiviewViews = currentRenderTarget != nullptr && currentRenderTarget->isGLMultiviewRenderTarget ? currentRenderTarget->numViews : 0;
+    auto useAlphaTest = material->alphaTest > 0;
+    auto useClearcoat = material->clearcoat > 0;
+    auto useIridescence = material->iridescence > 0;
 
-
-    parameters->isGLES3 = true;// isGL2;
+    parameters->isGLES3 = true;// only GLES3;
     parameters->shaderID =material->shaderId;
     parameters->shaderName =material->type;
 
     //parameters->uniforms =shaderobject->uniforms);
     parameters->vertexShader = vertexShader;
-    parameters->fragmentShader =fragmentShader;
+    parameters->fragmentShader = fragmentShader;
 
-
-    parameters->defines =material->definesString;
+    parameters->defines = material->definesString;
     parameters->definesFloat = material->definesFloat;
     parameters->isRawShaderMaterial = material->isRawShaderMaterial;
     parameters->glslVersion = material->glslVersion;
 
-    parameters->precision =precision;
+    parameters->precision = precision;
 
-    parameters->instancing =object.type=="InstancedMesh";
+    parameters->instancing = object.type=="InstancedMesh";
     parameters->instancingColor = (instanceOf<InstancedMesh>(&object) && object.instanceColor) ? true:false;
 
     parameters->supportsVertexTextures = vertexTextures;
     parameters->outputEncoding = currentRenderTarget!=nullptr ? getTextureEncodingFromMap(currentRenderTarget->texture) : renderer.outputEncoding;
-    parameters->map =material->map!=nullptr;
+    parameters->map = material->map!=nullptr;
+    parameters->mapEncoding = getTextureEncodingFromMap(material->map);
 
-    parameters->mapEncoding =getTextureEncodingFromMap(material->map);
     parameters->matcap =material->matcap!=nullptr;
     parameters->matcapEncoding =getTextureEncodingFromMap(material->matcap);
     parameters->envMap =material->envMap!=nullptr;
@@ -150,25 +150,51 @@ std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& rendere
     parameters->normalMap =material->normalMap!=nullptr;
     parameters->objectSpaceNormalMap =material->normalMapType == NormalMapTypes::ObjectSpaceNormalMap;
     parameters->tangentSpaceNormalMap =material->normalMapType == NormalMapTypes::TangentSpaceNormalMap;
+
+    parameters->decodeVideoTexture = material->map && ( material->map->isVideoTexture == true ) && ( material->map->encoding == TextureEncoding::sRGBEncoding );
+
+    parameters->clearcoat = useClearcoat;
     parameters->clearcoatMap =material->clearcoatMap!=nullptr;
     parameters->clearcoatRoughnessMap =material->clearcoatRoughnessMap!=nullptr;
     parameters->clearcoatNormalMap =material->clearcoatNormalMap!=nullptr;
+
+//    iridescence: useIridescence,
+//    iridescenceMap: useIridescence && !! material.iridescenceMap,
+//    iridescenceThicknessMap: useIridescence && !! material.iridescenceThicknessMap,
+
     parameters->displacementMap = material->displacementMap!=nullptr;
     parameters->roughnessMap =material->roughnessMap!=nullptr;
     parameters->metalnessMap =material->metalnessMap!=nullptr;
     parameters->specularMap = material->specularMap != nullptr;
+
+//    specularIntensityMap: !! material.specularIntensityMap,
+//    specularColorMap: !! material.specularColorMap,
+
+    parameters-> opaque = material->transparent == false && material->blending == Blending::NormalBlending;
+
     parameters->alphaMap =material->alphaMap!=nullptr;
+    //todo:fix this
+    //parameters->alphaTest = useAlphaTest;
+    parameters->alphaTest =material->alphaTest;
 
     parameters->gradientMap =material->gradientMap!=nullptr;
+
     bool isSheen = material->sheen.isNull();
     parameters->sheen = !isSheen;
+//    sheenColorMap: !! material.sheenColorMap,
+//    sheenRoughnessMap: !! material.sheenRoughnessMap,
+
+//    transmission: material.transmission > 0,
+//    thicknessMap: !! material.thicknessMap,
+    parameters->transmissionMap = material->transmissionMap != nullptr;
 
     parameters->combine =material->combine;
-    parameters->transmissionMap = material->transmissionMap != nullptr;
+
     parameters->vertexTangents =material->normalMap!=nullptr && material->vertexTangents;
     parameters->vertexColors =material->vertexColors;
     parameters->vertexUvs =material->map!=nullptr || material->bumpMap!=nullptr || material->normalMap!=nullptr || material->specularMap!=nullptr || material->alphaMap!=nullptr || material->emissiveMap!=nullptr || material->roughnessMap!=nullptr || material->metalnessMap!=nullptr || material->clearcoatMap!=nullptr || material->clearcoatRoughnessMap!=nullptr || material->clearcoatNormalMap!=nullptr || material->displacementMap!=nullptr;
     parameters->uvsVertexOnly =!(material->map!=nullptr || material->bumpMap!=nullptr || material->normalMap!=nullptr || material->specularMap!=nullptr || material->alphaMap || material->emissiveMap!=nullptr || material->roughnessMap!=nullptr || material->metalnessMap!=nullptr|| material->clearcoatNormalMap!=nullptr) && material->displacementMap!=nullptr;
+
     parameters->fog =scene->fog!=nullptr;
     parameters->useFog =material->fog;
     parameters->fogExp2 =scene->fog!=nullptr && scene->fog->type=="FogExp2";
@@ -190,12 +216,14 @@ std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& rendere
     parameters->numDirLights =lights.state.directional.size();
     parameters->numPointLights =lights.state.point.size();
     parameters->numSpotLights =lights.state.spot.size();
+    parameters->numSpotLightMaps =lights.state.spotLightMap.size();
     parameters->numRectAreaLights =lights.state.rectArea.size();
     parameters->numHemiLights =lights.state.hemi.size();
 
     parameters->numDirLightShadows =lights.state.directionalShadowMap.size();
     parameters->numPointLightShadows =lights.state.pointShadowMap.size();
     parameters->numSpotLightShadows =lights.state.spotShadowMap.size();
+    parameters->numSpotLightShadowsWithMaps = lights.state.numSpotLightShadowsWithMaps;
 
     parameters->numClippingPlanes = clipping->numPlanes;
     parameters->numClipIntersection = clipping->numIntersection;
@@ -210,13 +238,16 @@ std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& rendere
 
     parameters->premultipliedAlpha =material->premultipliedAlpha;
 
-    parameters->alphaTest =material->alphaTest;
     parameters->doubleSided =material->side == Side::DoubleSide;
     parameters->flipSided = material->side == Side::BackSide;
 
+//    useDepthPacking: !! material.depthPacking,
     parameters->depthPacking =material->depthPacking;
 
+    //todo:weired name
+//    index0AttributeName: material.index0AttributeName,
     parameters->indexOfAttributeName = material->indexOfAttributeName;
+
     parameters->extensionDerivatives =material->extensions.derivatives;
     parameters->extensionFragDepth =material->extensions.fragDepth;
     parameters->extensionDrawBuffers =material->extensions.drawBuffers;
@@ -310,11 +341,13 @@ std::string GLPrograms::getProgramCacheKey(const Material& material, const Progr
         array.push_back(std::to_string(parameters.numDirLights));
         array.push_back(std::to_string(parameters.numPointLights));
         array.push_back(std::to_string(parameters.numSpotLights));
+        array.push_back(std::to_string(parameters.numSpotLightMaps));
         array.push_back(std::to_string(parameters.numHemiLights));
         array.push_back(std::to_string(parameters.numRectAreaLights));
         array.push_back(std::to_string(parameters.numDirLightShadows));
         array.push_back(std::to_string(parameters.numPointLightShadows));
         array.push_back(std::to_string(parameters.numSpotLightShadows));
+        array.push_back(std::to_string(parameters.numSpotLightShadowsWithMaps));
         array.push_back(std::to_string(parameters.shadowMapEnabled));
         array.push_back(std::to_string((int)parameters.shadowMapType));
         array.push_back(std::to_string((int)parameters.toneMapping));

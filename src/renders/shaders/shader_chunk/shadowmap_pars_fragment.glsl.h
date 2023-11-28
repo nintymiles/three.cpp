@@ -1,6 +1,18 @@
 
 namespace shader_chunk {
-const char *shadowmap_pars_fragment = R"(
+const char *shadowmap_pars_fragment = R""(
+#if NUM_SPOT_LIGHT_COORDS > 0
+
+  varying vec4 vSpotLightCoord[ NUM_SPOT_LIGHT_COORDS ];
+
+#endif
+
+#if NUM_SPOT_LIGHT_MAPS > 0
+
+  uniform sampler2D spotLightMap[ NUM_SPOT_LIGHT_MAPS ];
+
+#endif
+
 #ifdef USE_SHADOWMAP
 
 	#if NUM_DIR_LIGHT_SHADOWS > 0
@@ -22,7 +34,6 @@ const char *shadowmap_pars_fragment = R"(
 	#if NUM_SPOT_LIGHT_SHADOWS > 0
 
 		uniform sampler2D spotShadowMap[ NUM_SPOT_LIGHT_SHADOWS ];
-		varying vec4 vSpotShadowCoord[ NUM_SPOT_LIGHT_SHADOWS ];
 
 		struct SpotLightShadow {
 			float shadowBias;
@@ -161,22 +172,22 @@ const char *shadowmap_pars_fragment = R"(
 				texture2DCompare( shadowMap, uv + vec2( dx, 0.0 ), shadowCoord.z ) +
 				texture2DCompare( shadowMap, uv + vec2( 0.0, dy ), shadowCoord.z ) +
 				texture2DCompare( shadowMap, uv + texelSize, shadowCoord.z ) +
-				mix( texture2DCompare( shadowMap, uv + vec2( -dx, 0.0 ), shadowCoord.z ), 
+				mix( texture2DCompare( shadowMap, uv + vec2( -dx, 0.0 ), shadowCoord.z ),
 					 texture2DCompare( shadowMap, uv + vec2( 2.0 * dx, 0.0 ), shadowCoord.z ),
 					 f.x ) +
-				mix( texture2DCompare( shadowMap, uv + vec2( -dx, dy ), shadowCoord.z ), 
+				mix( texture2DCompare( shadowMap, uv + vec2( -dx, dy ), shadowCoord.z ),
 					 texture2DCompare( shadowMap, uv + vec2( 2.0 * dx, dy ), shadowCoord.z ),
 					 f.x ) +
-				mix( texture2DCompare( shadowMap, uv + vec2( 0.0, -dy ), shadowCoord.z ), 
+				mix( texture2DCompare( shadowMap, uv + vec2( 0.0, -dy ), shadowCoord.z ),
 					 texture2DCompare( shadowMap, uv + vec2( 0.0, 2.0 * dy ), shadowCoord.z ),
 					 f.y ) +
-				mix( texture2DCompare( shadowMap, uv + vec2( dx, -dy ), shadowCoord.z ), 
+				mix( texture2DCompare( shadowMap, uv + vec2( dx, -dy ), shadowCoord.z ),
 					 texture2DCompare( shadowMap, uv + vec2( dx, 2.0 * dy ), shadowCoord.z ),
 					 f.y ) +
-				mix( mix( texture2DCompare( shadowMap, uv + vec2( -dx, -dy ), shadowCoord.z ), 
+				mix( mix( texture2DCompare( shadowMap, uv + vec2( -dx, -dy ), shadowCoord.z ),
 						  texture2DCompare( shadowMap, uv + vec2( 2.0 * dx, -dy ), shadowCoord.z ),
 						  f.x ),
-					 mix( texture2DCompare( shadowMap, uv + vec2( -dx, 2.0 * dy ), shadowCoord.z ), 
+					 mix( texture2DCompare( shadowMap, uv + vec2( -dx, 2.0 * dy ), shadowCoord.z ),
 						  texture2DCompare( shadowMap, uv + vec2( 2.0 * dx, 2.0 * dy ), shadowCoord.z ),
 						  f.x ),
 					 f.y )
@@ -309,5 +320,5 @@ const char *shadowmap_pars_fragment = R"(
 	}
 
 #endif
-)";
+)"";
 }

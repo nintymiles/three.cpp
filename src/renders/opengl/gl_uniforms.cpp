@@ -273,7 +273,7 @@ void GLUniform::setValue(const std::vector<Texture::sptr>& t)
 
     auto units = allocTextUnits(n);
 
-    glUniform1iv(addr, (GLsizei)n, reinterpret_cast<const GLint*>(units.data()));
+    glUniform1iv(addr, (GLsizei)n, (GLint *)(units.data()));
 
     for (int i = 0; i < n; i++)
     {
@@ -359,14 +359,15 @@ void GLUniforms::parseUniform(const std::string& name, UniformType activeInfo, c
 
         int matchesSize = match[1].length();
         int matchPosition = match.position(1);
-        if (subscript.empty() || subscript == "[" && matchesSize + match.position(1) == (name.size()-3)) {
+        if (subscript.empty() || subscript == "[" && (matchesSize + 3) == name.size()) {
             // bare name or "pure" bottom-level array "[0]" suffix
             if (!match[3].matched) {
                 container->add(GLUniform::create(this->textures,id, activeInfo, addr));
-
+                break;
             }
             else {
                 container->add(PureArrayUniform::create(this->textures,id, activeInfo, addr));
+                break;
             }
         }
         else {

@@ -90,6 +90,7 @@ public:
 
     Combine combine;
 
+    float iridescence;
 
     float clearcoat;
 

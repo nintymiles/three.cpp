@@ -660,15 +660,34 @@ void GLProgram::fetchAttributeLocation(const int program, std::unordered_map<std
     }
 }
 
+//function replaceLightNums(string, parameters) {
+//    const numSpotLightCoords = parameters.numSpotLightShadows + parameters.numSpotLightMaps - parameters.numSpotLightShadowsWithMaps;
+//    return string.replace(/NUM_DIR_LIGHTS/g, parameters.numDirLights).
+//                  replace(/NUM_SPOT_LIGHTS/g, parameters.numSpotLights).
+//                  replace(/NUM_SPOT_LIGHT_MAPS/g, parameters.numSpotLightMaps).
+//                  replace(/NUM_SPOT_LIGHT_COORDS/g, numSpotLightCoords).
+//                  replace(/NUM_RECT_AREA_LIGHTS/g, parameters.numRectAreaLights).
+//                  replace(/NUM_POINT_LIGHTS/g, parameters.numPointLights).
+//                  replace(/NUM_HEMI_LIGHTS/g, parameters.numHemiLights).
+//                  replace(/NUM_DIR_LIGHT_SHADOWS/g, parameters.numDirLightShadows).
+//                  replace(/NUM_SPOT_LIGHT_SHADOWS_WITH_MAPS/g, parameters.numSpotLightShadowsWithMaps).
+//                  replace(/NUM_SPOT_LIGHT_SHADOWS/g, parameters.numSpotLightShadows).
+//                  replace(/NUM_POINT_LIGHT_SHADOWS/g, parameters.numPointLightShadows);
+//}
 std::string& GLProgram::replaceLightsNums(std::string& str, const ProgramParameters& parameters){
     using string_utils::replace_all;
 
+    auto numSpotLightCoords = parameters.numSpotLightShadows + parameters.numSpotLightMaps - parameters.numSpotLightShadowsWithMaps;
+
     str = replace_all(str, "NUM_DIR_LIGHTS", std::to_string(parameters.numDirLights));
     str = replace_all(str, "NUM_SPOT_LIGHTS", std::to_string(parameters.numSpotLights));
+    str = replace_all(str, "NUM_SPOT_LIGHT_MAPS", std::to_string(parameters.numSpotLightMaps));
+    str = replace_all(str, "NUM_SPOT_LIGHT_COORDS", std::to_string(numSpotLightCoords));
     str = replace_all(str, "NUM_RECT_AREA_LIGHTS", std::to_string(parameters.numRectAreaLights));
     str = replace_all(str, "NUM_POINT_LIGHTS", std::to_string(parameters.numPointLights));
     str = replace_all(str, "NUM_HEMI_LIGHTS", std::to_string(parameters.numHemiLights));
     str = replace_all(str, "NUM_DIR_LIGHT_SHADOWS", std::to_string(parameters.numDirLightShadows));
+    str = replace_all(str, "NUM_SPOT_LIGHT_SHADOWS_WITH_MAPS", std::to_string(parameters.numSpotLightShadowsWithMaps));
     str = replace_all(str, "NUM_SPOT_LIGHT_SHADOWS", std::to_string(parameters.numSpotLightShadows));
     str = replace_all(str, "NUM_POINT_LIGHT_SHADOWS", std::to_string(parameters.numPointLightShadows));
 

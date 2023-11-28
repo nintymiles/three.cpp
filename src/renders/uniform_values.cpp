@@ -142,6 +142,7 @@ public:
                                 value("shadowRadius",0.0f),
                                 value("shadowMapSize",Vector2())
                         }),
+                        value("spotLightMap",std::vector<Texture::sptr>()),
                         value("spotShadowMap",std::vector<Texture::sptr>()),
                         value("spotShadowMatrix",std::vector<Matrix4>()),
 

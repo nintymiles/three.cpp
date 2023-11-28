@@ -1,6 +1,13 @@
 
 namespace shader_chunk {
-const char *shadowmap_pars_vertex = R"(
+const char *shadowmap_pars_vertex = R""(
+#if NUM_SPOT_LIGHT_COORDS > 0
+
+  uniform mat4 spotLightMatrix[ NUM_SPOT_LIGHT_COORDS ];
+  varying vec4 vSpotLightCoord[ NUM_SPOT_LIGHT_COORDS ];
+
+#endif
+
 #ifdef USE_SHADOWMAP
 
 	#if NUM_DIR_LIGHT_SHADOWS > 0
@@ -20,9 +27,6 @@ const char *shadowmap_pars_vertex = R"(
 	#endif
 
 	#if NUM_SPOT_LIGHT_SHADOWS > 0
-
-		uniform mat4 spotShadowMatrix[ NUM_SPOT_LIGHT_SHADOWS ];
-		varying vec4 vSpotShadowCoord[ NUM_SPOT_LIGHT_SHADOWS ];
 
 		struct SpotLightShadow {
 			float shadowBias;
@@ -62,5 +66,5 @@ const char *shadowmap_pars_vertex = R"(
 	*/
 
 #endif
-)";
+)"";
 }

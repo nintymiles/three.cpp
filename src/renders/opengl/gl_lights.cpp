@@ -9,7 +9,7 @@ GLLights::GLLights(){
     state.probe = { Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3(), Vector3() };
 }
 
-void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camera){
+void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camera,bool physicallyCorrectLights){
     using namespace std;
 
     Vector3 vector3;
@@ -21,7 +21,6 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
         state.probe[i].set(0, 0, 0);
 
     int directionalLength = 0;
-
     int pointLength = 0;
     int spotLength = 0;
     int rectAreaLength = 0;
@@ -29,11 +28,17 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
 
     int numDirectionalShadows = 0;
     int numPointShadows = 0;
-    int numSpotMaps = 0;
     int numSpotShadows = 0;
+    int numSpotMaps = 0;
+    int numSpotShadowsWithMaps = 0;
 
     Matrix4 viewMatrix = camera->matrixWorldInverse;
-    std::sort(lights.begin(), lights.end(), shadowCastingLightsFirst);
+    // ordering : [shadow casting + map texturing, map texturing, shadow casting, none ]
+    std::sort(lights.begin(), lights.end(), shadowCastingAndTexturingLightsFirst);
+
+    // artist-friendly light intensity scaling factor
+    //todo:fix this -- apply scaleFactor
+    auto scaleFactor = ( physicallyCorrectLights != true ) ? math_number::PI : 1;
 
     //resetStates();
     state.directional.clear();
@@ -70,7 +75,7 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
 
     state.ambient.setHex(0x000000);
 
-    for (unsigned i = 0; i < lights.size(); i++) {
+    for (auto i = 0; i < lights.size(); i++) {
         Light::sptr light = lights[i];
 
         Color color = light->color;
@@ -101,15 +106,14 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
             uniforms->direction.sub(vector3);
             uniforms->direction.transformDirection(viewMatrix);
 
-
             if (light->castShadow) {
 
                 auto shadow = light->shadow;
 
                 auto shadowUniforms = shadowCache.get(light);
-                shadowUniforms->shadowBias = shadow->shadowBias;
 
                 shadowUniforms->shadowBias = shadow->shadowBias;
+                shadowUniforms->shadowNormalBias = shadow->shadowNormalBias;
                 shadowUniforms->shadowRadius = shadow->shadowRadius;
                 shadowUniforms->shadowMapSize = shadow->shadowMapSize;
 
@@ -141,6 +145,7 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
             uniforms->direction.transformDirection(viewMatrix);
 
             uniforms->coneCos= (float)cos(light->angle);
+            //todo:fix this -->penumbraCos
             uniforms->penumbra =(float)(cos(light->angle * (1 - light->penumbra)));
             uniforms->decay =light->decay;
 
@@ -149,29 +154,31 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
             if ( light->map ) {
                 state.spotLightMap.push_back(light->map);
 
-//                state.spotLightMap[ numSpotMaps ] = light.map;
                 numSpotMaps ++;
 
-//                // make sure the lightMatrix is up to date
-//                // TODO : do it if required only
-//                shadow.updateMatrices( light );
-//                if ( light.castShadow ) numSpotShadowsWithMaps ++;
+                // make sure the lightMatrix is up to date
+                // TODO : do it if required only
+                shadow->updateMatrices( *light );
+                if ( light->castShadow ) numSpotShadowsWithMaps++;
 
             }
 
+            //todo:fix this spotLightMatrix?spotShadowMatrix?
+            //state.spotLightMatrix.push_back(shadow->shadowMatrix);
+            state.spotShadowMatrix.push_back(light->shadow->shadowMatrix);
+
             if (light->castShadow) {
-
-
 
                 auto shadowUniforms = shadowCache.get(light);
 
                 shadowUniforms->shadowBias=shadow->shadowBias;
+                shadowUniforms->shadowNormalBias=shadow->shadowNormalBias;
                 shadowUniforms->shadowRadius=shadow->shadowRadius;
                 shadowUniforms->shadowMapSize.copy(shadow->shadowMapSize);
 
                 state.spotShadow.push_back(dynamic_pointer_cast<SpotLightShadow>(shadowUniforms));
                 state.spotShadowMap.push_back(shadowMap);
-                state.spotShadowMatrix.push_back(light->shadow->shadowMatrix);
+//                state.spotShadowMatrix.push_back(light->shadow->shadowMatrix);
 
                 numSpotShadows++;
 
@@ -179,8 +186,8 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
 
             //state.spot[spotLength] = uniforms;
             state.spot.push_back(dynamic_pointer_cast<SpotLight>(uniforms));
-            spotLength++;
 
+            spotLength++;
         }
         else if (light->type=="RectAreaLight") {
 
@@ -289,6 +296,7 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
 
     //var hash = state.hash;
 
+    //match elements and size
     if (state.hash.directionalLength != directionalLength ||
         state.hash.pointLength != pointLength ||
         state.hash.spotLength != spotLength ||
@@ -296,19 +304,40 @@ void GLLights::setup(std::vector<Light::sptr>& lights, const Camera::sptr& camer
         state.hash.hemiLength != hemiLength ||
         state.hash.numDirectionalShadows != numDirectionalShadows ||
         state.hash.numPointShadows != numPointShadows ||
-        state.hash.numSpotShadows != numSpotShadows) {
+        state.hash.numSpotShadows != numSpotShadows ||
+        state.hash.numSpotMaps != numSpotMaps) {
 
 
+        state.directional.resize(directionalLength,nullptr);
+        state.point.resize(pointLength, nullptr);
+        state.spot.resize(spotLength, nullptr);
+        state.rectArea.resize(rectAreaLength, nullptr);
+        state.hemi.resize(hemiLength, nullptr);
 
-        state.hash.directionalLength= directionalLength;
-        state.hash.pointLength= pointLength;
-        state.hash.spotLength= spotLength;
-        state.hash.rectAreaLength= rectAreaLength;
-        state.hash.hemiLength= hemiLength;
+        state.directionalShadow.resize(numDirectionalShadows, nullptr);
+        state.directionalShadowMap.resize(numDirectionalShadows, nullptr);
+        state.pointShadow.resize(numPointShadows, nullptr);
+        state.pointShadowMap.resize(numPointShadows, nullptr);
+        state.spotShadow.resize(numSpotShadows, nullptr);
+        state.spotShadowMap.resize(numSpotShadows, nullptr);
+        //todo:fix this Matrix value obj?
+        state.directionalShadowMatrix.resize(numDirectionalShadows,Matrix4());
+        state.pointShadowMatrix.resize(numPointShadows,Matrix4());
+        state.spotLightMatrix.resize(numSpotShadows + numSpotMaps - numSpotShadowsWithMaps,Matrix4());
+        state.spotLightMap.resize(numSpotMaps, nullptr);
+
+        state.numSpotLightShadowsWithMaps = numSpotShadowsWithMaps;
+
+        state.hash.directionalLength = directionalLength;
+        state.hash.pointLength = pointLength;
+        state.hash.spotLength = spotLength;
+        state.hash.rectAreaLength = rectAreaLength;
+        state.hash.hemiLength = hemiLength;
 
         state.hash.numDirectionalShadows= numDirectionalShadows;
         state.hash.numPointShadows= numPointShadows;
         state.hash.numSpotShadows= numSpotShadows;
+        state.hash.numSpotMaps= numSpotMaps;
 
         state.version = nextVersion++;
     }

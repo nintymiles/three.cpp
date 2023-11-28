@@ -19,17 +19,20 @@ struct LightsHash {
     unsigned spotLength = 0;
     unsigned rectAreaLength = 0;
     unsigned hemiLength = 0;
+
+
     unsigned shadowsLength = 0;
     unsigned numDirectionalShadows = 0;
     unsigned numPointShadows = 0;
     unsigned numSpotShadows = 0;
+    unsigned numSpotMaps = 0;
 
     LightsHash() {}
 
     LightsHash(unsigned directionalLength, unsigned pointLength,unsigned spotLength, unsigned rectAreaLength, unsigned hemiLength, unsigned shadowsLength,
-               unsigned numDirectionalShadow,unsigned numPointShadows,unsigned numSpotShadows)
+               unsigned numDirectionalShadow,unsigned numPointShadows,unsigned numSpotShadows,unsigned numSpotMaps)
             : directionalLength(directionalLength), pointLength(pointLength), spotLength(spotLength),rectAreaLength(rectAreaLength), hemiLength(hemiLength), shadowsLength(shadowsLength),
-              numDirectionalShadows(numDirectionalShadows),numPointShadows(numPointShadows),numSpotShadows(numSpotShadows){}
+              numDirectionalShadows(numDirectionalShadows),numPointShadows(numPointShadows),numSpotShadows(numSpotShadows),numSpotMaps(numSpotMaps){}
 
     bool operator ==(const LightsHash& other)
     {
@@ -41,7 +44,8 @@ struct LightsHash {
                shadowsLength == other.shadowsLength &&
                numDirectionalShadows == other.numDirectionalShadows &&
                numPointShadows == other.numPointShadows &&
-               numSpotShadows == other.numSpotShadows;
+               numSpotShadows == other.numSpotShadows &&
+                numSpotMaps == other.numSpotMaps;
     }
     bool operator !=(const LightsHash& other)
     {
@@ -165,6 +169,7 @@ struct GLLightsState {
     std::vector<Texture::sptr> spotLightMap;
     std::vector<SpotLightShadow::sptr> spotShadow;
     std::vector<Texture::sptr> spotShadowMap;
+    std::vector<Matrix4> spotLightMatrix;
     std::vector<Matrix4> spotShadowMatrix;
 
     std::vector<RectAreaLight::sptr> rectArea;
@@ -175,6 +180,8 @@ struct GLLightsState {
     std::vector<Matrix4> pointShadowMatrix;
 
     std::vector<HemisphereLight::sptr> hemi;
+
+    size_t numSpotLightShadowsWithMaps = 0;
 };
 
 class GLLights {
@@ -192,12 +199,14 @@ public:
 
     virtual ~GLLights() = default;
 
-    void setup(std::vector<Light::sptr>& lights, const Camera::sptr& camera);
+    void setup(std::vector<Light::sptr>& lights, const Camera::sptr& camera,bool physicallyCorrectLights = false);
 
 };
 
-inline bool shadowCastingLightsFirst(const Light::sptr& lightA, const Light::sptr& lightB) {
-    int result = (lightB->castShadow ? 1 : 0) - (lightA->castShadow ? 1 : 0);
+inline bool shadowCastingAndTexturingLightsFirst(const Light::sptr& lightA, const Light::sptr& lightB) {
+//    int result = (lightB->castShadow ? 1 : 0) - (lightA->castShadow ? 1 : 0);
+//    return result > 0 ? true : false;
+    auto result = ( lightB->castShadow ? 2 : 0 ) - ( lightA->castShadow ? 2 : 0 ) + ( lightB->map ? 1 : 0 ) - ( lightA->map ? 1 : 0 );
     return result > 0 ? true : false;
 }
 

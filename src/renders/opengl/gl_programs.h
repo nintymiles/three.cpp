@@ -48,25 +48,6 @@ protected:
 
     bool vertexTextures = false;
 
-
-    /*std::unordered_map<size_t, std::string> shaderIDs = {
-        {getStringHashcode("MeshDepthMaterial"), "depth"},
-        {getStringHashcode("MeshDistanceMaterial"), "distanceRGBA"},
-        {getStringHashcode("MeshNormalMaterial"), "normal"},
-        {getStringHashcode("MeshBasicMaterial"), "basic"},
-        {getStringHashcode("MeshLambertMaterial"), "lambert"},
-        {getStringHashcode("MeshPhongMaterial"), "phong"},
-        {getStringHashcode("MeshToonMaterial"), "toon"},
-        {getStringHashcode("MeshStandardMaterial"), "physical"},
-        {getStringHashcode("MeshPhysicalMaterial"), "physical"},
-        {getStringHashcode("MeshMatcapMaterial"), "matcap"},
-        {getStringHashcode("LineBasicMaterial"), "basic"},
-        {getStringHashcode("LineDashedMaterial"), "dashed"},
-        {getStringHashcode("PointsMaterial"), "points"},
-        {getStringHashcode("ShadowMaterial"), "shadow"},
-        {getStringHashcode("SpriteMaterial"), "sprite"}
-    };*/
-
     std::vector<std::string> parameterNames = {
             "precision","isGLES3","supportsVertexTextures",	"outputEncoding","instancing","instancingColor",
             "map","mapEncoding","matcap","matcapEncoding","envMap","envMapMode",	"envMapEncoding","envMapCubeUV",

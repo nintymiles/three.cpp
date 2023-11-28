@@ -178,6 +178,7 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
 //        uniforms.set("directionalShadowMatrix",lights.state.directionalShadowMatrix);
 //        uniforms.set("spotShadowMap",lights.state.spotShadowMap);
 //        uniforms.set("spotShadowMatrix",lights.state.spotShadowMatrix);
+//        uniforms.spotLightMap.value = lights.state.spotLightMap;
 //        uniforms.set("pointShadowMap",lights.state.pointShadowMap);
 //        uniforms.set("pointShadowMatrix",lights.state.pointShadowMatrix);
         uniforms->set("ambientLightColor",lights.state.ambient);
@@ -195,6 +196,7 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
         uniforms->set("directionalShadowMatrix",lights.state.directionalShadowMatrix);
         uniforms->set("spotShadowMap",lights.state.spotShadowMap);
         uniforms->set("spotShadowMatrix",lights.state.spotShadowMatrix);
+        uniforms->set("spotLightMap",lights.state.spotLightMap);
         uniforms->set("pointShadowMap",lights.state.pointShadowMap);
         uniforms->set("pointShadowMatrix",lights.state.pointShadowMatrix);
     }
@@ -275,23 +277,6 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
 
 
     if (materialProperties.needsLights) {
-//        m_uniforms.set("ambientLightColor", lights.state.ambient);
-//        m_uniforms.set("lightProbe", lights.state.probe);
-//        m_uniforms.set("directionalLights", lights.state.directional);
-//        m_uniforms.set("directionalLightShadows", lights.state.directionalShadow);
-//        m_uniforms.set("spotLights", lights.state.spot);
-//        m_uniforms.set("spotLightShadows", lights.state.spotShadow);
-//        m_uniforms.set("rectAreaLights", lights.state.rectArea);
-//        m_uniforms.set("pointLights", lights.state.point);
-//        m_uniforms.set("pointLightShadows", lights.state.pointShadow);
-//        m_uniforms.set("hemisphereLights", lights.state.hemi);
-//
-//        m_uniforms.set("directionalShadowMap", lights.state.directionalShadowMap);
-//        m_uniforms.set("directionalShadowMatrix", lights.state.directionalShadowMatrix);
-//        m_uniforms.set("spotShadowMap", lights.state.spotShadowMap);
-//        m_uniforms.set("spotShadowMatrix", lights.state.spotShadowMatrix);
-//        m_uniforms.set("pointShadowMap", lights.state.pointShadowMap);
-//        m_uniforms.set("pointShadowMatrix", lights.state.pointShadowMatrix);
         m_uniforms->set("ambientLightColor", lights.state.ambient);
         m_uniforms->set("lightProbe", lights.state.probe);
         m_uniforms->set("directionalLights", lights.state.directional);
@@ -1074,18 +1059,17 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
 
     shadowMap->render(*this, shadowsArray,scene, camera);
 
-    currentRenderState->setupLights(camera);
-
     if (_clippingEnabled) _clipping->endShadows();
 
     if (info->autoReset) info->reset();
+
+    currentRenderState->setupLights(camera);
 
     if (renderTarget != nullptr) {
         setRenderTarget(renderTarget);
     }
 
     //autoClear = scene->clearBeforeRender;
-
     background->render(*this,*currentRenderList, *scene, *camera, forceClear);
 
     auto opaqueObjects = currentRenderList->opaque;
