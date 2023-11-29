@@ -9,6 +9,7 @@
 #include "orbit_control.h"
 #include "ambient_light.h"
 #include "spot_light.h"
+#include "hemisphere_light.h"
 
 #include "plane_geometry.h"
 #include "mesh.h"
@@ -40,15 +41,15 @@ public:
         renderer->toneMapping = ToneMapping::ACESFilmicToneMapping;
         //renderer->setAnimationLoop( render );
 
-        camera = std::make_shared<PerspectiveCamera>(55.0f, screenX/screenY , .1f, 1000.0f);
-        camera->position.set( 0, 10, 40 );
-        //camera->rotation.set( - 1.29, 1.15, 1.26 );
+        camera = std::make_shared<PerspectiveCamera>(35.0f, screenX/screenY , .1f, 1000.0f);
+        camera->position.set( 76, 50, 10 );
+        camera->rotation.set( - 1.29, 1.15, 1.26 );
 //        camera->lookAt(Vector3(-10,18,0));
 
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
 
-        auto ambientLight = AmbientLight::create(Color().setHex(0xcccccc),.8f);
+        auto ambientLight = HemisphereLight::create(0xcccccc,0x444444,.8f);
         scene->add(ambientLight);
 
         std::vector<std::string> filenames = {"disturb.jpg", "colors.png", "uv_grid_opengl.jpg" };
@@ -69,8 +70,8 @@ public:
         }
 
         spotLight = SpotLight::create( 0xffffff, 10 );
-        spotLight->position.set( 15, 50, 25 );
-        spotLight->angle = math_number::PI / 1.1;
+        spotLight->position.set( 25, 50, 25 );
+        spotLight->angle = math_number::PI / 6.0;
         spotLight->penumbra = 1;
         spotLight->decay = 2;
         spotLight->distance = 100;
@@ -94,7 +95,7 @@ public:
 
         Mesh::sptr mesh = Mesh::create( geometry, planeMaterial );
         mesh->position.set( 0, - 1, 0 );
-        //mesh->rotation.setX( - math_number::PI / 2 );
+        mesh->rotation.setX( - math_number::PI / 2 );
         mesh->receiveShadow = true;
         scene->add( mesh );
 
@@ -107,14 +108,14 @@ public:
                         .append(threecpp::getFileSeparator()).append("obj").append(threecpp::getFileSeparator());
                 objGroup = loader.load(dir + relativeDir + filepath);
 
-                objGroup->scale.multiplyScalar( 0.012 );
-                objGroup->position.setZ(10);
-                objGroup->position.setY(15);
-                objGroup->position.setX(0);
+                objGroup->scale.multiplyScalar( 0.025 );
+                objGroup->position.setZ(15);
+                objGroup->position.setY(20);
+                objGroup->position.setX(10);
 
-                objGroup->rotation.setX(  - math_number::PI * 0.1  );
+                objGroup->rotation.setX(  - math_number::PI * 0.5  );
                 objGroup->rotation.setY(  - math_number::PI * 0.995  );
-                objGroup->rotation.setZ(  math_number::PI  );
+                objGroup->rotation.setZ(  - math_number::PI * .5 );
 
                 objGroup->updateMatrix();
 

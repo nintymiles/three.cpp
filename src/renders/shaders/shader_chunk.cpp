@@ -60,7 +60,9 @@
 #include "shader_chunk/lights_fragment_maps.glsl.h"
 #include "shader_chunk/lights_toon_fragment.glsl.h"
 #include "shader_chunk/lights_toon_pars_fragment.glsl.h"
-#include "shader_chunk/lights_lambert_vertex.glsl.h"
+#include "shader_chunk/lights_lambert_vertex.glsl.h" //todo:fix this redudunt
+#include "shader_chunk/lights_lambert_fragment.glsl.h"
+#include "shader_chunk/lights_lambert_pars_fragment.glsl.h"
 #include "shader_chunk/lights_pars_begin.glsl.h"
 #include "shader_chunk/lights_phong_fragment.glsl.h"
 #include "shader_chunk/lights_phong_pars_fragment.glsl.h"
@@ -206,6 +208,8 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"lights_toon_fragment",ShaderLibID::lights_toon_fragment},
         {"lights_toon_pars_fragment",ShaderLibID::lights_toon_pars_fragment},
         {"lights_lambert_vertex",ShaderLibID::lights_lambert_vertex},
+        {"lights_lambert_fragment",ShaderLibID::lights_lambert_fragment},
+        {"lights_lambert_pars_fragment",ShaderLibID::lights_lambert_pars_fragment},
         {"lights_pars_begin",ShaderLibID::lights_pars_begin},
         {"lights_phong_fragment",ShaderLibID::lights_phong_fragment},
         {"lights_phong_pars_fragment",ShaderLibID::lights_phong_pars_fragment},
@@ -353,6 +357,8 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::lights_toon_fragment,shader_chunk::lights_toon_fragment},
         {ShaderLibID::lights_toon_pars_fragment,shader_chunk::lights_toon_pars_fragment},
         {ShaderLibID::lights_lambert_vertex,shader_chunk::lights_lambert_vertex},
+        {ShaderLibID::lights_lambert_fragment,shader_chunk::lights_lambert_fragment},
+        {ShaderLibID::lights_lambert_pars_fragment,shader_chunk::lights_lambert_pars_fragment},
         {ShaderLibID::lights_pars_begin,shader_chunk::lights_pars_begin},
         {ShaderLibID::lights_phong_fragment,shader_chunk::lights_phong_fragment},
         {ShaderLibID::lights_phong_pars_fragment,shader_chunk::lights_phong_pars_fragment},

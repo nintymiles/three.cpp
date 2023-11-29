@@ -14,8 +14,6 @@
 
 class SpotlightHelper: public Object3D{
     Light::sptr light;
-    Matrix4 matrix;
-    bool matrixAutoUpdate = false;
     Color color;
     LineSegments::sptr cone;
 

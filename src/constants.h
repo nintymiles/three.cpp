@@ -578,6 +578,8 @@ enum class ShaderLibID : unsigned {
     lights_fragment_maps,
     //check from this point
     lights_lambert_vertex,
+    lights_lambert_fragment,
+    lights_lambert_pars_fragment,
     lights_pars_begin,
     lights_toon_fragment,
     lights_toon_pars_fragment,

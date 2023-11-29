@@ -1,16 +1,9 @@
 const char* meshlambert_frag =R""(
+#define LAMBERT
+
 uniform vec3 diffuse;
 uniform vec3 emissive;
 uniform float opacity;
-
-varying vec3 vLightFront;
-varying vec3 vIndirectFront;
-
-#ifdef DOUBLE_SIDED
-	varying vec3 vLightBack;
-	varying vec3 vIndirectBack;
-#endif
-
 
 #include <common>
 #include <packing>
@@ -26,12 +19,14 @@ varying vec3 vIndirectFront;
 #include <emissivemap_pars_fragment>
 #include <envmap_common_pars_fragment>
 #include <envmap_pars_fragment>
-#include <cube_uv_reflection_fragment>
+#include <fog_pars_fragment>
 #include <bsdfs>
 #include <lights_pars_begin>
-#include <fog_pars_fragment>
+#include <normal_pars_fragment>
+#include <lights_lambert_pars_fragment>
 #include <shadowmap_pars_fragment>
-#include <shadowmask_pars_fragment>
+#include <bumpmap_pars_fragment>
+#include <normalmap_pars_fragment>
 #include <specularmap_pars_fragment>
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
@@ -50,49 +45,28 @@ void main() {
 	#include <alphamap_fragment>
 	#include <alphatest_fragment>
 	#include <specularmap_fragment>
+	#include <normal_fragment_begin>
+	#include <normal_fragment_maps>
 	#include <emissivemap_fragment>
 
 	// accumulation
-
-	#ifdef DOUBLE_SIDED
-
-		reflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;
-
-	#else
-
-		reflectedLight.indirectDiffuse += vIndirectFront;
-
-	#endif
-
-	#include <lightmap_fragment>
-
-	reflectedLight.indirectDiffuse *= BRDF_Lambert( diffuseColor.rgb );
-
-	#ifdef DOUBLE_SIDED
-
-		reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
-
-	#else
-
-		reflectedLight.directDiffuse = vLightFront;
-
-	#endif
-
-	reflectedLight.directDiffuse *= BRDF_Lambert( diffuseColor.rgb ) * getShadowMask();
+	#include <lights_lambert_fragment>
+	#include <lights_fragment_begin>
+	#include <lights_fragment_maps>
+	#include <lights_fragment_end>
 
 	// modulation
-
 	#include <aomap_fragment>
 
 	vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
 
 	#include <envmap_fragment>
-
 	#include <output_fragment>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
+
 }
 )"";

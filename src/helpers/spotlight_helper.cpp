@@ -35,8 +35,8 @@ SpotlightHelper::SpotlightHelper(Light::sptr light,Color color):Object3D(){
     };
 
     for ( int i = 0, j = 1, l = 32; i < l; i ++, j ++ ) {
-        float p1 = ( i / l ) * math_number::PI2;
-        float p2 = ( j / l ) * math_number::PI2;
+        float p1 = ( (float)i / l ) * math_number::PI2;
+        float p2 = ( (float)j / l ) * math_number::PI2;
 
         positions.push_back(math::cos( p1 ));
         positions.push_back(math::sin( p1 ));
