@@ -650,7 +650,7 @@ void GLTextures::setTexture2D(Texture& texture, unsigned slot){
         return;
     }
 
-    state->activeTexture(GL_TEXTURE0 + slot);
+    //state->activeTexture(GL_TEXTURE0 + slot);
     state->bindTexture(TextureTarget::Texture2D, textureProperties.texture);
 
 }
