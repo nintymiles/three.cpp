@@ -68,7 +68,7 @@ public:
 
         add("normalmap", LibUniformValues(
                 {
-                        value("normalScale",1.0f),
+                        value("normalScale",Vector2(1.0f)),
                         value<Texture::sptr>("normalMap",nullptr),
                 }))
                 ;

@@ -111,11 +111,17 @@ int main(){
 
     std::cout << "GLFW_Info                 : " << glfwGetVersionString() << std::endl;
 
-    io.Fonts->AddFontDefault();
-//    io.Fonts->AddFontFromFileTTF("Roboto-Medium.ttf", 16.0f);
+    std::string rootDir = threecpp::getProjectPath();
+    std::string fileSeparator = threecpp::getFileSeparator();
+    std::string resourceDir = rootDir.append(fileSeparator).append("asset").append(fileSeparator)
+            .append("fonts").append(fileSeparator);
+    //io.Fonts->AddFontDefault();
+//    io.Fonts->AddFontFromFileTTF((resourceDir+"Roboto-Medium.ttf").c_str(), 26.0f);
 //    io.Fonts->AddFontFromFileTTF("Cousine-Regular.ttf", 15.0f);
 //    io.Fonts->AddFontFromFileTTF("DroidSans.ttf", 16.0f);
 //    io.Fonts->AddFontFromFileTTF("ProggyTiny.ttf", 10.0f);
+//    io.Fonts->AddFontFromFileTTF("c:/windows/Fonts/simhei.ttf", 13.0f, NULL, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+    ImFont *cFont = io.Fonts->AddFontFromFileTTF((resourceDir+"NotoSansSC-Regular.ttf").c_str(), 36.0f, NULL, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
 
 
     //GLRenderer renderer;
@@ -329,5 +335,6 @@ void mouse_button_callback(GLFWwindow* window, int button,int action,int modes) 
 
 void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
     if (currentDemoClass == nullptr) return;
+    //std::cout << "mouse wheel delta: " << yoffset << std::endl;
     currentDemoClass->controller->mouseWheel((float)(yoffset*120));
 }

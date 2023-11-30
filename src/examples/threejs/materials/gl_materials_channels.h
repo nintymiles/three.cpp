@@ -7,6 +7,7 @@
 
 #include "application_model.h"
 #include "orbit_control.h"
+#include "trackball_control.h"
 #include "texture_loader.h"
 #include "obj_loader.h"
 
@@ -14,10 +15,29 @@
 #include "point_light.h"
 
 #include "mesh_standard_material.h"
+#include "mesh_depth_material.h"
+#include "mesh_normal_material.h"
+#include "mesh.h"
 
 #include <thread>
 
 class GLMaterialsChannels: public ApplicationBase{
+    PerspectiveCamera::sptr perspectiveCamera;
+    OrthographicCamera::sptr orthoCamera;
+    OrbitControl::sptr pCameraControl,oCameraControl;
+    Mesh::sptr headMesh;
+
+    MeshNormalMaterial::sptr materialStandard;
+    MeshNormalMaterial::sptr materialNormal;
+    MeshDepthMaterial::sptr materialDepth,materialDepthRGBA;
+    std::vector<std::string> materialVec,cameraVec,controlVec,sideVec;
+    int selMaterial=0,selCamera=0,selSide=0;
+
+    void initComboData(){
+        materialVec = { "standard", "normal", "depthBasic", "depthRGBA" };
+        cameraVec = { "perspective", "ortho" };
+        sideVec = { "front", "back", "double" };
+    }
 public:
     GLMaterialsChannels(int x, int y):ApplicationBase(x,y){}
 
@@ -30,9 +50,19 @@ public:
         renderer->toneMapping = ToneMapping::ACESFilmicToneMapping;
         //renderer->setAnimationLoop( render );
 
-        camera = std::make_shared<PerspectiveCamera>(45.f, screenX/screenY , 500.f, 3000.f);
-        camera->position.set( 0, 0, 1500 );
+        auto aspect = (float)screenX / screenY;
+        perspectiveCamera = std::make_shared<PerspectiveCamera>(45.f, aspect , 500.f, 3000.f);
+        perspectiveCamera->position.set( 0, 0, 1500 );
         //scene->add(camera);
+
+        camera = perspectiveCamera;
+
+
+        auto height = 500;
+        orthoCamera = OrthographicCamera::create( - height * aspect, height * aspect, height, - height, 1000, 2500 );
+        orthoCamera->position.set( 0, 0, 1500 );
+        //scene->add( orthoCamera );
+//        camera = orthoCamera;
 
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
@@ -67,53 +97,102 @@ public:
         auto displacementMap = textureLoader.load( resourceDir + "displacement.jpg" );
 
         // material
-        auto materialStandard = MeshStandardMaterial::create();
+        materialStandard = MeshStandardMaterial::create();
         materialStandard->color = 0xffffff;
         materialStandard->metalness = 0.5;
         materialStandard->roughness = 0.6;
 
         materialStandard->displacementMap = displacementMap;
-
 //        materialStandard->displacementScale = SCALE;
-//                                                                   displacementBias: BIAS,
-
+//        displacementBias: BIAS,
         materialStandard->aoMap = aoMap,
         materialStandard->normalMap = normalMap;
         materialStandard-> normalScale = Vector2( 1, - 1 );
 
-                //flatShading: true,
+        //flatShading: true,
         materialStandard->side = Side::DoubleSide;
 
+        materialDepth = MeshDepthMaterial::create();
+        materialDepth->depthPacking = DepthPackingStrategies::BasicDepthPacking;
+        materialDepth->displacementMap = displacementMap;
+//        materialDepth->displacementScale = SCALE,
+//        materialDepth->displacementBias = BIAS,
+        materialDepth->side = Side::DoubleSide;
+
+        materialDepthRGBA = MeshDepthMaterial::create();
+        materialDepthRGBA->depthPacking = DepthPackingStrategies::RGBADepthPacking;
+        materialDepthRGBA->displacementMap = displacementMap;
+//        materialDepthRGBA->displacementScale = SCALE,
+//        materialDepthRGBA->displacementBias = BIAS,
+        materialDepthRGBA->side = Side::DoubleSide;
+
+        materialNormal = MeshNormalMaterial::create();
+        materialNormal -> displacementMap = displacementMap;
+//         displacementScale: SCALE,
+//         displacementBias: BIAS,
+
+        materialNormal -> normalMap = normalMap,
+        materialNormal -> normalScale = Vector2( 1, - 1 ),
+                //flatShading: true,
+        materialNormal->side = Side::DoubleSide;;
+
         std::thread thread1([&](const std::string& filepath){
-                Group::sptr objGroup;
+                Object3D::sptr objGroup;
 
                 OBJLoader loader;
 
                 objGroup = loader.load(resourceDir + filepath);
 
-//                const geometry = group.children[ 0 ].geometry;
-//                geometry.attributes.uv2 = geometry.attributes.uv;
-//                geometry.center();
+                auto geometry = objGroup->children[0]->geometry;
+                geometry->uvs2 = geometry->uvs;
+                //geometry-> = geometry->uv;
+                geometry->center();
 
-                objGroup->scale.multiplyScalar( 25 );
+                headMesh = Mesh::create(objGroup->children[0]->geometry,materialStandard);
+                headMesh->scale.multiplyScalar( 25 );
 
-                objGroup->castShadow = true;
-                objGroup->receiveShadow = true;
+                headMesh->castShadow = true;
+                headMesh->receiveShadow = true;
 
-                scene->add(objGroup);
-                            }
+                scene->add(headMesh);
+                }
                 ,std::string("ninjaHead_Low.obj"));
         thread1.join();
 
-        std::shared_ptr<OrbitControl> oController = std::make_shared<OrbitControl>(camera);
-        oController->minDistance = 20;
-        oController->maxDistance = 500;
-        oController->target.set( 0, 18, 0 );
-        oController->update();
-        controller = oController;
+        pCameraControl = std::make_shared<OrbitControl>(camera);
+        pCameraControl->minDistance = 1000;
+        pCameraControl->maxDistance = 2400;
+        pCameraControl->enablePan = true;
+        pCameraControl->enableDamping = true;
+        controller = pCameraControl;
 
+        oCameraControl = std::make_shared<OrbitControl>(camera);
+        oCameraControl->minZoom = 0.5;
+        oCameraControl->maxZoom = 1.5;
+        oCameraControl->enablePan = true;
+        oCameraControl->enableDamping = true;
+        //controller = oCameraControl;
+
+//        Vector4 screen = Vector4(0, 0, screenX, screenY);
+//        std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
+//        controller = tcontroller;
+//
+//        tcontroller->staticMoving = false;
+//        tcontroller->rotateSpeed = 4.0f;
+//        tcontroller->zoomSpeed = 3;
+//        tcontroller->panSpeed = 3;
+//        tcontroller->noZoom = true;
+//        tcontroller->noPan = true;
+//        tcontroller->noRotate = false;
+//        tcontroller->dynamicDampingFactor = 0.3f;
+
+        initComboData();
 
     }
+
+    virtual void render() override;
+
+    virtual void showControls() override;
 };
 
 

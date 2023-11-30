@@ -174,11 +174,11 @@ void OrbitControl::keydown(threecpp::byte keyCode){
 
     if (keyState != STATE::NONE) {
         return;
-    }else if(keyCode == keys[(byte)STATE::ROTATE] && !noRotate) {
+    }else if(keyCode == keys[(byte)STATE::ROTATE] && !enableRotate) {
         keyState = STATE::ROTATE;
-    }else if(keyCode == keys[(byte)STATE::DOLLY] && !noZoom) {
+    }else if(keyCode == keys[(byte)STATE::DOLLY] && !enableZoom) {
         keyState = STATE::DOLLY;
-    }else if(keyCode == keys[(byte)STATE::PAN] && !noPan) {
+    }else if(keyCode == keys[(byte)STATE::PAN] && !enablePan) {
         keyState = STATE::PAN;
     }
 }
@@ -198,14 +198,15 @@ void OrbitControl::mouseDown(unsigned button, float x, float y){
                 state = STATE::ROTATE;
                 mouseAction = MouseButton::LEFT;
                 break;
-            case 1://MouseButtons.Middle:
-                state = STATE::DOLLY;
-                mouseAction = MouseButton::MIDDLE;
-                break;
-            case 2: //MouseButtons.Right:
+            case 1: //MouseButtons.Right:
                 state = STATE::PAN;
                 mouseAction = MouseButton::RIGHT;
                 break;
+            case 2://MouseButtons.Middle:
+                state = STATE::DOLLY;
+                mouseAction = MouseButton::MIDDLE;
+                break;
+
         }
     }
 
@@ -237,13 +238,13 @@ void OrbitControl::mouseMove(float x, float y){
     //mousePos.set(x - screen.x,y - screen.y);
     if (!enabled) return;
 
-    if (state == STATE::ROTATE && !noRotate){
+    if (state == STATE::ROTATE && enableRotate){
         rotateEnd.set(x,y);
         handleMouseMoveRotate();
-    }else if(state == STATE::DOLLY && !noZoom){
+    }else if(state == STATE::DOLLY && enableZoom){
         dollyEnd.set(x,y);
         handleMouseMoveDolly();
-    }else if(state == STATE::PAN && !noPan){
+    }else if(state == STATE::PAN && enablePan){
         panEnd.set(x,y);
         handleMouseMovePan();
     }
@@ -255,11 +256,13 @@ void OrbitControl::mouseUp(){
 }
 
 void OrbitControl::mouseWheel(float delta){
-    if (!enabled) return;
+    if ( delta < 0 ) {
+        dollyIn( getZoomScale() );
+    } else if ( delta > 0 ) {
+        dollyOut( getZoomScale() );
+    }
 
-    float _delta = delta / 40;
-
-    dollyStart.y += _delta * 0.01f;
+    update();
 }
 
 Vector2 OrbitControl::getMouseOnScreen(float pageX, float pageY){

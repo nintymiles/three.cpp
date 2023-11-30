@@ -77,9 +77,10 @@ class OrbitControl:public ViewPortControl{
     Vector2 dollyDelta;
 
     //control whether move works
-    bool noRotate = false;
-    bool noZoom = false;
-    bool noPan = false;
+    //bool noRotate = false;
+    //bool noZoom = false;
+    //bool noPan = false;
+    //control mouse projection on ball
     bool noRoll = false;
     Vector3 eye;
 
@@ -139,7 +140,7 @@ public:
     float rotateSpeed = 1.0;
 
     // Set to false to disable panning
-    bool enablePan = true;
+    bool enablePan = false;
     float panSpeed = 1.0;
     bool screenSpacePanning = true; // if false, pan orthogonal to world-space direction camera.up
     float keyPanSpeed = 7.0;	// pixels moved per arrow key push

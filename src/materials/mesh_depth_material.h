@@ -55,6 +55,11 @@ public:
     }
     virtual ~MeshDepthMaterial() = default;
 
+    static sptr create() {
+        return std::make_shared<MeshDepthMaterial>();
+    }
+
+
     virtual MeshDepthMaterial* clone() {
         return new MeshDepthMaterial(*this);
     }
