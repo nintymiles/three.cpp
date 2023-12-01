@@ -159,14 +159,14 @@ public:
                 ,std::string("ninjaHead_Low.obj"));
         thread1.join();
 
-        pCameraControl = std::make_shared<OrbitControl>(camera);
+        pCameraControl = std::make_shared<OrbitControl>(perspectiveCamera);
         pCameraControl->minDistance = 1000;
         pCameraControl->maxDistance = 2400;
         pCameraControl->enablePan = true;
         pCameraControl->enableDamping = true;
         controller = pCameraControl;
 
-        oCameraControl = std::make_shared<OrbitControl>(camera);
+        oCameraControl = std::make_shared<OrbitControl>(orthoCamera);
         oCameraControl->minZoom = 0.5;
         oCameraControl->maxZoom = 1.5;
         oCameraControl->enablePan = true;

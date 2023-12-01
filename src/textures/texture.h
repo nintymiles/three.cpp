@@ -21,6 +21,15 @@
 #include <cstddef>
 #include <vector>
 
+////todo: replace texture in images with TexImageInfo
+struct TexImageInfo{
+    std::vector<unsigned char> imageData;
+    size_t width,height;
+    int channels;
+
+    using sptr = std::shared_ptr<TexImageInfo>;
+};
+
 class Texture {
     static size_t textureId;
 private:
@@ -35,7 +44,7 @@ public:
     std::string name;
     std::string sourceFile;
     std::vector<unsigned char> image;
-    std::vector<Texture> images;
+    std::vector<Texture::sptr> images;
 
     GLsizei imageWidth;
     GLsizei imageHeight;

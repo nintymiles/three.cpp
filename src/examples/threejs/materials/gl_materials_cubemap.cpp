@@ -2,49 +2,14 @@
 // Created by SeanR on 11/29/2023.
 //
 
-#include "gl_materials_channels.h"
+#include "gl_materials_cubemap.h"
 #include "imgui.h"
 
-void GLMaterialsChannels::render(){
-    if(headMesh){
-        auto &material = headMesh->material;
-
-        switch (selMaterial) {
-            case 0: material = materialStandard; break;
-            case 1: material = materialNormal; break;
-            case 2: material = materialDepth; break;
-            case 3: material = materialDepthRGBA; break;
-
-        }
-
-        switch ( selSide ) {
-            case 0: material->side = Side::FrontSide; break;
-            case 1: material->side = Side::BackSide; break;
-            case 2: material->side = Side::DoubleSide; break;
-        }
-
-        material->needsUpdate = true;
-        material->uniformsNeedUpdate = true;
-    }
-
-    switch ( selCamera ) {
-        case 0:
-            camera = perspectiveCamera;
-            controller = pCameraControl;
-            break;
-        case 1:
-            camera = orthoCamera;
-            controller = oCameraControl;
-            break;
-    }
-
-    pCameraControl->update();
-    oCameraControl->update(); // must update both controls for damping to complete
-
+void GLMaterialsCubeMap::render(){
     ApplicationBase::render();
 }
 
-void GLMaterialsChannels::showControls(){
+void GLMaterialsCubeMap::showControls(){
 //    std::string rootDir = threecpp::getProjectPath();
 //    std::string fileSeparator = threecpp::getFileSeparator();
 //    std::string resourceDir = rootDir.append(fileSeparator).append("asset").append(fileSeparator)

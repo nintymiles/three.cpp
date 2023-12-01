@@ -703,11 +703,11 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
         //_gl.pixelStorei(_gl.UNPACK_FLIP_Y_WEBGL, texture.flipY);
 
-        bool isCompressed = (texture.isCompressedTexture || texture.images[0].isCompressedTexture);
-        bool isDataTexture = texture.images[0].isDataTexture;
+        bool isCompressed = (texture.isCompressedTexture || texture.images[0]->isCompressedTexture);
+        bool isDataTexture = texture.images[0]->isDataTexture;
 
         std::vector<std::vector<unsigned char>> cubeImage;
-        std::vector<Texture> textures;
+        std::vector<Texture::sptr> textures;
         GLsizei widths[6];
         GLsizei heights[6];
         cubeImage.reserve(6);
@@ -716,15 +716,15 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
             if (!isCompressed && !isDataTexture) {
 
-                cubeImage[i] = resizeImage(texture.images[i].image, texture.images[i].imageWidth,texture.images[i].imageHeight,false, maxCubemapSize,texture.images[i].channel);
-                widths[i] = texture.images[i].imageWidth;
-                heights[i] = texture.images[i].imageHeight;
+                cubeImage[i] = resizeImage(texture.images[i]->image, texture.images[i]->imageWidth,texture.images[i]->imageHeight,false, maxCubemapSize,texture.images[i]->channel);
+                widths[i] = texture.images[i]->imageWidth;
+                heights[i] = texture.images[i]->imageHeight;
             }
             else {
-                if (texture.images[i].isDataTexture) {
-                    cubeImage[i] = texture.images[i].image;
-                    widths[i] = texture.images[i].imageWidth;
-                    heights[i] = texture.images[i].imageHeight;
+                if (texture.images[i]->isDataTexture) {
+                    cubeImage[i] = texture.images[i]->image;
+                    widths[i] = texture.images[i]->imageWidth;
+                    heights[i] = texture.images[i]->imageHeight;
                 }
                 else
                     textures.push_back(texture.images[i]);
@@ -744,7 +744,7 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
         if (isCompressed) {
             for (unsigned i = 0; i < 6; i++) {
-                mipmaps = textures[i].mipmaps;
+                mipmaps = textures[i]->mipmaps;
                 for (unsigned j = 0; j < mipmaps.size(); j++) {
                     threecpp::MipMap mipmap = mipmaps[j];
 
@@ -790,7 +790,7 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
                 }else {
 
-                    state->texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, widths[i],heights[i],0,glFormat, glType, textures[i].image);
+                    state->texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, widths[i],heights[i],0,glFormat, glType, textures[i]->image);
 
                     for (int j = 0; j < mipmaps.size(); j++) {
 

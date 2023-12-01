@@ -65,6 +65,9 @@ file(GLOB CURVES_HEADER ${ROOT_DIR}/src/curves/*.h)
 file(GLOB HELPERS_SOURCE ${ROOT_DIR}/src/helpers/*.cpp)
 file(GLOB HELPERS_HEADER ${ROOT_DIR}/src/helpers/*.h)
 
+file(GLOB LOADERS_SOURCE ${ROOT_DIR}/src/loaders/*.cpp)
+file(GLOB LOADERS_HEADER ${ROOT_DIR}/src/loaders/*.h)
+
 file(GLOB RENDERS_SOURCE ${ROOT_DIR}/src/renders/*.cpp;${ROOT_DIR}/src/renders/opengl/*.cpp;${ROOT_DIR}/src/renders/shaders/*.cpp)
 file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/opengl/*.h;${ROOT_DIR}/src/renders/shaders/*.h;${ROOT_DIR}/src/renders/shaders/shader_chunk/*.h;${ROOT_DIR}/src/renders/shaders/shader_lib/*.h)
 
@@ -110,6 +113,9 @@ source_group("Helpers" FILES ${HELPERS_HEADER})
 source_group("Textures" FILES ${TEXTURES_SOURCE})
 source_group("Textures" FILES ${TEXTURES_HEADER})
 
+source_group("Loaders" FILES ${LOADERS_SOURCE})
+source_group("Loaders" FILES ${LOADERS_HEADER})
+
 source_group("Scenes" FILES ${SCENES_SOURCE})
 source_group("Scenes" FILES ${SCENES_HEADER})
 
@@ -130,6 +136,7 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
         ${GEOMETRIES_SOURCE};${GEOMETRIES_HEADER};
         ${CURVES_SOURCE};${CURVES_HEADER};
         ${HELPERS_SOURCE};${HELPERS_HEADER};
+        ${LOADERS_SOURCE};${LOADERS_HEADER};
         ${MATERIALS_SOURCE};${MATERIALS_HEADER};
         ${RENDERS_SOURCE};${RENDERS_HEADER};
         ${CONTROLS_SOURCE};${CONTROLS_HEADER};
@@ -162,8 +169,8 @@ ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders
 ${ROOT_DIR}/src/control
 ${ROOT_DIR}/src/utils
+${ROOT_DIR}/src/loaders
 ${ROOT_DIR}/src/examples/base
-${ROOT_DIR}/src/examples/loaders
 ${ROOT_DIR}/src/examples/threejs/lines/
 ${ROOT_DIR}/src/examples/threejs/lights/
 ${ROOT_DIR}/src/examples/threejs/materials/
