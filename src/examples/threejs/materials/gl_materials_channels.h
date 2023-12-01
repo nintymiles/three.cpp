@@ -31,7 +31,9 @@ class GLMaterialsChannels: public ApplicationBase{
     MeshNormalMaterial::sptr materialNormal;
     MeshDepthMaterial::sptr materialDepth,materialDepthRGBA;
     std::vector<std::string> materialVec,cameraVec,controlVec,sideVec;
-    int selMaterial=0,selCamera=0,selSide=0;
+    int selMaterial=1,selCamera=0,selSide=0;
+    const float SCALE = 2.436143; // from original model
+    const float BIAS = - 0.428408; // from original model
 
     void initComboData(){
         materialVec = { "standard", "normal", "depthBasic", "depthRGBA" };
@@ -103,34 +105,32 @@ public:
         materialStandard->roughness = 0.6;
 
         materialStandard->displacementMap = displacementMap;
-//        materialStandard->displacementScale = SCALE;
-//        displacementBias: BIAS,
+        materialStandard->displacementScale = SCALE;
+        materialStandard->displacementBias = BIAS;
         materialStandard->aoMap = aoMap,
         materialStandard->normalMap = normalMap;
         materialStandard-> normalScale = Vector2( 1, - 1 );
-
         //flatShading: true,
         materialStandard->side = Side::DoubleSide;
 
         materialDepth = MeshDepthMaterial::create();
         materialDepth->depthPacking = DepthPackingStrategies::BasicDepthPacking;
         materialDepth->displacementMap = displacementMap;
-//        materialDepth->displacementScale = SCALE,
-//        materialDepth->displacementBias = BIAS,
+        materialDepth->displacementScale = SCALE,
+        materialDepth->displacementBias = BIAS,
         materialDepth->side = Side::DoubleSide;
 
         materialDepthRGBA = MeshDepthMaterial::create();
         materialDepthRGBA->depthPacking = DepthPackingStrategies::RGBADepthPacking;
         materialDepthRGBA->displacementMap = displacementMap;
-//        materialDepthRGBA->displacementScale = SCALE,
-//        materialDepthRGBA->displacementBias = BIAS,
+        materialDepthRGBA->displacementScale = SCALE,
+        materialDepthRGBA->displacementBias = BIAS,
         materialDepthRGBA->side = Side::DoubleSide;
 
         materialNormal = MeshNormalMaterial::create();
         materialNormal -> displacementMap = displacementMap;
-//         displacementScale: SCALE,
-//         displacementBias: BIAS,
-
+        materialNormal -> displacementScale = SCALE;
+        materialNormal -> displacementBias = BIAS;
         materialNormal -> normalMap = normalMap,
         materialNormal -> normalScale = Vector2( 1, - 1 ),
                 //flatShading: true,

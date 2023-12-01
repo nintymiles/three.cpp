@@ -33,3 +33,5 @@
 | Lights                              |                                                                                    |
 | [Lights-pointLights](),mtl解析有问题！    | ![Lights-pointLights](doc/images/20231122111242.png)                               |
 | [Lights-physical]()                 | ![Lights-pointLights](doc/images/20231117165351.jpg)                               |
+| Materials                           |                                                                                    |
+| [Materials-Channels]()              | ![Materials-Channels](doc/images/20231130173421.png)                               |
