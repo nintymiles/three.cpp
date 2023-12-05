@@ -11,8 +11,9 @@
 
 //warning C4099: “Plane”: 类型名称以前使用“class”现在使用的是“struct”
 //in consistent with forwarding declaration in other place -- class Plane
-struct Plane
-{
+class Plane{
+public:
+    using sptr = std::shared_ptr<Plane>;
     //类内初始化不能使用括号方式，因为这样和函数声明冲突
     Vector3 normal;
     double constant;
@@ -21,6 +22,10 @@ struct Plane
 
 
     Plane(const Plane &p) : normal(p.normal), constant(p.constant){};
+
+    static sptr create(Vector3 normal = Vector3(1, 0, 0), double constant = 0){
+        return std::make_shared<Plane>(normal,constant);
+    }
 
     Plane& copy( const Plane& plane ) {
         normal.copy( plane.normal );
