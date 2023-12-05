@@ -18,9 +18,10 @@ public:
         stbi_set_flip_vertically_on_load(1);
 
         unsigned char* data = stbi_load(filePath.c_str(), &width, &height, &nrComponents, 0);
-        std::vector<unsigned char> image(width * height * nrComponents);
+
 
         if (data) {
+            std::vector<unsigned char> image(width * height * nrComponents);
             std::memcpy(&image[0], data, width * height * nrComponents);
             //delete[] data;
             stbi_image_free(data);
