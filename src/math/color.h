@@ -578,12 +578,19 @@ public:
     std::string to_string() {
         return getHexString();
     }
-    void toArray(float* array, unsigned offset=0) {
-
-
+    Color& toArray(float* array, unsigned offset=0) {
         array[offset] = r;
         array[offset + 1] = g;
         array[offset + 2] = b;
+
+        return *this;
+    }
+    Color& appendToVector(std::vector<float>& arrayVec) {
+        arrayVec.push_back(r);
+        arrayVec.push_back(g);
+        arrayVec.push_back(b);
+
+        return *this;
     }
 };
 //

@@ -28,6 +28,9 @@
 
 #include "gl_materials_channels.h"
 
+
+#include "gl_materials_demo.h"
+
 // settings
 extern int display_w;
 extern int display_h;
@@ -145,7 +148,7 @@ static void ShowApplicationMenuBar() {
             ImGui::EndMenu();
 
         }
-        if (ImGui::BeginMenu("Materials")){
+        if (ImGui::BeginMenu("Materials")) {
 
             if (ImGui::MenuItem("Gl_Materials_Channels", "")) {
                 if (demoClasses.count("Gl_Materials_Channels") == 0)
@@ -155,10 +158,26 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass->renderer->clear();
             }
 
+
+
+
+
+
+
+
+
+            if (ImGui::MenuItem("Gl_Materials", "")) {
+                if (demoClasses.count("Gl_Materials") == 0)
+                    demoClasses["Gl_Materials"] = std::make_shared<GLMaterialsDemo>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Gl_Materials"];
+                currentDemoClass->renderer->clear();
+            }
+
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();
-
         }
+
         ImGui::EndMainMenuBar();
     }
 
