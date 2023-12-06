@@ -21,6 +21,8 @@
 #include "ambient_light.h"
 #include "point_light.h"
 
+#include "grid_helper.h"
+
 class GLMaterialsDemo : public ApplicationBase{
     PerspectiveCamera::sptr perspectiveCamera;
     OrbitControl::sptr pCameraControl,oCameraControl;
@@ -137,6 +139,11 @@ public:
 
         scene = std::make_shared<Scene>();
         scene->setBackgroundColor(Color().set(0x000000));
+
+        // Grid
+        auto grid = GridHelper::create( 1000, 40, 0x303030, 0x303030 );
+        grid->position.y = - 75;
+        scene->add( grid );
 
         initMaterials();
 

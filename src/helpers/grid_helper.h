@@ -19,9 +19,9 @@ class GridHelper: public LineSegments{
 
     std::string type = "GridHelper";
 
-
-
 public:
+    using sptr = std::shared_ptr<GridHelper>;
+
     GridHelper(int size = 10,int divisions = 10,Color color1 = 0x444444,Color color2 = 0x888888):size(size),divisions(divisions),color1(color1),color2(color2){
 
         int center = divisions / 2;
@@ -70,6 +70,10 @@ public:
         material->toneMapped = false;
 
         LineSegments( geometry, material );
+    }
+
+    static sptr create(int size = 10,int divisions = 10,Color color1 = 0x444444,Color color2 = 0x888888){
+        return std::make_shared<GridHelper>(size,divisions,color1,color2);
     }
 
 };
