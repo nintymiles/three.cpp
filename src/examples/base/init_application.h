@@ -27,8 +27,7 @@
 #include "gl_lights_spotlight.h"
 
 #include "gl_materials_channels.h"
-
-
+#include "gl_materials_cubemap.h"
 #include "gl_materials_demo.h"
 
 // settings
@@ -44,14 +43,7 @@ GLRenderer::sptr glRenderer;
 void initRenderer() {
 
     /*demoClasses.insert({ "02-First-Scene",std::make_shared<FirstScene>(display_w,display_h) });
-    demoClasses.insert({ "03-Material-Light",std::make_shared<MaterialLight>(display_w,display_h) });
-    demoClasses.insert({ "04-Material-Light-Animation",std::make_shared<MaterialLightAnimation>(display_w,display_h) });
-    demoClasses.insert({ "01-Basic-Scene",std::make_shared<BasicScene>(display_w,display_h) });
-    demoClasses.insert({ "02-Foggy-Scene",std::make_shared<FoggyScene>(display_w,display_h) });
-    demoClasses.insert({ "03-Forced-Materials",std::make_shared<ForcedMaterials>(display_w,display_h) });
-    demoClasses.insert({ "04-Geometries",std::make_shared<Geometries>(display_w,display_h) });
-    demoClasses.insert({ "05-Custom-Geometry",std::make_shared<CustomGeometry>(display_w,display_h) });
-    demoClasses.insert({ "06-Custom-Geometry",std::make_shared<CustomGeometry>(display_w,display_h) });*/
+    demoClasses.insert({ "03-Material-Light",std::make_shared<MaterialLight>(display_w,display_h) });*/
 }
 
 
@@ -148,7 +140,7 @@ static void ShowApplicationMenuBar() {
             ImGui::EndMenu();
 
         }
-        if (ImGui::BeginMenu("Materials")) {
+        if (ImGui::BeginMenu("Materials")){
 
             if (ImGui::MenuItem("Gl_Materials_Channels", "")) {
                 if (demoClasses.count("Gl_Materials_Channels") == 0)
@@ -157,14 +149,13 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["Gl_Materials_Channels"];
                 currentDemoClass->renderer->clear();
             }
+            if (ImGui::MenuItem("Gl_Materials_CubeMap", "")) {
+                if (demoClasses.count("Gl_Materials_CubeMap") == 0)
+                    demoClasses["Gl_Materials_CubeMap"] = std::make_shared<GLMaterialsCubeMap>(display_w, display_h);
 
-
-
-
-
-
-
-
+                currentDemoClass = demoClasses["Gl_Materials_CubeMap"];
+                currentDemoClass->renderer->clear();
+            }
 
             if (ImGui::MenuItem("Gl_Materials", "")) {
                 if (demoClasses.count("Gl_Materials") == 0)
@@ -176,8 +167,8 @@ static void ShowApplicationMenuBar() {
 
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();
-        }
 
+        }
         ImGui::EndMainMenuBar();
     }
 

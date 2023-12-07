@@ -133,7 +133,7 @@ public:
         materialNormal -> displacementBias = BIAS;
         materialNormal -> normalMap = normalMap,
         materialNormal -> normalScale = Vector2( 1, - 1 ),
-                //flatShading: true,
+        //flatShading: true,
         materialNormal->side = Side::DoubleSide;;
 
         std::thread thread1([&](const std::string& filepath){

@@ -38,85 +38,7 @@ class GLMaterialsDemo : public ApplicationBase{
     const float SCALE = 2.436143; // from original model
     const float BIAS = - 0.428408; // from original model
 
-    void initMaterials(){
-        // Materials
-//        const texture = new THREE.Texture( generateTexture() );
-//        texture.needsUpdate = true;
 
-        MeshLambertMaterial::sptr transLamMaterial = MeshLambertMaterial::create();
-        transLamMaterial->transparent = true;
-//        transLamMaterial->map = texutre;
-        materials.push_back( transLamMaterial );
-
-        materials.push_back( MeshLambertMaterial::create(0xdddddd) );
-
-        MeshPhongMaterial::sptr phoneMaterial = MeshPhongMaterial::create();
-        phoneMaterial->color = 0xdddddd;
-        phoneMaterial->specular = 0x009900;
-        phoneMaterial->shininess = 30;
-        phoneMaterial->flatShading = true;
-        materials.push_back( phoneMaterial );
-
-        materials.push_back( MeshNormalMaterial::create() );
-
-        MeshBasicMaterial::sptr basicMaterial = MeshBasicMaterial::create();
-        basicMaterial->color = 0xffaa00;
-        basicMaterial->transparent = true;
-        basicMaterial->blending = Blending::AdditiveBlending;
-        materials.push_back( basicMaterial );
-
-        materials.push_back( MeshLambertMaterial::create( 0xdddddd ) );
-
-        MeshPhongMaterial::sptr phoneMaterial2 = MeshPhongMaterial::create();
-        phoneMaterial2->color = 0xdddddd;
-        phoneMaterial2->specular = 0x009900;
-        phoneMaterial2->shininess = 30;
-        //phoneMaterial2->map = texture;
-        phoneMaterial2->transparent = true;
-        materials.push_back( phoneMaterial2 );
-
-        MeshNormalMaterial::sptr normalMaterial = MeshNormalMaterial::create();
-        normalMaterial->flatShading = true;
-        materials.push_back( normalMaterial );
-
-        MeshBasicMaterial::sptr basicMaterial2 = MeshBasicMaterial::create(0xffaa00);
-        basicMaterial2->wireframe = true;
-        materials.push_back( basicMaterial2 );
-
-        materials.push_back( MeshDepthMaterial::create() );
-
-        MeshLambertMaterial::sptr lambertMaterial = MeshLambertMaterial::create(0x666666);
-        lambertMaterial->emissive = 0xff0000;
-        materials.push_back( lambertMaterial );
-
-        MeshPhongMaterial::sptr phoneMaterial3 = MeshPhongMaterial::create();
-        phoneMaterial3->color = 0x000000;
-        phoneMaterial3->specular = 0x666666;
-        phoneMaterial3->emissive = 0xff0000;
-        phoneMaterial3->shininess = 10;
-        phoneMaterial3->opacity = 0.9f;
-        phoneMaterial3->transparent = true;
-        materials.push_back( phoneMaterial3 );
-
-        MeshBasicMaterial::sptr basicMaterial3 = MeshBasicMaterial::create(0xffaa00);
-        basicMaterial3->transparent = true;
-        materials.push_back( basicMaterial3 );
-    }
-
-    void addMesh( BufferGeometry::sptr geometry, Material::sptr material ) {
-        auto mesh = Mesh::create( geometry, material );
-
-        mesh->position.x = ( objects.size() % 4 ) * 200.0f - 400;
-        mesh->position.z = math::floor( objects.size() / 4 ) * 200.0f - 200;
-
-        mesh->rotation.setX( math::random() * 200.f - 100 );
-        mesh->rotation.setY( math::random() * 200.f - 100 );
-        mesh->rotation.setZ( math::random() * 200.f - 100 );
-
-        objects.push_back( mesh );
-
-        scene->add( mesh );
-    }
 
 public:
     GLMaterialsDemo(int x, int y):ApplicationBase(x,y){}
@@ -186,6 +108,148 @@ public:
     virtual void render() override;
 
     virtual void showControls() override;
+
+private:
+    void initMaterials(){
+        // Materials
+        auto texImageInfo = generateTextureImage();
+        auto texture = Texture::create(texImageInfo->imageData);
+        texture->format = PixelFormat::RGBAFormat;
+        texture->imageWidth = texImageInfo->width;
+        texture->imageHeight = texImageInfo->height;
+        texture->setNeedsUpdate(true);
+        texture->channel = texImageInfo->channels;
+        texture->wrapS = Wrapping::ClampToEdgeWrapping;
+        texture->wrapT = Wrapping::ClampToEdgeWrapping;
+        texture->wrapR = Wrapping::ClampToEdgeWrapping;
+
+        MeshLambertMaterial::sptr transLamMaterial = MeshLambertMaterial::create();
+        transLamMaterial->transparent = true;
+        transLamMaterial->map = texture;
+        materials.push_back( transLamMaterial );
+
+        materials.push_back( MeshLambertMaterial::create(0xdddddd) );
+
+        MeshPhongMaterial::sptr phoneMaterial = MeshPhongMaterial::create();
+        phoneMaterial->color = 0xdddddd;
+        phoneMaterial->specular = 0x009900;
+        phoneMaterial->shininess = 30;
+        phoneMaterial->flatShading = true;
+        materials.push_back( phoneMaterial );
+
+        materials.push_back( MeshNormalMaterial::create() );
+
+        MeshBasicMaterial::sptr basicMaterial = MeshBasicMaterial::create();
+        basicMaterial->color = 0xffaa00;
+        basicMaterial->transparent = true;
+        basicMaterial->blending = Blending::AdditiveBlending;
+        materials.push_back( basicMaterial );
+
+        materials.push_back( MeshLambertMaterial::create( 0xdddddd ) );
+
+        MeshPhongMaterial::sptr phoneMaterial2 = MeshPhongMaterial::create();
+        phoneMaterial2->color = 0xdddddd;
+        phoneMaterial2->specular = 0x009900;
+        phoneMaterial2->shininess = 30;
+        phoneMaterial2->map = texture;
+        phoneMaterial2->transparent = true;
+        materials.push_back( phoneMaterial2 );
+
+        MeshNormalMaterial::sptr normalMaterial = MeshNormalMaterial::create();
+        normalMaterial->flatShading = true;
+        materials.push_back( normalMaterial );
+
+        MeshBasicMaterial::sptr basicMaterial2 = MeshBasicMaterial::create(0xffaa00);
+        basicMaterial2->wireframe = true;
+        materials.push_back( basicMaterial2 );
+
+        materials.push_back( MeshDepthMaterial::create() );
+
+        MeshLambertMaterial::sptr lambertMaterial = MeshLambertMaterial::create(0x666666);
+        lambertMaterial->emissive = 0xff0000;
+        materials.push_back( lambertMaterial );
+
+        MeshPhongMaterial::sptr phoneMaterial3 = MeshPhongMaterial::create();
+        phoneMaterial3->color = 0x000000;
+        phoneMaterial3->specular = 0x666666;
+        phoneMaterial3->emissive = 0xff0000;
+        phoneMaterial3->shininess = 10;
+        phoneMaterial3->opacity = 0.9f;
+        phoneMaterial3->transparent = true;
+        materials.push_back( phoneMaterial3 );
+
+        MeshBasicMaterial::sptr basicMaterial3 = MeshBasicMaterial::create(0xffaa00);
+        basicMaterial3->transparent = true;
+        basicMaterial3->map = texture;
+        materials.push_back( basicMaterial3 );
+    }
+
+    void addMesh( BufferGeometry::sptr geometry, Material::sptr material ) {
+        auto mesh = Mesh::create( geometry, material );
+
+        mesh->position.x = ( objects.size() % 4 ) * 200.0f - 400;
+        mesh->position.z = math::floor( objects.size() / 4 ) * 200.0f - 200;
+
+        mesh->rotation.setX( math::random() * 200.f - 100 );
+        mesh->rotation.setY( math::random() * 200.f - 100 );
+        mesh->rotation.setZ( math::random() * 200.f - 100 );
+
+        objects.push_back( mesh );
+
+        scene->add( mesh );
+    }
+
+    std::vector<unsigned char> generateTexture() {
+        int width = 256;
+        int height = 256;
+        int dataSize = 4 * width * height;
+
+        std::vector<unsigned char> imageData = std::vector<unsigned char>(dataSize);
+
+        int x = 0, y = 0;
+
+        for ( int i = 0, j = 0, l = dataSize; i < l; i += 4, j ++ ) {
+            x = j % 256;
+            y = ( x == 0 ) ? y + 1 : y;
+
+            imageData[ i ] = 255;
+            imageData[ i + 1 ] = 255;
+            imageData[ i + 2 ] = 255;
+            imageData[ i + 3 ] = math::floor( x ^ y );
+
+        }
+
+        return imageData;
+    }
+
+    TexImageInfo::sptr generateTextureImage() {
+        int width = 256;
+        int height = 256;
+        int dataSize = 4 * width * height;
+
+        std::vector<unsigned char> imageData = std::vector<unsigned char>(dataSize);
+
+        int x = 0, y = 0;
+
+        for ( int i = 0, j = 0, l = dataSize; i < l; i += 4, j ++ ) {
+            x = j % 256;
+            y = ( x == 0 ) ? y + 1 : y;
+
+            imageData[ i ] = 255;
+            imageData[ i + 1 ] = 255;
+            imageData[ i + 2 ] = 255;
+            imageData[ i + 3 ] = math::floor( x ^ y );
+
+        }
+
+        TexImageInfo::sptr imageInfo = std::make_shared<TexImageInfo>();
+        imageInfo->imageData = imageData;
+        imageInfo->width = width;
+        imageInfo->height = height;
+        imageInfo->channels = 4;
+
+        return imageInfo;
+    }
 
 };
 

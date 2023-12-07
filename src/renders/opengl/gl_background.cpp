@@ -89,9 +89,9 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
         material->uniforms->set("envMap", texture);
 
         if (scene.isCubeTexture)
-            material->uniforms->set("flipEnvMap", -1.0f);
+            material->uniforms->set("flipEnvMap", -1);
         else
-            material->uniforms->set("flipEnvMap", 1.0f);
+            material->uniforms->set("flipEnvMap", 1);
 
         if ((scene.isColor && !((Color*)currentBackground)->equals(scene.getBackgroundColor()))
             || (texture!=nullptr && texture->version != currentBackgroundVersion)

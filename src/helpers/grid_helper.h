@@ -69,7 +69,9 @@ public:
         material->vertexColors = true;
         material->toneMapped = false;
 
-        LineSegments( geometry, material );
+        //GridHelper::LineSegments( geometry, material );
+        this->material = material;
+        this->geometry = geometry;
     }
 
     static sptr create(int size = 10,int divisions = 10,Color color1 = 0x444444,Color color2 = 0x888888){
