@@ -76,8 +76,12 @@ public:
         };
 
         auto reflectionCube = CubeTextureLoader::load( fileurls );
+        reflectionCube->setNeedsUpdate(true);
+        reflectionCube->format = PixelFormat::RGBFormat;
         auto refractionCube = CubeTextureLoader::load( fileurls );
         refractionCube->mapping = TextureMapping::CubeRefractionMapping;
+        refractionCube->setNeedsUpdate(true);
+        refractionCube->format = PixelFormat::RGBFormat;
 
 //        scene->setBackgroundCubeTexture(reflectionCube);
 
@@ -90,16 +94,16 @@ public:
         scene->add( pointLight );
 
         //materials
-        auto cubeMaterial3 = MeshLambertMaterial::create();
-        cubeMaterial3->color = 0xff6600;
-        cubeMaterial3->envMap = reflectionCube;
-        cubeMaterial3->combine = Combine::MixOperation;
-        cubeMaterial3->reflectivity = 0.3;
-
-        auto cubeMaterial2 = MeshLambertMaterial::create();
-        cubeMaterial2->color = 0xffee00;
-        cubeMaterial2->envMap = reflectionCube;
-        cubeMaterial2->refractionRatio = 0.95;
+//        auto cubeMaterial3 = MeshLambertMaterial::create();
+//        cubeMaterial3->color = 0xff6600;
+//        cubeMaterial3->envMap = reflectionCube;
+//        cubeMaterial3->combine = Combine::MixOperation;
+//        cubeMaterial3->reflectivity = 0.3;
+//
+//        auto cubeMaterial2 = MeshLambertMaterial::create();
+//        cubeMaterial2->color = 0xffee00;
+//        cubeMaterial2->envMap = reflectionCube;
+//        cubeMaterial2->refractionRatio = 0.95;
 
         auto cubeMaterial1 = MeshLambertMaterial::create();
         cubeMaterial1->color = 0xffffff;

@@ -351,7 +351,7 @@ GLint GLTextures::getInternalFormat(PixelFormat glFormat, TextureDataType glType
     if (glFormat ==  PixelFormat::RedFormat) {
         if (glType == TextureDataType::FloatType) internalFormat = GL_R32F;
         if (glType == TextureDataType::HalfFloatType) internalFormat = GL_R16F;
-        if (glType == TextureDataType::UnsignedByteType) internalFormat = GL_R8;
+        if (glType == TextureDataType::UnsignedByteType) internalFormat = GL_RGB;
 
     }
 
@@ -688,6 +688,7 @@ void GLTextures::setTexture3D(Texture& texture, unsigned slot){
 }
 
 void GLTextures::setTextureCube(Texture& texture, unsigned slot){
+    std::cout << "Texture cube image size = " << texture.images.size() << std::endl;
     if (texture.images.size() != 6) return;
 
     auto& textureProperties = properties->getProperties(texture.uuid);
@@ -707,7 +708,9 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
         bool isDataTexture = texture.images[0]->isDataTexture;
 
         std::vector<std::vector<unsigned char>> cubeImage;
+//        std::vector<unsigned char> cubeImage[6];
         std::vector<Texture::sptr> textures;
+
         GLsizei widths[6];
         GLsizei heights[6];
         cubeImage.reserve(6);
@@ -715,8 +718,9 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
         for (int i = 0; i < 6; i++) {
 
             if (!isCompressed && !isDataTexture) {
-
-                cubeImage[i] = resizeImage(texture.images[i]->image, texture.images[i]->imageWidth,texture.images[i]->imageHeight,false, maxCubemapSize,texture.images[i]->channel);
+                //todo:fix resizeImage here
+                //cubeImage[i] = texture.images[i]->image;//resizeImage(texture.images[i]->image, texture.images[i]->imageWidth,texture.images[i]->imageHeight,false, maxCubemapSize,texture.images[i]->channel);
+                cubeImage.push_back(texture.images[i]->image);
                 widths[i] = texture.images[i]->imageWidth;
                 heights[i] = texture.images[i]->imageHeight;
             }
@@ -790,7 +794,7 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
                 }else {
 
-                    state->texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, widths[i],heights[i],0,glFormat, glType, textures[i]->image);
+                    state->texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, widths[i],heights[i],0,glFormat, glType, cubeImage[i]);
 
                     for (int j = 0; j < mipmaps.size(); j++) {
 
@@ -1025,7 +1029,7 @@ void GLTextures::safeSetTexture2D(Texture& texture, unsigned slot){
 void GLTextures::safeSetTextureCube(Texture& texture, unsigned slot){
     // currently relying on the fact that WebGLCubeRenderTarget.texture is a Texture and NOT a CubeTexture
     // TODO: unify these code paths
-    if (texture.isCubeTexture || texture.images.size()==0) {
+    if (texture.isCubeTexture || texture.images.size()==6) {
         //(texture.images) && texture.image.length == = 6)) {
 
         // CompressedTexture can have Array in image :/
