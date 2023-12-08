@@ -81,6 +81,8 @@ private:
 
     std::string generateEnvMapBlendingDefine(const ProgramParameters& parameters);
 
+    EnvMapCubeUVSize::sptr generateEnvMapCubeUVSize( const ProgramParameters& parameters );
+
     std::string addLineNumbers(const std::string& code);
 
 public:

@@ -10,6 +10,10 @@
 #include "gl_binding_states.h"
 #include "gl_uniforms.h"
 
+#include "math_utils.h"
+
+#include <memory>
+
 //todo:fix this
 #define OPENGL_ES_3_2
 
@@ -38,6 +42,8 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
     std::string envMapModeDefine = generateEnvMapModeDefine(parameters);
 
     std::string envMapBlendingDefine = generateEnvMapBlendingDefine(parameters);
+
+    EnvMapCubeUVSize::sptr envMapCubeUVSize = generateEnvMapCubeUVSize(parameters);
 
     float gammaFactorDefine = (renderer.gammaFactor > 0) ? renderer.gammaFactor : 1.0f;
 
@@ -233,14 +239,6 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
         prefixFragment << customDefines;
 
-        float alphaTest = parameters.alphaTest;
-        if (alphaTest) {
-            prefixFragment << "#define ALPHATEST " + std::to_string(alphaTest);
-            if (std::fmod(alphaTest, 1.0f) > 0)
-                prefixFragment << "";
-            else
-                prefixFragment << ".0" << std::endl; // add ".0" if integer
-        }
         prefixFragment << "#define GAMMA_FACTOR " << gammaFactorDefine << std::endl;
 
         if (parameters.useFog && parameters.fog)  prefixFragment << "#define USE_FOG" << std::endl;
@@ -252,6 +250,9 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         if (parameters.envMap)  prefixFragment << "#define " + envMapTypeDefine << std::endl;
         if (parameters.envMap)  prefixFragment << "#define " + envMapModeDefine << std::endl;
         if (parameters.envMap)  prefixFragment << "#define " + envMapBlendingDefine << std::endl;
+        prefixFragment << (envMapCubeUVSize ? std::string("#define CUBEUV_TEXEL_WIDTH ") + std::to_string(envMapCubeUVSize->texelWidth) : "") << std::endl;
+        prefixFragment << (envMapCubeUVSize ? "#define CUBEUV_TEXEL_HEIGHT " + std::to_string(envMapCubeUVSize->texelHeight) : "") << std::endl;
+        prefixFragment << (envMapCubeUVSize ? "#define CUBEUV_MAX_MIP " + std::to_string(envMapCubeUVSize->maxMip) + ".0" : "") << std::endl;
         if (parameters.lightMap)  prefixFragment << "#define USE_LIGHTMAP" << std::endl;
         if (parameters.aoMap)  prefixFragment << "#define USE_AOMAP" << std::endl;
         if (parameters.emissiveMap)  prefixFragment << "#define USE_EMISSIVEMAP" << std::endl;
@@ -262,16 +263,43 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         if (parameters.clearcoatMap)  prefixFragment << "#define USE_CLEARCOATMAP" << std::endl;
         if (parameters.clearcoatRoughnessMap)  prefixFragment << "#define USE_CLEARCOAT_ROUGHNESSMAP" << std::endl;
         if (parameters.clearcoatNormalMap)  prefixFragment << "#define USE_CLEARCOAT_NORMALMAP" << std::endl;
+
+//        parameters.iridescence ? '#define USE_IRIDESCENCE' : '',
+//        parameters.iridescenceMap ? '#define USE_IRIDESCENCEMAP' : '',
+//        parameters.iridescenceThicknessMap ? '#define USE_IRIDESCENCE_THICKNESSMAP' : '',
+
         if (parameters.specularMap)  prefixFragment << "#define USE_SPECULARMAP" << std::endl;
+//        parameters.specularIntensityMap ? '#define USE_SPECULARINTENSITYMAP' : '',
+//        parameters.specularColorMap ? '#define USE_SPECULARCOLORMAP' : '',
+
         if (parameters.roughnessMap)  prefixFragment << "#define USE_ROUGHNESSMAP" << std::endl;
         if (parameters.metalnessMap)  prefixFragment << "#define USE_METALNESSMAP" << std::endl;
         if (parameters.alphaMap)  prefixFragment << "#define USE_ALPHAMAP" << std::endl;
 
+        float alphaTest = parameters.alphaTest;
+        if (alphaTest) {
+            prefixFragment << "#define ALPHATEST " + std::to_string(alphaTest);
+            if (std::fmod(alphaTest, 1.0f) > 0)
+                prefixFragment << "";
+            else
+                prefixFragment << ".0" << std::endl; // add ".0" if integer
+        }
+//        parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
+//        parameters.alphaTest ? '#define USE_ALPHATEST' : '',
+
         if (parameters.sheen)  prefixFragment << "#define USE_SHEEN" << std::endl;
+//        parameters.sheenColorMap ? '#define USE_SHEENCOLORMAP' : '',
+//        parameters.sheenRoughnessMap ? '#define USE_SHEENROUGHNESSMAP' : '',
+
         if (parameters.transmissionMap) prefixFragment << "#define USE_TRANSMISSIONMAP" << std::endl;
+//        parameters.transmissionMap ? '#define USE_TRANSMISSIONMAP' : '',
+//        parameters.thicknessMap ? '#define USE_THICKNESSMAP' : '',
+
+//        parameters.decodeVideoTexture ? '#define DECODE_VIDEO_TEXTURE' : '',
 
         if (parameters.vertexTangents)  prefixFragment << "#define USE_TANGENT" << std::endl;
         if (parameters.vertexColors || parameters.instancingColor)  prefixFragment << "#define USE_COLOR" << std::endl;
+//        parameters.vertexAlphas ? '#define USE_COLOR_ALPHA' : '',
         if (parameters.vertexUvs)  prefixFragment << "#define USE_UV" << std::endl;
         if (parameters.uvsVertexOnly)  prefixFragment << "#define UVS_VERTEX_ONLY" << std::endl;
 
@@ -902,7 +930,7 @@ std::string GLProgram::generateEnvMapTypeDefine(const ProgramParameters& paramet
                 break;
 
             case TextureMapping::CubeUVReflectionMapping:
-            case TextureMapping::CubeUVRefractionMapping:
+            //case TextureMapping::CubeUVRefractionMapping:
                 envMapTypeDefine = "ENVMAP_TYPE_CUBE_UV";
                 break;
 
@@ -963,6 +991,24 @@ std::string GLProgram::generateEnvMapBlendingDefine(const ProgramParameters& par
 
     }
     return "ENVMAP_BLENDING_NONE";
+}
+
+ EnvMapCubeUVSize::sptr GLProgram::generateEnvMapCubeUVSize( const ProgramParameters& parameters ) {
+    int imageHeight = parameters.envMapCubeUVHeight;
+    if ( imageHeight == 0 ) return nullptr;
+
+    float maxMip = std::log2( imageHeight ) - 2;
+
+    float texelHeight = 1.0 / imageHeight;
+
+    float texelWidth = 1.0 / ( 3 * std::fmax( math::pow( 2, maxMip ), 7 * 16 ) );
+
+     EnvMapCubeUVSize::sptr cubeUVSize = std::make_shared<EnvMapCubeUVSize>();
+     cubeUVSize->texelWidth = texelWidth;
+     cubeUVSize->texelHeight = texelHeight;
+     cubeUVSize->maxMip = maxMip;
+
+    return cubeUVSize;
 }
 
 

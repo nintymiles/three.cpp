@@ -9,13 +9,13 @@
 class TextureLoader {
 public:
     TextureLoader(){}
-    static Texture::sptr load(const std::string& filePath) {
+    static Texture::sptr load(const std::string& filePath,bool isFlipY = true) {
 
         Texture::sptr texture = nullptr;
 
         int width, height, nrComponents;
 
-        stbi_set_flip_vertically_on_load(1);
+        if(isFlipY) stbi_set_flip_vertically_on_load(1);
 
         unsigned char* data = stbi_load(filePath.c_str(), &width, &height, &nrComponents, 0);
 

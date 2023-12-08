@@ -7,6 +7,7 @@
 #include "gl_properties.h"
 
 #include "number.h"
+#include "texture_loader.h"
 
 #include <cassert>
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -688,7 +689,7 @@ void GLTextures::setTexture3D(Texture& texture, unsigned slot){
 }
 
 void GLTextures::setTextureCube(Texture& texture, unsigned slot){
-    std::cout << "Texture cube image size = " << texture.images.size() << std::endl;
+    //std::cout << "Texture cube image size = " << texture.images.size() << std::endl;
     if (texture.images.size() != 6) return;
 
     auto& textureProperties = properties->getProperties(texture.uuid);
@@ -698,6 +699,8 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
     if (texture.version > 0 && texture.version != version) {
 
         initTexture(texture);
+        //textureId is updated above
+        textureId = textureProperties.texture;
 
         state->activeTexture(GL_TEXTURE0 + slot);
         state->bindTexture(TextureTarget::cubeMap, textureId);
@@ -793,7 +796,6 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
                     }
 
                 }else {
-
                     state->texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, widths[i],heights[i],0,glFormat, glType, cubeImage[i]);
 
                     for (int j = 0; j < mipmaps.size(); j++) {

@@ -11,10 +11,10 @@
 class CubeTextureLoader{
 public:
     CubeTextureLoader(){}
-    static CubeTexture::sptr load(const std::vector<std::string>& filePaths) {
+    static CubeTexture::sptr load(const std::vector<std::string>& filePaths,bool isFlipY = false) {
         std::vector<Texture::sptr> images;
         for(std::string filePath:filePaths) {
-            Texture::sptr texture = TextureLoader::load(filePath);
+            Texture::sptr texture = TextureLoader::load(filePath,isFlipY);
             if (texture) {
                 images.push_back(texture);
             }

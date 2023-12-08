@@ -57,10 +57,11 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
     if (renderer.autoClear || forceClear)
         renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
 
+    //todo: optimize here
     if (scene.isCubeTexture || scene.isGLCubeRenderTarget || (scene.getBackgroundCubeTexture()!=nullptr && scene.getBackgroundCubeTexture()->mapping == TextureMapping::CubeReflectionMapping) || (scene.getBackgroundTexture()!=nullptr && scene.getBackgroundTexture()->mapping == TextureMapping::CubeReflectionMapping)) {
         if (boxMesh == nullptr) {
-            boxMesh = Mesh::create(std::make_shared<BoxGeometry>(1, 1, 1), std::make_shared<ShaderMaterial>());
-            ShaderMaterial::sptr shaderMaterial = std::dynamic_pointer_cast<ShaderMaterial>(boxMesh->material);
+            boxMesh = Mesh::create(std::make_shared<BoxGeometry>(1, 1, 1));
+            ShaderMaterial::sptr shaderMaterial = ShaderMaterial::create();
             shaderMaterial->type = "BackgroundCubeMaterial";
             shaderMaterial->uniforms = std::make_shared<UniformValues>(getShader("cube").uniforms);
             shaderMaterial->vertexShader = getShader("cube").vertexShader;
@@ -69,6 +70,7 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
             shaderMaterial->depthTest = false;
             shaderMaterial->depthWrite = false;
             shaderMaterial->fog = false;
+            boxMesh->material = shaderMaterial;
 
             BoxGeometry::sptr geometry = std::dynamic_pointer_cast<BoxGeometry>(boxMesh->geometry);
             geometry->deleteAttribute(AttributeName::normal);
@@ -79,11 +81,12 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
             //boxMesh->onBeforeRender.connect(*this, &GLBackground::beforeRender);
             boxMesh->onBeforeRender.connect(*this,&GLBackground::beforeRender);
 
-            shaderMaterial->envMap = (*shaderMaterial->uniforms)["envMap"].get<Texture::sptr>();//->get<Texture::ptr>("envMap");
+            shaderMaterial->envMap = scene.getBackgroundCubeTexture();//(*shaderMaterial->uniforms)["envMap"].get<Texture::sptr>();//->get<Texture::ptr>("envMap");
             objects->update(*boxMesh);
         }
         Texture::sptr emptyTexture;
-        Texture::sptr texture = scene.isGLCubeRenderTarget ? scene.getBackgroundCubeRenderTarget()->texture : emptyTexture;
+        //todo:fix here
+        Texture::sptr texture = scene.getBackgroundCubeTexture();//scene.isGLCubeRenderTarget ? scene.getBackgroundCubeRenderTarget()->texture : emptyTexture;
 
         ShaderMaterial::sptr material = std::dynamic_pointer_cast<ShaderMaterial>(boxMesh->material);
         material->uniforms->set("envMap", texture);
@@ -109,8 +112,8 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
     } else if (scene.isTexture) { //scene background is texture
         if (planeMesh == nullptr) {
             PlaneGeometry::sptr geometry = std::make_shared<PlaneGeometry>(2, 2);
-            planeMesh = std::make_shared<Mesh>(geometry, std::make_shared<ShaderMaterial>());
-            ShaderMaterial::sptr shaderMaterial = std::dynamic_pointer_cast<ShaderMaterial>(planeMesh->material);
+            planeMesh = std::make_shared<Mesh>(geometry);
+            ShaderMaterial::sptr shaderMaterial = ShaderMaterial::create();
             shaderMaterial->type = "BackgroundMaterial";
             shaderMaterial->uniforms = std::make_shared<UniformValues>(getShader("background").uniforms);
             shaderMaterial->vertexShader = getShader("background").vertexShader;
@@ -119,6 +122,7 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
             shaderMaterial->depthTest = false;
             shaderMaterial->depthWrite = false;
             shaderMaterial->fog = false;
+            planeMesh->material = shaderMaterial;
 
             geometry->deleteAttribute(AttributeName::normal);
             //geometry->normal.reset();// geometry->deleteAttribute<float>("normal");

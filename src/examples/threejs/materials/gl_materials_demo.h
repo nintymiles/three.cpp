@@ -23,6 +23,8 @@
 
 #include "grid_helper.h"
 
+#include "texture_loader.h"
+
 class GLMaterialsDemo : public ApplicationBase{
     PerspectiveCamera::sptr perspectiveCamera;
     OrbitControl::sptr pCameraControl,oCameraControl;
@@ -123,9 +125,20 @@ private:
         texture->wrapT = Wrapping::ClampToEdgeWrapping;
         texture->wrapR = Wrapping::ClampToEdgeWrapping;
 
+        std::string rootDir = threecpp::getProjectPath();
+        std::string fileSeparator = threecpp::getFileSeparator();
+        std::string resourceDir = std::string(rootDir).append(fileSeparator).append("asset").append(fileSeparator)
+                .append("textures").append(fileSeparator)
+                .append("cube").append(fileSeparator)
+                .append("SwedishRoyalCastle").append(fileSeparator);
+
+        auto format = ".jpg";
+        auto fileurl = resourceDir + "px" + format;
+        auto texture2 = TextureLoader::load(fileurl);
+
         MeshLambertMaterial::sptr transLamMaterial = MeshLambertMaterial::create();
         transLamMaterial->transparent = true;
-        transLamMaterial->map = texture;
+        transLamMaterial->map = texture2;
         materials.push_back( transLamMaterial );
 
         materials.push_back( MeshLambertMaterial::create(0xdddddd) );

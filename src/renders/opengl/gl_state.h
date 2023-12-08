@@ -746,9 +746,10 @@ public:
     {
         glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*)pixels);
     }
+
     void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const std::vector<unsigned char>& pixels)
     {
-        glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*)pixels.data());
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*)(pixels.data()));
     }
 
     void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type)
@@ -758,7 +759,7 @@ public:
 
     void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const threecpp::MipMap& mipmap)
     {
-        glTexImage2D(target, level, internalFormat, width, height, border, format, type, mipmap.data.data());
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, (const void*)mipmap.data.data());
     }
 
     void texImage3D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,GLint border,GLenum format,GLenum type, threecpp::byte* pixels)

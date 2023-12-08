@@ -35,6 +35,7 @@ struct ProgramParameters {
     TextureMapping envMapMode = TextureMapping::Unknown;
     TextureEncoding envMapEncoding = TextureEncoding::Unknown;
     bool envMapCubeUV = false;
+    int envMapCubeUVHeight = 0;
     bool lightMap = false;
     TextureEncoding lightMapEncoding = TextureEncoding::Unknown;
     bool aoMap = false;
@@ -119,6 +120,14 @@ struct ProgramParameters {
 
     //UniformValues uniforms;
     std::shared_ptr<UniformValues> uniforms;
+};
+
+struct EnvMapCubeUVSize{
+    float texelWidth;
+    float texelHeight;
+    float maxMip;
+
+    using sptr = std::shared_ptr<EnvMapCubeUVSize>;
 };
 
 
