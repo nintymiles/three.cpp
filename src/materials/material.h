@@ -416,15 +416,8 @@ public:
 
     bool uniformsNeedUpdate = false;
 
-    std::string vertexShader;/* =
-		R"(void main() {"
-		"   gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0);\n"
-		"})";*/
-    std::string fragmentShader;/* =
-		R"(void main() {"
-		"   gl_FragColor = vec4(1.0,0.0,0.0,1.0);\n"
-		"})";*/
-
+    std::string vertexShader;
+    std::string fragmentShader;
 
     std::shared_ptr<GLProgram> program;
 
@@ -448,6 +441,13 @@ public:
         return std::make_shared<Material>();
     }
     virtual ~Material() = default;
+
+    virtual Material& setNeedsUpdate(boolean needsUpdate){
+        if(needsUpdate)
+            this->version++;
+        return *this;
+    }
+
     /**
      * Return a new material with the same parameters as this material.
      */

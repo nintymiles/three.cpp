@@ -1045,6 +1045,12 @@ BufferGeometry* BufferGeometry::clone(){
     return new BufferGeometry(*this);
 }
 
+//BufferGeometry::sptr BufferGeometry::cloneInP(){
+//    BufferGeometry::sptr bfg = BufferGeometry::create();
+//    bfg->copy(*this);
+//    return bfg;
+//}
+
 BufferGeometry& BufferGeometry::copy(const BufferGeometry& source){
     Geometry::copy(source);
 

@@ -23,22 +23,8 @@
 
 class GLMaterialsCubeMap: public ApplicationBase{
     PerspectiveCamera::sptr perspectiveCamera;
-    OrbitControl::sptr pCameraControl,oCameraControl;
-    Mesh::sptr headMesh;
+    OrbitControl::sptr pCameraControl;
 
-    MeshNormalMaterial::sptr materialStandard;
-    MeshNormalMaterial::sptr materialNormal;
-    MeshDepthMaterial::sptr materialDepth,materialDepthRGBA;
-    std::vector<std::string> materialVec,cameraVec,controlVec,sideVec;
-    int selMaterial=1,selCamera=0,selSide=0;
-    const float SCALE = 2.436143f; // from original model
-    const float BIAS = - 0.428408f; // from original model
-
-    void initComboData(){
-        materialVec = { "standard", "normal", "depthBasic", "depthRGBA" };
-        cameraVec = { "perspective", "ortho" };
-        sideVec = { "front", "back", "double" };
-    }
 public:
     GLMaterialsCubeMap(int x, int y):ApplicationBase(x,y){}
 
@@ -83,8 +69,7 @@ public:
         refractionCube->setNeedsUpdate(true);
         refractionCube->format = PixelFormat::RGBFormat;
 
-//        scene->setBackgroundCubeTexture(reflectionCube);
-
+        scene->setBackgroundCubeTexture(reflectionCube);
 
         // lights
         auto ambientLight = AmbientLight::create( 0xffffff );
@@ -94,20 +79,23 @@ public:
         scene->add( pointLight );
 
         //materials
-//        auto cubeMaterial3 = MeshLambertMaterial::create();
-//        cubeMaterial3->color = 0xff6600;
-//        cubeMaterial3->envMap = reflectionCube;
-//        cubeMaterial3->combine = Combine::MixOperation;
-//        cubeMaterial3->reflectivity = 0.3;
-//
-//        auto cubeMaterial2 = MeshLambertMaterial::create();
-//        cubeMaterial2->color = 0xffee00;
-//        cubeMaterial2->envMap = reflectionCube;
-//        cubeMaterial2->refractionRatio = 0.95;
+        auto cubeMaterial3 = MeshLambertMaterial::create();
+        cubeMaterial3->color = 0xff6600;
+        cubeMaterial3->envMap = reflectionCube;
+        cubeMaterial3->combine = Combine::MixOperation;
+        cubeMaterial3->reflectivity = 0.3;
+        cubeMaterial3->side = Side::DoubleSide;
+
+        auto cubeMaterial2 = MeshLambertMaterial::create();
+        cubeMaterial2->color = 0xffee00;
+        cubeMaterial2->envMap = refractionCube;
+        cubeMaterial2->refractionRatio = 0.95;
+        cubeMaterial2->side = Side::DoubleSide;
 
         auto cubeMaterial1 = MeshLambertMaterial::create();
         cubeMaterial1->color = 0xffffff;
         cubeMaterial1->envMap = reflectionCube;
+        cubeMaterial1->side = Side::DoubleSide;
 
 
         resourceDir = rootDir.append(fileSeparator).append("asset").append(fileSeparator)
@@ -122,21 +110,28 @@ public:
                                 objGroup = loader.load(resourceDir + filepath);
 
                                 auto head = objGroup->children[0];
-                                head->scale.set(15,15,15);
+                                head->scale.set(12,12,12);
                                 head->position.y = - 500;
                                 head->material = cubeMaterial1;
 
-//                                auto head2 = head->clone(true);
-//                                head2->position.x = - 900;
-//                                head2->material = cubeMaterial2;
+                                auto head2G = head->geometry->clone();//head->clone(true);
+                                auto head2 = Mesh::create(std::shared_ptr<Geometry>(head2G),cubeMaterial2);
+                                head2->scale.set(12,12,12);
+                                head2->position.y = - 500;
+                                head2->position.x = - 800;
+
+                                auto head3 = Mesh::create(std::shared_ptr<Geometry>(head2G),cubeMaterial3);
+                                head3->scale.set(12,12,12);
+                                head3->position.y = - 500;
+                                head3->position.x =  800;
+
 //
 //                                auto head3 = head->clone(true);
 //                                head3->position.x = 900;
 //                                head3->material = cubeMaterial3;
-
                                 scene->add(head);
-//                                scene->add(std::shared_ptr<Object3D>(head2));
-//                                scene->add(std::shared_ptr<Object3D>(head3));
+                                scene->add(head2);
+                                scene->add(head3);
 
                             }
                 ,std::string("WaltHead.obj"));
@@ -149,8 +144,6 @@ public:
         pCameraControl->enableDamping = true;
         controller = pCameraControl;
 
-
-        initComboData();
 
     }
 

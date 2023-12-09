@@ -23,8 +23,9 @@ void GLMaterialsChannels::render(){
             case 2: material->side = Side::DoubleSide; break;
         }
 
-        material->needsUpdate = true;
+        //material->needsUpdate = true;
         material->uniformsNeedUpdate = true;
+        material->setNeedsUpdate(true);
     }
 
     switch ( selCamera ) {
