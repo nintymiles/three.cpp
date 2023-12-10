@@ -13,7 +13,7 @@ const char* envmap_pars_fragment = R""(
 
 	uniform float reflectivity;
 
-	#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( PHONG )
+	#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( PHONG ) || defined( LAMBERT )
 
 		#define ENV_WORLDPOS
 

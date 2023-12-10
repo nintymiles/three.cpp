@@ -9,7 +9,7 @@ namespace shader_chunk {
 const char *morphcolor_vertex = R""(
 #if defined( USE_MORPHCOLORS ) && defined( MORPHTARGETS_TEXTURE )
 
-// morphTargetBaseInfluence is set based on BufferGeometry.morphTargetsRelative value:
+	// morphTargetBaseInfluence is set based on BufferGeometry.morphTargetsRelative value:
 	// When morphTargetsRelative is false, this is set to 1 - sum(influences); this results in normal = sum((target - base) * influence)
 	// When morphTargetsRelative is true, this is set to 1; as a result, all morph targets are simply added to the base after weighting
 	vColor *= morphTargetBaseInfluence;

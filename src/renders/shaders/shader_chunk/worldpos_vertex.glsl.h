@@ -1,7 +1,8 @@
-
+#ifndef THREE_CPP_WORLDPOS_VERTEX_GLSL_H
+#define THREE_CPP_WORLDPOS_VERTEX_GLSL_H
 namespace shader_chunk {
-const char *worldpos_vertex = R"(
-#if defined( USE_ENVMAP ) || defined( DISTANCE ) || defined ( USE_SHADOWMAP ) || defined ( USE_TRANSMISSION )
+const char *worldpos_vertex = R""(
+#if defined( USE_ENVMAP ) || defined( DISTANCE ) || defined ( USE_SHADOWMAP ) || defined ( USE_TRANSMISSION ) || NUM_SPOT_LIGHT_COORDS > 0
 
 	vec4 worldPosition = vec4( transformed, 1.0 );
 
@@ -14,5 +15,6 @@ const char *worldpos_vertex = R"(
 	worldPosition = modelMatrix * worldPosition;
 
 #endif
-)";
+)"";
 }
+#endif //THREE_CPP_WORLDPOS_VERTEX_GLSL_H
