@@ -1,5 +1,5 @@
 //
-// Created by Willie on 2023/6/23.
+// Created by SeanR on 2023/6/23.
 //
 
 #ifndef THREE_CPP_FOG_PARS_FRAGMENT_GLSL_H
@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* fog_pars_fragment = R""""(
+const char* fog_pars_fragment = R""(
 #ifdef USE_FOG
 
 	uniform vec3 fogColor;
@@ -26,7 +26,7 @@ const char* fog_pars_fragment = R""""(
 	#endif
 
 #endif
-)"""";
+)"";
 
 }
 

@@ -29,6 +29,7 @@
 #include "gl_materials_channels.h"
 #include "gl_materials_cubemap.h"
 #include "gl_materials_demo.h"
+#include "gl_materials_displacementmap.h"
 
 // settings
 extern int display_w;
@@ -162,6 +163,14 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Gl_Materials"] = std::make_shared<GLMaterialsDemo>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Gl_Materials"];
+                currentDemoClass->renderer->clear();
+            }
+
+            if (ImGui::MenuItem("Gl_Materials_Displacementmap", "")) {
+                if (demoClasses.count("Gl_Materials_Displacementmap") == 0)
+                    demoClasses["Gl_Materials_Displacementmap"] = std::make_shared<GLMaterialsDisplacementMap>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Gl_Materials_Displacementmap"];
                 currentDemoClass->renderer->clear();
             }
 

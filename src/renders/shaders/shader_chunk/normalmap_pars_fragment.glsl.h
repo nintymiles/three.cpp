@@ -1,6 +1,7 @@
-
+#ifndef THREE_CPP_NORMALMAP_PARS_FRAGMENT_GLSL_H
+#define THREE_CPP_NORMALMAP_PARS_FRAGMENT_GLSL_H
 namespace shader_chunk {
-const char *normalmap_pars_fragment = R"(
+const char *normalmap_pars_fragment = R""(
 #ifdef USE_NORMALMAP
 
 	uniform sampler2D normalMap;
@@ -42,5 +43,6 @@ const char *normalmap_pars_fragment = R"(
 	}
 
 #endif
-)";
+)"";
 }
+#endif THREE_CPP_NORMALMAP_PARS_FRAGMENT_GLSL_H

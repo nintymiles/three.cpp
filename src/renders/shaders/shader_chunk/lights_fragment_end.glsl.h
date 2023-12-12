@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* lights_fragment_end = R""""(
+const char* lights_fragment_end = R""(
 #if defined( RE_IndirectDiffuse )
 
 	RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );
@@ -20,7 +20,7 @@ const char* lights_fragment_end = R""""(
 	RE_IndirectSpecular( radiance, iblIrradiance, clearcoatRadiance, geometry, material, reflectedLight );
 
 #endif
-)"""";
+)"";
 
 }
 

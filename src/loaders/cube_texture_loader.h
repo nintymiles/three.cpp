@@ -23,7 +23,7 @@ public:
         CubeTexture::sptr cubeTex = CubeTexture::create(images);
 
         if(images.size()>=6)
-            cubeTex->needsUpdate = true;
+            cubeTex->setNeedsUpdate(true);
 
 
         return cubeTex;

@@ -8,13 +8,13 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* alphatest_fragment = R""""(
+const char* alphatest_fragment = R""(
 #ifdef USE_ALPHATEST
 
 	if ( diffuseColor.a < alphaTest ) discard;
 
 #endif
-)"""";
+)"";
 
 }
 

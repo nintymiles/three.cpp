@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* clipping_planes_fragment = R""""(
+const char* clipping_planes_fragment = R""(
 #if NUM_CLIPPING_PLANES > 0
 
 	vec4 plane;
@@ -40,7 +40,7 @@ const char* clipping_planes_fragment = R""""(
 	#endif
 
 #endif
-)"""";
+)"";
 
 }
 

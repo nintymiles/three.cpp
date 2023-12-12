@@ -1,6 +1,6 @@
 
 namespace shader_chunk {
-const char *metalnessmap_fragment = R"(
+const char *metalnessmap_fragment = R""(
 float metalnessFactor = metalness;
 
 #ifdef USE_METALNESSMAP
@@ -11,5 +11,5 @@ float metalnessFactor = metalness;
 	metalnessFactor *= texelMetalness.b;
 
 #endif
-)";
+)"";
 }

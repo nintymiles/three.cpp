@@ -1,3 +1,6 @@
+#ifndef THREE_CPP_TRANSMISSION_PARS_FRAGMENT_GLSL_H
+#define THREE_CPP_TRANSMISSION_PARS_FRAGMENT_GLSL_H
+
 namespace shader_chunk {
 const char *transmission_pars_fragment = R""(
 #ifdef USE_TRANSMISSION
@@ -72,9 +75,9 @@ const char *transmission_pars_fragment = R""(
 
 	vec3 applyVolumeAttenuation( const in vec3 radiance, const in float transmissionDistance, const in vec3 attenuationColor, const in float attenuationDistance ) {
 
-		if ( attenuationDistance == 0.0 ) {
+		if ( isinf( attenuationDistance ) ) {
 
-			// Attenuation distance is +∞ (which we indicate by zero), i.e. the transmitted color is not attenuated at all.
+			// Attenuation distance is +∞, i.e. the transmitted color is not attenuated at all.
 			return radiance;
 
 		} else {
@@ -116,3 +119,5 @@ const char *transmission_pars_fragment = R""(
 #endif
 )"";
 }
+
+#endif THREE_CPP_TRANSMISSION_PARS_FRAGMENT_GLSL_H

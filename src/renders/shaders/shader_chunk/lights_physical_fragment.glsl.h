@@ -13,6 +13,8 @@ material.roughness = min( material.roughness, 1.0 );
 
 #ifdef IOR
 
+	material.ior = ior;
+
 	#ifdef SPECULAR
 
 		float specularIntensityFactor = specularIntensity;
@@ -40,7 +42,7 @@ material.roughness = min( material.roughness, 1.0 );
 
 	#endif
 
-	material.specularColor = mix( min( pow2( ( ior - 1.0 ) / ( ior + 1.0 ) ) * specularColorFactor, vec3( 1.0 ) ) * specularIntensityFactor, diffuseColor.rgb, metalnessFactor );
+	material.specularColor = mix( min( pow2( ( material.ior - 1.0 ) / ( material.ior + 1.0 ) ) * specularColorFactor, vec3( 1.0 ) ) * specularIntensityFactor, diffuseColor.rgb, metalnessFactor );
 
 #else
 

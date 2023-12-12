@@ -1,6 +1,6 @@
 
 namespace shader_chunk {
-const char *logdepthbuf_pars_fragment = R"(
+const char *logdepthbuf_pars_fragment = R""(
 #if defined( USE_LOGDEPTHBUF ) && defined( USE_LOGDEPTHBUF_EXT )
 
 	uniform float logDepthBufFC;
@@ -8,5 +8,5 @@ const char *logdepthbuf_pars_fragment = R"(
 	varying float vIsPerspective;
 
 #endif
-)";
+)"";
 }

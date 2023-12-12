@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* lights_fragment_maps = R""""(
+const char* lights_fragment_maps = R""(
 #if defined( RE_IndirectDiffuse )
 
 	#ifdef USE_LIGHTMAP
@@ -39,7 +39,7 @@ const char* lights_fragment_maps = R""""(
 	#endif
 
 #endif
-)"""";
+)"";
 
 }
 

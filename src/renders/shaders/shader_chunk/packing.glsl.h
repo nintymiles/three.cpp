@@ -1,6 +1,7 @@
-
+#ifndef THREE_CPP_PACKING_GLSL_H
+#define THREE_CPP_PACKING_GLSL_H
 namespace shader_chunk {
-const char *packing = R"(
+const char *packing = R""(
 vec3 packNormalToRGB( const in vec3 normal ) {
 	return normalize( normal ) * 0.5 + 0.5;
 }
@@ -53,5 +54,6 @@ float viewZToPerspectiveDepth( const in float viewZ, const in float near, const 
 float perspectiveDepthToViewZ( const in float invClipZ, const in float near, const in float far ) {
 	return ( near * far ) / ( ( far - near ) * invClipZ - far );
 }
-)";
+)"";
 }
+#endif THREE_CPP_PACKING_GLSL_H

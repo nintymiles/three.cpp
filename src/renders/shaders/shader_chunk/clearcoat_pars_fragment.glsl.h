@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* clearcoat_pars_fragment = R""""(
+const char* clearcoat_pars_fragment = R""(
 #ifdef USE_CLEARCOATMAP
 
 	uniform sampler2D clearcoatMap;
@@ -27,7 +27,7 @@ const char* clearcoat_pars_fragment = R""""(
 	uniform vec2 clearcoatNormalScale;
 
 #endif
-)"""";
+)"";
 
 }
 

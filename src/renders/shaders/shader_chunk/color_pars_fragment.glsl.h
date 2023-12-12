@@ -1,5 +1,5 @@
 //
-// Created by Willie on 2023/6/22.
+// Created by SeanR on 2023/6/22.
 //
 
 #ifndef THREE_CPP_COLOR_PARS_FRAGMENT_GLSL_H
@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* color_pars_fragment = R""""(
+const char* color_pars_fragment = R""(
 #if defined( USE_COLOR_ALPHA )
 
 	varying vec4 vColor;
@@ -18,7 +18,7 @@ const char* color_pars_fragment = R""""(
 	varying vec3 vColor;
 
 #endif
-)"""";
+)"";
 
 }
 

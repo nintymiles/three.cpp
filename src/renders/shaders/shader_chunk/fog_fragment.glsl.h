@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* fog_fragment = R""""(
+const char* fog_fragment = R""(
 #ifdef USE_FOG
 
 	#ifdef FOG_EXP2
@@ -24,7 +24,7 @@ const char* fog_fragment = R""""(
 	gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
 
 #endif
-)"""";
+)"";
 
 }
 

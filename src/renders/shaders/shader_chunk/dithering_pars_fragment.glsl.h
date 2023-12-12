@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* dithering_pars_fragment = R""""(
+const char* dithering_pars_fragment = R""(
 #ifdef DITHERING
 
 	// based on https://www.shadertoy.com/view/MslGR8
@@ -27,7 +27,7 @@ const char* dithering_pars_fragment = R""""(
 	}
 
 #endif
-)"""";
+)"";
 
 }
 

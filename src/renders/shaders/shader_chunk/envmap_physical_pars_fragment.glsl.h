@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* envmap_physical_pars_fragment = R""""(
+const char* envmap_physical_pars_fragment = R""(
 #if defined( USE_ENVMAP )
 
 	vec3 getIBLIrradiance( const in vec3 normal ) {
@@ -53,7 +53,7 @@ const char* envmap_physical_pars_fragment = R""""(
 	}
 
 #endif
-)"""";
+)"";
 
 }
 

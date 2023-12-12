@@ -6,7 +6,7 @@
 #define THREE_CPP_ROUGHNESSMAP_FRAGMENT_H
 
 namespace shader_chunk {
-const char *roughnessmap_fragment = R"(
+const char *roughnessmap_fragment = R""(
 float roughnessFactor = roughness;
 
 #ifdef USE_ROUGHNESSMAP
@@ -17,7 +17,7 @@ float roughnessFactor = roughness;
 	roughnessFactor *= texelRoughness.g;
 
 #endif
-)";
+)"";
 }
 
 #endif //THREE_CPP_ROUGHNESSMAP_FRAGMENT_H

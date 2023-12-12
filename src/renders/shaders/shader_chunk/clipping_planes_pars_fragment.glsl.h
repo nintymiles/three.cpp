@@ -8,7 +8,7 @@
 namespace shader_chunk {
 
 /*glsl*/
-const char* clipping_planes_pars_fragment = R""""(
+const char* clipping_planes_pars_fragment = R""(
 #if NUM_CLIPPING_PLANES > 0
 
 	varying vec3 vClipPosition;
@@ -16,7 +16,7 @@ const char* clipping_planes_pars_fragment = R""""(
 	uniform vec4 clippingPlanes[ NUM_CLIPPING_PLANES ];
 
 #endif
-)"""";
+)"";
 
 }
 

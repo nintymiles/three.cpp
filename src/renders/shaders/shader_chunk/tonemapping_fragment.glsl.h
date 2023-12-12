@@ -1,10 +1,10 @@
 
 namespace shader_chunk {
-const char *tonemapping_fragment = R"(
+const char *tonemapping_fragment = R""(
 #if defined( TONE_MAPPING )
 
 	gl_FragColor.rgb = toneMapping( gl_FragColor.rgb );
 
 #endif
-)";
+)"";
 }
