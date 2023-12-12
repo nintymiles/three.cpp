@@ -95,6 +95,7 @@ public:
     bool isDataTexture2DArray = false;
     bool isDepthTexture = false;
     bool isVideoTexture = false;
+    bool isRenderTargetTexture = false;
 
     threecpp::Signal<void(Texture&)> onDispose;
     threecpp::Signal<void(Texture&)> onUpdate;

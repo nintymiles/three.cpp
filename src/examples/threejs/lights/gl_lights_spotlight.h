@@ -39,6 +39,7 @@ public:
         renderer->shadowMap->enabled = true;
         renderer->shadowMap->type = ShadowMapType::PCFSoftShadowMap;
         renderer->toneMapping = ToneMapping::ACESFilmicToneMapping;
+        renderer->outputEncoding= TextureEncoding::sRGBEncoding;
         //renderer->setAnimationLoop( render );
 
         camera = std::make_shared<PerspectiveCamera>(35.0f, screenX/screenY , .1f, 1000.0f);

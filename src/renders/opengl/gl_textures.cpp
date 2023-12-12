@@ -41,6 +41,7 @@ void GLTextures::initTexture(Texture& texture){
         GLuint tex;
         glGenTextures(1, &tex);
         textureProperties.texture = tex;
+        texture.id = tex;
         info->memory.textures++;
 
     }
@@ -109,11 +110,11 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
 
     initTexture(texture);
 
-    state->activeTexture(GL_TEXTURE0 + slot);
+    //state->activeTexture(GL_TEXTURE0 + slot);
 
     auto& textureProperties = properties->getProperties(texture.uuid);
 
-    state->bindTexture(textureType, textureProperties.texture);
+    state->bindTexture(textureType, textureProperties.texture,GL_TEXTURE0 + slot);
 
     //glPixelStorei(GL_UNPACK_FLIP_Y_WEBGL, texture.flipY);
     //glPixelStorei(GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultiplyAlpha);
@@ -644,7 +645,7 @@ void GLTextures::setTexture2D(Texture& texture, unsigned slot){
 
     if (texture.isVideoTexture) updateVideoTexture(texture);
 
-    if (texture.version > 0 && textureProperties.version !=  texture.version) {
+    if (texture.isRenderTargetTexture == false && texture.version > 0 && textureProperties.version !=  texture.version) {
 
         assert(texture.image.size() != 0);
         uploadTexture(texture, slot);
@@ -652,7 +653,8 @@ void GLTextures::setTexture2D(Texture& texture, unsigned slot){
     }
 
     //state->activeTexture(GL_TEXTURE0 + slot);
-    state->bindTexture(TextureTarget::Texture2D, textureProperties.texture);
+    state->bindTexture(TextureTarget::Texture2D, textureProperties.texture, GL_TEXTURE0 + slot);
+    //state->bindTexture(TextureTarget::Texture2D, texture.id);
 
 }
 
@@ -702,8 +704,8 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
         //textureId is updated above
         textureId = textureProperties.texture;
 
-        state->activeTexture(GL_TEXTURE0 + slot);
-        state->bindTexture(TextureTarget::cubeMap, textureId);
+        //state->activeTexture(GL_TEXTURE0 + slot);
+        state->bindTexture(TextureTarget::cubeMap, textureId,GL_TEXTURE0 + slot);
 
         //_gl.pixelStorei(_gl.UNPACK_FLIP_Y_WEBGL, texture.flipY);
 
@@ -716,14 +718,14 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
         GLsizei widths[6];
         GLsizei heights[6];
-        cubeImage.reserve(6);
+        cubeImage.resize(6);
         textures.reserve(6);
         for (int i = 0; i < 6; i++) {
 
             if (!isCompressed && !isDataTexture) {
                 //todo:fix resizeImage here
-                //cubeImage[i] = texture.images[i]->image;//resizeImage(texture.images[i]->image, texture.images[i]->imageWidth,texture.images[i]->imageHeight,false, maxCubemapSize,texture.images[i]->channel);
-                cubeImage.push_back(texture.images[i]->image);
+                cubeImage[i] = texture.images[i]->image;//resizeImage(texture.images[i]->image, texture.images[i]->imageWidth,texture.images[i]->imageHeight,false, maxCubemapSize,texture.images[i]->channel);
+                //cubeImage.push_back(texture.images[i]->image);
                 widths[i] = texture.images[i]->imageWidth;
                 heights[i] = texture.images[i]->imageHeight;
             }
@@ -759,12 +761,9 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
                         //if (glFormat != = null) {
                         state->compressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, j, glInternalFormat, mipmap.width, mipmap.height, mipmap.data);
-
                         /*}
                         else {
-
                             console.warn('THREE.WebGLRenderer: Attempt to load unsupported compressed texture format in .setTextureCube()');
-
                         }*/
                     }
                     else {
@@ -858,7 +857,9 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
 
     textureProperties.texture = id;
     textureProperties.glInit = true;
+    renderTarget.texture->id = id;
     //textureProperties.__webglTexture = _gl.createTexture();
+    //textureProperties.version = renderTarget.texture->version;
 
     info->memory.textures++;
 
@@ -965,7 +966,8 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
             generateMipmap(TextureTarget::Texture2D, *renderTarget.texture, renderTarget.width, renderTarget.height);
         }
 
-        state->bindTexture(TextureTarget::Texture2D, -1);
+        //state->bindTexture(TextureTarget::Texture2D, -1);
+        state->unbindTexture();
 
     }
 

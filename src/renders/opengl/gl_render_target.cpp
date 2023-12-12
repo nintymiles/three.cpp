@@ -48,6 +48,8 @@ GLRenderTarget::GLRenderTarget(size_t width, size_t height ,GLRenderTargetParame
         depthBuffer = options->depthBuffer;
         stencilBuffer = options->stencilBuffer;
         depthTexture = options->depthTexture;
+
+        texture->isRenderTargetTexture = true;
     }
 
 }

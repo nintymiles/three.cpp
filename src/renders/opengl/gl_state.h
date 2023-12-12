@@ -691,30 +691,42 @@ public:
         }
     }
 
-    void bindTexture(TextureTarget target, GLint texture = -1) {
-
-        if (currentTextureSlot <0) {
-            activeTexture();
+    void bindTexture(TextureTarget target, GLint texture = -1, GLint glSlot = -1) {
+        if ( glSlot == -1 ) {
+            if ( currentTextureSlot == -1 ) {
+                glSlot = GL_TEXTURE0 + maxTextures - 1;
+            } else {
+                glSlot = currentTextureSlot;
+            }
         }
+
+//        if (currentTextureSlot <0) {
+//            activeTexture();
+//        }
 
         /*if (currentTextureSlot == 33985)
             std::cout << "CurrentTextureSlot :" << currentTextureSlot << " texture:" << texture << std::endl;*/
 
         BoundTexture* boundTexture;
 
-        if (texture == 0)
-            std::cout << "Texture is 0" << std::endl;
+        //if (texture == 0)
+        std::cout << "Bound Texture ID is " << texture << std::endl;
 
-        auto found = currentBoundTextures.find(currentTextureSlot);
+        auto found = currentBoundTextures.find(glSlot);
         if (found == currentBoundTextures.end()) {
-            currentBoundTextures.emplace(currentTextureSlot, BoundTexture(TextureTarget::None, -1));
-            boundTexture = &currentBoundTextures[currentTextureSlot];
+            currentBoundTextures.emplace(glSlot, BoundTexture(TextureTarget::None, -1));
+            boundTexture = &currentBoundTextures[glSlot];
         }
         else {
             boundTexture = &found->second;
         }
 
         if (boundTexture->target != target || boundTexture->texture !=  texture) {
+            if(currentTextureSlot != glSlot){
+                glActiveTexture(glSlot);
+                currentTextureSlot = glSlot;
+            }
+
             if(texture>0)
                 glBindTexture((GLenum)target, (GLuint)texture);
             else

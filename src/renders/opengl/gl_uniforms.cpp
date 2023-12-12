@@ -268,15 +268,16 @@ void GLUniform::setValue(const std::vector<Texture::sptr>& t)
         setValue(t[0], textures);
         return;
     }*/
-    std::vector<Texture::sptr> validatedTexs{};
-    std::remove_copy_if(
-            t.begin(),
-            t.end(),
-            std::back_inserter(validatedTexs),
-            [](const auto& item) { return item->image.empty(); });
-
-    int n = validatedTexs.size();
-    if(n==0)return;
+//    std::vector<Texture::sptr> validatedTexs{};
+//    std::remove_copy_if(
+//            t.begin(),
+//            t.end(),
+//            std::back_inserter(validatedTexs),
+//            [](const auto& item) { return item->image.empty(); });
+//
+//    int n = validatedTexs.size();
+//    if(n==0)return;
+    auto n = t.size();
     auto units = allocTextUnits(n);
 
     glUniform1iv(addr, (GLsizei)n, (GLint *)(units.data()));
@@ -289,10 +290,10 @@ void GLUniform::setValue(const std::vector<Texture::sptr>& t)
 //        }
         if (type == UniformType::Sampler2D)
             //setValueT1Array
-            textures->safeSetTexture2D(*validatedTexs[i], units[i]);
+            textures->safeSetTexture2D(*t[i], units[i]);
         else if (type == UniformType::SamplerCube)
             //setValueT6Array
-            textures->safeSetTextureCube(*validatedTexs[i], units[i]);
+            textures->safeSetTextureCube(*t[i], units[i]);
     }
 
 }
