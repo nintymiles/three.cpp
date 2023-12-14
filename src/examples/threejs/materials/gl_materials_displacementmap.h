@@ -25,16 +25,28 @@ class GLMaterialsDisplacementMap: public ApplicationBase{
     Material::sptr material;
     Light::sptr ambientLight,pointLight;
 
-    float roughness = 0.4;
-    float metalness = 1.0;
-    float aoMapIntensity = 1.0f;
-    float envMapIntensity = 1.0;
-    float displacementScale= 2.436143;
-    float normalScale = 1.0;
-    float ambientIntensity = 0.2;
+    struct Settings{
+        float roughness = 0.4;
+        float metalness = 1.0;
+        float aoMapIntensity = 1.0f;
+        float envMapIntensity = 1.0;
+        float displacementScale= 2.436143;
+        float normalScale = 1.0;
+        float ambientIntensity = 0.2;
+    };
+
+//    float roughness = 0.4;
+//    float metalness = 1.0;
+//    float aoMapIntensity = 1.0f;
+//    float envMapIntensity = 1.0;
+//    float displacementScale= 2.436143;
+//    float normalScale = 1.0;
+//    float ambientIntensity = 0.2;
 
     float height = 500;
+    float r = 0.0;
 
+    Settings setting{};
 
 public:
     GLMaterialsDisplacementMap(int x, int y):ApplicationBase(x,y){}
@@ -91,22 +103,22 @@ public:
         // material
         material = MeshStandardMaterial::create();
         material->color = 0x888888;
-        material->roughness = roughness,
-        material->metalness = metalness,
+        material->roughness = setting.roughness,
+        material->metalness = setting.metalness,
         material->normalMap = normalMap,
         material->normalScale = Vector2( 1, - 1 ); // why does the normal map require negation in this case?
         material->aoMap = aoMap;
-        material->aoMapIntensity = 1;
+        material->aoMapIntensity = setting.aoMapIntensity;
         material->displacementMap = displacementMap;
-        material->displacementScale = displacementScale,
+        material->displacementScale = setting.displacementScale,
         material->displacementBias = - 0.428408; // from original model
         material->envMap = reflectionCube;
-        material->envMapIntensity = envMapIntensity;
+        material->envMapIntensity = setting.envMapIntensity;
         material->side = Side::DoubleSide;
 
 
         // lights
-        ambientLight = AmbientLight::create( 0xffffff,ambientIntensity );
+        ambientLight = AmbientLight::create( 0xffffff,setting.ambientIntensity );
         scene->add( ambientLight );
 
         pointLight = PointLight::create( 0xff0000, 0.5 );

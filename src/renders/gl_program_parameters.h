@@ -54,7 +54,15 @@ struct ProgramParameters {
 
     bool clearcoatNormalMap = false;
     bool displacementMap = false;
+
+    bool iridescence = false;
+    bool iridescenceMap = false;
+    bool iridescenceThicknessMap = false;
+
     bool specularMap = false;
+    bool specularIntensityMap = false;
+    bool specularColorMap = false;
+
     bool roughnessMap = false;
     bool metalnessMap = false;
     bool gradientMap = false;
@@ -65,6 +73,7 @@ struct ProgramParameters {
 
     Combine combine = Combine::None;
     bool vertexColors = false;
+    bool vertexAlphas = false;
     bool vertexTangents = false;
     bool vertexUvs = false;
     bool uvsVertexOnly = false;
@@ -79,6 +88,9 @@ struct ProgramParameters {
     bool useVertexTexture = false;
     bool morphTargets = false;
     bool morphNormals = false;
+    bool morphColors = false;
+    int morphTargetsCount = 0;
+    int morphTextureStride = 0;
     int maxMorphTargets =0;
     int maxMorphNormals = 0;;
     bool premultipliedAlpha = false;
@@ -105,7 +117,15 @@ struct ProgramParameters {
     DepthPackingStrategies depthPacking = DepthPackingStrategies::None;
     bool dithering = false;
     bool sheen = false;
+
+    bool sheenColorMap = false;
+    bool sheenRoughnessMap = false;
+
+    bool transmission = false;
     bool transmissionMap = false;
+
+    bool thicknessMap = false;
+
     bool extensionDerivatives = false;
     bool extensionFragDepth = false;
     bool extensionDrawBuffers = false;

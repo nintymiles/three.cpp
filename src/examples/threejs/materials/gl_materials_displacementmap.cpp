@@ -6,51 +6,34 @@
 #include "imgui.h"
 
 void GLMaterialsDisplacementMap::render(){
+    material->roughness = setting.roughness,
+    material->metalness = setting.metalness,
+    material->normalScale = Vector2( 1, - 1 ); // why does the normal map require negation in this case?
+    material->aoMapIntensity = setting.aoMapIntensity;
+    material->displacementScale = setting.displacementScale,
+    material->displacementBias = - 0.428408; // from original model
+    material->envMapIntensity = setting.envMapIntensity;
+
+    ambientLight->intensity = setting.ambientIntensity;
+
+    pointLight->position.x = 2500 * math::cos( r );
+    pointLight->position.z = 2500 * math::sin( r );
+
+    r += 0.01;
+
     ApplicationBase::render();
 }
 
 void GLMaterialsDisplacementMap::showControls(){
-//    ImGui::Begin("控制面板");
-//
-//    if (ImGui::BeginCombo("##materials", materialVec.size()>0?materialVec[selMaterial].c_str():"")) // The second parameter is the label previewed before opening the combo.
-//    {
-//        for (int n = 0; n < materialVec.size(); n++)
-//        {
-//            bool is_selected = (selMaterial == n); // You can store your selection however you want, outside or inside your objects
-//            if (ImGui::Selectable(materialVec[n].c_str(), is_selected))
-//                selMaterial = n;
-//            if (is_selected)
-//                ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-//        }
-//        ImGui::EndCombo();
-//    }
-//
-//    if (ImGui::BeginCombo("##cameras", cameraVec.size()>0?cameraVec[selCamera].c_str():"")) // The second parameter is the label previewed before opening the combo.
-//    {
-//        for (int n = 0; n < cameraVec.size(); n++)
-//        {
-//            bool is_selected = (selCamera == n); // You can store your selection however you want, outside or inside your objects
-//            if (ImGui::Selectable(cameraVec[n].c_str(), is_selected))
-//                selCamera = n;
-//            if (is_selected)
-//                ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-//        }
-//        ImGui::EndCombo();
-//    }
-//
-//    if (ImGui::BeginCombo("##sides", sideVec.size()>0?sideVec[selSide].c_str():"")) // The second parameter is the label previewed before opening the combo.
-//    {
-//        for (int n = 0; n < sideVec.size(); n++)
-//        {
-//            bool is_selected = (selSide == n); // You can store your selection however you want, outside or inside your objects
-//            if (ImGui::Selectable(sideVec[n].c_str(), is_selected))
-//                selSide = n;
-//            if (is_selected)
-//                ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-//        }
-//        ImGui::EndCombo();
-//    }
-//
-//
-//    ImGui::End();
+    ImGui::Begin("Controls");
+
+    ImGui::SliderFloat("metalness", &setting.metalness, 0.0f, 1.f);
+    ImGui::SliderFloat("roughness", &setting.roughness, 0.0f, 1.f);
+    ImGui::SliderFloat("aoMapIntensity", &setting.aoMapIntensity, 0.0f, 1.f);
+    ImGui::SliderFloat("ambientIntensity", &setting.ambientIntensity, 0.0f, 1.f);
+    ImGui::SliderFloat("envMapIntensity", &setting.envMapIntensity, 0.0f, 1.f);
+    ImGui::SliderFloat("displacementScale", &setting.displacementScale, 0.0f, 4.0000f);
+    ImGui::SliderFloat("normalScale", &setting.normalScale, 0.0f, 1.f);
+
+    ImGui::End();
 }

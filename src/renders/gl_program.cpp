@@ -87,6 +87,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
         if (parameters.instancing) prefixVertex << "#define USE_INSTANCING" << std::endl;
         if(parameters.instancingColor) prefixVertex << "#define USE_INSTANCING_COLOR" << std::endl;
+
         if (parameters.supportsVertexTextures) prefixVertex << "#define VERTEX_TEXTURES" << std::endl;
 
         prefixVertex << "#define GAMMA_FACTOR " << std::to_string(gammaFactorDefine) << std::endl;
@@ -110,15 +111,37 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         if (parameters.clearcoatMap) prefixVertex << "#define USE_CLEARCOATMAP" << std::endl;
         if (parameters.clearcoatRoughnessMap) prefixVertex << "#define USE_CLEARCOAT_ROUGHNESSMAP" << std::endl;
         if (parameters.clearcoatNormalMap) prefixVertex << "#define USE_CLEARCOAT_NORMALMAP" << std::endl;
+
+//        parameters.iridescenceMap ? '#define USE_IRIDESCENCEMAP' : '',
+//        parameters.iridescenceThicknessMap ? '#define USE_IRIDESCENCE_THICKNESSMAP' : '',
+        if (parameters.iridescenceMap) prefixVertex << "#define USE_IRIDESCENCEMAP" << std::endl;
+        if (parameters.iridescenceThicknessMap) prefixVertex << "#define USE_IRIDESCENCE_THICKNESSMAP" << std::endl;
+
         if (parameters.displacementMap && parameters.supportsVertexTextures) prefixVertex << "#define USE_DISPLACEMENTMAP" << std::endl;
+
         if (parameters.specularMap) prefixVertex << "#define USE_SPECULARMAP" << std::endl;
+//        parameters.specularIntensityMap ? '#define USE_SPECULARINTENSITYMAP' : '',
+//        parameters.specularColorMap ? '#define USE_SPECULARCOLORMAP' : '',
+        if (parameters.specularIntensityMap) prefixVertex << "#define USE_SPECULARINTENSITYMAP" << std::endl;
+        if (parameters.specularColorMap) prefixVertex << "#define USE_SPECULARCOLORMAP" << std::endl;
+
         if (parameters.roughnessMap) prefixVertex << "#define USE_ROUGHNESSMAP" << std::endl;
         if (parameters.metalnessMap) prefixVertex << "#define USE_METALNESSMAP" << std::endl;
         if (parameters.alphaMap) prefixVertex << "#define USE_ALPHAMAP" << std::endl;
+
+        if (parameters.transmission) prefixVertex << "#define USE_TRANSMISSIONMAP" << std::endl;
         if (parameters.transmissionMap) prefixVertex << "#define USE_TRANSMISSIONMAP" << std::endl;
+        if (parameters.thicknessMap) prefixVertex << "#define USE_THICKNESSMAP" << std::endl;
+
+//        parameters.sheenColorMap ? '#define USE_SHEENCOLORMAP' : '',
+//        parameters.sheenRoughnessMap ? '#define USE_SHEENROUGHNESSMAP' : '',
+        if (parameters.sheenColorMap) prefixVertex << "#define USE_SHEENCOLORMAP" << std::endl;
+        if (parameters.sheenRoughnessMap) prefixVertex << "#define USE_SHEENROUGHNESSMAP" << std::endl;
 
         if (parameters.vertexTangents) prefixVertex << "#define USE_TANGENT" << std::endl;
         if (parameters.vertexColors) prefixVertex << "#define USE_COLOR" << std::endl;
+//        parameters.vertexAlphas ? '#define USE_COLOR_ALPHA' : '',
+        if (parameters.vertexAlphas) prefixVertex << "#define USE_COLOR_ALPHA" << std::endl;
         if (parameters.vertexUvs) prefixVertex << "#define USE_UV" << std::endl;
         if (parameters.uvsVertexOnly) prefixVertex << "#define UVS_VERTEX_ONLY" << std::endl;
 
@@ -129,6 +152,15 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
         if (parameters.morphTargets) prefixVertex << "#define USE_MORPHTARGETS" << std::endl;
         if (parameters.morphNormals && parameters.flatShading == false) prefixVertex << "#define USE_MORPHNORMALS" << std::endl;
+//        ( parameters.morphColors && parameters.isWebGL2 ) ? '#define USE_MORPHCOLORS' : '',
+//        ( parameters.morphTargetsCount > 0 && parameters.isWebGL2 ) ? '#define MORPHTARGETS_TEXTURE' : '',
+//        ( parameters.morphTargetsCount > 0 && parameters.isWebGL2 ) ? '#define MORPHTARGETS_TEXTURE_STRIDE ' + parameters.morphTextureStride : '',
+//        ( parameters.morphTargetsCount > 0 && parameters.isWebGL2 ) ? '#define MORPHTARGETS_COUNT ' + parameters.morphTargetsCount : '',
+        if (parameters.morphColors)  prefixVertex << "#define USE_MORPHCOLORS" << std::endl;
+        if (parameters.morphTargetsCount > 0) prefixVertex << "#define MORPHTARGETS_TEXTURE" << std::endl;
+        if (parameters.morphTargetsCount > 0) prefixVertex << "#define MORPHTARGETS_TEXTURE_STRIDE " << parameters.morphTextureStride << std::endl;
+        if (parameters.morphTargetsCount > 0) prefixVertex << "#define MORPHTARGETS_COUNT " << parameters.morphTargetsCount << std::endl;
+
         if (parameters.doubleSided) prefixVertex << "#define DOUBLE_SIDED" << std::endl;
         if (parameters.flipSided) prefixVertex << "#define FLIP_SIDED" << std::endl;
 
@@ -171,13 +203,17 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 
         prefixVertex << "#endif" << std::endl;
 
-        prefixVertex << "#ifdef USE_COLOR" << std::endl;
+        prefixVertex << "#if defined( USE_COLOR_ALPHA )" << std::endl;
+
+        prefixVertex << "	attribute vec4 color;" << std::endl;
+
+        prefixVertex << "#elif defined( USE_COLOR )" << std::endl;
 
         prefixVertex << "	attribute vec3 color;" << std::endl;
 
         prefixVertex << "#endif" << std::endl;
 
-        prefixVertex << "#ifdef USE_MORPHTARGETS" << std::endl;
+        prefixVertex << "#if ( defined( USE_MORPHTARGETS ) && ! defined( MORPHTARGETS_TEXTURE ) )" << std::endl;
 
         prefixVertex << "	attribute vec3 morphTarget0;" << std::endl;
         prefixVertex << "	attribute vec3 morphTarget1;" << std::endl;
@@ -221,7 +257,10 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 #endif
         prefixFragment << customExtensions << std::endl;
         prefixFragment << "#define varying in" << std::endl;
-        prefixFragment << "out highp vec4 pc_fragColor;" << std::endl;
+//        ( parameters.glslVersion === GLSL3 ) ? '' : 'layout(location = 0) out highp vec4 pc_fragColor;',
+//        ( parameters.glslVersion === GLSL3 ) ? '' : '#define gl_FragColor pc_fragColor',
+//        prefixFragment << "out highp vec4 pc_fragColor;" << std::endl;
+        prefixFragment << "layout(location = 0) out highp vec4 pc_fragColor;" << std::endl;
         prefixFragment << "#define gl_FragColor pc_fragColor" << std::endl;
         prefixFragment << "#define gl_FragDepthEXT gl_FragDepth" << std::endl;
         prefixFragment << "#define texture2D texture" << std::endl;
@@ -260,6 +299,8 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         if (parameters.normalMap)  prefixFragment << "#define USE_NORMALMAP" << std::endl;
         if (parameters.normalMap && parameters.objectSpaceNormalMap)  prefixFragment << "#define OBJECTSPACE_NORMALMAP" << std::endl;
         if (parameters.normalMap && parameters.tangentSpaceNormalMap)  prefixFragment << "#define TANGENTSPACE_NORMALMAP" << std::endl;
+
+        if (parameters.clearcoat) prefixVertex << "#define USE_CLEARCOAT" << std::endl;
         if (parameters.clearcoatMap)  prefixFragment << "#define USE_CLEARCOATMAP" << std::endl;
         if (parameters.clearcoatRoughnessMap)  prefixFragment << "#define USE_CLEARCOAT_ROUGHNESSMAP" << std::endl;
         if (parameters.clearcoatNormalMap)  prefixFragment << "#define USE_CLEARCOAT_NORMALMAP" << std::endl;
@@ -267,10 +308,15 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 //        parameters.iridescence ? '#define USE_IRIDESCENCE' : '',
 //        parameters.iridescenceMap ? '#define USE_IRIDESCENCEMAP' : '',
 //        parameters.iridescenceThicknessMap ? '#define USE_IRIDESCENCE_THICKNESSMAP' : '',
+        if (parameters.iridescence) prefixVertex << "#define USE_IRIDESCENCE" << std::endl;
+        if (parameters.iridescenceMap) prefixVertex << "#define USE_IRIDESCENCEMAP" << std::endl;
+        if (parameters.iridescenceThicknessMap) prefixVertex << "#define USE_IRIDESCENCE_THICKNESSMAP" << std::endl;
 
         if (parameters.specularMap)  prefixFragment << "#define USE_SPECULARMAP" << std::endl;
 //        parameters.specularIntensityMap ? '#define USE_SPECULARINTENSITYMAP' : '',
 //        parameters.specularColorMap ? '#define USE_SPECULARCOLORMAP' : '',
+        if (parameters.specularIntensityMap)  prefixFragment << "#define USE_SPECULARINTENSITYMAP" << std::endl;
+        if (parameters.specularColorMap)  prefixFragment << "#define USE_SPECULARCOLORMAP" << std::endl;
 
         if (parameters.roughnessMap)  prefixFragment << "#define USE_ROUGHNESSMAP" << std::endl;
         if (parameters.metalnessMap)  prefixFragment << "#define USE_METALNESSMAP" << std::endl;
@@ -290,16 +336,22 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         if (parameters.sheen)  prefixFragment << "#define USE_SHEEN" << std::endl;
 //        parameters.sheenColorMap ? '#define USE_SHEENCOLORMAP' : '',
 //        parameters.sheenRoughnessMap ? '#define USE_SHEENROUGHNESSMAP' : '',
+        if (parameters.sheenColorMap) prefixVertex << "#define USE_SHEENCOLORMAP" << std::endl;
+        if (parameters.sheenRoughnessMap) prefixVertex << "#define USE_SHEENROUGHNESSMAP" << std::endl;
+
 
         if (parameters.transmissionMap) prefixFragment << "#define USE_TRANSMISSIONMAP" << std::endl;
 //        parameters.transmissionMap ? '#define USE_TRANSMISSIONMAP' : '',
 //        parameters.thicknessMap ? '#define USE_THICKNESSMAP' : '',
+        if (parameters.thicknessMap) prefixVertex << "#define USE_THICKNESSMAP" << std::endl;
 
 //        parameters.decodeVideoTexture ? '#define DECODE_VIDEO_TEXTURE' : '',
+        if (parameters.decodeVideoTexture) prefixFragment << "#define DECODE_VIDEO_TEXTURE" << std::endl;
 
         if (parameters.vertexTangents)  prefixFragment << "#define USE_TANGENT" << std::endl;
         if (parameters.vertexColors || parameters.instancingColor)  prefixFragment << "#define USE_COLOR" << std::endl;
 //        parameters.vertexAlphas ? '#define USE_COLOR_ALPHA' : '',
+        if (parameters.vertexAlphas) prefixVertex << "#define USE_COLOR_ALPHA" << std::endl;
         if (parameters.vertexUvs)  prefixFragment << "#define USE_UV" << std::endl;
         if (parameters.uvsVertexOnly)  prefixFragment << "#define UVS_VERTEX_ONLY" << std::endl;
 
@@ -323,13 +375,10 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
                 prefixFragment << "#define USE_LOGDEPTHBUF_EXT" << std::endl;
         }
 
-        bool extensionShaderTextureLOD = parameters.extensionShaderTextureLOD;
-
-
-        bool rendererExtensionShaderTextureLod = parameters.renderExtensionShaderTextureLOD;
-
-        if ((extensionShaderTextureLOD || parameters.envMap) && rendererExtensionShaderTextureLod)
-            prefixFragment << "#define TEXTURE_LOD_EXT" << std::endl;
+//        bool extensionShaderTextureLOD = parameters.extensionShaderTextureLOD;
+//        bool rendererExtensionShaderTextureLod = parameters.renderExtensionShaderTextureLOD;
+//        if ((extensionShaderTextureLOD || parameters.envMap) && rendererExtensionShaderTextureLod)
+//            prefixFragment << "#define TEXTURE_LOD_EXT" << std::endl;
 
         prefixFragment << "uniform mat4 viewMatrix;" << std::endl;
         prefixFragment << "uniform vec3 cameraPosition;" << std::endl;
@@ -340,6 +389,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
         if (parameters.toneMapping != ToneMapping::NoToneMapping) prefixFragment << getToneMappingFunction("toneMapping", parameters.toneMapping) << std::endl;
 
         if (parameters.dithering)  prefixFragment << "#define DITHERING" << std::endl;
+        if (parameters.opaque)  prefixFragment << "#define OPAQUE" << std::endl;
 
         if (parameters.outputEncoding!=TextureEncoding::Unknown ||
             parameters.mapEncoding != TextureEncoding::Unknown ||
@@ -425,15 +475,15 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
     std::string fragmentGlsl = prefixFragment.str();
 
     // for glsl Debug
-    std::ofstream vshaderfile;
-    vshaderfile.open(parameters.shaderName+"_vshader.txt", std::ios_base::out);
-    vshaderfile << vertexGlsl;
-    vshaderfile.close();
-
-    std::ofstream fshaderfile;
-    fshaderfile.open(parameters.shaderName+"_fshader.txt", std::ios_base::out);
-    fshaderfile << fragmentGlsl;
-    fshaderfile.close();
+//    std::ofstream vshaderfile;
+//    vshaderfile.open(parameters.shaderName+"_vshader.txt", std::ios_base::out);
+//    vshaderfile << vertexGlsl;
+//    vshaderfile.close();
+//
+//    std::ofstream fshaderfile;
+//    fshaderfile.open(parameters.shaderName+"_fshader.txt", std::ios_base::out);
+//    fshaderfile << fragmentGlsl;
+//    fshaderfile.close();
 
     GLShader vertexShader = GLShader(GL_VERTEX_SHADER, vertexGlsl);
     GLShader fragmentShader = GLShader(GL_FRAGMENT_SHADER, fragmentGlsl);
