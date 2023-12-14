@@ -30,6 +30,7 @@
 #include "gl_materials_cubemap.h"
 #include "gl_materials_demo.h"
 #include "gl_materials_displacementmap.h"
+#include "gl_materials_cubemap_refraction.h"
 
 // settings
 extern int display_w;
@@ -171,6 +172,14 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Gl_Materials_Displacementmap"] = std::make_shared<GLMaterialsDisplacementMap>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Gl_Materials_Displacementmap"];
+                currentDemoClass->renderer->clear();
+            }
+
+            if (ImGui::MenuItem("Gl_Materials_CubeMap_Refraction", "")) {
+                if (demoClasses.count("Gl_Materials_CubeMap_Refraction") == 0)
+                    demoClasses["Gl_Materials_CubeMap_Refraction"] = std::make_shared<GLMaterialsCubeMapRefraction>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Gl_Materials_CubeMap_Refraction"];
                 currentDemoClass->renderer->clear();
             }
 
