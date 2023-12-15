@@ -36,6 +36,7 @@ private:
 
 public:
     using sptr = std::shared_ptr<Texture>;
+    using wptr = std::weak_ptr<Texture>;
 
     bool needsUpdate;
     size_t id;

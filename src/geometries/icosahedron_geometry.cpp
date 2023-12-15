@@ -28,7 +28,7 @@ IcosahedronBufferGeometry::IcosahedronBufferGeometry(float radius, float detail)
         PolyhedronBufferGeometry(icosahedron_geometry::vertices, icosahedron_geometry::indices, radius, detail){}
 
 IcosahedronGeometry::IcosahedronGeometry(float radius, float detail){
-    IcosahedronBufferGeometry::ptr bufferGeometry = std::make_shared<IcosahedronBufferGeometry>(radius, detail);
+    IcosahedronBufferGeometry::sptr bufferGeometry = std::make_shared<IcosahedronBufferGeometry>(radius, detail);
 
     fromBufferGeometry(*bufferGeometry);
     mergeVertices();

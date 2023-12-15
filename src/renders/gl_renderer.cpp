@@ -23,7 +23,7 @@
 #include "gl_extensions.h"
 #include "gl_capabilities.h"
 #include "gl_binding_states.h"
-#include "gl_cubemap.h"
+#include "gl_cube_maps.h"
 
 #include "number.h"
 #include "timer.h"
@@ -61,7 +61,7 @@ void GLRenderer::initGLContext(int width, int height){
     state->viewport(_currentViewport);
 
 
-    cubeMaps = GLCubeMap::create(*this);
+    cubeMaps = GLCubeMaps::create(*this);
 
 
     textures = std::make_shared<GLTextures>(extensions, state, properties, capabilities, info);
@@ -96,6 +96,8 @@ void GLRenderer::initGLContext(int width, int height){
 
     materials = GLMaterials(properties);
 
+    clipping = std::make_shared<GLClipping>( /**properties*/ );
+
 }
 
 int GLRenderer::getTargetPixelRatio(){
@@ -113,7 +115,7 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
 
     auto lightsStateVersion = lights.state.version;
 
-    ProgramParameters::sptr parameters= programCache->getParameters(*this, material, lights, shadowsArray, scene.get(),*object);
+    ProgramParameters::sptr parameters= programCache->getParameters(*this, material, lights, shadowsArray, scene,*object);
     std::string programCacheKey = programCache->getProgramCacheKey(*material, *parameters);
 
     bool programChange = true;
@@ -224,8 +226,8 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
     auto environment = material->type=="MeshStandardMaterial" ? scene->environment : nullptr;
     auto encoding = (_currentRenderTarget == nullptr) ? outputEncoding : _currentRenderTarget->texture->encoding;
     auto envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : environment);
-    auto& materialProperties = properties->getMaterialProperties(material->uuid);
 
+    auto& materialProperties = properties->getMaterialProperties(material->uuid);
     GLLights lights = currentRenderState->state.lights;
 
     if (_clippingEnabled) {
@@ -1003,7 +1005,9 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
 
 }
 
-void GLRenderer::compile(Scene& scene, Camera& camera){}
+void GLRenderer::compile(Scene& scene, Camera& camera){
+
+}
 
 void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
     if (scene == nullptr || camera==nullptr) return;
@@ -1303,4 +1307,160 @@ void GLRenderer::initGLParameter(void){
 
     glScissor(0, 0, _width, _height);
     glViewport(0, 0, _width, _height);
+}
+
+void GLRenderer::prepare( Material::sptr material,Scene::sptr scene,Object3D::sptr object ) {
+    if ( material->transparent == true && material->side == Side::DoubleSide ) {
+        material->side = Side::BackSide;
+        material->needsUpdate = true;
+        getProgram( material, scene, object );
+
+        material->side = Side::FrontSide;
+        material->needsUpdate = true;
+        getProgram( material, scene, object );
+
+        material->side = Side::DoubleSide;
+
+    } else {
+        getProgram( material, scene, object );
+    }
+}
+
+GLProgram::sptr GLRenderer::getProgram(Material::sptr material,Scene::sptr scene,Object3D::sptr object){
+    //if ( scene->isScene != true ) scene = _emptyScene; // scene could be a Mesh, Line, Points, ...
+    auto materialProperties = properties->getMaterialProperties( material->uuid );
+
+    auto lights = currentRenderState->state.lights;
+    auto shadowsArray = currentRenderState->state.shadowsArray;
+
+    auto lightsStateVersion = lights.state.version;
+
+    auto parameters = programCache->getParameters( *this,material, lights, shadowsArray, scene, *object );
+    auto programCacheKey = programCache->getProgramCacheKey( *material,*parameters );
+
+    auto programs = materialProperties.programs;
+
+    // always update environment and fog - changing these trigger an getProgram call, but it's possible that the program doesn't change
+    materialProperties.environment = material->type == "MeshStandardMaterial" ? scene->environment : nullptr;
+    materialProperties.fog = scene->fog;
+    //materialProperties.envMap = ( material->type == "MeshStandardMaterial" ? /**cubeuvmaps*/nullptr : cubeMaps ).get( material->envMap || materialProperties.environment );
+
+    if ( programs.empty() ) {
+        // new material
+        //material->onDispose.emitSignal( 'dispose', onMaterialDispose );
+
+//        programs = new Map();
+//        materialProperties.programs = programs;
+
+    }
+
+    auto program = programs.find( programCacheKey )!=programs.end()?programs[programCacheKey]:nullptr;
+
+    if ( program != nullptr ) {
+
+        // early out if program and light state is identical
+        if ( materialProperties.program == program && materialProperties.lightsStateVersion == lightsStateVersion ) {
+            updateCommonMaterialProperties( material, *parameters );
+
+            return program;
+        }
+
+    }
+    else {
+        parameters->uniforms = programCache->getUniforms( material );
+
+        //material.onBuild( object, parameters, _this );
+
+        //material.onBeforeCompile( parameters, _this );
+
+        program = programCache->acquireProgram( *this, *parameters, programCacheKey );
+        programs.insert( {programCacheKey, program} );
+
+        materialProperties.uniforms = parameters->uniforms;
+    }
+
+    auto uniforms = materialProperties.uniforms;
+
+    if ( ( material->type != "ShaderMaterial" &&  material->type != "RawShaderMaterial" ) || material->clipping == true ) {
+        uniforms->set("clippingPlanes", clipping->uniform);
+    }
+
+    updateCommonMaterialProperties( material, *parameters );
+
+    // store the light setup it was created for
+
+    materialProperties.needsLights = materialNeedsLights( *material );
+    materialProperties.lightsStateVersion = lightsStateVersion;
+
+    if ( materialProperties.needsLights ) {
+
+        // wire up the material to this renderer's lighting state
+//        uniforms.ambientLightColor.value = lights.state.ambient;
+//        uniforms.lightProbe.value = lights.state.probe;
+//        uniforms.directionalLights.value = lights.state.directional;
+//        uniforms.directionalLightShadows.value = lights.state.directionalShadow;
+//        uniforms.spotLights.value = lights.state.spot;
+//        uniforms.spotLightShadows.value = lights.state.spotShadow;
+//        uniforms.rectAreaLights.value = lights.state.rectArea;
+//        uniforms.ltc_1.value = lights.state.rectAreaLTC1;
+//        uniforms.ltc_2.value = lights.state.rectAreaLTC2;
+//        uniforms.pointLights.value = lights.state.point;
+//        uniforms.pointLightShadows.value = lights.state.pointShadow;
+//        uniforms.hemisphereLights.value = lights.state.hemi;
+//
+//        uniforms.directionalShadowMap.value = lights.state.directionalShadowMap;
+//        uniforms.directionalShadowMatrix.value = lights.state.directionalShadowMatrix;
+//        uniforms.spotShadowMap.value = lights.state.spotShadowMap;
+//        uniforms.spotLightMatrix.value = lights.state.spotLightMatrix;
+//        uniforms.spotLightMap.value = lights.state.spotLightMap;
+//        uniforms.pointShadowMap.value = lights.state.pointShadowMap;
+//        uniforms.pointShadowMatrix.value = lights.state.pointShadowMatrix;
+//        // TODO (abelnation): add area lights shadow info to uniforms
+
+        uniforms->set("ambientLightColor", lights.state.ambient);
+        uniforms->set("lightProbe", lights.state.probe);
+        uniforms->set("directionalLights", lights.state.directional);
+        uniforms->set("directionalLightShadows", lights.state.directionalShadow);
+        uniforms->set("spotLights", lights.state.spot);
+        uniforms->set("spotLightMap", lights.state.spotLightMap);
+        uniforms->set("spotLightShadows", lights.state.spotShadow);
+        uniforms->set("rectAreaLights", lights.state.rectArea);
+        uniforms->set("pointLights", lights.state.point);
+        uniforms->set("pointLightShadows", lights.state.pointShadow);
+        uniforms->set("hemisphereLights", lights.state.hemi);
+
+        uniforms->set("directionalShadowMap", lights.state.directionalShadowMap);
+        uniforms->set("directionalShadowMatrix", lights.state.directionalShadowMatrix);
+        uniforms->set("spotShadowMap", lights.state.spotShadowMap);
+        uniforms->set("spotShadowMatrix", lights.state.spotShadowMatrix);
+        uniforms->set("pointShadowMap", lights.state.pointShadowMap);
+        uniforms->set("pointShadowMatrix", lights.state.pointShadowMatrix);
+
+    }
+
+    auto progUniforms = program->getUniforms();
+    auto uniformsList = progUniforms->seqWithValue(*uniforms);
+
+    materialProperties.program = program;
+    materialProperties.uniformsList = uniformsList;
+
+    return program;
+
+}
+
+void GLRenderer::updateCommonMaterialProperties( Material::sptr material, ProgramParameters& parameters ){
+    auto materialProperties = properties->getMaterialProperties( material->uuid );
+
+    materialProperties.outputEncoding = parameters.outputEncoding;
+//    materialProperties.instancing = parameters.instancing;
+//    materialProperties.skinning = parameters.skinning;
+//    materialProperties.morphTargets = parameters.morphTargets;
+//    materialProperties.morphNormals = parameters.morphNormals;
+//    materialProperties.morphColors = parameters.morphColors;
+//    materialProperties.morphTargetsCount = parameters.morphTargetsCount;
+    materialProperties.numClippingPlanes = parameters.numClippingPlanes;
+    materialProperties.numIntersection = parameters.numClipIntersection;
+//    materialProperties.vertexAlphas = parameters.vertexAlphas;
+//    materialProperties.vertexTangents = parameters.vertexTangents;
+//    materialProperties.toneMapping = parameters.toneMapping;
 }

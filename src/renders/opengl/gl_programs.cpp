@@ -14,7 +14,7 @@
 #include "timer.h"
 #include "gl_program.h"
 #include "gl_clipping.h"
-#include "gl_cubemap.h"
+#include "gl_cube_maps.h"
 
 using namespace std;
 TextureEncoding getTextureEncodingFromMap(const Texture::sptr& map){
@@ -56,12 +56,8 @@ int GLPrograms::getMaxBones(const SkinnedMesh& skinnedMesh)
         return maxBones;
     }
 }
-/* GLPrograms::GLPrograms(GLCubeMap& cubeMaps,GLExtensions::ptr& extensions, GLCapabilities::ptr& capabilities,GLBindingStates::ptr bindingStates,GLClipping* clipping)
- {
 
- }      */
-
-GLPrograms::GLPrograms(GLCubeMap& cubeMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping)
+GLPrograms::GLPrograms(GLCubeMaps& cubeMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping)
         :cubeMaps(cubeMaps),extensions(extensions),capabilities(capabilities),bindingStates(bindingStates),clipping(clipping){
     isGLES3 = capabilities->isGLES3;
     logarithmicDepthBuffer = capabilities->logarithmicDepthBuffer;
@@ -71,7 +67,7 @@ GLPrograms::GLPrograms(GLCubeMap& cubeMaps, const GLExtensions::sptr& extensions
     vertexTextures = capabilities->vertexTextures;
 }
 
-std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& renderer,const Material::sptr& material, GLLights& lights, const vector<Light::sptr>& shadows, const Scene* scene, Object3D& object){
+std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& renderer,const Material::sptr& material, GLLights& lights, const vector<Light::sptr>& shadows, const Scene::sptr scene, Object3D& object){
 
     std::shared_ptr<ProgramParameters> parameters = std::make_shared<ProgramParameters>();
 

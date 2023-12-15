@@ -7,7 +7,7 @@
 
 void GLMaterialsCubeMapRefraction::render(){
     auto timer = - 0.0002 * threecpp::getSystemTimeInMillis();
-    
+
     pointLight->position.x = 1500 * math::cos( timer );
     pointLight->position.z = 1500 * math::sin( timer );
 

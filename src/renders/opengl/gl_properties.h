@@ -57,6 +57,9 @@ struct MaterialProperties {
     std::vector<std::shared_ptr<GLUniform>> uniformsList;
     Texture::sptr envMap;
     Texture::sptr environment;
+    std::unordered_map<std::string,std::shared_ptr<GLProgram>> programs;
+
+//    bool instancing = false;
 };
 
 class GLProperties {

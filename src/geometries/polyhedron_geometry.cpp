@@ -39,6 +39,7 @@ void PolyhedronBufferGeometry::subdivide(float detail){
 
 void PolyhedronBufferGeometry::subdivideFace(const Vector3& a, const Vector3& b, const Vector3& c, float detail){
     float cols = (float)std::pow(2, detail);
+    //float cols = detail + 1;
 
     // we use this multidimensional array as a data structure for creating the subdivision
     std::vector<std::vector<Vector3>> v;

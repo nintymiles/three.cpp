@@ -23,7 +23,7 @@
 #include "gl_properties.h"
 #include "gl_attributes.h"
 #include "gl_geometries.h"
-#include "gl_cubemap.h"
+#include "gl_cube_maps.h"
 #include "gl_textures.h"
 #include "gl_objects.h"
 #include "gl_binding_states.h"
@@ -104,7 +104,7 @@ private:
 
     GLBindingStates::sptr bindingStates;
 
-    GLCubeMap::sptr cubeMaps;
+    GLCubeMaps::sptr cubeMaps;
 
     void initGLContext(int width,int height);
 
@@ -113,8 +113,6 @@ private:
     void initMaterial(const Material::sptr& material, const Scene::sptr& scene, const Object3D::sptr& object);
 
     bool materialNeedsLights(Material& material);
-
-
 
     void markUniformsLightsNeedsUpdate(UniformValues& uniforms, bool value);
 
@@ -132,6 +130,12 @@ private:
                       const Material::sptr& material, threecpp::DrawRange* group=NULL);
 
     void renderObjectImmediate(const Object3D::sptr& object, const GLProgram::sptr& program);
+
+    void prepare(Material::sptr material,Scene::sptr scene,Object3D::sptr object);
+
+    GLProgram::sptr getProgram(Material::sptr material,Scene::sptr scene,Object3D::sptr object);
+
+    void updateCommonMaterialProperties( Material::sptr material, ProgramParameters& parameters );
 public:
     using sptr = std::shared_ptr<GLRenderer>;
     // clearing
@@ -205,6 +209,8 @@ public:
     GLShadowMap::sptr shadowMap;
 
     GLMaterials materials;
+
+    GLClipping::sptr clipping;
 
     std::function<bool(RenderItem::sptr, RenderItem::sptr)> customOpaqueSort = nullptr;
 
@@ -412,6 +418,8 @@ public:
     void initTexture(const Texture::sptr& texture);
 
     void initGLParameter(void);
+
+
 };
 
 //struct GLRendererParameter{

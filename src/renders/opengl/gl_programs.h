@@ -17,7 +17,6 @@
 //#include "gl_clipping.h"
 
 #include "gl_program_parameters.h"
-//#include "gl_cubemap.h"
 
 class Material;
 //class Light;
@@ -29,7 +28,7 @@ class GLRenderer;
 class GLProgram;
 class GLClipping;
 
-class GLCubeMap;
+class GLCubeMaps;
 
 class GLPrograms {
 private:
@@ -67,7 +66,7 @@ protected:
 
     GLCapabilities::sptr capabilities;
 
-    GLCubeMap& cubeMaps;
+    GLCubeMaps& cubeMaps;
 
     GLBindingStates::sptr bindingStates;
 
@@ -78,11 +77,11 @@ public :
 
     std::vector<std::shared_ptr<GLProgram>> programs;
 
-    GLPrograms(GLCubeMap& cubeMaps,const GLExtensions::sptr& extensions,const GLCapabilities::sptr& capabilities,const GLBindingStates::sptr& bindingStates,std::shared_ptr<GLClipping>& clipping);
+    GLPrograms(GLCubeMaps& cubeMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping);
 
     virtual ~GLPrograms() = default;
 
-    std::shared_ptr<ProgramParameters> getParameters(GLRenderer& renderer,const Material::sptr& material, GLLights& lights, const std::vector<Light::sptr>& shadows,const Scene* scene, Object3D& object);
+    std::shared_ptr<ProgramParameters> getParameters(GLRenderer& renderer,const Material::sptr& material, GLLights& lights, const std::vector<Light::sptr>& shadows,const std::shared_ptr<Scene> scene, Object3D& object);
 
     std::string getProgramCacheKey(const Material& material, const ProgramParameters& parameters);
 

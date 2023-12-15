@@ -34,6 +34,7 @@ enum class AttributeName : size_t {
     morphTarget,
     morphNormal,
     instanceMatrix,
+    faceIndex,
     unknown
 
 };
