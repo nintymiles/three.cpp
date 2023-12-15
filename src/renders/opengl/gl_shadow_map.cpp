@@ -324,30 +324,29 @@ void GLShadowMap::render(GLRenderer& renderer, const std::vector<Light::sptr>& l
         }
 
         if (shadow->shadowMap ==  nullptr && instanceOf<PointLightShadow>(shadow.get()) && this->type == ShadowMapType::VSMShadowMap){
-            GLRenderTargetParameter pars;
-            pars.minFilter = TextureFilter::LinearFilter;
-            pars.magFilter = TextureFilter::LinearFilter;
-            pars.format = PixelFormat::RGBAFormat;
+            GLRenderTargetParameter::sptr pars = GLRenderTargetParameter::create();
+            pars->minFilter = TextureFilter::LinearFilter;
+            pars->magFilter = TextureFilter::LinearFilter;
+            pars->format = PixelFormat::RGBAFormat;
 
-            shadow->shadowMap = std::make_shared<GLRenderTarget>(_shadowMapSize.x, _shadowMapSize.y,&pars);
+            shadow->shadowMap = std::make_shared<GLRenderTarget>(_shadowMapSize.x, _shadowMapSize.y,pars);
 
 
             shadow->shadowMap->texture->name = light->name + ".shadowMap";
 
-            shadow->shadowMapPass = std::make_shared<GLRenderTarget>(_shadowMapSize.x, _shadowMapSize.y, &pars);
+            shadow->shadowMapPass = std::make_shared<GLRenderTarget>(_shadowMapSize.x, _shadowMapSize.y, pars);
 
             shadow->camera->updateProjectionMatrix();
 
         }
 
         if (shadow->shadowMap == nullptr) {
+            GLRenderTargetParameter::sptr pars = GLRenderTargetParameter::create();
+            pars->minFilter = TextureFilter::NearestFilter;
+            pars->magFilter = TextureFilter::NearestFilter;
+            pars->format = PixelFormat::RGBFormat; //todo:fix this RGBAFormat
 
-            GLRenderTargetParameter pars;
-            pars.minFilter = TextureFilter::NearestFilter;
-            pars.magFilter = TextureFilter::NearestFilter;
-            pars.format = PixelFormat::RGBFormat; //todo:fix this RGBAFormat
-
-            shadow->shadowMap = std::make_shared<GLRenderTarget>(_shadowMapSize.x, _shadowMapSize.y, &pars);
+            shadow->shadowMap = std::make_shared<GLRenderTarget>(_shadowMapSize.x, _shadowMapSize.y, pars);
 
             shadow->shadowMap->texture->name = light->name + ".shadowMap";
 

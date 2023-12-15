@@ -28,6 +28,11 @@ struct GLRenderTargetParameter {
     bool stencilBuffer = false;
     DepthTexture::sptr depthTexture = nullptr;
     //int multisample = 1;
+
+    using sptr = std::shared_ptr<GLRenderTargetParameter>;
+    static sptr create(){
+        return std::make_shared<GLRenderTargetParameter>();
+    }
 };
 
 class GLRenderTarget {
@@ -66,13 +71,13 @@ public:
         type = "GLRenderTarget";
     }
 
-    GLRenderTarget(size_t width, size_t height,GLRenderTargetParameter* options = nullptr);
+    GLRenderTarget(size_t width, size_t height,GLRenderTargetParameter::sptr options = nullptr);
 
     static sptr create(){
         return std::make_shared<GLRenderTarget>();
     }
 
-    static sptr create(size_t width, size_t height,GLRenderTargetParameter* options = nullptr){
+    static sptr create(size_t width, size_t height,GLRenderTargetParameter::sptr options = nullptr){
         return std::make_shared<GLRenderTarget>(width,height,options);
     }
 

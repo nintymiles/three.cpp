@@ -6,7 +6,7 @@
 
 size_t GLRenderTarget::renderTargetId = 0;
 
-GLRenderTarget::GLRenderTarget(size_t width, size_t height ,GLRenderTargetParameter* options) : GLRenderTarget(){
+GLRenderTarget::GLRenderTarget(size_t width, size_t height ,GLRenderTargetParameter::sptr options) : GLRenderTarget(){
     type = "GLRenderTarget";
     this->width = width;
     this->height = height;
