@@ -98,6 +98,8 @@ public:
     bool isVideoTexture = false;
     bool isRenderTargetTexture = false;
 
+    bool needsPMREMUpdate = false;
+
     threecpp::Signal<void(Texture&)> onDispose;
     threecpp::Signal<void(Texture&)> onUpdate;
 

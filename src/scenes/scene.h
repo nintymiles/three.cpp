@@ -7,7 +7,7 @@
 
 #include "object_3d.h"
 
-#include "gl_render_target.h"
+#include "gl_cube_render_target.h"
 #include "cube_texture.h"
 #include "color.h"
 #include "fog.h"
