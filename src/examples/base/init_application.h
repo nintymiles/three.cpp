@@ -33,6 +33,9 @@
 #include "gl_materials_cubemap_refraction.h"
 #include "gl_materials_cubemap_envmaps.h"
 
+#include "gl_shader_demo1.h"
+#include "gl_shader_lava.h"
+
 // settings
 extern int display_w;
 extern int display_h;
@@ -196,6 +199,38 @@ static void ShowApplicationMenuBar() {
             ImGui::EndMenu();
 
         }
+        if (ImGui::BeginMenu("Shaders")){
+
+            if (ImGui::MenuItem("GL_Shaders_Demo1", "")) {
+                if (demoClasses.count("GL_Shaders_Demo1") == 0)
+                    demoClasses["GL_Shaders_Demo1"] = std::make_shared<GLShaderDemo1>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Shaders_Demo1"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Shaders_Lava", "")) {
+                if (demoClasses.count("GL_Shaders_Lava") == 0)
+                    demoClasses["GL_Shaders_Lava"] = std::make_shared<GLShaderLava>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Shaders_Lava"];
+                currentDemoClass->renderer->clear();
+            }
+
+
+//            if (ImGui::MenuItem("Gl_Lights_Spotlight", "")) {
+//                if (demoClasses.count("Gl_Lights_Spotlight") == 0)
+//                    demoClasses["Gl_Lights_Spotlight"] = std::make_shared<GLLightsSpotlight>(display_w, display_h);
+//
+//                currentDemoClass = demoClasses["Gl_Lights_Spotlight"];
+//                currentDemoClass->renderer->clear();
+//            }
+
+            if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
+            ImGui::EndMenu();
+
+        }
+
+
         ImGui::EndMainMenuBar();
     }
 

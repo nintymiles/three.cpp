@@ -91,7 +91,7 @@ TorusBufferGeometry::TorusBufferGeometry(float radius, float tube, float radialS
 }
 
 TorusGeometry::TorusGeometry(float radius, float tube, float radialSegments, float tubularSegments, float arc) : Geometry(){
-    TorusBufferGeometry::ptr bufferGeometry = std::make_shared<TorusBufferGeometry>(radius, tube, radialSegments, tubularSegments, arc);
+    TorusBufferGeometry::sptr bufferGeometry = std::make_shared<TorusBufferGeometry>(radius, tube, radialSegments, tubularSegments, arc);
 
     fromBufferGeometry(*bufferGeometry);
     mergeVertices();

@@ -9,9 +9,13 @@
 
 class TorusBufferGeometry : public BufferGeometry {
 public:
-    using ptr = std::shared_ptr<TorusBufferGeometry>;
+    using sptr = std::shared_ptr<TorusBufferGeometry>;
 
     TorusBufferGeometry(float radius = 0, float tube = 0, float radialSegments = 0, float tubularSegments = 0, float arc = 0);
+
+    static sptr create(float radius = 0, float tube = 0, float radialSegments = 0, float tubularSegments = 0, float arc = 0){
+        return std::make_shared<TorusBufferGeometry>(radius,tube,radialSegments,tubularSegments,arc);
+    }
 };
 
 class TorusGeometry : public Geometry {
