@@ -57,8 +57,8 @@ int GLPrograms::getMaxBones(const SkinnedMesh& skinnedMesh)
     }
 }
 
-GLPrograms::GLPrograms(GLCubeMaps& cubeMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping)
-        :cubeMaps(cubeMaps),extensions(extensions),capabilities(capabilities),bindingStates(bindingStates),clipping(clipping){
+GLPrograms::GLPrograms(GLCubeMaps* cubeMaps,GLCubeUVMaps* cubeUVMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping)
+        :cubeMaps(cubeMaps),cubeUVMaps(cubeUVMaps),extensions(extensions),capabilities(capabilities),bindingStates(bindingStates),clipping(clipping){
     isGLES3 = capabilities->isGLES3;
     logarithmicDepthBuffer = capabilities->logarithmicDepthBuffer;
     floatVertexTextures = capabilities->floatVertexTextures;
@@ -73,7 +73,7 @@ std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& rendere
 
     Texture::sptr environment = instanceOf<MeshStandardMaterial>(material.get()) ? scene->environment : nullptr;
 
-    Texture::sptr envMap = cubeMaps.get(material->envMap != nullptr ? material->envMap : nullptr);
+    Texture::sptr envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : nullptr);
 
     std::string vertexShader = "";
     std::string fragmentShader = "";

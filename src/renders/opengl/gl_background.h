@@ -10,11 +10,13 @@
 #include "gl_state.h"
 #include "gl_objects.h"
 
+
 class Scene;
 class Camera;
 class GLRenderer;
 class GLRenderList;
 class GLRenderTarget;
+class GLCubeMaps;
 
 class GLBackground{
 private:
@@ -53,7 +55,7 @@ public:
 
     void setClearAlpha(const float alpha);
 
-    void render(GLRenderer& renderer, GLRenderList& renderList, Scene& scene, Camera& camera, bool forceClear = false);
+    void render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderList& renderList, Scene& scene, Camera& camera, bool forceClear = false);
 
     void beforeRender(GLRenderer& renderer, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Camera>& camera, const std::shared_ptr<Object3D>& object,
                       const std::shared_ptr<BufferGeometry>& geometry, const std::shared_ptr<Material>& material, const std::shared_ptr<GLRenderTarget>& renderTarget,

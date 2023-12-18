@@ -14,6 +14,7 @@
 #include "texture.h"
 #include "gl_renderer.h"
 #include "gl_render_target.h"
+#include "gl_cube_maps.h"
 
 #include "shader_chunk.h"
 
@@ -44,7 +45,7 @@ void GLBackground::setClearAlpha(float alpha){
     setClear(clearColor, clearAlpha);
 }
 
-void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& scene, Camera& camera, bool forceClear){
+void GLBackground::render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderList& renderList,Scene& scene, Camera& camera, bool forceClear){
     if (!scene.hasBackground()) {
         setClear(clearColor, clearAlpha);
     }
@@ -54,11 +55,15 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
         forceClear = true;
     }
 
+    auto background = scene.getBackgroundTexture() ? scene.getBackgroundTexture() : scene.getBackgroundCubeTexture();
+    auto tex = cubeMaps->get(background);
+
     if (renderer.autoClear || forceClear)
         renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
 
     //todo: optimize here
-    if (scene.isCubeTexture || scene.isGLCubeRenderTarget || (scene.getBackgroundCubeTexture()!=nullptr && scene.getBackgroundCubeTexture()->mapping == TextureMapping::CubeReflectionMapping) || (scene.getBackgroundTexture()!=nullptr && scene.getBackgroundTexture()->mapping == TextureMapping::CubeReflectionMapping)) {
+    //if (scene.isCubeTexture || scene.isGLCubeRenderTarget || (scene.getBackgroundCubeTexture()!=nullptr && scene.getBackgroundCubeTexture()->mapping == TextureMapping::CubeReflectionMapping) || (scene.getBackgroundTexture()!=nullptr && scene.getBackgroundTexture()->mapping == TextureMapping::CubeReflectionMapping)) {
+    if(tex && tex->isCubeTexture){
         if (boxMesh == nullptr) {
             boxMesh = Mesh::create(std::make_shared<BoxGeometry>(1, 1, 1));
             ShaderMaterial::sptr shaderMaterial = ShaderMaterial::create();
@@ -81,7 +86,7 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
             //boxMesh->onBeforeRender.connect(*this, &GLBackground::beforeRender);
             boxMesh->onBeforeRender.connect(*this,&GLBackground::beforeRender);
 
-            shaderMaterial->envMap = scene.getBackgroundCubeTexture();//(*shaderMaterial->uniforms)["envMap"].get<Texture::sptr>();//->get<Texture::ptr>("envMap");
+            shaderMaterial->envMap = tex;//(*shaderMaterial->uniforms)["envMap"].get<Texture::sptr>();//->get<Texture::ptr>("envMap");
             objects->update(*boxMesh);
         }
         Texture::sptr emptyTexture;

@@ -24,6 +24,7 @@
 #include "gl_attributes.h"
 #include "gl_geometries.h"
 #include "gl_cube_maps.h"
+#include "gl_cubeuv_maps.h"
 #include "gl_textures.h"
 #include "gl_objects.h"
 #include "gl_binding_states.h"
@@ -104,7 +105,9 @@ private:
 
     GLBindingStates::sptr bindingStates;
 
-    GLCubeMaps::sptr cubeMaps;
+    GLCubeMaps* cubeMaps;
+
+    GLCubeUVMaps* cubeUVMaps;
 
     void initGLContext(int width,int height);
 

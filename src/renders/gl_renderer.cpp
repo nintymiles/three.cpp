@@ -60,9 +60,8 @@ void GLRenderer::initGLContext(int width, int height){
     state->scissor(_currentScissor);
     state->viewport(_currentViewport);
 
-
-    cubeMaps = GLCubeMaps::create(*this);
-
+    cubeMaps = new GLCubeMaps(this);
+    cubeUVMaps = new GLCubeUVMaps(this);
 
     textures = std::make_shared<GLTextures>(extensions, state, properties, capabilities, info);
 
@@ -76,7 +75,7 @@ void GLRenderer::initGLContext(int width, int height){
 
     bindingStates = std::make_shared<GLBindingStates>(extensions, attributes, capabilities);
     //todo:fix this
-    programCache = std::make_shared<GLPrograms>(*cubeMaps, extensions, capabilities,bindingStates,_clipping);
+    programCache = std::make_shared<GLPrograms>(cubeMaps,cubeUVMaps, extensions, capabilities,bindingStates,_clipping);
 
     renderLists = std::make_shared<GLRenderLists>();
 
@@ -120,6 +119,10 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
 
     bool programChange = true;
 
+    auto isStandardMaterial = instanceOf<MeshStandardMaterial>(material.get());
+    auto environment =  isStandardMaterial? scene->environment : nullptr;
+    auto tex = material->envMap != nullptr ? material->envMap : environment;
+
     if (materialProperties.program==nullptr) {
         material->onDispose.connect(*this, &GLRenderer::onMaterialDispose);
     }
@@ -131,8 +134,13 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
         programChange = false;
     }
     else if (!parameters->shaderID.empty()) {
-        auto environment = instanceOf<MeshStandardMaterial>(material.get()) ? scene->environment : nullptr;
-        materialProperties.envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : environment);
+//        auto isStandardMaterial = instanceOf<MeshStandardMaterial>(material.get());
+//        auto environment =  isStandardMaterial? scene->environment : nullptr;
+//        auto tex = material->envMap != nullptr ? material->envMap : environment;
+        if(isStandardMaterial)
+            materialProperties.envMap = cubeUVMaps->get(tex);
+        else
+            materialProperties.envMap = cubeMaps->get(tex);
         return;
     }
     else {
@@ -158,9 +166,15 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
         materialProperties.numIntersection = _clipping->numIntersection;
         uniforms->set("clippingPlanes", _clipping->uniform);
     }
-    materialProperties.environment = instanceOf<MeshStandardMaterial>(material.get()) ? scene->environment : nullptr;
+    materialProperties.environment = environment;
     materialProperties.fog = scene->fog;
-    materialProperties.envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : materialProperties.environment);
+
+//    materialProperties.envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : materialProperties.environment);
+    if(isStandardMaterial)
+        materialProperties.envMap = cubeUVMaps->get(tex);
+    else
+        materialProperties.envMap = cubeMaps->get(tex);
+
     materialProperties.needsLights = materialNeedsLights(*material);
     materialProperties.lightsStateVersion =lightsStateVersion;
 
@@ -1074,7 +1088,7 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
     }
 
     //autoClear = scene->clearBeforeRender;
-    background->render(*this,*currentRenderList, *scene, *camera, forceClear);
+    background->render(*this,cubeMaps,*currentRenderList, *scene, *camera, forceClear);
 
     auto opaqueObjects = currentRenderList->opaque;
     auto transparentObjects = currentRenderList->transparent;

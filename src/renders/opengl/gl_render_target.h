@@ -103,13 +103,6 @@ public:
     }
 };
 
-class GLCubeRenderTarget : public GLRenderTarget {
-public:
-    GLCubeRenderTarget() : GLRenderTarget() {
-        type = "GLCubeRenderTarget";
-    }
-};
-
 class GLMultisampleRenderTarget : public GLRenderTarget {
 public:
     GLMultisampleRenderTarget() :GLRenderTarget() {

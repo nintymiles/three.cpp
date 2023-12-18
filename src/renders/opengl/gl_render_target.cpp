@@ -98,19 +98,23 @@ GLRenderTarget& GLRenderTarget::copy(const GLRenderTarget& source){
     height = source.height;
     scissor.copy(source.scissor);
     scissorTest = source.scissorTest;
+    isGLCubeRenderTarget = source.isGLCubeRenderTarget;
+    isGLMultisampleRenderTarget = source.isGLMultisampleRenderTarget;
+    isGLMultiviewRenderTarget = source.isGLMultiviewRenderTarget;
     viewport.copy(source.viewport);
-    if (texture != nullptr) {
-        texture.reset();
+    if (texture != nullptr && source.texture != nullptr) {
+        //texture.reset();
         texture->copy(*source.texture);
     }
-    if (depthTexture != nullptr) {
-        depthTexture.reset();
+    if (depthTexture != nullptr && source.depthTexture != nullptr) {
+        //depthTexture.reset();
         depthTexture->copy(*source.depthTexture);
     }
     depthBuffer = source.depthBuffer;
     stencilBuffer = source.stencilBuffer;
-    //options.merge(source.options);
     samples = source.samples;
+    //options.merge(source.options);
+    options = source.options;
 
     return *this;
 }

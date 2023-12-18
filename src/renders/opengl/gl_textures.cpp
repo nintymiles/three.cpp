@@ -878,9 +878,9 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
     // Setup framebuffer
     if (isCube) {
         //renderTargetProperties.__webglFramebuffer = [];
-        renderTargetProperties.framebuffers = std::vector<GLint>();
+        renderTargetProperties.framebuffers = std::vector<GLint>(6);
 
-        std::vector<GLint> glFramebuffer = renderTargetProperties.framebuffers;
+        std::vector<GLint>& glFramebuffer = renderTargetProperties.framebuffers;
         glFramebuffer.clear();
         for (int i = 0; i < 6; i++) {
             //renderTargetProperties.__webglFramebuffer[i] = _gl.createFramebuffer();
