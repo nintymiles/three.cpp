@@ -8,10 +8,13 @@
 #include <iostream>
 
 #include "material.h"
+#include "mesh.h"
 
+class GLRenderer;
 namespace threecpp{
 
     class Pass{
+    public:
         // if set to true, the pass is processed by the composer
         bool enabled;
         // if set to true, the pass indicates to swap read and write buffer after rendering
@@ -31,8 +34,10 @@ namespace threecpp{
         }
     };
 
-    class GLRenderer;
+
     class FullScreenQuad {
+        Mesh::sptr _mesh;
+    public:
         FullScreenQuad(Material::sptr material);
 
         void render(std::shared_ptr<GLRenderer> renderer);
