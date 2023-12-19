@@ -6,7 +6,7 @@
 #include "gl_renderer.h"
 #include "gl_render_target.h"
 
-void threecpp::RenderPass::render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
+threecpp::RenderPass& threecpp::RenderPass::render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
                                    std::shared_ptr<GLRenderTarget> readBuffer) {
 
     auto oldAutoClear = renderer->autoClear;
@@ -20,7 +20,7 @@ void threecpp::RenderPass::render( std::shared_ptr<GLRenderer> renderer, std::sh
     }
 
     if ( !this->clearColor.isNull() ) {
-        renderer->getClearColor( _oldClearColor );
+        _oldClearColor = renderer->getClearColor();
         oldClearAlpha = renderer->getClearAlpha();
         renderer->setClearColor( clearColor, clearAlpha );
 
@@ -45,4 +45,5 @@ void threecpp::RenderPass::render( std::shared_ptr<GLRenderer> renderer, std::sh
 
     renderer->autoClear = oldAutoClear;
 
+    return *this;
 }

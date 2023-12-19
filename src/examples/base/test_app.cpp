@@ -122,7 +122,7 @@ int main(){
 //    io.Fonts->AddFontFromFileTTF("ProggyTiny.ttf", 10.0f);
 //    io.Fonts->AddFontFromFileTTF("c:/windows/Fonts/simhei.ttf", 13.0f, NULL, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
 #ifdef __APPLE__
-    float fontSize = 36.0f;
+    float fontSize = 20.0f;
 #else
     float fontSize = 24.0f;
 #endif

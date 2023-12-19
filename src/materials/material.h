@@ -442,7 +442,7 @@ public:
     }
     virtual ~Material() = default;
 
-    virtual Material& setNeedsUpdate(boolean needsUpdate){
+    virtual Material& setNeedsUpdate(bool needsUpdate){
         if(needsUpdate)
             this->version++;
         return *this;

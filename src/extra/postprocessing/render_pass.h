@@ -11,6 +11,8 @@
 #include "material.h"
 #include "color.h"
 
+#include <memory>
+
 class GLRenderer;
 class GLRenderTarget;
 namespace threecpp {
@@ -28,11 +30,11 @@ class RenderPass: public Pass {
 public:
     RenderPass(Scene::sptr scene,Camera::sptr camera,Material::sptr overrideMaterial
                ,Color clearColor,bool clearAlpha):Pass(),scene(scene),camera(camera),
-               overrideMaterial(overrideMaterial),clearColor(clearColor),clearAlpha(clearAlpha),clearDepth{clearDepth}
+               overrideMaterial(overrideMaterial),clearColor(clearColor),clearAlpha(clearAlpha),clearDepth(clearDepth){}
 
 
-    void render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
-            std::shared_ptr<GLRenderTarget> readBuffer/*, deltaTime, maskActive */);
+    RenderPass& render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
+            std::shared_ptr<GLRenderTarget> readBuffer/*, deltaTime, maskActive */) override;
 };
 
 }
