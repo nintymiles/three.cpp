@@ -24,7 +24,7 @@ namespace threecpp {
         ShaderPass(ShaderMaterial::sptr shader,std::string textureId = "");
 
         ShaderPass& render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
-                            std::shared_ptr<GLRenderTarget> readBuffer );
+                            std::shared_ptr<GLRenderTarget> readBuffer ) override;
 
         //void dispose();
     };

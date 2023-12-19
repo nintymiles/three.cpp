@@ -15,8 +15,8 @@
 
 class GLRenderer;
 class GLRenderTarget;
-
 namespace threecpp {
+
 
 class RenderPass: public Pass {
     Scene::sptr scene;
@@ -34,7 +34,7 @@ public:
 
 
     RenderPass& render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
-            std::shared_ptr<GLRenderTarget> readBuffer/*, deltaTime, maskActive */);
+            std::shared_ptr<GLRenderTarget> readBuffer/*, deltaTime, maskActive */) override;
 
     //void setSize(int width,int height);
 };

@@ -24,7 +24,7 @@ namespace threecpp{
         // if set to true, the result of the pass is rendered to screen. This is set automatically by EffectComposer.
         bool renderToScreen;
 
-        Pass():enabled(true),needsSwap(true),clear(true),renderToScreen(false){};
+        Pass():enabled(true),needsSwap(true),clear(true),renderToScreen(false){}
 
         //virtual void setSize(int width,int height) {}
 
