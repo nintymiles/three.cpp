@@ -23,7 +23,7 @@
 
 
 class GLPostprocessing: public ApplicationBase{
-    OrbitControl::sptr pCameraControl;
+    OrbitControl::sptr orbitControl;
     UniformValues::sptr uniforms;
     Timer timer;
 
@@ -81,6 +81,11 @@ public:
         auto effect2 = std::make_shared<threecpp::ShaderPass>( ShaderData::getRGBShiftShader() );
         effect2->uniforms->set("amount",0.0015f);
         composer->addPass( effect2 );
+
+        orbitControl = std::make_shared<OrbitControl>(camera);
+        orbitControl->enablePan = true;
+        orbitControl->enableDamping = true;
+        controller = orbitControl;
 
 
     }

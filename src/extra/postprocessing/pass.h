@@ -30,7 +30,7 @@ namespace threecpp{
 
         virtual Pass& render(std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
                             std::shared_ptr<GLRenderTarget> readBuffer) {
-           std::cout << ( 'THREECPP.Pass: .render() must be implemented in derived pass.' ) << std::endl;
+           std::cout << "THREECPP.Pass: .render() must be implemented in derived pass."  << std::endl;
 
             return *this;
         }

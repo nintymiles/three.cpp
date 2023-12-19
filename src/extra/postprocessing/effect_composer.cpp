@@ -25,7 +25,8 @@ namespace threecpp {
             _height = size.y;
 
             renderTarget = GLRenderTarget::create(_width * _pixelRatio, _height * _pixelRatio);
-            //renderTarget->texture->name = "EffectComposer.rt1";
+            renderTarget->texture = Texture::create();
+            renderTarget->texture->name = "EffectComposer.rt1";
 
         } else {
             _pixelRatio = 1;
@@ -38,7 +39,8 @@ namespace threecpp {
 
         renderTarget2 = GLRenderTarget::create();
         renderTarget2->copy(*renderTarget1);
-        //renderTarget2->texture->name = 'EffectComposer.rt2';
+        renderTarget2->texture = Texture::create();
+        renderTarget2->texture->name = "EffectComposer.rt2";
 
         writeBuffer = renderTarget1;
         readBuffer = renderTarget2;
@@ -56,16 +58,21 @@ namespace threecpp {
         auto tmp = readBuffer;
         readBuffer = writeBuffer;
         writeBuffer = tmp;
+
+        return *this;
     }
 
     EffectComposer& EffectComposer::addPass( std::shared_ptr<Pass> pass ){
         passes.push_back( pass );
         //pass->setSize( _width * _pixelRatio, _height * _pixelRatio );
+        return *this;
     }
 
     EffectComposer& EffectComposer::insertPass( std::shared_ptr<Pass> pass, int index ){
         passes.insert( passes.begin() + index, pass );
         //pass->setSize( _width * _pixelRatio, _height * _pixelRatio  );
+
+        return *this;
     }
 
     EffectComposer& EffectComposer::removePass( std::shared_ptr<Pass> pass ){
@@ -74,6 +81,8 @@ namespace threecpp {
         if ( index != passes.end() ) {
             passes.erase( index );
         }
+
+        return *this;
     }
 
     bool EffectComposer::isLastEnabledPass( int passIndex ){
@@ -134,6 +143,8 @@ namespace threecpp {
         }
 
         renderer->setRenderTarget( currentRenderTarget );
+
+        return *this;
     }
 
 
