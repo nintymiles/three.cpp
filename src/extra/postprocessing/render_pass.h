@@ -15,8 +15,8 @@
 
 class GLRenderer;
 class GLRenderTarget;
-namespace threecpp {
 
+namespace threecpp {
 
 class RenderPass: public Pass {
     Scene::sptr scene;
@@ -28,13 +28,15 @@ class RenderPass: public Pass {
     bool clearDepth;
 
 public:
-    RenderPass(Scene::sptr scene,Camera::sptr camera,Material::sptr overrideMaterial
-               ,Color clearColor,bool clearAlpha):Pass(),scene(scene),camera(camera),
+    RenderPass(Scene::sptr scene,Camera::sptr camera,Material::sptr overrideMaterial = nullptr
+               ,Color clearColor = Color(),bool clearAlpha = false):Pass(),scene(scene),camera(camera),
                overrideMaterial(overrideMaterial),clearColor(clearColor),clearAlpha(clearAlpha),clearDepth(clearDepth){}
 
 
     RenderPass& render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
-            std::shared_ptr<GLRenderTarget> readBuffer/*, deltaTime, maskActive */) override;
+            std::shared_ptr<GLRenderTarget> readBuffer/*, deltaTime, maskActive */);
+
+    //void setSize(int width,int height);
 };
 
 }

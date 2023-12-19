@@ -36,6 +36,8 @@
 #include "gl_shader_demo1.h"
 #include "gl_shader_lava.h"
 
+#include "gl_postprocessing.h"
+
 // settings
 extern int display_w;
 extern int display_h;
@@ -213,6 +215,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["GL_Shaders_Lava"] = std::make_shared<GLShaderLava>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Shaders_Lava"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Postprocessing", "")) {
+                if (demoClasses.count("GL_Postprocessing") == 0)
+                    demoClasses["GL_Postprocessing"] = std::make_shared<GLPostprocessing>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Postprocessing"];
                 currentDemoClass->renderer->clear();
             }
 

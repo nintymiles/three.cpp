@@ -26,12 +26,13 @@ namespace threecpp{
 
         Pass():enabled(true),needsSwap(true),clear(true),renderToScreen(false){};
 
-        virtual void setSize() {}
+        //virtual void setSize(int width,int height) {}
 
         virtual Pass& render(std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
                             std::shared_ptr<GLRenderTarget> readBuffer) {
            std::cout << ( 'THREECPP.Pass: .render() must be implemented in derived pass.' ) << std::endl;
 
+            return *this;
         }
     };
 

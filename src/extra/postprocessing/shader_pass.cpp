@@ -10,7 +10,7 @@
 
 namespace threecpp {
 
-    ShaderPass::ShaderPass(ShaderMaterial::sptr shader, std::string textureId) {
+    ShaderPass::ShaderPass(ShaderMaterial::sptr shader, std::string textureId):Pass() {
         this->textureId = textureId.empty()?"tDiffuse":textureId;
 
         if(shader->type == "ShaderMaterial"){

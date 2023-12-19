@@ -14,17 +14,19 @@ namespace threecpp {
 
     class ShaderPass : public Pass {
         std::string textureId;
-        std::shared_ptr<UniformValues> uniforms;
+
         std::shared_ptr<Material> material;
         std::shared_ptr<FullScreenQuad> fsQuad;
 
     public:
+        std::shared_ptr<UniformValues> uniforms;
+
         ShaderPass(ShaderMaterial::sptr shader,std::string textureId = "");
 
         ShaderPass& render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
-                            std::shared_ptr<GLRenderTarget> readBuffer ) override;
+                            std::shared_ptr<GLRenderTarget> readBuffer );
 
-        void dispose();
+        //void dispose();
     };
 
 }

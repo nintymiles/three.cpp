@@ -6,19 +6,26 @@
 
 #include "gl_renderer.h"
 #include "gl_render_target.h"
-#include "copy_shader.h"
+#include "shader_data.h"
+#include "shader_pass.h"
 
-EffectComposer::EffectComposer(std::shared_ptr<GLRenderer> renderer,std::shared_ptr<GLRenderTarget> renderTarget):renderer(renderer){
+#include "mask_pass.h"
 
-        if ( !renderTarget ) {
+#include <algorithm>
+
+namespace threecpp {
+    EffectComposer::EffectComposer(std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> renderTarget)
+            : renderer(renderer) {
+
+        if (!renderTarget) {
             Vector2 size{};
-            renderer->getSize( size );
+            renderer->getSize(size);
             _pixelRatio = renderer->getPixelRatio();
             _width = size.x;
             _height = size.y;
 
-            renderTarget = GLRenderTarget::create( _width * _pixelRatio, _height * _pixelRatio );
-            renderTarget->texture->name = "EffectComposer.rt1";
+            renderTarget = GLRenderTarget::create(_width * _pixelRatio, _height * _pixelRatio);
+            //renderTarget->texture->name = "EffectComposer.rt1";
 
         } else {
             _pixelRatio = 1;
@@ -31,7 +38,7 @@ EffectComposer::EffectComposer(std::shared_ptr<GLRenderer> renderer,std::shared_
 
         renderTarget2 = GLRenderTarget::create();
         renderTarget2->copy(*renderTarget1);
-        renderTarget2->texture->name = 'EffectComposer.rt2';
+        //renderTarget2->texture->name = 'EffectComposer.rt2';
 
         writeBuffer = renderTarget1;
         readBuffer = renderTarget2;
@@ -40,183 +47,130 @@ EffectComposer::EffectComposer(std::shared_ptr<GLRenderer> renderer,std::shared_
 
         passes = {};
 
-        //copyPass = new ShaderPass( CopyShader );
+        copyPass = std::make_shared<ShaderPass>(ShaderData::getCopyShader());
 
         clock = Timer();
-};
+    }
 
-//EffectComposer& swapBuffers();
-//
-//EffectComposer& addPass( std::shared_ptr<RenderPass> pass );
-//
-//EffectComposer& insertPass( std::shared_ptr<RenderPass> pass, int index );
-//
-//EffectComposer& removePass( std::shared_ptr<RenderPass> pass );
-//
-//bool isLastEnabledPass( int passIndex );
-//
-//EffectComposer& render( float deltaTime );
-//
-//EffectComposer& reset( std::shared_ptr<GLRenderTarget> renderTarget renderTarget );
-//
-//EffectComposer& setSize( int width, int height );
-//
+    EffectComposer& EffectComposer::swapBuffers(){
+        auto tmp = readBuffer;
+        readBuffer = writeBuffer;
+        writeBuffer = tmp;
+    }
+
+    EffectComposer& EffectComposer::addPass( std::shared_ptr<Pass> pass ){
+        passes.push_back( pass );
+        //pass->setSize( _width * _pixelRatio, _height * _pixelRatio );
+    }
+
+    EffectComposer& EffectComposer::insertPass( std::shared_ptr<Pass> pass, int index ){
+        passes.insert( passes.begin() + index, pass );
+        //pass->setSize( _width * _pixelRatio, _height * _pixelRatio  );
+    }
+
+    EffectComposer& EffectComposer::removePass( std::shared_ptr<Pass> pass ){
+        auto index = std::find(passes.begin(),passes.end(),pass);
+
+        if ( index != passes.end() ) {
+            passes.erase( index );
+        }
+    }
+
+    bool EffectComposer::isLastEnabledPass( int passIndex ){
+        for ( int i = passIndex + 1; i < passes.size(); i ++ ) {
+            if ( passes[ i ]->enabled ) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    EffectComposer& EffectComposer::render( float deltaTime ){
+        // deltaTime value is in seconds
+        if ( deltaTime <= 0 ) {
+            deltaTime = clock.getDelta();
+        }
+
+        auto currentRenderTarget = renderer->getRenderTarget();
+
+        auto maskActive = false;
+
+        for ( int i = 0, il = passes.size(); i < il; i ++ ) {
+            auto pass = passes[ i ];
+
+            if ( pass->enabled == false ) continue;
+
+            pass->renderToScreen = ( renderToScreen && isLastEnabledPass( i ) );
+            pass->render( renderer, writeBuffer, readBuffer /*, deltaTime, maskActive*/ );
+
+            if ( pass->needsSwap ) {
+                if ( maskActive ) {
+                    //const context = renderer->getContext();
+                    auto stencil = renderer->state->stencilBuffer;
+
+                    //context.stencilFunc( context.NOTEQUAL, 1, 0xffffffff );
+                    stencil.setFunc( StencilFunc::NotEqualStencilFunc, 1, 0xffffffff );
+
+                    copyPass->render( renderer, writeBuffer, readBuffer/*, deltaTime*/ );
+
+                    //context.stencilFunc( context.EQUAL, 1, 0xffffffff );
+                    stencil.setFunc( StencilFunc::EqualStencilFunc, 1, 0xffffffff );
+                }
+
+                swapBuffers();
+
+            }
+
+
+            if ( std::dynamic_pointer_cast<MaskPass>(pass) ) {
+                maskActive = true;
+            } else if ( std::dynamic_pointer_cast<ClearMaskPass>(pass) ) {
+                maskActive = false;
+            }
+
+
+        }
+
+        renderer->setRenderTarget( currentRenderTarget );
+    }
+
+
+    EffectComposer& EffectComposer::reset( std::shared_ptr<GLRenderTarget> renderTarget ){
+        return *this;
+    }
+
+    EffectComposer& EffectComposer::setSize( int width, int height ){
+        return *this;
+    }
+
+    EffectComposer& EffectComposer::setPixelRatio( float pixelRatio ){
+        return *this;
+    }
+
+    void EffectComposer::dispose(){
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
 //EffectComposer& setPixelRatio( float pixelRatio );
 //
 //void dispose();
 
-//class EffectComposer {
-//
-//    constructor( renderer, renderTarget ) {
-//
-//        this.renderer = renderer;
-//
-//        if ( renderTarget === undefined ) {
-//
-//            const size = renderer.getSize( new Vector2() );
-//            this._pixelRatio = renderer.getPixelRatio();
-//            this._width = size.width;
-//            this._height = size.height;
-//
-//            renderTarget = new WebGLRenderTarget( this._width * this._pixelRatio, this._height * this._pixelRatio );
-//            renderTarget.texture.name = 'EffectComposer.rt1';
-//
-//        } else {
-//
-//            this._pixelRatio = 1;
-//            this._width = renderTarget.width;
-//            this._height = renderTarget.height;
-//
-//        }
-//
-//        this.renderTarget1 = renderTarget;
-//        this.renderTarget2 = renderTarget.clone();
-//        this.renderTarget2.texture.name = 'EffectComposer.rt2';
-//
-//        this.writeBuffer = this.renderTarget1;
-//        this.readBuffer = this.renderTarget2;
-//
-//        this.renderToScreen = true;
-//
-//        this.passes = [];
-//
-//        this.copyPass = new ShaderPass( CopyShader );
-//
-//        this.clock = new Clock();
-//
-//    }
-//
-//    swapBuffers() {
-//
-//        const tmp = this.readBuffer;
-//        this.readBuffer = this.writeBuffer;
-//        this.writeBuffer = tmp;
-//
-//    }
-//
-//    addPass( pass ) {
-//
-//            this.passes.push( pass );
-//            pass.setSize( this._width * this._pixelRatio, this._height * this._pixelRatio );
-//
-//    }
-//
-//    insertPass( pass, index ) {
-//
-//        this.passes.splice( index, 0, pass );
-//        pass.setSize( this._width * this._pixelRatio, this._height * this._pixelRatio );
-//
-//    }
-//
-//    removePass( pass ) {
-//
-//            const index = this.passes.indexOf( pass );
-//
-//            if ( index !== - 1 ) {
-//
-//                this.passes.splice( index, 1 );
-//
-//            }
-//
-//    }
-//
-//    isLastEnabledPass( passIndex ) {
-//
-//            for ( let i = passIndex + 1; i < this.passes.length; i ++ ) {
-//
-//                if ( this.passes[ i ].enabled ) {
-//
-//                    return false;
-//
-//                }
-//
-//            }
-//
-//            return true;
-//
-//    }
-//
+
+
 //    render( deltaTime ) {
-//
-//            // deltaTime value is in seconds
-//
-//            if ( deltaTime === undefined ) {
-//
-//                deltaTime = this.clock.getDelta();
-//
-//            }
-//
-//            const currentRenderTarget = this.renderer.getRenderTarget();
-//
-//            let maskActive = false;
-//
-//            for ( let i = 0, il = this.passes.length; i < il; i ++ ) {
-//
-//                const pass = this.passes[ i ];
-//
-//                if ( pass.enabled === false ) continue;
-//
-//                pass.renderToScreen = ( this.renderToScreen && this.isLastEnabledPass( i ) );
-//                pass.render( this.renderer, this.writeBuffer, this.readBuffer, deltaTime, maskActive );
-//
-//                if ( pass.needsSwap ) {
-//
-//                    if ( maskActive ) {
-//
-//                        const context = this.renderer.getContext();
-//                        const stencil = this.renderer.state.buffers.stencil;
-//
-//                        //context.stencilFunc( context.NOTEQUAL, 1, 0xffffffff );
-//                        stencil.setFunc( context.NOTEQUAL, 1, 0xffffffff );
-//
-//                        this.copyPass.render( this.renderer, this.writeBuffer, this.readBuffer, deltaTime );
-//
-//                        //context.stencilFunc( context.EQUAL, 1, 0xffffffff );
-//                        stencil.setFunc( context.EQUAL, 1, 0xffffffff );
-//
-//                    }
-//
-//                    this.swapBuffers();
-//
-//                }
-//
-//                if ( MaskPass !== undefined ) {
-//
-//                    if ( pass instanceof MaskPass ) {
-//
-//                        maskActive = true;
-//
-//                    } else if ( pass instanceof ClearMaskPass ) {
-//
-//                        maskActive = false;
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//            this.renderer.setRenderTarget( currentRenderTarget );
+
 //
 //    }
 //

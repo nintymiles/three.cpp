@@ -74,8 +74,8 @@ file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/ope
 file(GLOB CONTROLS_SOURCE ${ROOT_DIR}/src/control/*.cpp)
 file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 
-file(GLOB EXTRA_SOURCE ${ROOT_DIR}/src/extra/*.cpp)
-file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/*.h)
+file(GLOB EXTRA_SOURCE ${ROOT_DIR}/src/extra/shaders/*.cpp;${ROOT_DIR}/src/extra/postprocessing/*.cpp;${ROOT_DIR}/src/extra/*.cpp)
+file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/shaders/*.h;${ROOT_DIR}/src/extra/postprocessing/*.h;${ROOT_DIR}/src/extra/*.h)
 
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
@@ -179,7 +179,7 @@ ${ROOT_DIR}/src/scenes
 ${ROOT_DIR}/src/geometries
 ${ROOT_DIR}/src/curves
 ${ROOT_DIR}/src/helpers
-${ROOT_DIR}/src/extra
+${ROOT_DIR}/src/extra ${ROOT_DIR}/src/extra/shaders/ ${ROOT_DIR}/src/extra/postprocessing/
 ${ROOT_DIR}/src/renders
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders

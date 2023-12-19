@@ -12,41 +12,48 @@
 
 class GLRenderer;
 class GLRenderTarget;
-class RenderPass;
-class EffectComposer {
-    std::shared_ptr<GLRenderer> renderer;
-    std::shared_ptr<GLRenderTarget> renderTarget1,renderTarget2;
-    float _pixelRatio;
-    int _width,_height;
-    std::shared_ptr<GLRenderTarget> writeBuffer,readBuffer;
-    bool renderToScreen;
-    std::vector<std::shared_ptr<RenderPass>> passes;
-    std::shared_ptr<RenderPass> copyPass;
-    Timer clock;
 
-public:
-    EffectComposer(std::shared_ptr<GLRenderer> renderer,std::shared_ptr<GLRenderTarget> renderTarget);
+namespace threecpp{
+    class Pass;
+}
 
-    EffectComposer& swapBuffers();
+namespace threecpp {
+    //class Pass;
+    class EffectComposer {
+        std::shared_ptr<GLRenderer> renderer;
+        std::shared_ptr<GLRenderTarget> renderTarget1, renderTarget2;
+        float _pixelRatio;
+        int _width, _height;
+        std::shared_ptr<GLRenderTarget> writeBuffer, readBuffer;
+        bool renderToScreen;
+        std::vector<std::shared_ptr<Pass>> passes;
+        std::shared_ptr<Pass> copyPass;
+        Timer clock;
 
-    EffectComposer& addPass( std::shared_ptr<RenderPass> pass );
+    public:
+        EffectComposer(std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> renderTarget);
 
-    EffectComposer& insertPass( std::shared_ptr<RenderPass> pass, int index );
+        EffectComposer &swapBuffers();
 
-    EffectComposer& removePass( std::shared_ptr<RenderPass> pass );
+        EffectComposer &addPass(std::shared_ptr<Pass> pass);
 
-    bool isLastEnabledPass( int passIndex );
+        EffectComposer &insertPass(std::shared_ptr<Pass> pass, int index);
 
-    EffectComposer& render( float deltaTime );
+        EffectComposer &removePass(std::shared_ptr<Pass> pass);
 
-    EffectComposer& reset( std::shared_ptr<GLRenderTarget> renderTarget );
+        bool isLastEnabledPass(int passIndex);
 
-    EffectComposer& setSize( int width, int height );
+        EffectComposer &render(float deltaTime = 0.f);
 
-    EffectComposer& setPixelRatio( float pixelRatio );
+        EffectComposer &reset(std::shared_ptr<GLRenderTarget> renderTarget);
 
-    void dispose();
+        EffectComposer &setSize(int width, int height);
 
-};
+        EffectComposer &setPixelRatio(float pixelRatio);
+
+        void dispose();
+
+    };
+}
 
 #endif //THREE_CPP_EFFECT_COMPOSER_H
