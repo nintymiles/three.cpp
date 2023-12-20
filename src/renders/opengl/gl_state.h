@@ -766,7 +766,7 @@ public:
 
     void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type)
     {
-        glTexImage2D(target, level, internalFormat, width, height, border, format, type, nullptr);
+        glTexImage2D(target, level, internalFormat, width, height, border, format, type, NULL);
     }
 
     void texImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const threecpp::MipMap& mipmap)

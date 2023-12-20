@@ -32,7 +32,8 @@ threecpp::RenderPass& threecpp::RenderPass::render( std::shared_ptr<GLRenderer> 
 
     renderer->setRenderTarget( renderToScreen ? nullptr : readBuffer ); // TODO: Avoid using autoClear properties, see https://github.com/mrdoob/three.js/pull/15571#issuecomment-465669600
 
-    if ( clear ) renderer->clear( renderer->autoClearColor, renderer->autoClearDepth, renderer->autoClearStencil );
+    //if ( clear ) renderer->clear( renderer->autoClearColor, renderer->autoClearDepth, renderer->autoClearStencil );
+    scene->setBackgroundColor(Color().set(0x00FF00));
     renderer->render( scene, camera );
 
     if ( !this->clearColor.isNull() ) {

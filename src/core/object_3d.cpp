@@ -277,7 +277,6 @@ void Object3D::lookAt(float x, float y, float z){
 Object3D& Object3D::add(const Object3D::sptr& object){
     if (object.get()==this) return *this;
 
-
     if (object->parent) {
         object->parent->remove(object);
     }

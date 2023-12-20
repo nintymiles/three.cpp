@@ -464,6 +464,10 @@ void GLTextures::setupRenderBufferStorage(GLuint renderbuffer, GLRenderTarget& r
             glRenderbufferStorage(GL_RENDERBUFFER, glInternalFormat, renderTarget.width, renderTarget.height);
         }
     }
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 

@@ -47,6 +47,7 @@ public:
     sole::uuid uuid = sole::uuid1();
     size_t width = 0;
     size_t height = 0;
+    size_t depth = 1;
     bool scissorTest = false;
 
     Vector4 scissor;
@@ -54,7 +55,8 @@ public:
 
     Texture::sptr texture = nullptr;
 
-    bool depthBuffer = false;
+    //depthBuffer default = true
+    bool depthBuffer = true;
     bool stencilBuffer = false;
 
     DepthTexture::sptr depthTexture = nullptr;

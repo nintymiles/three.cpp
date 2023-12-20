@@ -242,7 +242,10 @@ void GLUniform::setValue(const Texture::sptr& t){
 
     switch (type) {
         case UniformType::Sampler2D:
-            textures->safeSetTexture2D(*t, unit);
+            if(t->isCubeTexture)
+                textures->safeSetTextureCube(*t, unit);
+            else
+                textures->safeSetTexture2D(*t, unit);
             break;
         case UniformType::Sampler3D:
             textures->setTexture3D(*t, unit);

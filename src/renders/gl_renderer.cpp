@@ -28,7 +28,7 @@
 #include "number.h"
 #include "timer.h"
 
-GLRenderer::GLRenderer(int width, int height){
+GLRenderer::GLRenderer(int width, int height):_width(width),_height(height){
     initGLContext(width, height);
 }
 

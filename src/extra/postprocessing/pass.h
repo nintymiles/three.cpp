@@ -7,10 +7,11 @@
 
 #include <iostream>
 
-#include "material.h"
-#include "mesh.h"
-
 class GLRenderer;
+class BufferGeometry;
+class Material;
+class Mesh;
+class GLRenderTarget;
 namespace threecpp{
 
     class Pass{
@@ -38,15 +39,17 @@ namespace threecpp{
 
 
     class FullScreenQuad {
-        Mesh::sptr _mesh;
+        std::shared_ptr<Mesh> _mesh;
+        std::shared_ptr<BufferGeometry> _geometry;
+
     public:
-        FullScreenQuad(Material::sptr material);
+        FullScreenQuad(std::shared_ptr<Material> material);
 
         void render(std::shared_ptr<GLRenderer> renderer);
 
-        Material::sptr getMaterial();
+        std::shared_ptr<Material> getMaterial();
 
-        void setMaterial(Material::sptr material);
+        void setMaterial(std::shared_ptr<Material> material);
 
         void dispose();
 

@@ -30,7 +30,11 @@ class RenderPass: public Pass {
 public:
     RenderPass(Scene::sptr scene,Camera::sptr camera,Material::sptr overrideMaterial = nullptr
                ,Color clearColor = Color(),bool clearAlpha = false):Pass(),scene(scene),camera(camera),
-               overrideMaterial(overrideMaterial),clearColor(clearColor),clearAlpha(clearAlpha),clearDepth(clearDepth){}
+               overrideMaterial(overrideMaterial),clearColor(clearColor),clearAlpha(clearAlpha),clearDepth(clearDepth){
+        this->clear = true;
+        this->clearDepth = false;
+        this->needsSwap = false;
+    }
 
 
     RenderPass& render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
