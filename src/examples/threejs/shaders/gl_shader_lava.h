@@ -124,19 +124,14 @@ public:
         uniforms->set("uvScale", Vector2( 3.0, 1.0 ));
         uniforms->set("texture1", cloudMap);
         uniforms->set("texture2", tileMap);
-//        'fogDensity': { value: 0.45 },
-//        'fogColor': { value: new THREE.Vector3( 0, 0, 0 ) },
-//        'time': { value: 1.0 },
-//        'uvScale': { value: new THREE.Vector2( 3.0, 1.0 ) },
-//        'texture1': { value: textureLoader.load( 'textures/lava/cloud.png' ) },
-//        'texture2': { value: textureLoader.load( 'textures/lava/lavatile.jpg' ) }
         shaderMaterial->uniforms = uniforms;
 
         shaderMaterial->vertexShader = vertexShader;
         shaderMaterial->fragmentShader = fragmentShader;
         shaderMaterial->blending = Blending::NoBlending;
-        shaderMaterial->depthTest = false;
-        shaderMaterial->depthWrite = false;
+        shaderMaterial->depthTest = true;
+        shaderMaterial->depthWrite = true;
+        //shaderMaterial->side = Side::DoubleSide;
 
 
         float size = 0.65f;

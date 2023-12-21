@@ -4,7 +4,7 @@ project (Three_cpp_lib)
 
 if(MSVC)
   #设置VC输入代码编码格式为utf-8
-  set(CMAKE_C_FLAGS /source-charset:utf-8)
+  #set(CMAKE_C_FLAGS /source-charset:utf-8)
   add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
   add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
   #增加macro定义NOMINMAX，去除windows.h中min/max宏影响
@@ -80,12 +80,14 @@ file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/shaders/*.h;${ROOT_DIR}/src/extra/p
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
 
-file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/shaders/*.cpp;
+file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/postprocessing/*.cpp;
+                                  ${ROOT_DIR}/src/examples/threejs/shaders/*.cpp;
                                   ${ROOT_DIR}/src/examples/threejs/materials/*.cpp;
                                   ${ROOT_DIR}/src/examples/threejs/lights/*.cpp;
                                   ${ROOT_DIR}/src/examples/threejs/lines/*.cpp;
                                   ${ROOT_DIR}/src/examples/loaders/*.cpp)
-file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/shaders/*.h;
+file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/postprocessing/*.h;
+                                  ${ROOT_DIR}/src/examples/threejs/shaders/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/materials/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/lights/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/lines/*.h;
@@ -191,6 +193,7 @@ ${ROOT_DIR}/src/examples/threejs/lines/
 ${ROOT_DIR}/src/examples/threejs/lights/
 ${ROOT_DIR}/src/examples/threejs/materials/
 ${ROOT_DIR}/src/examples/threejs/shaders/
+${ROOT_DIR}/src/examples/threejs/postprocessing/
 )
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误

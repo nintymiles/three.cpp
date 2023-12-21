@@ -27,7 +27,7 @@ namespace threecpp{
 
         Pass():enabled(true),needsSwap(true),clear(true),renderToScreen(false){}
 
-        //virtual void setSize(int width,int height) {}
+        virtual void setSize(int width,int height) {}
 
         virtual Pass& render(std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
                             std::shared_ptr<GLRenderTarget> readBuffer) {
