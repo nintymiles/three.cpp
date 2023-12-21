@@ -19,10 +19,6 @@
 
 unsigned GLProgram::programId = 0;
 
-void sendDebugMessage(const std::wstring& name) {
-    std::wcout << name << std::endl;
-}
-
 GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions, const std::string& cacheKey, const ProgramParameters& parameters, const std::shared_ptr<GLBindingStates>& bindingStates)
         :renderer(renderer), bindingStates(bindingStates){
     id = GLProgram::programId++;
@@ -431,8 +427,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 //							 << generatePrecision(parameters) << std::endl
 #else
         prefixVertex3 << "#version 440" << std::endl
-                      <<" precision highp float;" << std::endl
-                      << "#define HIGH_PRECISION" << std::endl
+                      << generatePrecision(parameters) << std::endl
 #endif
 //                      << "#define attribute in" << std::endl
 //                      << "#define varying out" << std::endl
@@ -448,8 +443,7 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
 //					<< generatePrecision(parameters) << std::endl;
 #else
                 << "#version 440" << std::endl
-                <<"precision highp float;"<< std::endl
-                <<"#define HIGH_PRECISION"<< std::endl
+//                << generatePrecision(parameters) << std::endl;
                 #endif
 //                << "#define varying in" << std::endl
 //                << "out highp vec4 pc_fragColor;" << std::endl

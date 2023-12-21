@@ -37,6 +37,7 @@
 #include "gl_shader_lava.h"
 
 #include "gl_postprocessing.h"
+#include "gl_postprocessing_pixel.h"
 
 // settings
 extern int display_w;
@@ -217,11 +218,34 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["GL_Shaders_Lava"];
                 currentDemoClass->renderer->clear();
             }
+
+
+//            if (ImGui::MenuItem("Gl_Lights_Spotlight", "")) {
+//                if (demoClasses.count("Gl_Lights_Spotlight") == 0)
+//                    demoClasses["Gl_Lights_Spotlight"] = std::make_shared<GLLightsSpotlight>(display_w, display_h);
+//
+//                currentDemoClass = demoClasses["Gl_Lights_Spotlight"];
+//                currentDemoClass->renderer->clear();
+//            }
+
+            if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
+            ImGui::EndMenu();
+
+        }
+        if (ImGui::BeginMenu("Shaders")){
+
             if (ImGui::MenuItem("GL_Postprocessing", "")) {
                 if (demoClasses.count("GL_Postprocessing") == 0)
                     demoClasses["GL_Postprocessing"] = std::make_shared<GLPostprocessing>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Postprocessing"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Postprocessing_Pixel", "")) {
+                if (demoClasses.count("GL_Postprocessing_Pixel") == 0)
+                    demoClasses["GL_Postprocessing_Pixel"] = std::make_shared<GLPostprocessingPixel>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Postprocessing_Pixel"];
                 currentDemoClass->renderer->clear();
             }
 

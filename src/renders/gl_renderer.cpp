@@ -1139,8 +1139,8 @@ void GLRenderer::setRenderTarget(const GLRenderTarget::sptr& renderTarget, int a
 
     bool containFrameBuffer = false;
     if (renderTarget!=nullptr) {
-        auto& ttable = properties->getProperties(renderTarget->uuid);
-        if (ttable.framebuffer)
+        auto& rtProperties = properties->getProperties(renderTarget->uuid);
+        if (rtProperties.framebuffer)
             containFrameBuffer = true;
     }
     if (renderTarget != nullptr && !containFrameBuffer) {
@@ -1151,17 +1151,17 @@ void GLRenderer::setRenderTarget(const GLRenderTarget::sptr& renderTarget, int a
     bool isCube = false;
 
     if (renderTarget != nullptr) {
-
+        auto& rtProperties = properties->getProperties(renderTarget->uuid);
         if (renderTarget->isGLCubeRenderTarget) {
-            std::vector<GLint> __glFramebuffer = properties->getProperties(renderTarget->uuid).framebuffers;
+            std::vector<GLint> __glFramebuffer = rtProperties.framebuffers;
             framebuffer = __glFramebuffer[activeCubeFace || 0];
             isCube = true;
         }
         else if (renderTarget->isGLMultisampleRenderTarget) {
-            framebuffer = properties->getProperties(renderTarget->uuid).multisampledFramebuffer;
+            framebuffer = rtProperties.multisampledFramebuffer;
         }
         else {
-            GLuint __glFramebuffer = properties->getProperties(renderTarget->uuid).framebuffer;
+            GLuint __glFramebuffer = rtProperties.framebuffer;
             framebuffer = __glFramebuffer;
         }
         _currentViewport.copy(renderTarget->viewport);

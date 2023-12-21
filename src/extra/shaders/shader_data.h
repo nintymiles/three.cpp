@@ -162,6 +162,52 @@ struct ShaderData{
         return shader;
     }
 
+    static ShaderMaterial::sptr getPixelShader(){
+        ShaderMaterial::sptr shader = std::make_shared<ShaderMaterial>();
+
+        UniformValues::sptr uniforms =std::make_shared<UniformValues>();
+        uniforms->set<Texture::sptr>("tDiffuse", nullptr);
+        uniforms->set("resolution", Vector2(0,0));
+        uniforms->set("pixelSize",1.f);
+
+        shader->uniforms = uniforms;
+
+        shader->vertexShader = R""(
+
+            varying highp vec2 vUv;
+
+            void main() {
+
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+            }
+
+        )"";
+
+        shader->fragmentShader = R""(
+
+            uniform sampler2D tDiffuse;
+            uniform float pixelSize;
+            uniform vec2 resolution;
+
+            varying highp vec2 vUv;
+
+            void main(){
+
+                vec2 dxy = pixelSize / resolution;
+                vec2 coord = dxy * floor( vUv / dxy );
+                gl_FragColor = texture2D(tDiffuse, coord);
+
+            }
+
+        )"";
+
+        return shader;
+    }
+
 };
+
+
 
 #endif //THREE_CPP_SHADER_DATA_H
