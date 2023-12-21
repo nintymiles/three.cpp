@@ -5,14 +5,14 @@
 #include "torus_knot_geometry.h"
 
 void TorusKnotGeometry::calculatePositionOnCurve(float u, float p, float q, float radius, Vector3& position){
-    auto cu = (float)cos(u);
-    auto su = (float)sin(u);
-    auto quOverP = q / p * u;
-    auto cs = (float)cos(quOverP);
+    auto cu = (float)math::cos(u);
+    auto su = (float)math::sin(u);
+    auto quOverP = (float)q / p * u;
+    auto cs = (float)math::cos(quOverP);
 
     position.x = radius * (2 + cs) * 0.5f * cu;
     position.y = radius * (2 + cs) * su * 0.5f;
-    position.z = radius * (float)sin(quOverP) * 0.5f;
+    position.z = radius * (float)math::sin(quOverP) * 0.5f;
 }
 
 TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegments, float radialSegments, float p, float q){
@@ -45,13 +45,13 @@ TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegm
 
         // the radian "u" is used to calculate the position on the torus curve of the current tubular segement
 
-        float u = i / (float)tubularSegments * (float)p * (float)M_PI * 2;
+        float u = (float)i / tubularSegments * p * (float)math_number::PI * 2;
 
         // now we calculate two points. P1 is our current position on the curve, P2 is a little farther ahead.
         // these points are used to create a special "coordinate space", which is necessary to calculate the correct vertex positions
 
-        calculatePositionOnCurve(u, (float)p, (float)q, (float)radius, P1);
-        calculatePositionOnCurve(u + 0.01f, (float)p, (float)q, (float)radius, P2);
+        calculatePositionOnCurve(u, p, q, radius, P1);
+        calculatePositionOnCurve(u + 0.01f, p, q, radius, P2);
 
         // calculate orthonormal basis
 
@@ -69,8 +69,8 @@ TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegm
 
             // now calculate the vertices. they are nothing more than an extrusion of the torus curve.
             // because we extrude a shape in the xy-plane, there is no need to calculate a z-value.
-            auto v = (float)(j / radialSegments * (float)M_PI * 2);
-            auto cx = (float)(-tube * cos(v));
+            auto v = (float)j / radialSegments * (float)math_number::PI * 2;
+            auto cx = (float)(- tube * math::cos(v));
             auto cy = (float)(tube * sin(v));
 
             // now calculate the final vertex position.

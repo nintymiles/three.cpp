@@ -465,7 +465,7 @@ public:
     float angleTo(const Vector3& v) {
         float denominator = std::sqrt(lengthSq() * v.lengthSq());
 
-        if (denominator == 0) return math_number::PI / 2;
+        if (denominator == 0) return (float)math_number::PI / 2;
 
         float theta = dot(v) / denominator;
 
@@ -526,7 +526,7 @@ public:
     }
 
     Vector3& fromArray(const std::vector<float> array, unsigned offset = 0) {
-        unsigned arrayLength = array.size();
+        auto arrayLength = array.size();
         x = offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
         y = offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
         z = offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();

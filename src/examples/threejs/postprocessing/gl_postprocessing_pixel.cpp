@@ -7,8 +7,8 @@
 void GLPostprocessingPixel::render(){
 //    ApplicationBase::render();
 
-    object->rotation.setX(object->rotation.getX() + 0.005);
-    object->rotation.setY(object->rotation.getY() + 0.01);
+    grp->rotation.setY(grp->rotation.getY() + 0.0015f);
+    grp->rotation.setZ(grp->rotation.getZ() + 0.001f);
 
     composer->render();
 }

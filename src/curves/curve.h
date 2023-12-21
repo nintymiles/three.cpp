@@ -79,7 +79,7 @@ public:
         std::vector<float> arcLengths = getLengths();
 
         int i = 0;
-        const int il = arcLengths.size();
+        const auto il = arcLengths.size();
 
         float targetArcLength; // The targeted u distance value to get
 
@@ -92,7 +92,7 @@ public:
         // binary search for the index with largest value smaller than target u distance
         int low = 0, high = il - 1, comparison;
         while ( low <= high ) {
-            i = std::floor( low + ( high - low ) / 2 ); // less likely to overflow, though probably not issue here, JS doesn't really have integers, all numbers are floats
+            i = math::floor( low + ( high - low ) / 2 ); // less likely to overflow, though probably not issue here, JS doesn't really have integers, all numbers are floats
             comparison = arcLengths[ i ] - targetArcLength;
 
             if ( comparison < 0 ) {
@@ -108,7 +108,7 @@ public:
 
         i = high;
         if ( arcLengths[ i ] == targetArcLength ) {
-            return i / ( il - 1 );
+            return (float)i / ( il - 1 );
         }
 
         // we could get finer grain at lengths, or use simple interpolation between two points

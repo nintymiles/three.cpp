@@ -39,7 +39,7 @@ class GLPostprocessingPixel: public ApplicationBase{
     std::vector<BufferGeometry::sptr> geometries;
 
     std::shared_ptr<threecpp::EffectComposer> composer;
-    Object3D::sptr object;
+    Group::sptr grp;
 
 public:
     GLPostprocessingPixel(int x, int y): ApplicationBase(x, y){}
@@ -56,9 +56,6 @@ public:
         scene->setBackgroundColor(Color().set(0x000000));
         scene->fog = Fog::create( 0x000000, 1, 1000 );
 
-        object = Object3D::create();
-        scene->add( object );
-        scene->setBackgroundColor(Color().set(0xffffff));
 
         auto hemisphereLight = HemisphereLight::create( 0xfceafc, 0x000000, .8 );
         scene->add( hemisphereLight );
@@ -79,11 +76,11 @@ public:
                 SphereGeometry::create( 1, 64, 64 ),
                 BoxGeometry::create( 1, 1, 1 ),
                 ConeGeometry::create( 1, 1, 32 ),
+                TorusKnotGeometry::create( 1, .4 ),
                 TetrahedronGeometry::create( 1 ),
-                TorusKnotGeometry::create( 1, .4 )
         };
 
-        Group::sptr grp = Group::create();
+        grp = Group::create();
         for ( int i = 0; i < 25; i ++ ) {
 
             auto geom = geometries[ math::floor( math::random() * geometries.size() ) ];
@@ -94,6 +91,7 @@ public:
 
             auto mat = MeshPhongMaterial::create( color );
             mat->shininess = 200;
+            mat->side = Side::DoubleSide;
 
             auto mesh = Mesh::create( geom, mat );
 
