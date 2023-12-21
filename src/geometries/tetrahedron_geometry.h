@@ -7,17 +7,15 @@
 
 #include "polyhedron_geometry.h"
 
-class TetrahedronBufferGeometry : public PolyhedronBufferGeometry {
-public:
-    using sptr = std::shared_ptr<TetrahedronBufferGeometry>;
-
-    TetrahedronBufferGeometry(float radius = 0, float detail = 0);
-};
-
-class TetrahedronGeometry : public Geometry {
+class TetrahedronGeometry : public PolyhedronBufferGeometry {
 public:
     using sptr = std::shared_ptr<TetrahedronGeometry>;
 
     TetrahedronGeometry(float radius = 0, float detail = 0);
+
+    static sptr create(float radius = 0, float detail = 0){
+        return std::make_shared<TetrahedronGeometry>(radius,detail);
+    }
 };
+
 #endif //THREE_CPP_TETRAHEDRON_GEOMETRY_H

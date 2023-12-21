@@ -17,13 +17,6 @@ namespace tetrahedron_geometry {
 }
 using namespace tetrahedron_geometry;
 
-TetrahedronBufferGeometry::TetrahedronBufferGeometry(float radius, float detail) :
+TetrahedronGeometry::TetrahedronGeometry(float radius, float detail) :
                 PolyhedronBufferGeometry(tet_vertices,tet_indices,radius,detail){}
 
-
-TetrahedronGeometry::TetrahedronGeometry(float radius, float detail) : Geometry(){
-    TetrahedronBufferGeometry::sptr bufferGeometry = std::make_shared<TetrahedronBufferGeometry>(radius, detail);
-
-    fromBufferGeometry(*bufferGeometry);
-    mergeVertices();
-}

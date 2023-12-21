@@ -6,7 +6,7 @@
 
 #include "number.h"
 
-TorusBufferGeometry::TorusBufferGeometry(float radius, float tube, float radialSegments, float tubularSegments, float arc) : BufferGeometry(){
+TorusGeometry::TorusGeometry(float radius, float tube, float radialSegments, float tubularSegments, float arc) : BufferGeometry(){
     radius = radius != 0 ? radius : 1;
     tube = tube != 0 ? tube : 1;
     radialSegments = radialSegments != 0 ? floor(radialSegments) : 8;
@@ -88,11 +88,4 @@ TorusBufferGeometry::TorusBufferGeometry(float radius, float tube, float radialS
     setAttribute(AttributeName::position,BufferAttribute<float>::create(_vertices, 3));
     setAttribute(AttributeName::normal,BufferAttribute<float>::create(_normals, 3));
     setAttribute(AttributeName::uv,BufferAttribute<float>::create(_uvs, 2));
-}
-
-TorusGeometry::TorusGeometry(float radius, float tube, float radialSegments, float tubularSegments, float arc) : Geometry(){
-    TorusBufferGeometry::sptr bufferGeometry = std::make_shared<TorusBufferGeometry>(radius, tube, radialSegments, tubularSegments, arc);
-
-    fromBufferGeometry(*bufferGeometry);
-    mergeVertices();
 }

@@ -78,9 +78,9 @@ public:
         geometries = {
                 SphereGeometry::create( 1, 64, 64 ),
                 BoxGeometry::create( 1, 1, 1 ),
-                ConeBufferGeometry::create( 1, 1, 32 ),
-                TetrahedronBufferGeometry::create( 1 ),
-                TorusKnotBufferGeometry::create( 1, .4 )
+                ConeGeometry::create( 1, 1, 32 ),
+                TetrahedronGeometry::create( 1 ),
+                TorusKnotGeometry::create( 1, .4 )
         };
 
         Group::sptr grp = Group::create();

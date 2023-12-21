@@ -141,7 +141,7 @@ public:
 
         float size = 0.65f;
 
-        TorusBufferGeometry::sptr torusGeometry = TorusBufferGeometry::create( size, 0.3, 30, 30 );
+        TorusGeometry::sptr torusGeometry = TorusGeometry::create( size, 0.3, 30, 30 );
         mesh = Mesh::create( torusGeometry, shaderMaterial );
         mesh->rotation.setX( 0.3 );
         scene->add( mesh );

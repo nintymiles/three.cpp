@@ -4,7 +4,7 @@
 
 #include "torus_knot_geometry.h"
 
-void TorusKnotBufferGeometry::calculatePositionOnCurve(float u, float p, float q, float radius, Vector3& position){
+void TorusKnotGeometry::calculatePositionOnCurve(float u, float p, float q, float radius, Vector3& position){
     auto cu = (float)cos(u);
     auto su = (float)sin(u);
     auto quOverP = q / p * u;
@@ -15,7 +15,7 @@ void TorusKnotBufferGeometry::calculatePositionOnCurve(float u, float p, float q
     position.z = radius * (float)sin(quOverP) * 0.5f;
 }
 
-TorusKnotBufferGeometry::TorusKnotBufferGeometry(float radius, float tube, float tubularSegments, float radialSegments, float p, float q){
+TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegments, float radialSegments, float p, float q){
     radius = radius != 0 ? radius : 1;
     tube = tube != 0 ? tube : 0.4f;
     radialSegments = radialSegments != 0 ? floor(radialSegments) : 64;
@@ -130,10 +130,9 @@ TorusKnotBufferGeometry::TorusKnotBufferGeometry(float radius, float tube, float
 
     // this function calculates the current position on the torus curve
 
-
 }
 
-TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegments, float radialSegments, float p, float q){
+TorusKnotGeometry2::TorusKnotGeometry2(float radius, float tube, float tubularSegments, float radialSegments, float p, float q){
     /*	parameters.add("radius", radius);
         parameters.add("tube", tube);
         parameters.add("radialSegments", radialSegments);
@@ -141,7 +140,7 @@ TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegm
         parameters.add("p", p);
         parameters.add("q", q);*/
 
-    TorusKnotBufferGeometry::ptr bufferGeometry = std::make_shared<TorusKnotBufferGeometry>(radius, tube, tubularSegments, radialSegments, p, q);
+    TorusKnotGeometry::sptr bufferGeometry = std::make_shared<TorusKnotGeometry>(radius, tube, tubularSegments, radialSegments, p, q);
 
     fromBufferGeometry(*bufferGeometry);
     mergeVertices();
