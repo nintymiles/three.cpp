@@ -38,6 +38,7 @@
 
 #include "gl_postprocessing.h"
 #include "gl_postprocessing_pixel.h"
+#include "gl_postprocessing_rgb_halftone.h"
 
 // settings
 extern int display_w;
@@ -232,7 +233,7 @@ static void ShowApplicationMenuBar() {
             ImGui::EndMenu();
 
         }
-        if (ImGui::BeginMenu("Shaders")){
+        if (ImGui::BeginMenu("postprocessing")){
 
             if (ImGui::MenuItem("GL_Postprocessing", "")) {
                 if (demoClasses.count("GL_Postprocessing") == 0)
@@ -246,6 +247,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["GL_Postprocessing_Pixel"] = std::make_shared<GLPostprocessingPixel>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Postprocessing_Pixel"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Postprocessing_RGB_Halftone", "")) {
+                if (demoClasses.count("GL_Postprocessing_RGB_Halftone") == 0)
+                    demoClasses["GL_Postprocessing_RGB_Halftone"] = std::make_shared<GLPostProcessingRGBHalfTone>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Postprocessing_RGB_Halftone"];
                 currentDemoClass->renderer->clear();
             }
 
