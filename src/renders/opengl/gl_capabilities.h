@@ -79,6 +79,7 @@ public:
 //    }
 
     GLCapabilities(GLExtensions::sptr& extensions, const GLCapabilitiesParameters& parameters) : extensions(extensions), parameters(parameters){
+        precision = parameters.precision;
         std::string maxPrecision = getMaxPrecision(precision);
 
         if (maxPrecision != this->precision) {

@@ -35,7 +35,7 @@ class GLShaderLava: public ApplicationBase{
 
 			void main( void ) {
 
-				vec2 position = - 1.0 + 2.0 * vUv;
+				//vec2 position = - 1.0 + 2.0 * vUv;
 
 				vec4 noise = texture2D( texture1, vUv );
 				vec2 T1 = vUv + vec2( 1.5, - 1.5 ) * time * 0.02;

@@ -12,11 +12,11 @@ namespace threecpp{
 
 HalfTonePass::HalfTonePass(int width, int height,
                            std::unordered_map<std::string, std::variant<float, int, bool>> params) {
-    material = ShaderData::getCopyShader();
+    material = ShaderData::getHalfToneShader();
 
     uniforms = material->uniforms;
-    uniforms->set("width",width);
-    uniforms->set("height",height);
+    uniforms->set("width",(float)width);
+    uniforms->set("height",(float)height);
     for(auto pair:params){
         int *iVal = std::get_if<int>(&pair.second);
         if(iVal)
@@ -44,11 +44,13 @@ HalfTonePass &HalfTonePass::render(std::shared_ptr<GLRenderer> renderer, std::sh
         if ( clear ) renderer->clear();
         fsQuad->render( renderer );
     }
+
+    return *this;
 }
 
 void HalfTonePass::setSize(int width, int height) {
-    uniforms->set("width",width);
-    uniforms->set("height",height);
+    uniforms->set("width",(float)width);
+    uniforms->set("height",(float)height);
 }
 
 }

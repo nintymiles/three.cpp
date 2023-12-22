@@ -80,7 +80,7 @@ public:
 
         auto aspect = (float)screenX / screenY;
         orthographicCamera = std::make_shared<OrthographicCamera>( - 1, 1, 1, - 1, 0, 1 );
-        orthographicCamera->position.set( 0, 0, 1000 );
+        //orthographicCamera->position.set( 0, 0, 1000 );
         //scene->add(camera);
 
         camera = orthographicCamera;
@@ -110,8 +110,9 @@ public:
         scene->add( planeMesh );
 
         pCameraControl = std::make_shared<OrbitControl>(orthographicCamera);
-        pCameraControl->minDistance = 500;
-        pCameraControl->maxDistance = 2500;
+        //this setting make drawing objects projected out of screen
+//        pCameraControl->minDistance = 500;
+//        pCameraControl->maxDistance = 2500;
         pCameraControl->enablePan = true;
         pCameraControl->enableDamping = true;
         controller = pCameraControl;

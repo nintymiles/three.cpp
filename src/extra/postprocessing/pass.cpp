@@ -31,13 +31,11 @@ namespace threecpp{
     void FullScreenQuad::render(std::shared_ptr<GLRenderer> renderer) {
         auto scene1 = std::make_shared<Scene>();
         //scene1->setBackgroundColor(Color().set(0xFF0000));
-
-        Camera::sptr camera = OrthographicCamera::create( - 1, 1, 1, - 1, 0, 1 );
-
-        auto mesh = Mesh::create( _geometry, getMaterial() );
+        Material::sptr mat = getMaterial();
+        auto mesh = Mesh::create( _geometry, mat );
         scene1->add(mesh);
-        //scene1->add(AmbientLight::create());
-        renderer->render( scene1, camera );
+        _camera->updateProjectionMatrix();
+        renderer->render( scene1, _camera );
     }
 
     Material::sptr FullScreenQuad::getMaterial() {

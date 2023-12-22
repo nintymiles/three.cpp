@@ -112,7 +112,7 @@ std::shared_ptr<ProgramParameters> GLPrograms::getParameters(GLRenderer& rendere
     parameters->shaderID =material->shaderId;
     parameters->shaderName =material->type;
 
-    //parameters->uniforms =shaderobject->uniforms);
+    //parameters->uniforms =shaderobject->uniforms;
     parameters->vertexShader = vertexShader;
     parameters->fragmentShader = fragmentShader;
 
