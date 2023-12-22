@@ -8,7 +8,7 @@
 
 class OrthographicCamera : public Camera {
 public:
-    CameraView view;
+    CameraView::sptr view;
 
     using sptr = std::shared_ptr<OrthographicCamera>;
 
@@ -24,10 +24,9 @@ public:
         this->top = !std::isnan(top)  ? top : 1;
         this->bottom = !std::isnan(bottom)  ? bottom : -1;
 
-        this->_near = std::isnan(_near)  ? _near : 0.1f;
-        this->_far = std::isnan(_far)  ? _far : 2000;
+        this->_near = !std::isnan(_near)  ? _near : 0.1f;
+        this->_far = !std::isnan(_far)  ? _far : 2000;
 
-        view.enabled = false;
 
         this->updateProjectionMatrix();
 
@@ -59,24 +58,39 @@ public:
     }
 
     void setViewOffset(float fullWidth, float fullHeight, float x, float y, float width, float height) override {
-        view.enabled = true;
-        view.fullWidth = fullWidth;
-        view.fullHeight = fullHeight;
-        view.offsetX = x;
-        view.offsetY = y;
-        view.width = width;
-        view.height = height;
+        if(!view){
+            *view = {
+                        true,
+                        1,
+                        1,
+                        0,
+                        0,
+                        1,
+                        1
+                    };
+        }
+
+        view->enabled = true;
+        view->fullWidth = fullWidth;
+        view->fullHeight = fullHeight;
+        view->offsetX = x;
+        view->offsetY = y;
+        view->width = width;
+        view->height = height;
 
         this->updateProjectionMatrix();
     }
+
     void clearViewOffset() override {
-        this->view.enabled = false;
+        this->view->enabled = false;
 
         this->updateProjectionMatrix();
     }
+
     virtual OrthographicCamera* clone() {
         return new OrthographicCamera(*this);
     }
+
     virtual void updateProjectionMatrix() override {
         auto dx = (this->cameraRight - this->left) / (2 * this->zoom);
         auto dy = (this->top - this->bottom) / (2 * this->zoom);
@@ -88,17 +102,17 @@ public:
         auto top = cy + dy;
         auto bottom = cy - dy;
 
-        if (this->view.enabled) {
+        if (view && view->enabled) {
 
-            auto zoomW = this->zoom / (this->view.width / this->view.fullWidth);
-            auto zoomH = this->zoom / (this->view.height / this->view.fullHeight);
-            auto scaleW = (this->cameraRight - this->left) / this->view.width;
-            auto scaleH = (this->top - this->bottom) / this->view.height;
+            auto zoomW = this->zoom / (this->view->width / this->view->fullWidth);
+            auto zoomH = this->zoom / (this->view->height / this->view->fullHeight);
+            auto scaleW = (this->cameraRight - this->left) / this->view->width;
+            auto scaleH = (this->top - this->bottom) / this->view->height;
 
-            left += scaleW * (this->view.offsetX / zoomW);
-            right = left + scaleW * (this->view.width / zoomW);
-            top -= scaleH * (this->view.offsetY / zoomH);
-            bottom = top - scaleH * (this->view.height / zoomH);
+            left += scaleW * (this->view->offsetX / zoomW);
+            right = left + scaleW * (this->view->width / zoomW);
+            top -= scaleH * (this->view->offsetY / zoomH);
+            bottom = top - scaleH * (this->view->height / zoomH);
 
         }
 

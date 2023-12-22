@@ -41,6 +41,25 @@ class GLPostProcessingRGBHalfTone: public ApplicationBase{
 
     const float rotationSpeed = math_number::PI / 64;
 
+    struct Settings{
+        float radius = 4.f;
+        float rotateR = (float)math_number::PI / 12;
+        float rotateG = (float)math_number::PI / 12 * 2;
+        float rotateB = (float)math_number::PI / 12 * 3;
+        float scatter = 0.f;
+        bool greyscale = false;
+        bool disable = false;
+        float blending = 1.f;
+        int blendingMode = 1;
+        int shape = 1;
+    };
+    Settings setting{};
+
+    std::vector<std::string> shapeVec = { "Dot", "Ellipse", "Line", "Square" },
+                            blendModeVec = { "Linear", "Multiply", "Add", "Lighter", "Darker" };
+
+
+
 public:
     GLPostProcessingRGBHalfTone(int x, int y): ApplicationBase(x, y){}
 
@@ -124,6 +143,7 @@ public:
         };
         auto halftonePass = std::make_shared<threecpp::HalfTonePass>( screenX, screenY, params );
         composer->addPass( halftonePass );
+        this->uniforms = halftonePass->uniforms;
 
         orbitControl = std::make_shared<OrbitControl>(camera);
         orbitControl->target.set( 0, 0, 0 );

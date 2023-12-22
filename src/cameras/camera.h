@@ -19,6 +19,7 @@ public:
         float offsetY;
         float width;
         float height;
+        using sptr = std::shared_ptr<CameraView>;
     };
     using sptr = std::shared_ptr<Camera>;
 
