@@ -867,6 +867,60 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
 
     info->memory.textures++;
 
+//    GLuint framebuffer;
+//    GLuint depthRenderbuffer;
+////    GLuint texture;
+//    GLint texWidth = 512, texHeight = 512;
+//    GLint maxRenderbufferSize;
+//    glGetIntegerv ( GL_MAX_RENDERBUFFER_SIZE, &maxRenderbufferSize); // check if GL_MAX_RENDERBUFFER_SIZE is >= texWidth and texHeight
+//    if ( ( maxRenderbufferSize <= texWidth ) || ( maxRenderbufferSize <= texHeight ) )
+//    {
+//        // cannot use framebuffer objects, as we need to create
+//        // a depth buffer as a renderbuffer object
+//        // return with appropriate error
+//        std::cout << "cannot use framebuffer objects, as we need to create a depth buffer as a renderbuffer object" << std::endl;
+//    }
+//// generate the framebuffer, renderbuffer, and texture object names
+//    glGenFramebuffers ( 1, &framebuffer );
+//    glGenRenderbuffers ( 1, &depthRenderbuffer );
+////    glGenTextures ( 1, &texture );
+////// bind texture and load the texture mip level 0
+////// texels are RGB565
+////// no texels need to be specified as we are going to draw into // the texture
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture ( GL_TEXTURE_2D, id );
+//    glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL );
+//    glTexParameteri ( GL_TEXTURE_2D,  GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE );
+//    glTexParameteri ( GL_TEXTURE_2D,  GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE );
+//    glTexParameteri ( GL_TEXTURE_2D,  GL_TEXTURE_MAG_FILTER,GL_LINEAR );
+//    glTexParameteri ( GL_TEXTURE_2D,  GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//// bind renderbuffer and create a 16-bit depth buffer
+//// width and height of renderbuffer = width and height of
+//// the texture
+//    glBindRenderbuffer ( GL_RENDERBUFFER, depthRenderbuffer );
+//    glRenderbufferStorage ( GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,texWidth, texHeight );
+//// bind the framebuffer
+//    glBindFramebuffer ( GL_FRAMEBUFFER, framebuffer );
+//// specify texture as color attachment
+//    glFramebufferTexture2D ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0 );
+//// specify depth_renderbuffer as depth attachment
+//    glFramebufferRenderbuffer ( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+//// check for framebuffer complete
+//    GLint status = glCheckFramebufferStatus ( GL_FRAMEBUFFER );
+//
+//    if ( status == GL_FRAMEBUFFER_COMPLETE )
+//    {
+//        glClearColor ( 0.0f, 0.0f, 0.0f, 1.0f );
+//        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+//    }
+//    renderTargetProperties.framebuffer = framebuffer;
+//
+//    // Set the list of draw buffers.
+//    GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+//    glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+//
+//    return ;
+
     bool isCube = renderTarget.isGLCubeRenderTarget;
 
     bool isMultisample = renderTarget.isGLMultisampleRenderTarget;

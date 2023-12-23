@@ -13,9 +13,9 @@ private :
 public:
     using sptr = std::shared_ptr<TorusKnotGeometry>;
 
-    TorusKnotGeometry(float radius = 0, float tube = 0, float tubularSegments = 0, float radialSegments = 0, float p = 0, float q = 0);
+    TorusKnotGeometry(float radius = 1.f, float tube = .4f, float tubularSegments = 64.f, float radialSegments = 8.f, float p = 2.f, float q = 3.f);
 
-    static sptr create(float radius = 0, float tube = 0, float tubularSegments = 0, float radialSegments = 0, float p = 0, float q = 0){
+    static sptr create(float radius = 1.f, float tube = .4f, float tubularSegments = 64.f, float radialSegments = 8.f, float p = 2.f, float q = 3.f){
         return std::make_shared<TorusKnotGeometry>(radius,tube,tubularSegments,radialSegments,p,q);
     }
 };

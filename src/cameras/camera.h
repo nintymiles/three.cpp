@@ -20,6 +20,7 @@ public:
         float width;
         float height;
         using sptr = std::shared_ptr<CameraView>;
+        //using uptr = std::unique_ptr<CameraView>;
     };
     using sptr = std::shared_ptr<Camera>;
 
@@ -29,7 +30,7 @@ public:
 
     float top;
 
-    float zoom=1;
+    float zoom = 1.0f;
 
     float cameraRight;
 

@@ -16,14 +16,10 @@ void TorusKnotGeometry::calculatePositionOnCurve(float u, float p, float q, floa
 }
 
 TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegments, float radialSegments, float p, float q){
-    radius = radius != 0 ? radius : 1;
-    tube = tube != 0 ? tube : 0.4f;
-    radialSegments = radialSegments != 0 ? floor(radialSegments) : 64;
-    tubularSegments = tubularSegments != 0 ? floor(tubularSegments) : 8;
-    p = p != 0 ? p : 2;
-    q = q != 0 ? q : 3;
+    this->type = "TorusKnotGeometry";
 
-    int i, j;
+    tubularSegments = tubularSegments != 0 ? std::floor(tubularSegments) : 64;
+    radialSegments = radialSegments != 0 ? std::floor(radialSegments) : 8;
 
     std::vector<unsigned> _indices;
     std::vector<float> _vertices;
@@ -41,7 +37,7 @@ TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegm
     Vector3 N ;
 
     // generate vertices, normals and uvs
-    for (i = 0; i <= tubularSegments; ++i){
+    for (int i = 0; i <= tubularSegments; ++i){
 
         // the radian "u" is used to calculate the position on the torus curve of the current tubular segement
 
@@ -65,7 +61,7 @@ TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegm
         B.normalize();
         N.normalize();
 
-        for (j = 0; j <= radialSegments; ++j){
+        for (int j = 0; j <= radialSegments; ++j){
 
             // now calculate the vertices. they are nothing more than an extrusion of the torus curve.
             // because we extrude a shape in the xy-plane, there is no need to calculate a z-value.
@@ -100,9 +96,9 @@ TorusKnotGeometry::TorusKnotGeometry(float radius, float tube, float tubularSegm
     }
 
     // generate indices
-    for (j = 1; j <= tubularSegments; j++){
+    for (int j = 1; j <= tubularSegments; j++){
 
-        for (i = 1; i <= radialSegments; i++){
+        for (int i = 1; i <= radialSegments; i++){
 
             // indices
             auto a = ((int)radialSegments + 1) * (j - 1) + (i - 1);

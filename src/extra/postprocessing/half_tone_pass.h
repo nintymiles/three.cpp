@@ -28,7 +28,7 @@ namespace threecpp {
         HalfTonePass& render( std::shared_ptr<GLRenderer> renderer, std::shared_ptr<GLRenderTarget> writeBuffer,
                             std::shared_ptr<GLRenderTarget> readBuffer/*, deltaTime, maskActive */) override;
 
-        void setSize(int width,int height);
+        void setSize(int width,int height) override;
     };
 
 }

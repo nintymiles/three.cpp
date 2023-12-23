@@ -41,6 +41,9 @@ class GLPostprocessingPixel: public ApplicationBase{
     std::shared_ptr<threecpp::EffectComposer> composer;
     Group::sptr grp;
 
+    float pixelSize = 2;
+    bool postprocessing = true;
+
 public:
     GLPostprocessingPixel(int x, int y): ApplicationBase(x, y){}
 
@@ -111,6 +114,7 @@ public:
         composer->addPass( renderPass );
 
         auto pixelPass = std::make_shared<threecpp::ShaderPass>( ShaderData::getPixelShader() );
+        uniforms = pixelPass->uniforms;
         Vector2 rVal = Vector2( screenX,screenY );
         //rVal.multiplyScalar(aspect);
         pixelPass->uniforms->set("resolution",rVal);
