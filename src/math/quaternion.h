@@ -69,6 +69,7 @@ public:
 
         return *this;
     }
+
     Quaternion& copy(const Quaternion& q) {
         _x = q._x;
         _y = q._y;
@@ -77,10 +78,16 @@ public:
 
         return *this;
     }
+
     float getX() const { return _x; }
     float getY() const { return _y; }
     float getZ() const { return _z; }
     float getW() const { return _w; }
+
+    float x() const { return _x; }
+    float y() const { return _y; }
+    float z() const { return _z; }
+    float w() const { return _w; }
 
     void setX(float value) {
         _x = value;

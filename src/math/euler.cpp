@@ -209,17 +209,17 @@ Vector3& Euler::toVector3(Vector3* optionalResult) {
 
 }
 
-float Euler::getX() const {
-    return _x;
-}
-
-float Euler::getY() const {
-    return _y;
-}
-
-float Euler::getZ() const {
-    return _z;
-}
+//float Euler::getX() const {
+//    return _x;
+//}
+//
+//float Euler::getY() const {
+//    return _y;
+//}
+//
+//float Euler::getZ() const {
+//    return _z;
+//}
 
 Euler::RotationOrder Euler::getOrder() const {
     return _order;

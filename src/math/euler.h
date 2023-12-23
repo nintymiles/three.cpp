@@ -58,11 +58,29 @@ public:
 
     Vector3& toVector3(Vector3* optionalResult = NULL);
 
-    float getX() const;
+    float Euler::getX() const {
+        return _x;
+    }
 
-    float getY() const;
+    float Euler::getY() const {
+        return _y;
+    }
 
-    float getZ() const;
+    float Euler::getZ() const {
+        return _z;
+    }
+
+    float Euler::x() const {
+        return _x;
+    }
+
+    float Euler::y() const {
+        return _y;
+    }
+
+    float Euler::z() const {
+        return _z;
+    }
 
     RotationOrder getOrder() const;
 

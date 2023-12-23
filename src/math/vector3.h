@@ -12,7 +12,6 @@
 #else
 #include <cmath>
 #endif
-#include <cmath>
 
 #include <vector>
 #include <limits>
@@ -778,7 +777,6 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //// // 	Vector3& applyNormalMatrix(Matrix3& m);
 //// Vector3& applyNormalMatrix(Vector3& v,Matrix3& m);
 //
-//
 //class Vector3{
 //    public:
 //        //public data member
@@ -786,9 +784,9 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //        //double x = 0,y = 0,z = 0;
 //        union {
 //            struct {
-//                double x,y,z;
+//                float x,y,z;
 //            };
-//            double elements[3];
+//            float elements[3];
 //        };
 //
 //		// explicitly constructor inistializing
@@ -797,12 +795,12 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //		// default constructor use in-class initialzier
 //		Vector3(){};
 //
-//        Vector3(double x,double y,double z):x(x),y(y),z(z){};
+//        Vector3(float x,float y,float z):x(x),y(y),z(z){};
 //
 //        Vector3(const Vector3 &v):x(v.x),y(v.y),z(v.z){};
 //
 //        //only constructors take base initializers
-//        Vector3& set(double x,double y,double z){
+//        Vector3& set(float x,float y,float z){
 //            this->x = x;
 //            this->y = y;
 //            this->z = z;
@@ -810,7 +808,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& setScalar(double scalar){
+//        Vector3& setScalar(float scalar){
 //            this->x = scalar;
 //            this->y = scalar;
 //            this->z = scalar;
@@ -818,22 +816,22 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& setX(double x){
+//        Vector3& setX(float x){
 //            this->x = x;
 //            return *this;
 //        }
 //
-//        Vector3& setY(double y){
+//        Vector3& setY(float y){
 //            this->y = y;
 //            return *this;
 //        }
 //
-//        Vector3& setZ(double z){
+//        Vector3& setZ(float z){
 //            this->z = z;
 //            return *this;
 //        }
 //
-//        Vector3& setComponent(int index, double value){
+//        Vector3& setComponent(int index, float value){
 //            switch (index)
 //            {
 //            case 0:this->x = value;break;
@@ -853,7 +851,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //			}
 //		}
 //
-//        double& operator[](int n) {
+//        float& operator[](int n) {
 //            switch ( n ) {
 //                case 0: return this->x;
 //                case 1: return this->y;
@@ -862,7 +860,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            }
 //        }
 //
-//        double& operator[](unsigned char ch){
+//        float& operator[](unsigned char ch){
 //            switch (ch) {
 //                case 'x':
 //                    return x;
@@ -874,101 +872,95 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            }
 //        }
 //
-//        const double& operator[](int n) const {
-////            switch ( n ) {
-////                case 0: return this->x;
-////                case 1: return this->y;
-////                case 2: return this->z;
-////                default: throw std::runtime_error("index is out of range: " + std::to_string(n));break;
-////            }
+//        const float& operator[](int n) const {
 //            return operator[](n);
 //        }
 //
-//    Vector3& operator /= (const Vector3& v){
-//        x /= v.x;
-//        y /= v.y;
-//        z /= v.z;
+//        Vector3& operator /= (const Vector3& v){
+//            x /= v.x;
+//            y /= v.y;
+//            z /= v.z;
 //
-//        return *this;
-//    }
+//            return *this;
+//        }
 //
-//    Vector3& operator /=(float scalar)
-//    {
-//        return *this *= (1.0f / scalar);
-//    }
+//        Vector3& operator /=(float scalar)
+//        {
+//            return *this *= (1.0f / scalar);
+//        }
 //
-//    Vector3& operator =(double scalar){
-//        x = y = z = scalar;
-//        return *this;
-//    }
+//        Vector3& operator =(float scalar){
+//            x = y = z = scalar;
+//            return *this;
+//        }
 //
-//    Vector3& operator +=(const Vector3& vector){
-//        x += vector.x;
-//        y += vector.y;
-//        z += vector.z;
+//        Vector3& operator +=(const Vector3& vector){
+//            x += vector.x;
+//            y += vector.y;
+//            z += vector.z;
 //
-//        return *this;
-//    }
+//            return *this;
+//        }
 //
-//    Vector3& operator +=(double scalar){
-//        x += scalar;
-//        y += scalar;
-//        z += scalar;
+//        Vector3& operator +=(float scalar){
+//            x += scalar;
+//            y += scalar;
+//            z += scalar;
 //
-//        return *this;
-//    }
+//            return *this;
+//        }
 //
-//    Vector3& operator -=(const Vector3& v){
-//        x -= v.x;
-//        y -= v.y;
-//        z -= v.z;
+//        Vector3& operator -=(const Vector3& v){
+//            x -= v.x;
+//            y -= v.y;
+//            z -= v.z;
 //
-//        return *this;
-//    }
+//            return *this;
+//        }
 //
-//    Vector3& operator -=(double scalar){
-//        x -= scalar;
-//        y -= scalar;
-//        z -= scalar;
+//        Vector3& operator -=(float scalar){
+//            x -= scalar;
+//            y -= scalar;
+//            z -= scalar;
 //
-//        return *this;
-//    }
+//            return *this;
+//        }
 //
-//    Vector3& operator *=(const Vector3& v){
-//        x *= v.x;
-//        y *= v.y;
-//        z *= v.z;
+//        Vector3& operator *=(const Vector3& v){
+//            x *= v.x;
+//            y *= v.y;
+//            z *= v.z;
 //
-//        return *this;
-//    }
+//            return *this;
+//        }
 //
-//    Vector3& operator *=(double scalar){
-//        x *= scalar;
-//        y *= scalar;
-//        z *= scalar;
+//        Vector3& operator *=(float scalar){
+//            x *= scalar;
+//            y *= scalar;
+//            z *= scalar;
 //
-//        return *this;
-//    }
+//            return *this;
+//        }
 //
-//    bool operator !=(const Vector3& v) {
-//        return !equals(v);
-//    }
+//        bool operator !=(const Vector3& v) {
+//            return !equals(v);
+//        }
 //
-//    bool operator == (const Vector3& v) {
-//        return equals(v);
-//    }
-////    float& operator [] (unsigned char ch) {
-////        switch (ch) {
-////            case 'x':
-////                return x;
-////            case 'y':
-////                return y;
-////            case 'z':
-////                return z;
-////        }
-////    }
+//        bool operator == (const Vector3& v) {
+//            return equals(v);
+//        }
+//    //    float& operator [] (unsigned char ch) {
+//    //        switch (ch) {
+//    //            case 'x':
+//    //                return x;
+//    //            case 'y':
+//    //                return y;
+//    //            case 'z':
+//    //                return z;
+//    //        }
+//    //    }
 //
-//    //deprecated,use copy constructor instead of this
+//        //deprecated,use copy constructor instead of this
 //		Vector3 clone() {
 //			return Vector3(this->x,this->y,this->z);
 //		}
@@ -988,7 +980,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //			return addScaledVector(vec,1);
 //		}
 //
-//		Vector3& addScalar(double s) {
+//		Vector3& addScalar(float s) {
 //			this->x += s;
 //			this->y += s;
 //			this->z += s;
@@ -1004,7 +996,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //			return *this;
 //		}
 //
-//		Vector3& addScaledVector(const Vector3& v,double s) {
+//		Vector3& addScaledVector(const Vector3& v,float s) {
 //			this->x += v.x * s;
 //			this->y += v.y * s;
 //			this->z += v.z * s;
@@ -1036,7 +1028,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //			return *this;
 //		}
 //
-//		Vector3& multiplyScalar(double scalar) {
+//		Vector3& multiplyScalar(float scalar) {
 //			this->x *= scalar;
 //			this->y *= scalar;
 //			this->z *= scalar;
@@ -1053,7 +1045,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //		}
 //
 //		//模版的返回值，可以借助auto实现简化
-//		double dot(const Vector3& v) const{
+//		float dot(const Vector3& v) const{
 //			return this->x * v.x + this->y * v.y + this->z * v.z;
 //		}
 //
@@ -1063,15 +1055,15 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //
 //
 //        // TODO lengthSquared?
-//        double lengthSq() {
+//        float lengthSq() {
 //            return x * x + y * y + z * z;
 //        }
 //
-//        double length() {
+//        float length() {
 //            return sqrt(lengthSq());
 //        }
 //
-//        double manhattanLength(){
+//        float manhattanLength(){
 //            return abs( this->x ) + abs( this->y ) + abs( this->z );
 //        }
 //
@@ -1079,7 +1071,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return divideScalar(length()?length():1);
 //        }
 //
-//        Vector3& setLength(double length) {
+//        Vector3& setLength(float length) {
 //            return this->normalize().multiplyScalar( length );
 //        }
 //
@@ -1091,7 +1083,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& lerpVectors( const Vector3& v1, const Vector3& v2, double alpha ){
+//        Vector3& lerpVectors( const Vector3& v1, const Vector3& v2, float alpha ){
 //            const double x = v1.x + ( v2.x - v1.x ) * alpha;
 //            const double y = v1.y + ( v2.y - v1.y ) * alpha;
 //            const double z = v1.z + ( v2.z - v1.z ) * alpha;
@@ -1108,13 +1100,12 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& divideScalar(double scalar) {
+//        Vector3& divideScalar(float scalar) {
 //            return multiplyScalar(1 / scalar);
 //
 //        }
 //
 //        Vector3& min(const Vector3& v) {
-//
 //            this->x = fmin(this->x, v.x);
 //            this->y = fmin(this->y, v.y);
 //            this->z = fmin(this->z, v.z);
@@ -1140,7 +1131,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& clampScalar(double minVal,double maxVal) {
+//        Vector3& clampScalar(float minVal,float maxVal) {
 //            this->x = fmax(minVal, fmin(maxVal, this->x));
 //            this->y = fmax(minVal, fmin(maxVal, this->y));
 //            this->z = fmax(minVal, fmin(maxVal, this->z));
@@ -1148,7 +1139,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& clampLength(double min,double max) {
+//        Vector3& clampLength(float min,float max) {
 //            //length()函数返回的是Vector的长度
 //            const double length = this->length();
 //
@@ -1199,11 +1190,11 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& cross(Vector3& v) {
+//        Vector3& cross(const Vector3& v) {
 //            return crossVectors(*this, v);
 //        }
 //
-//        Vector3& crossVectors(Vector3& a,Vector3& b){
+//        Vector3& crossVectors(const Vector3& a,const Vector3& b){
 //            const double ax = a.x, ay = a.y, az = a.z;
 //            const double bx = b.x, by = b.y, bz = b.z;
 //
@@ -1237,7 +1228,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            const double theta = this->dot(v) / denominator;
 //
 //            // clamp, to handle numerical problems
-//            return std::acos( MathUtils::clamp<double>(theta, - 1, 1) );
+//            return std::acos( math_utils::clamp<double>(theta, - 1, 1) );
 //        }
 //
 //        double distanceTo(Vector3& v) {
@@ -1258,7 +1249,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return setFromSphericalCoords( s.radius, s.phi, s.theta );
 //        }
 //
-//        Vector3& setFromSphericalCoords( double radius, double phi, double theta ) {
+//        Vector3& setFromSphericalCoords( float radius, float phi, float theta ) {
 //            const double sinPhiRadius = sin( phi ) * radius;
 //
 //            this->x = sinPhiRadius * sin( theta );
@@ -1280,19 +1271,42 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//        Vector3& fromArray(double array[], int offset = 0) {
-//            x = array[ offset ];
-//            y = array[ offset + 1 ];
-//            z = array[ offset + 2 ];
+////        Vector3& fromArray(float *array, int offset = 0) {
+////            x = array[ offset ];
+////            y = array[ offset + 1 ];
+////            z = array[ offset + 2 ];
+////
+////            return *this;
+////        }
+//        /**
+//         * Sets this vector's x, y and z value from the provided array.
+//         * @param array the source array.
+//         * @param offset (optional) offset into the array. Default is 0.
+//         */
+//        Vector3& fromArray(const float* array, unsigned arrayLength,unsigned offset = 0) {
+//            x = offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
+//            y = offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
+//            z = offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();
 //
 //            return *this;
 //        }
 //
+//
+//    //    Vector3& fromArray(const std::vector<float> array, unsigned offset = 0) {
+////        auto arrayLength = array.size();
+////        x = offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
+////        y = offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
+////        z = offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();
+////
+////        return *this;
+////    }
+////
+//
 //        template<typename T>
-//        Vector3& fromArrayVec(std::vector<T> array, int offset = 0) {
-//            x = (double)array[ offset ];
-//            y = (double)array[ offset + 1 ];
-//            z = (double)array[ offset + 2 ];
+//        Vector3& fromArray(std::vector<T> array, int offset = 0) {
+//            x = (float)array[ offset ];
+//            y = (float)array[ offset + 1 ];
+//            z = (float)array[ offset + 2 ];
 //
 //            return *this;
 //        }
@@ -1328,9 +1342,9 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //        Vector3& fromBufferAttribute(BufferAttribute<float>& attribute,int index);
 //
 //        Vector3& random() {
-//            this->x = MathUtils::random_gen<double>();
-//            this->y = MathUtils::random_gen<double>();
-//            this->z = MathUtils::random_gen<double>();
+//            this->x = math_utils::random_gen<double>();
+//            this->y = math_utils::random_gen<double>();
+//            this->z = math_utils::random_gen<double>();
 //
 //            return *this;
 //        }
@@ -1338,8 +1352,8 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //        Vector3& randomDirection() {
 //            // Derived from https://mathworld.wolfram.com/SpherePointPicking.html
 //
-//            const double u = (MathUtils::random_gen<double>() - 0.5) * 2;
-//            const double t = MathUtils::random_gen<double>() * M_PI * 2;
+//            const double u = (math_utils::random_gen<double>() - 0.5) * 2;
+//            const double t = math_utils::random_gen<double>() * M_PI * 2;
 //            const double f = sqrt(1 - std::pow(u,2));
 //
 //            this->x = f * cos(t);
@@ -1367,7 +1381,7 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //
 //        Vector3& setFromEuler(Euler& e);
 //
-//        Vector3& setFromMatrixColumn(Matrix4& m,int index);
+//        Vector3& setFromMatrixColumn(const Matrix4& m,int index);
 //
 //        Vector3& setFromMatrixPosition(const Matrix4& m);
 //

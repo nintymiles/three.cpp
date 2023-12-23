@@ -276,8 +276,8 @@ Vector3& Vector3::clampLength(float min, float max){
 //    return *this;
 //}
 //
-//Vector3& Vector3::setFromMatrixColumn(Matrix4& m,int index){
-//	return fromArray(m.elements, index * 4);
+//Vector3& Vector3::setFromMatrixColumn(const Matrix4& m,int index){
+//	return fromArray( m.elements, index * 4);
 //}
 //
 //Vector3& Vector3::setFromMatrixPosition(const Matrix4& m){
