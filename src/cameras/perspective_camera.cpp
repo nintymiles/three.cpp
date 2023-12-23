@@ -84,26 +84,35 @@ float PerspectiveCamera::getFilmHeight(){
 void PerspectiveCamera::setViewOffset(float fullWidth, float fullHeight, float x, float y, float width, float height){
     aspect = fullWidth / fullHeight;
 
-    view.enabled = true;
-    view.fullWidth = fullWidth;
-    view.fullHeight = fullHeight;
-    view.offsetX = x;
-    view.offsetY = y;
-    view.width = width;
-    view.height = height;
+    if(!view){
+        *view = {
+                true,
+                1,
+                1,
+                0,
+                0,
+                1,
+                1
+        };
+    }
+
+    view->enabled = true;
+    view->fullWidth = fullWidth;
+    view->fullHeight = fullHeight;
+    view->offsetX = x;
+    view->offsetY = y;
+    view->width = width;
+    view->height = height;
 
     updateProjectionMatrix();
 }
 
 void PerspectiveCamera::clearViewOffset(){
-    //if (view != = null) {
-
-    view.enabled = false;
-
-    //}
+    if (!view) {
+        view->enabled = false;
+    }
 
     updateProjectionMatrix();
-
 }
 
 void PerspectiveCamera::updateProjectionMatrix(){
@@ -114,15 +123,15 @@ void PerspectiveCamera::updateProjectionMatrix(){
     float width = aspect * height;
     float left = -0.5f * width;
 
-    if (view.enabled) {
+    if (view && view->enabled) {
 
-        float fullWidth = view.fullWidth;
-        float fullHeight = view.fullHeight;
+        float fullWidth = view->fullWidth;
+        float fullHeight = view->fullHeight;
 
-        left += view.offsetX * width / fullWidth;
-        top -= view.offsetY * height / fullHeight;
-        width *= view.width / fullWidth;
-        height *= view.height / fullHeight;
+        left += view->offsetX * width / fullWidth;
+        top -= view->offsetY * height / fullHeight;
+        width *= view->width / fullWidth;
+        height *= view->height / fullHeight;
 
     }
 

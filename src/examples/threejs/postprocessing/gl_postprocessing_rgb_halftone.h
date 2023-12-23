@@ -1,5 +1,5 @@
 //
-// Created by ultraman on 12/22/2023.
+// Created by SeanR on 12/22/2023.
 //
 
 #ifndef THREE_CPP_GL_POSTPROCESSING_RGB_HALFTONE_H

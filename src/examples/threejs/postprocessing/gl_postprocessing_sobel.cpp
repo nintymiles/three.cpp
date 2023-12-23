@@ -14,7 +14,7 @@ void GLPostProcessingSobel::render(){
 }
 
 void GLPostProcessingSobel::showControls(){
-    ImGui::Begin("Controls");
+    ImGui::Begin("控制面板-Controls");
 
     ImGui::Checkbox("postprocessing",&postprocessing);
 

@@ -11,7 +11,7 @@ class PerspectiveCamera : public Camera {
 public:
     using sptr = std::shared_ptr<PerspectiveCamera>;
 
-    CameraView view = CameraView();
+    CameraView::sptr view;
 
     float focus = 10;
 
@@ -35,10 +35,13 @@ public:
 
     PerspectiveCamera(const PerspectiveCamera& camera) : Camera(camera) {
         isPerspective = true;
-        view = camera.view;
+        //view = camera.view;
         focus = camera.focus;
         filmGauge = camera.filmGauge;
         filmOffset = camera.filmOffset;
+
+        view = std::make_shared<CameraView>();
+        view->copy(*camera.view);
 
         updateProjectionMatrix();
     }
@@ -46,12 +49,15 @@ public:
     virtual PerspectiveCamera* clone(){
         return new PerspectiveCamera(*this);
     }
+
     virtual PerspectiveCamera& copy(PerspectiveCamera& camera, bool recursive) {
         Camera::copy(camera, recursive);
-        view = camera.view;
         focus = camera.focus;
         filmGauge = camera.filmGauge;
         filmOffset = camera.filmOffset;
+
+        view = std::make_shared<CameraView>();
+        view->copy(*camera.view);
 
         updateProjectionMatrix();
 

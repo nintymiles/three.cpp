@@ -38,18 +38,21 @@ public:
         this->cameraRight = source.cameraRight;
         this->top = source.top;
         this->bottom = source.bottom;
-        this->view = source.view;
+
+        this->view = std::make_shared<CameraView>();
+        this->view->copy(*source.view);
     }
 
     OrthographicCamera& copy(OrthographicCamera& source) {
         Camera::copy(source);
         this->zoom = source.zoom;
-
         this->left = source.left;
         this->cameraRight = source.cameraRight;
         this->top = source.top;
         this->bottom = source.bottom;
-        this->view = source.view;
+
+        this->view = std::make_shared<CameraView>();
+        this->view->copy(*source.view);
     }
 
 

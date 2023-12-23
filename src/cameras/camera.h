@@ -21,6 +21,17 @@ public:
         float height;
         using sptr = std::shared_ptr<CameraView>;
         //using uptr = std::unique_ptr<CameraView>;
+        CameraView& copy(const CameraView& cameraView) {
+            enabled = cameraView.enabled;
+            fullHeight = cameraView.fullHeight;
+            fullWidth = cameraView.fullWidth;
+            offsetX = cameraView.offsetX;
+            offsetY = cameraView.offsetY;
+            width = cameraView.width;
+            height = cameraView.height;
+
+            return *this;
+        }
     };
     using sptr = std::shared_ptr<Camera>;
 

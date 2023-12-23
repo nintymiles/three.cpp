@@ -1,5 +1,5 @@
 //
-// Created by ultraman on 12/22/2023.
+// Created by SeanR on 12/22/2023.
 //
 
 #include "gl_postprocessing_rgb_halftone.h"
@@ -28,7 +28,8 @@ void GLPostProcessingRGBHalfTone::render(){
 }
 
 void GLPostProcessingRGBHalfTone::showControls(){
-    ImGui::Begin("Controls");
+    ImGui::Begin("控制面板-Controls");
+
 
     if (ImGui::BeginCombo("##shapes", shapeVec.size()>0?shapeVec[setting.shape-1].c_str():"")) // The second parameter is the label previewed before opening the combo.
     {
@@ -62,18 +63,7 @@ void GLPostProcessingRGBHalfTone::showControls(){
         ImGui::EndCombo();
     }
     ImGui::Checkbox("disable",&setting.disable);
-
-
-    //    gui.add( controller, 'shape', { 'Dot': 1, 'Ellipse': 2, 'Line': 3, 'Square': 4 } ).onChange( onGUIChange );
-//    gui.add( controller, 'radius', 1, 25 ).onChange( onGUIChange );
-//    gui.add( controller, 'rotateR', 0, 90 ).onChange( onGUIChange );
-//    gui.add( controller, 'rotateG', 0, 90 ).onChange( onGUIChange );
-//    gui.add( controller, 'rotateB', 0, 90 ).onChange( onGUIChange );
-//    gui.add( controller, 'scatter', 0, 1, 0.01 ).onChange( onGUIChange );
-//    gui.add( controller, 'greyscale' ).onChange( onGUIChange );
-//    gui.add( controller, 'blending', 0, 1, 0.01 ).onChange( onGUIChange );
-//    gui.add( controller, 'blendingMode', { 'Linear': 1, 'Multiply': 2, 'Add': 3, 'Lighter': 4, 'Darker': 5 } ).onChange( onGUIChange );
-//    gui.add( controller, 'disable' ).onChange( onGUIChange );
+    ImGui::Dummy(ImVec2(200, 200));
 
     ImGui::End();
 }
