@@ -39,6 +39,7 @@
 #include "gl_postprocessing.h"
 #include "gl_postprocessing_pixel.h"
 #include "gl_postprocessing_rgb_halftone.h"
+#include "gl_postprocessing_sobel.h"
 
 // settings
 extern int display_w;
@@ -254,6 +255,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["GL_Postprocessing_RGB_Halftone"] = std::make_shared<GLPostProcessingRGBHalfTone>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Postprocessing_RGB_Halftone"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Postprocessing_Sobel", "")) {
+                if (demoClasses.count("GL_Postprocessing_Sobel") == 0)
+                    demoClasses["GL_Postprocessing_Sobel"] = std::make_shared<GLPostProcessingSobel>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Postprocessing_Sobel"];
                 currentDemoClass->renderer->clear();
             }
 

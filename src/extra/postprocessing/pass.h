@@ -39,7 +39,8 @@ namespace threecpp{
 
 
     class FullScreenQuad {
-        std::shared_ptr<Mesh> _mesh;
+        //std::shared_ptr<Mesh> _mesh;
+        std::shared_ptr<Material> _material;
         std::shared_ptr<BufferGeometry> _geometry;
 
     public:
