@@ -517,18 +517,19 @@ public:
      * @param offset (optional) offset into the array. Default is 0.
      */
     Vector3& fromArray(const float* array, unsigned arrayLength,unsigned offset = 0) {
-        x = offset <arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
+        x = offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
         y = offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
         z = offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();
 
         return *this;
     }
 
-    Vector3& fromArray(const std::vector<float> array, unsigned offset = 0) {
+    template<typename T>
+    Vector3& fromArray(const std::vector<T> array, unsigned offset = 0) {
         auto arrayLength = array.size();
-        x = offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
-        y = offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
-        z = offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();
+        x = (float)offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
+        y = (float)offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
+        z = (float)offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();
 
         return *this;
     }
@@ -553,7 +554,7 @@ public:
 
 
     template<typename T>
-    Vector3& fromBufferAttribute(BufferAttribute<T>& attribute, unsigned index, unsigned offset = 0) {
+    Vector3& fromBufferAttribute(BufferAttribute<T>& attribute, unsigned index) {
         x = attribute.getX(index);
         y = attribute.getY(index);
         z = attribute.getZ(index);
@@ -1291,16 +1292,6 @@ inline Vector3 operator *(float scalar, const Vector3& vector)
 //            return *this;
 //        }
 //
-//
-//    //    Vector3& fromArray(const std::vector<float> array, unsigned offset = 0) {
-////        auto arrayLength = array.size();
-////        x = offset < arrayLength ? array[offset] : std::numeric_limits<float>::quiet_NaN();
-////        y = offset < arrayLength ? array[offset + 1] : std::numeric_limits<float>::quiet_NaN();
-////        z = offset < arrayLength ? array[offset + 2] : std::numeric_limits<float>::quiet_NaN();
-////
-////        return *this;
-////    }
-////
 //
 //        template<typename T>
 //        Vector3& fromArray(std::vector<T> array, int offset = 0) {
