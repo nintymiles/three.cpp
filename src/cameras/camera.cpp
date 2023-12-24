@@ -45,17 +45,18 @@ void Camera::updateWorldMatrix(bool updateParents, bool updateChildren){
 }
 
 Camera& Camera::copy(Camera& source, bool recursive) {
-
     Object3D::copy(source, recursive);
+    isCamera = true;
+
     fov = source.fov;
     aspect = source.aspect;
     _far = source._far;
     _near = source._near;
     zoom = source.zoom;
+
     matrixWorldInverse = source.matrixWorldInverse;
     projectionMatrix = source.projectionMatrix;
     projectionMatrixInverse = source.projectionMatrixInverse;
-    isCamera = true;
 
     return *this;
 }

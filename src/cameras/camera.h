@@ -11,7 +11,7 @@
 
 class Camera : public Object3D {
 public:
-    struct CameraView {
+    struct View {
         bool enabled;
         float fullWidth;
         float fullHeight;
@@ -19,9 +19,9 @@ public:
         float offsetY;
         float width;
         float height;
-        using sptr = std::shared_ptr<CameraView>;
-        //using uptr = std::unique_ptr<CameraView>;
-        CameraView& copy(const CameraView& cameraView) {
+        using sptr = std::shared_ptr<View>;
+        //using uptr = std::unique_ptr<View>;
+        View& copy(const View& cameraView) {
             enabled = cameraView.enabled;
             fullHeight = cameraView.fullHeight;
             fullWidth = cameraView.fullWidth;

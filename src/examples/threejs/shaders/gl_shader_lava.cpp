@@ -5,7 +5,11 @@
 #include "gl_shader_lava.h"
 
 void GLShaderLava::render(){
+#ifdef __APPLE__
+    float delta = timer.getDelta()/1000.0; //no vsync for glfw on Mac
+#else
     float delta = timer.getDelta();
+#endif
 
     uniforms->set("time", delta);
 

@@ -58,27 +58,27 @@ public:
 
     Vector3& toVector3(Vector3* optionalResult = NULL);
 
-    float Euler::getX() const {
+    float getX() const {
         return _x;
     }
 
-    float Euler::getY() const {
+    float getY() const {
         return _y;
     }
 
-    float Euler::getZ() const {
+    float getZ() const {
         return _z;
     }
 
-    float Euler::x() const {
+    float x() const {
         return _x;
     }
 
-    float Euler::y() const {
+    float y() const {
         return _y;
     }
 
-    float Euler::z() const {
+    float z() const {
         return _z;
     }
 

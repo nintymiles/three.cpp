@@ -13,19 +13,6 @@
 namespace math_utils{
 
     template<typename T>
-    inline T clamp(T value, T min, T max) {
-        return (T)fmax(min, fmin(max, value));
-    }
-
-    //cpp中，运算符%不能用于float和double类型
-    // compute euclidean modulo of m % n
-    // https://en.wikipedia.org/wiki/Modulo_operation
-    template<typename T>
-    inline T euclideanModulo( T n, T m ) {
-        return fmod( ((fmod(n,m)) + m) , m );
-    }
-
-    template<typename T>
     inline T random_gen() {
         std::default_random_engine generator;
         //std::uniform_int_distribution<T> distribution(0,1);
@@ -120,25 +107,6 @@ namespace math_utils{
         return ss.str();
     }
 
-    // Random float from <-range/2, range/2> interval
-    inline float randFloatSpread( float range ) {
-        return range * ( 0.5f - random_gen<float>() );
-    }
-
-//    inline float lerp(double a, double b, double t){
-//        return a + t * (b - a);
-//    }
-
-    template <typename T>
-    inline T lerp(T x, T y, T t){
-        return (1 - t) * x + t * y;
-    }
-
-
-    //模板函数的别名如何设置
-    //typedef clamp<double> clampd;
-    //using clampd = double clamp<double>(double,double,double);
-
 }
 
 namespace math {
@@ -182,7 +150,10 @@ template < typename T > inline T floor(T t) { return std::floor(t); }
 template < typename T > inline T fmod(T a, T b) { return std::fmod(a, b); }
 
 
-
+//    template<typename T>
+//    inline T clamp(T value, T min, T max) {
+//        return (T)fmax(min, fmin(max, value));
+//    }
 template < typename T > inline T clamp(T x, T a, T b) { return x < a ? a : ((x > b) ? b : x); }
 template < typename T > inline T clampBottom(T x, T a) { return x < a ? a : x; }
 
@@ -296,12 +267,22 @@ inline int nearestPowerOfTwo(int value) {
 //    return s;
 //}
 
+//cpp中，运算符%不能用于float和double类型
+// compute euclidean modulo of m % n
+// https://en.wikipedia.org/wiki/Modulo_operation
+//template<typename T>
+//inline T euclideanModulo( T n, T m ) {
+//    return fmod( ((fmod(n,m)) + m) , m );
+//}
 inline float euclideanModulo(float n, float m){
     if (m == 0) return (float)NAN;
     return std::fmod(std::fmod(n, m) + m, m);
     //return std::remainder((std::remainder(n, m) + m), m);
 }
 
+//    inline float lerp(double a, double b, double t){
+//        return a + t * (b - a);
+//    }
 template <typename T> T lerp(T x, T y, T t){
     return (1 - t) * x + t * y;
 }

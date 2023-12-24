@@ -19,8 +19,13 @@ void GLPostProcessingRGBHalfTone::render(){
     uniforms->set("shape", setting.shape);
     uniforms->set("blendingMode", setting.blendingMode);
 
+#ifdef __APPLE__
+    float delta = timer.getDelta()/1000.0; //no vsync for glfw on Mac
+#else
+    float delta = timer.getDelta();
+#endif
 
-    float delta = timer.getDelta() * 0.01;
+    delta *= 0.01;
 
     group->rotation.setY(group->rotation.getY() + delta * rotationSpeed);
 

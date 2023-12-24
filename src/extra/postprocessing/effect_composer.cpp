@@ -64,13 +64,13 @@ namespace threecpp {
 
     EffectComposer& EffectComposer::addPass( std::shared_ptr<Pass> pass ){
         passes.push_back( pass );
-        //pass->setSize( _width * _pixelRatio, _height * _pixelRatio );
+        pass->setSize( _width * _pixelRatio, _height * _pixelRatio );
         return *this;
     }
 
     EffectComposer& EffectComposer::insertPass( std::shared_ptr<Pass> pass, int index ){
         passes.insert( passes.begin() + index, pass );
-        //pass->setSize( _width * _pixelRatio, _height * _pixelRatio  );
+        pass->setSize( _width * _pixelRatio, _height * _pixelRatio  );
 
         return *this;
     }

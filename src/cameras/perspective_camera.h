@@ -11,7 +11,7 @@ class PerspectiveCamera : public Camera {
 public:
     using sptr = std::shared_ptr<PerspectiveCamera>;
 
-    CameraView::sptr view;
+    View::sptr view;
 
     float focus = 10;
 
@@ -40,7 +40,7 @@ public:
         filmGauge = camera.filmGauge;
         filmOffset = camera.filmOffset;
 
-        view = std::make_shared<CameraView>();
+        view = std::make_shared<View>();
         view->copy(*camera.view);
 
         updateProjectionMatrix();
@@ -56,7 +56,7 @@ public:
         filmGauge = camera.filmGauge;
         filmOffset = camera.filmOffset;
 
-        view = std::make_shared<CameraView>();
+        view = std::make_shared<View>();
         view->copy(*camera.view);
 
         updateProjectionMatrix();

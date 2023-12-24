@@ -8,7 +8,7 @@
 
 class OrthographicCamera : public Camera {
 public:
-    CameraView::sptr view;
+    View::sptr view;
 
     using sptr = std::shared_ptr<OrthographicCamera>;
 
@@ -39,7 +39,7 @@ public:
         this->top = source.top;
         this->bottom = source.bottom;
 
-        this->view = std::make_shared<CameraView>();
+        this->view = std::make_shared<View>();
         this->view->copy(*source.view);
     }
 
@@ -51,7 +51,7 @@ public:
         this->top = source.top;
         this->bottom = source.bottom;
 
-        this->view = std::make_shared<CameraView>();
+        this->view = std::make_shared<View>();
         this->view->copy(*source.view);
     }
 

@@ -9,6 +9,7 @@
 //#include "gl_headers.h"
 #include <stdio.h>
 //#include <glad/glad.h>
+#include <chrono>
 
 //使用cmake时，这个macro必须定义，xcode中则不需要，只需要imgui_impl_opengl3中定义此宏即可
 #define GLFW_INCLUDE_ES3
@@ -231,6 +232,12 @@ int main(){
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
+
+#ifdef __APPLE__
+//        glfwSwapInterval(1);
+//        std::this_thread::sleep_for(std::chrono::milliseconds(1000/80));
+#endif
+
 
     }
 

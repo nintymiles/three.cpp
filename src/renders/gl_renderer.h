@@ -220,15 +220,18 @@ public:
     std::function<bool(RenderItem::sptr, RenderItem::sptr)> customTransparentSort = nullptr;
 
     GLRenderer(int width, int height);
-    /*{
-        initGLContext(width,height);
-    };*/
+
     virtual ~GLRenderer();
 
     int getPixelRatio();
+
+    /**
+     * Sets device pixel ratio. This is usually used for HiDPI device to prevent blurring output images.
+     */
     void setPixelRatio(int value);
 
     Vector2& getDrawingBufferSize(Vector2& target);
+
     void setDrawingBufferSize(float width, float height, int pixelRatio);
 
     Vector2& getSize(Vector2& target);
@@ -288,7 +291,7 @@ public:
     //setTransparentSort(method: Function) : void;
 
     /**
-     * Returns a THREE.Color instance with the current clear color.
+     * Returns a Color instance with the current clear color.
      */
     Color& getClearColor();
 

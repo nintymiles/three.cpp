@@ -19,7 +19,7 @@ double Line3::closestPointToPointParameter( Vector3& point, bool clampToLine ) {
     double t = startEnd_startP / startEnd2;
 
     if ( clampToLine ) {
-        t = math_utils::clamp<double>( t, 0, 1 );
+        t = math::clamp<double>( t, 0, 1 );
     }
 
     return t;
