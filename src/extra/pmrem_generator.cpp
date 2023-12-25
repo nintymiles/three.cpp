@@ -54,7 +54,8 @@ namespace pmrem_generator{
 using namespace pmrem_generator;
 
 void PMREMGenerator::_compileMaterial( Material::sptr material ) {
-    auto tmpMesh = Mesh::create( _lodPlanes[ 0 ], material );
+    auto geo = _lodPlanes.size() > 0 ? _lodPlanes[0] : BufferGeometry::create();
+    auto tmpMesh = Mesh::create( geo, material );
     auto scene = Scene::create();
     scene->add(tmpMesh);
     _renderer->compile( *scene, *_flatCamera );

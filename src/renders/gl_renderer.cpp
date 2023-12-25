@@ -171,7 +171,8 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
 
 //    materialProperties.envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : materialProperties.environment);
     if(isStandardMaterial)
-        materialProperties.envMap = cubeUVMaps->get(tex);
+        //todo:fix this cubeUVMaps
+        materialProperties.envMap = cubeMaps->get(tex);//cubeUVMaps->get(tex);
     else
         materialProperties.envMap = cubeMaps->get(tex);
 

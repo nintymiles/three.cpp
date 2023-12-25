@@ -75,14 +75,14 @@ public:
         //textureEquirec.encoding = THREE.sRGBEncoding;
 
         scene->setBackgroundCubeTexture(texCube);
-        //scene->setBackgroundTexture(textureEquirec);
+//        scene->setBackgroundTexture(textureEquirec);
 
         //
         auto geometry = IcosahedronBufferGeometry::create( 400, 5 );
         //auto geometry = SphereGeometry::create( 400, 15 );
         Material::sptr sphereMaterial = MeshBasicMaterial::create();
         sphereMaterial->envMap = texCube;
-        //sphereMaterial->envMap = textureEquirec;
+//        sphereMaterial->envMap = textureEquirec;
 
         Mesh::sptr sphereMesh = Mesh::create( geometry, sphereMaterial );
         scene->add( sphereMesh );

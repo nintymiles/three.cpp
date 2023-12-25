@@ -162,7 +162,7 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
 
 #add_link_options("-stdlib=libc++")
 # 构建可执行程序
-ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/examples/base/test_app.cpp)
+ADD_EXECUTABLE(threelibcpp ${ROOT_DIR}/src/examples/base/app_es.cpp)
 #add_library(threelibcpp)
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
 target_sources(threelibcpp PRIVATE  ${IMGUI_SOURCE} ${THREECPP_SOURCE})

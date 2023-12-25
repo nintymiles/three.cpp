@@ -35,6 +35,7 @@
 
 #include "gl_shader_demo1.h"
 #include "gl_shader_lava.h"
+#include "gl_performance_shader.h"
 
 #include "gl_postprocessing.h"
 #include "gl_postprocessing_pixel.h"
@@ -218,6 +219,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["GL_Shaders_Lava"] = std::make_shared<GLShaderLava>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Shaders_Lava"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Performance_Shader", "")) {
+                if (demoClasses.count("GL_Performance_Shader") == 0)
+                    demoClasses["GL_Performance_Shader"] = std::make_shared<GLPerformanceShader>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Performance_Shader"];
                 currentDemoClass->renderer->clear();
             }
 

@@ -68,7 +68,7 @@ void GLPostProcessingRGBHalfTone::showControls(){
         ImGui::EndCombo();
     }
     ImGui::Checkbox("disable",&setting.disable);
-    ImGui::Dummy(ImVec2(200, 200));
+    //ImGui::Dummy(ImVec2(200, 200));
 
     ImGui::End();
 }

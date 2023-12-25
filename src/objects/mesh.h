@@ -14,7 +14,7 @@ public:
 
     Mesh();
 
-    Mesh(const Geometry::sptr& geometry, const Material::sptr& material=nullptr);
+    Mesh(const Geometry::sptr geometry, const Material::sptr material=nullptr);
 
     Mesh(const Geometry::sptr& geometry, const std::vector<Material::sptr>& materials);
 

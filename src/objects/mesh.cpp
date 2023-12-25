@@ -3,6 +3,7 @@
 //
 #include "mesh.h"
 #include "buffer_geometry.h"
+#include "mesh_basic_material.h"
 
 namespace mesh {
     Matrix4 _inverseMatrix;
@@ -41,22 +42,23 @@ Mesh::Mesh() : Object3D(), drawMode(0){
     this->isMesh = true;
 }
 
-Mesh::Mesh(const Geometry::sptr& geometry, const Material::sptr& material) :Object3D(geometry, material), drawMode(0){
-    /*if (this->geometry == nullptr)
+Mesh::Mesh(const Geometry::sptr geometry, const Material::sptr material) :Object3D(geometry, material), drawMode(0){
+    if (this->geometry == nullptr)
         this->geometry = BufferGeometry::create();
     else
         this->geometry = geometry;
 
     if (this->material == nullptr) {
         this->material = MeshBasicMaterial::create();
-        this->material->color->setHex(0xffffff);
-        this->materials.push_back(material);
+        //this->material->color->setHex(0xffffff);
+        //this->materials.push_back(material);
+        this->material = material;
     }
     else {
         this->material = material;
     }
 
-    this->materials.push_back(this->material);*/
+//    this->materials.push_back(this->material);
     this->isMesh = true;
 }
 

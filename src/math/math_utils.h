@@ -12,15 +12,15 @@
 
 namespace math_utils{
 
-    template<typename T>
-    inline T random_gen() {
-        std::default_random_engine generator;
-        //std::uniform_int_distribution<T> distribution(0,1);
-        std::uniform_real_distribution<T> distribution(0.0, 1.0);
-        return distribution(generator);
-    }
+//    template<typename T>
+//    inline T random_gen() {
+//        std::default_random_engine generator;
+//        //std::uniform_int_distribution<T> distribution(0,1);
+//        std::uniform_real_distribution<T> distribution(0.0, 1.0);
+//        return distribution(generator);
+//    }
 
-//https://stackoverflow.com/questions/24365331/how-can-i-generate-uuid-in-c-without-using-boost-library
+    //https://stackoverflow.com/questions/24365331/how-can-i-generate-uuid-in-c-without-using-boost-library
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
@@ -174,15 +174,6 @@ randomT(T low, T high) {
     std::random_device rd;
     std::mt19937 rng(rd());
     std::uniform_real_distribution<T> dis(low, high);
-    return dis(rng);
-}
-
-template < typename T >
-inline typename std::enable_if<!std::is_floating_point<T>::value, T>::type
-randomT(T low, T high) {
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::uniform_int_distribution<T> dis(low, high);
     return dis(rng);
 }
 
