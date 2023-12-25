@@ -36,6 +36,7 @@
 #include "gl_shader_demo1.h"
 #include "gl_shader_lava.h"
 #include "gl_performance_shader.h"
+#include "gl_custom_attributes.h"
 
 #include "gl_postprocessing.h"
 #include "gl_postprocessing_pixel.h"
@@ -221,22 +222,22 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["GL_Shaders_Lava"];
                 currentDemoClass->renderer->clear();
             }
-            if (ImGui::MenuItem("GL_Performance_Shader", "")) {
-                if (demoClasses.count("GL_Performance_Shader") == 0)
-                    demoClasses["GL_Performance_Shader"] = std::make_shared<GLPerformanceShader>(display_w, display_h);
-
-                currentDemoClass = demoClasses["GL_Performance_Shader"];
-                currentDemoClass->renderer->clear();
-            }
-
-
-//            if (ImGui::MenuItem("Gl_Lights_Spotlight", "")) {
-//                if (demoClasses.count("Gl_Lights_Spotlight") == 0)
-//                    demoClasses["Gl_Lights_Spotlight"] = std::make_shared<GLLightsSpotlight>(display_w, display_h);
+//            if (ImGui::MenuItem("GL_Performance_Shader", "")) {
+//                if (demoClasses.count("GL_Performance_Shader") == 0)
+//                    demoClasses["GL_Performance_Shader"] = std::make_shared<GLPerformanceShader>(display_w, display_h);
 //
-//                currentDemoClass = demoClasses["Gl_Lights_Spotlight"];
+//                currentDemoClass = demoClasses["GL_Performance_Shader"];
 //                currentDemoClass->renderer->clear();
 //            }
+//            if (ImGui::MenuItem("GL_Custom_Attributes", "")) {
+//                if (demoClasses.count("GL_Custom_Attributes") == 0)
+//                    demoClasses["GL_Custom_Attributes"] = std::make_shared<GLCustomAttributes>(display_w, display_h);
+//
+//                currentDemoClass = demoClasses["GL_Custom_Attributes"];
+//                currentDemoClass->renderer->clear();
+//            }
+
+
 
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();

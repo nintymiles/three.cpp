@@ -20,7 +20,10 @@ class GLCustomAttributes: public ApplicationBase {
     OrbitControl::sptr pCameraControl;
     UniformValues::sptr uniforms;
     Timer timer;
-    Mesh::sptr mesh;
+    Mesh::sptr sphere;
+
+    std::vector<float> displacement;
+    std::vector<float> noise;
 
     std::string fragmentShader = R""(
 
@@ -88,14 +91,14 @@ public:
         std::string resourceDir = std::string(rootDir).append(fileSeparator).append("asset").append(fileSeparator)
                 .append("textures").append(fileSeparator);
 
-        auto waterMap = TextureLoader::load(resourceDir + "water.png");
+        auto waterMap = TextureLoader::load(resourceDir + "water.jpg");
         waterMap->wrapS = Wrapping::RepeatWrapping;
         waterMap->wrapT = Wrapping::RepeatWrapping;
 
 
         ShaderMaterial::sptr shaderMaterial = ShaderMaterial::create();
 
-        shaderMaterial->name = "CustomShaderLava";
+        shaderMaterial->name = "CustomAttributeShader";
 
         uniforms = std::make_shared<UniformValues>();
         uniforms->set("color", Color(0xff2200));
@@ -116,15 +119,15 @@ public:
         auto geometry = SphereGeometry::create( radius, segments, rings );
         //displacement = new Float32Array( geometry.attributes.position.count );
         size_t positionCount = geometry->attributes[{AttributeName::position,0}]->count;
-        std::vector<float> displacement(positionCount);
-        std::vector<float> noise(positionCount);
+        displacement = std::vector<float>(positionCount);
+        noise = std::vector<float>(positionCount);
 
         for ( int i = 0; i < displacement.size(); i ++ ) {
             noise[ i ] = math::random() * 5;
         }
         geometry->setAttribute(AttributeName::dispalcement,BufferAttribute<float>::create(displacement,1));
 
-        auto sphere = Mesh::create( geometry, shaderMaterial );
+        sphere = Mesh::create( geometry, shaderMaterial );
         scene->add( sphere );
 
 //        pCameraControl = std::make_shared<OrbitControl>(camera);
