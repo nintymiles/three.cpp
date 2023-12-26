@@ -353,7 +353,7 @@ GLint GLTextures::getInternalFormat(PixelFormat glFormat, TextureDataType glType
     if (glFormat ==  PixelFormat::RedFormat) {
         if (glType == TextureDataType::FloatType) internalFormat = GL_R32F;
         if (glType == TextureDataType::HalfFloatType) internalFormat = GL_R16F;
-        if (glType == TextureDataType::UnsignedByteType) internalFormat = GL_RGB;
+        if (glType == TextureDataType::UnsignedByteType) internalFormat = GL_R8;
 
     }
 

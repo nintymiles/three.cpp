@@ -16,7 +16,10 @@ void GLCustomAttributes::render(){
     sphere->rotation.set(0,0.01 * time,0.01 * time);
 
     uniforms->set("amplitude",2.5f * sin( sphere->rotation.y() * 0.125f ));
-    uniforms->set("color",Color().setHSL(0.0005, 0, 0));
+    Vector3 colorV = uniforms->get("color").get<Vector3>();
+    Color color{colorV.x,colorV.y,colorV.z};
+    uniforms->set("color",color.offsetHSL(0.0005,0,0).toVector3());
+//    uniforms->set("color",Vector3(0.0005, 0, 0));
 
     for ( int i = 0; i < displacement.size(); i ++ ) {
 
@@ -29,8 +32,8 @@ void GLCustomAttributes::render(){
     }
 
     BufferGeometry::sptr bufferGeometr = std::dynamic_pointer_cast<BufferGeometry>(sphere->geometry);
-    bufferGeometr->setAttribute(AttributeName::dispalcement,BufferAttribute<float>::create(displacement,1));
-    bufferGeometr->attributes[{AttributeName::dispalcement,0}]->setNeedsUpdate(true);
+    bufferGeometr->setAttribute(AttributeName::displacement,BufferAttribute<float>::create(displacement,1));
+    bufferGeometr->attributes[{AttributeName::displacement,0}]->setNeedsUpdate(true);
 
     ApplicationBase::render();
 }

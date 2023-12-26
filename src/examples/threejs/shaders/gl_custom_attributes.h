@@ -101,7 +101,7 @@ public:
         shaderMaterial->name = "CustomAttributeShader";
 
         uniforms = std::make_shared<UniformValues>();
-        uniforms->set("color", Color(0xff2200));
+        uniforms->set("color", Color(0xff2200).toVector3());
         uniforms->set("amplitude", 1.f);
         uniforms->set("colorTexture", waterMap);
         shaderMaterial->uniforms = uniforms;
@@ -125,15 +125,15 @@ public:
         for ( int i = 0; i < displacement.size(); i ++ ) {
             noise[ i ] = math::random() * 5;
         }
-        geometry->setAttribute(AttributeName::dispalcement,BufferAttribute<float>::create(displacement,1));
+        geometry->setAttribute(AttributeName::displacement,BufferAttribute<float>::create(displacement,1));
 
         sphere = Mesh::create( geometry, shaderMaterial );
         scene->add( sphere );
 
-//        pCameraControl = std::make_shared<OrbitControl>(camera);
-//        pCameraControl->enablePan = true;
-//        pCameraControl->enableDamping = true;
-//        controller = pCameraControl;
+        pCameraControl = std::make_shared<OrbitControl>(camera);
+        pCameraControl->enablePan = true;
+        pCameraControl->enableDamping = true;
+        controller = pCameraControl;
 
         timer = Timer();
 

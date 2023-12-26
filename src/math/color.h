@@ -1,5 +1,5 @@
 //
-// Created by Willie on 2022/10/4.
+// Created by SeanR on 2022/10/4.
 //
 
 #ifndef THREE_CPP_COLOR_H
@@ -14,6 +14,7 @@
 
 #include "common_types.h"
 #include "math_utils.h"
+#include "vector3.h"
 
 //enum class threecpp::Colors {
 //    aliceblue = 0xf0f8ff,
@@ -575,9 +576,11 @@ public:
         return *this;
 
     }
+
     std::string to_string() {
         return getHexString();
     }
+
     Color& toArray(float* array, unsigned offset=0) {
         array[offset] = r;
         array[offset + 1] = g;
@@ -585,6 +588,11 @@ public:
 
         return *this;
     }
+
+    Vector3 toVector3() {
+        return Vector3(r,g,b);
+    }
+
     Color& appendToVector(std::vector<float>& arrayVec) {
         arrayVec.push_back(r);
         arrayVec.push_back(g);
@@ -592,6 +600,7 @@ public:
 
         return *this;
     }
+
 };
 //
 //#include <unordered_map>
