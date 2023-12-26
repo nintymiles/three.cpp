@@ -207,6 +207,7 @@ enum class TextureFilter {
 //const int UnsignedShort5551Type = 1018;
 //const int UnsignedInt248Type = 1020;
 enum class TextureDataType {
+    None                    = -1,
     UnsignedByteType		= GL_UNSIGNED_BYTE,
     ByteType				= GL_BYTE,
     ShortType				= GL_SHORT,
