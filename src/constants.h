@@ -252,16 +252,16 @@ enum class PixelFormat {
     RGBFormat				= GL_RGB,
     RGBAFormat				= GL_RGBA,
     LuminanceFormat			= GL_LUMINANCE,
-    LuminanceAlphaFormat	= 1025,//GL_LUMINANCE4_ALPHA4,
+    LuminanceAlphaFormat	= GL_LUMINANCE_ALPHA,//GL_LUMINANCE4_ALPHA4,
     RGBEFormat				= GL_RGBA,
     DepthFormat				= GL_DEPTH,
     DepthStencilFormat		= GL_DEPTH_STENCIL,
-    RedFormat				= 1028,//GL_R,
-    RedIntegerFormat		= 1029,//GL_R16,
+    RedFormat				= GL_RED,//GL_R,
+    RedIntegerFormat		= GL_R16I,//GL_R16,
     RGFormat				= GL_RG,
-    RGIntegerFormat			= 1031,//GL_RG16,
-//    RGBIntegerFormat		= GL_RGB16,
-    RGBAIntegerFormat		= 1033,//GL_RGBA16,
+    RGIntegerFormat			= GL_RG16I,//GL_RG16,
+    RGBIntegerFormat		= GL_RGB16I,
+    RGBAIntegerFormat		= GL_RGBA16I,//GL_RGBA16,
     None					= GL_NONE
 };
 

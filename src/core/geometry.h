@@ -31,7 +31,7 @@ using directPtr = std::shared_ptr<DirectGeometry>;
 
 enum class AttributeName : size_t {
     index, color, position, normal, uv, uv2, lineDistance, tangent, bitangent, skinIndex, skinWeight,
-    dispalcement,
+    displacement,
     morphTarget,
     morphNormal,
     instanceMatrix,

@@ -218,6 +218,8 @@ BufferAttribute<float>::sptr& BufferGeometry::getAttribute(const std::string& na
         return getAttribute(AttributeName::skinIndex);
     else if (name == "skinWeigh")
         return getAttribute(AttributeName::skinWeight);
+    else if (name == "displacement")
+        return getAttribute(AttributeName::displacement);
 
 
     return emptyAttribute;
