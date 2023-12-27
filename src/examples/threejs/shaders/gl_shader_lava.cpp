@@ -14,7 +14,7 @@ void GLShaderLava::render(){
     uniforms->set("time", delta);
 
     mesh->rotation.setY(0.125 * delta);
-    mesh->rotation.setY( 0.5 * delta);
+    mesh->rotation.setX( 0.5 * delta);
 
     ApplicationBase::render();
 }

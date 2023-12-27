@@ -37,6 +37,7 @@
 #include "gl_shader_lava.h"
 #include "gl_performance_shader.h"
 #include "gl_custom_attributes.h"
+#include "gl_depth_texture.h"
 
 #include "gl_postprocessing.h"
 #include "gl_postprocessing_pixel.h"
@@ -229,13 +230,20 @@ static void ShowApplicationMenuBar() {
 //                currentDemoClass = demoClasses["GL_Performance_Shader"];
 //                currentDemoClass->renderer->clear();
 //            }
-//            if (ImGui::MenuItem("GL_Custom_Attributes", "")) {
-//                if (demoClasses.count("GL_Custom_Attributes") == 0)
-//                    demoClasses["GL_Custom_Attributes"] = std::make_shared<GLCustomAttributes>(display_w, display_h);
-//
-//                currentDemoClass = demoClasses["GL_Custom_Attributes"];
-//                currentDemoClass->renderer->clear();
-//            }
+            if (ImGui::MenuItem("GL_Custom_Attributes", "")) {
+                if (demoClasses.count("GL_Custom_Attributes") == 0)
+                    demoClasses["GL_Custom_Attributes"] = std::make_shared<GLCustomAttributes>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Custom_Attributes"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Depth_Texture", "")) {
+                if (demoClasses.count("GL_Depth_Texture") == 0)
+                    demoClasses["GL_Depth_Texture"] = std::make_shared<GLDepthTexture>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Depth_Texture"];
+                currentDemoClass->renderer->clear();
+            }
 
 
 

@@ -11,7 +11,7 @@
 
 class DepthTexture : public Texture {
 private:
-    size_t width, height;
+//    size_t width, height;
 public:
     using sptr = std::shared_ptr<DepthTexture>;
 
@@ -41,6 +41,18 @@ public:
         flipY = false;
         generateMipmaps = false;
     };
+
+    static sptr create(size_t width, size_t height,
+                       TextureDataType type = TextureDataType::None,
+                       TextureMapping mapping = TextureMapping::UVMapping,
+                       Wrapping wraps = Wrapping::ClampToEdgeWrapping,
+                       Wrapping wrapt = Wrapping::ClampToEdgeWrapping,
+                       TextureFilter magFilter = TextureFilter::NearestFilter,
+                       TextureFilter minFilter = TextureFilter::NearestFilter,
+                       unsigned anisotropy = 1,
+                       PixelFormat  format = PixelFormat::DepthFormat){
+        return std::make_shared<DepthTexture>(width,height,type,mapping,wraps,wrapt,magFilter,minFilter,anisotropy,format);
+    }
 };
 
 #endif //THREE_CPP_DEPTH_TEXTURE_H

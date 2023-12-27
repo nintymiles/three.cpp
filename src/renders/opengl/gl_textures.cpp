@@ -575,7 +575,12 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
     }
 
 
-    setTexture2D(*(Texture *)(renderTarget.depthTexture.get()), 0);
+    setTexture2D(*renderTarget.depthTexture, 0);
+
+    PixelFormat glFormat = renderTarget.depthTexture->format;
+    TextureDataType glType = renderTarget.depthTexture->type;
+    GLint glInternalFormat = GL_DEPTH_COMPONENT16;//getInternalFormat(glFormat, glType);
+    state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, renderTarget.width, renderTarget.height, 0, (GLenum)glFormat, (GLenum)glType);
 
     GLuint textureId = depthTextureProperties.texture;
     if (renderTarget.depthTexture->format == PixelFormat::DepthFormat) {
@@ -847,7 +852,7 @@ void GLTextures::setTextureCubeDynamic(Texture& texture, unsigned slot){
 }
 
 void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
-
+    assert(renderTarget.texture);
 
     auto& renderTargetProperties = properties->getProperties(renderTarget.uuid);
     auto& textureProperties = properties->getProperties(renderTarget.texture->uuid);
@@ -866,6 +871,19 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
     //textureProperties.version = renderTarget.texture->version;
 
     info->memory.textures++;
+
+    if(renderTarget.depthBuffer && renderTarget.depthTexture){
+        auto& depthTextureProperties = properties->getProperties(renderTarget.depthTexture->uuid);
+
+        GLuint did;
+        glGenTextures(1, &did);
+
+        depthTextureProperties.texture = did;
+        depthTextureProperties.glInit = true;
+        renderTarget.depthTexture->id = did;
+
+        info->memory.textures++;
+    }
 
 //    GLuint framebuffer;
 //    GLuint depthRenderbuffer;
