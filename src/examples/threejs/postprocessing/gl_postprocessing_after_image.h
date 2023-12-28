@@ -42,6 +42,7 @@ class GLPostProcessingAfterImage: public ApplicationBase{
     std::shared_ptr<threecpp::EffectComposer> composer;
 
     bool enabled = true;
+    float damp = 0.96;
 
 public:
     GLPostProcessingAfterImage(int x, int y): ApplicationBase(x, y){}
@@ -79,6 +80,7 @@ public:
 
         auto afterimagePass = std::make_shared<threecpp::AfterImagePass>(screenX,screenY);
         composer->addPass( afterimagePass );
+        uniforms = afterimagePass->uniforms;
 
         orbitControl = std::make_shared<OrbitControl>(camera);
         orbitControl->target.set( 0, 0, 0 );

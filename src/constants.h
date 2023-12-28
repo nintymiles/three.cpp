@@ -255,7 +255,7 @@ enum class PixelFormat {
     LuminanceFormat			= GL_LUMINANCE,
     LuminanceAlphaFormat	= GL_LUMINANCE_ALPHA,//GL_LUMINANCE4_ALPHA4,
     RGBEFormat				= GL_RGBA,
-    DepthFormat				= GL_DEPTH,
+    DepthFormat				= GL_DEPTH_COMPONENT,
     DepthStencilFormat		= GL_DEPTH_STENCIL,
     RedFormat				= GL_RED,//GL_R,
     RedIntegerFormat		= GL_R16I,//GL_R16,

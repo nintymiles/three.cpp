@@ -79,20 +79,20 @@ static void ShowApplicationMenuBar() {
 
         if (ImGui::BeginMenu("Basic")){
 
-            if (ImGui::MenuItem("Demo-Scene", "")) {
-                if (demoClasses.count("Demo-Scene") == 0)
-                    demoClasses["Demo-Scene"] = std::make_shared<DemoScene>(display_w, display_h);
-
-                currentDemoClass = demoClasses["Demo-Scene"];
-                currentDemoClass->renderer->clear();
-            }
-            if (ImGui::MenuItem("Demo-Scene2", "")) {
-                if (demoClasses.count("Demo-Scene2") == 0)
-                    demoClasses["Demo-Scene2"] = std::make_shared<DemoScene2>(display_w, display_h);
-
-                currentDemoClass = demoClasses["Demo-Scene2"];
-                currentDemoClass->renderer->clear();
-            }
+//            if (ImGui::MenuItem("Demo-Scene", "")) {
+//                if (demoClasses.count("Demo-Scene") == 0)
+//                    demoClasses["Demo-Scene"] = std::make_shared<DemoScene>(display_w, display_h);
+//
+//                currentDemoClass = demoClasses["Demo-Scene"];
+//                currentDemoClass->renderer->clear();
+//            }
+//            if (ImGui::MenuItem("Demo-Scene2", "")) {
+//                if (demoClasses.count("Demo-Scene2") == 0)
+//                    demoClasses["Demo-Scene2"] = std::make_shared<DemoScene2>(display_w, display_h);
+//
+//                currentDemoClass = demoClasses["Demo-Scene2"];
+//                currentDemoClass->renderer->clear();
+//            }
             if (ImGui::MenuItem("Lines-Sphere", "")) {
                 if (demoClasses.count("Lines-Sphere") == 0)
                     demoClasses["Lines-Sphere"] = std::make_shared<GLLinesSphere>(display_w, display_h);

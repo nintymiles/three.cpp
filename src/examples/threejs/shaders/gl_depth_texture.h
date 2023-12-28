@@ -53,7 +53,7 @@ class GLDepthTexture: public ApplicationBase{
 			}
 
 			void main() {
-				//vec3 diffuse = texture2D( tDiffuse, vUv ).rgb;
+				vec3 diffuse = texture2D( tDiffuse, vUv ).rgb;
 				float depth = readDepth( tDepth, vUv );
 
 				gl_FragColor.rgb = 1.0 - vec3( depth );
@@ -81,18 +81,22 @@ class GLDepthTexture: public ApplicationBase{
 //        const type = parseFloat( params.type );
 
         target = GLRenderTarget::create( screenX,screenY );
-//        target->depthTexture = DepthTexture::create(screenX,screenY);
-//        target->depthTexture->isRenderTargetTexture = true;
+        target->depthTexture = DepthTexture::create(screenX,screenY);
+        target->depthTexture->isRenderTargetTexture = true;
         target->texture = Texture::create();
+        target->texture->name = "depth_fb_tex";
+        target->texture->format = PixelFormat::RGBFormat;
         target->texture->isRenderTargetTexture = true;
         target->texture->imageHeight = screenY;
         target->texture->imageWidth = screenX;
-        target->texture->minFilter = TextureFilter::NearestFilter;
-        target->texture->magFilter = TextureFilter::NearestFilter;
-        target->stencilBuffer = true ;
+        target->texture->minFilter = TextureFilter::LinearFilter;
+        target->texture->magFilter = TextureFilter::LinearFilter;
+//        target->stencilBuffer = true ;
 
-//        target->depthTexture->format = format;
-//        target->depthTexture->type = type;
+        target->depthTexture->format = PixelFormat::DepthFormat;
+        target->depthTexture->type = TextureDataType::UnsignedShortType;
+        target->depthTexture->minFilter = TextureFilter::LinearFilter;
+        target->depthTexture->magFilter = TextureFilter::LinearFilter;
 
     }
 

@@ -552,8 +552,6 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
 
     //if (isCube) throw new Error('Depth Texture with cube render targets is not supported');
 
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
     //todo:fix here
     //assert("renderTarget.depthTexture must be an instance of THREE.DepthTexture", renderTarget.depthTexture!=nullptr && renderTareget.depthTexture->isDepthTexture);
 
@@ -563,8 +561,17 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
 
     }*/
     // upload an empty depth texture with framebuffer size
-
     auto& depthTextureProperties = properties->getProperties(renderTarget.depthTexture->uuid);
+    if(renderTarget.depthBuffer && renderTarget.depthTexture){
+        GLuint did;
+        glGenTextures(1, &did);
+
+        depthTextureProperties.texture = did;
+        depthTextureProperties.glInit = true;
+        renderTarget.depthTexture->id = did;
+
+        info->memory.textures++;
+    }
 
     if (depthTextureProperties.texture ||
         renderTarget.depthTexture->imageWidth != renderTarget.width ||
@@ -574,13 +581,14 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
         renderTarget.depthTexture->setNeedsUpdate(true);
     }
 
-
     setTexture2D(*renderTarget.depthTexture, 0);
 
     PixelFormat glFormat = renderTarget.depthTexture->format;
     TextureDataType glType = renderTarget.depthTexture->type;
-    GLint glInternalFormat = GL_DEPTH24_STENCIL8;//getInternalFormat(glFormat, glType);
+    GLint glInternalFormat = getInternalFormat(glFormat, glType);
     state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, renderTarget.width, renderTarget.height, 0, (GLenum)glFormat, (GLenum)glType);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     GLuint textureId = depthTextureProperties.texture;
     if (renderTarget.depthTexture->format == PixelFormat::DepthFormat) {
@@ -595,6 +603,13 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
     }else {
         assert(("Unknown depthTexture format",1));
     }
+
+    state->unbindTexture();
+    // check for framebuffer complete
+    int status = glCheckFramebufferStatus ( GL_FRAMEBUFFER );
+    if ( status != GL_FRAMEBUFFER_COMPLETE )
+        std::cerr << "framebuffer object with depth texture is not complete" << std::endl;
+
 }
 
 void GLTextures::deallocateRenderTarget(GLRenderTarget& renderTarget){
@@ -871,19 +886,6 @@ void GLTextures::setupRenderTarget(GLRenderTarget& renderTarget){
     //textureProperties.version = renderTarget.texture->version;
 
     info->memory.textures++;
-
-    if(renderTarget.depthBuffer && renderTarget.depthTexture){
-        auto& depthTextureProperties = properties->getProperties(renderTarget.depthTexture->uuid);
-
-        GLuint did;
-        glGenTextures(1, &did);
-
-        depthTextureProperties.texture = did;
-        depthTextureProperties.glInit = true;
-        renderTarget.depthTexture->id = did;
-
-        info->memory.textures++;
-    }
 
 //    GLuint framebuffer;
 //    GLuint depthRenderbuffer;
