@@ -654,6 +654,65 @@ struct ShaderData{
         return shader;
     }
 
+    /**
+     * Afterimage shader
+     * I created this effect inspired by a demo on codepen:
+     * https://codepen.io/brunoimbrizi/pen/MoRJaN?page=1&
+     */
+    static ShaderMaterial::sptr getAfterImageShader(){
+        ShaderMaterial::sptr shader = std::make_shared<ShaderMaterial>();
+
+        UniformValues::sptr uniforms =std::make_shared<UniformValues>();
+        uniforms->set("damp", .96f);
+        uniforms->set<Texture::sptr>("tOld", nullptr);
+        uniforms->set<Texture::sptr>("tNew", nullptr);
+
+        shader->uniforms = uniforms;
+
+        shader->vertexShader = R""(
+
+            varying vec2 vUv;
+
+            void main() {
+
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+            }
+
+        )"";
+
+        shader->fragmentShader = R""(
+
+            uniform float damp;
+
+            uniform sampler2D tOld;
+            uniform sampler2D tNew;
+
+            varying vec2 vUv;
+
+            vec4 when_gt( vec4 x, float y ) {
+
+                return max( sign( x - y ), 0.0 );
+
+            }
+
+            void main() {
+
+                vec4 texelOld = texture2D( tOld, vUv );
+                vec4 texelNew = texture2D( tNew, vUv );
+
+                texelOld *= damp * when_gt( texelOld, 0.1 );
+
+                gl_FragColor = max(texelNew, texelOld);
+
+            }
+
+        )"";
+
+        return shader;
+    }
+
 };
 
 

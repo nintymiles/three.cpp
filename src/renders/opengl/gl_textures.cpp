@@ -579,7 +579,7 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
 
     PixelFormat glFormat = renderTarget.depthTexture->format;
     TextureDataType glType = renderTarget.depthTexture->type;
-    GLint glInternalFormat = GL_DEPTH_COMPONENT16;//getInternalFormat(glFormat, glType);
+    GLint glInternalFormat = GL_DEPTH24_STENCIL8;//getInternalFormat(glFormat, glType);
     state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, renderTarget.width, renderTarget.height, 0, (GLenum)glFormat, (GLenum)glType);
 
     GLuint textureId = depthTextureProperties.texture;
