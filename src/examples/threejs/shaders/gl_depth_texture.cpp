@@ -12,8 +12,10 @@ void GLDepthTexture::render(){
 #endif
 
 //    // render scene into target
+    renderer->setClearColor(0x000000,1.f);
+    renderer->clear(true,true,false);
     renderer->setRenderTarget( target );
-    camera->updateProjectionMatrix();
+    //camera->updateProjectionMatrix();
     renderer->render( scene, camera );
 
     // render post FX

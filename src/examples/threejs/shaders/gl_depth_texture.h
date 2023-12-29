@@ -53,7 +53,7 @@ class GLDepthTexture: public ApplicationBase{
 			}
 
 			void main() {
-				vec3 diffuse = texture2D( tDiffuse, vUv ).rgb;
+				//vec3 diffuse = texture2D( tDiffuse, vUv ).rgb;
 				float depth = readDepth( tDepth, vUv );
 
 				gl_FragColor.rgb = 1.0 - vec3( depth );
@@ -81,11 +81,12 @@ class GLDepthTexture: public ApplicationBase{
 //        const type = parseFloat( params.type );
 
         target = GLRenderTarget::create( screenX,screenY );
-        target->depthTexture = DepthTexture::create(screenX,screenY);
+        target->depthTexture = DepthTexture::create(screenX,screenY );
         target->depthTexture->isRenderTargetTexture = true;
         target->texture = Texture::create();
         target->texture->name = "depth_fb_tex";
         target->texture->format = PixelFormat::RGBFormat;
+        target->texture->type = TextureDataType::UnsignedShort565Type;
         target->texture->isRenderTargetTexture = true;
         target->texture->imageHeight = screenY;
         target->texture->imageWidth = screenX;
@@ -95,8 +96,8 @@ class GLDepthTexture: public ApplicationBase{
 
         target->depthTexture->format = PixelFormat::DepthFormat;
         target->depthTexture->type = TextureDataType::UnsignedShortType;
-        target->depthTexture->minFilter = TextureFilter::LinearFilter;
-        target->depthTexture->magFilter = TextureFilter::LinearFilter;
+        target->depthTexture->minFilter = TextureFilter::NearestFilter;
+        target->depthTexture->magFilter = TextureFilter::NearestFilter;
 
     }
 
@@ -127,6 +128,7 @@ class GLDepthTexture: public ApplicationBase{
 
         auto geometry = TorusKnotGeometry::create( 1, 0.3, 128, 64 );
         auto material = MeshBasicMaterial::create( Color(threecpp::Colors::blue) );
+        material->depthTest = true;
 
         auto count = 50;
         auto scale = 5;
