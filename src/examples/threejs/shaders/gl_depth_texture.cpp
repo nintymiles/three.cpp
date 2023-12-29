@@ -12,11 +12,13 @@ void GLDepthTexture::render(){
 #endif
 
 //    // render scene into target
-    renderer->setClearColor(0x000000,1.f);
-    renderer->clear(true,true,false);
+//    renderer->setClearColor(0x000000,1.f);
+//    renderer->clear(true,true,true);
     renderer->setRenderTarget( target );
     //camera->updateProjectionMatrix();
     renderer->render( scene, camera );
+//    renderer->setClearColor(0x000000,1.f);
+
 
     // render post FX
     postMaterial->uniforms->set("tDiffuse",target->texture);//tDiffuse.value = target.texture;

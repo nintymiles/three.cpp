@@ -3,6 +3,7 @@
 //
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
+#define IMGUI_IMPL_OPENGL_ES3
 #include "imgui_impl_opengl3.h"
 
 #include <iostream>
@@ -13,7 +14,7 @@
 
 //使用cmake时，这个macro必须定义，xcode中则不需要，只需要imgui_impl_opengl3中定义此宏即可
 #define GLFW_INCLUDE_ES3
-#include <GLFW/glfw3.h> // Will drag system OpenGL headers
+#include "GLFW/glfw3.h" // Will drag system OpenGL headers
 
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)

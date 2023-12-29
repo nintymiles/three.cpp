@@ -158,7 +158,9 @@ file(COPY ${SHADERS} ${MODEL_FILES}
 # TARGET_LINK_LIBRARIES(threecpp GLESv2;EGL)
 
 add_subdirectory(src)
+#add_subdirectory(src/examples/app_gl)
 
 # add_subdirectory(src/examples/simple_triangle)
 # add_subdirectory(src/examples/teapot_desktop)
 # add_subdirectory(src/application/remove_quartine)
+

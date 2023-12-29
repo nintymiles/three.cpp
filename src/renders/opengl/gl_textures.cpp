@@ -372,6 +372,24 @@ GLint GLTextures::getInternalFormat(PixelFormat glFormat, TextureDataType glType
 
     }
 
+    if (glFormat == PixelFormat::DepthFormat) {
+
+//        if (glType == TextureDataType::FloatType) internalFormat = GL_FLOAT;
+//        if (glType == TextureDataType::UnsignedIntType) internalFormat = GL_UNSIGNED_INT;
+//        if (glType == TextureDataType::UnsignedByteType) internalFormat = GL_DEPTH_COMPONENT16;
+        internalFormat = GL_DEPTH_COMPONENT16;
+
+    }
+
+    if (glFormat == PixelFormat::DepthStencilFormat) {
+
+//        if (glType == TextureDataType::FloatType) internalFormat = GL_DEPTH24_STENCIL8;
+//        if (glType == TextureDataType::UnsignedByteType) internalFormat = GL_DEPTH24_STENCIL8;
+        internalFormat = GL_DEPTH24_STENCIL8;
+
+    }
+
+
     if (internalFormat == GL_R16F || internalFormat ==  GL_R32F ||
         internalFormat == GL_RGBA16F || internalFormat ==  GL_RGBA32F) {
         //extensions->get('EXT_color_buffer_float');
@@ -548,6 +566,7 @@ void GLTextures::setupDepthRenderbuffer(GLRenderTarget& renderTarget){
 void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTarget){
     bool isCube = renderTarget.isGLCubeRenderTarget;
 
+    glEnable(GL_DEPTH_TEST);
     assert(("Depth Texture with cube render targets is not supported", !isCube));
 
     //if (isCube) throw new Error('Depth Texture with cube render targets is not supported');
@@ -581,12 +600,16 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
         renderTarget.depthTexture->setNeedsUpdate(true);
     }
 
-    setTexture2D(*renderTarget.depthTexture, 0);
+    //setTexture2D(*renderTarget.depthTexture, 0);
+    state->bindTexture(TextureTarget::Texture2D, depthTextureProperties.texture, GL_TEXTURE0 + 0);
+//    glBindTexture((GLenum)TextureTarget::Texture2D, depthTextureProperties.texture);
+    setTextureParameters(TextureTarget::Texture2D,*renderTarget.depthTexture,false);
 
-    PixelFormat glFormat = renderTarget.depthTexture->format;
-    TextureDataType glType = renderTarget.depthTexture->type;
-    GLint glInternalFormat = getInternalFormat(glFormat, glType);
+    PixelFormat glFormat = renderTarget.depthTexture->format; //PixelFormat::DepthFormat;
+    TextureDataType glType = renderTarget.depthTexture->type; //TextureDataType::FloatType;
+    GLint glInternalFormat = getInternalFormat(glFormat, glType);//GL_DEPTH24_STENCIL8;//GL_DEPTH_COMPONENT16;//getInternalFormat(glFormat, glType);
     state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, renderTarget.width, renderTarget.height, 0, (GLenum)glFormat, (GLenum)glType);
+
 
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
@@ -605,10 +628,13 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
     }
 
     state->unbindTexture();
+//    glBindTexture((GLenum)TextureTarget::Texture2D,-1);
     // check for framebuffer complete
     int status = glCheckFramebufferStatus ( GL_FRAMEBUFFER );
     if ( status != GL_FRAMEBUFFER_COMPLETE )
         std::cerr << "framebuffer object with depth texture is not complete" << std::endl;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
 

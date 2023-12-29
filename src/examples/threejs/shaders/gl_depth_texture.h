@@ -18,6 +18,8 @@
 #include "plane_geometry.h"
 #include "torus_knot_geometry.h"
 #include "mesh_basic_material.h"
+#include "mesh_phong_material.h"
+#include "mesh_standard_material.h"
 
 #include "common_types.h"
 
@@ -56,7 +58,7 @@ class GLDepthTexture: public ApplicationBase{
 				//vec3 diffuse = texture2D( tDiffuse, vUv ).rgb;
 				float depth = readDepth( tDepth, vUv );
 
-				gl_FragColor.rgb = 1.0 - vec3( depth );
+                gl_FragColor.rgb = 1.0 - vec3( depth );
 				gl_FragColor.a = 1.0;
 			}
 
@@ -90,14 +92,17 @@ class GLDepthTexture: public ApplicationBase{
         target->texture->isRenderTargetTexture = true;
         target->texture->imageHeight = screenY;
         target->texture->imageWidth = screenX;
-        target->texture->minFilter = TextureFilter::LinearFilter;
-        target->texture->magFilter = TextureFilter::LinearFilter;
+        target->texture->minFilter = TextureFilter::NearestFilter;
+        target->texture->magFilter = TextureFilter::NearestFilter;
 //        target->stencilBuffer = true ;
 
-        target->depthTexture->format = PixelFormat::DepthFormat;
-        target->depthTexture->type = TextureDataType::UnsignedShortType;
+        target->depthTexture->format = PixelFormat::DepthStencilFormat;
+        target->depthTexture->type = TextureDataType::UnsignedInt248Type;
+//        target->depthTexture->format = PixelFormat::DepthFormat;
+//        target->depthTexture->type = TextureDataType::FloatType;
         target->depthTexture->minFilter = TextureFilter::NearestFilter;
         target->depthTexture->magFilter = TextureFilter::NearestFilter;
+
 
     }
 
@@ -126,9 +131,15 @@ class GLDepthTexture: public ApplicationBase{
 
         scene = Scene::create();
 
+//        auto light = PointLight::create( 0xffffff, 1.0, 50, 2 );
+//        light->position.y = 2;
+//        scene->add(light);
+
         auto geometry = TorusKnotGeometry::create( 1, 0.3, 128, 64 );
         auto material = MeshBasicMaterial::create( Color(threecpp::Colors::blue) );
-        material->depthTest = true;
+//        auto material = MeshPhongMaterial::create( Color(threecpp::Colors::blue) );
+//        material->depthTest = true;
+//        material->depthFunc = DepthModes::LessEqualDepth;
 
         auto count = 50;
         auto scale = 5;
@@ -159,7 +170,7 @@ public:
         renderer->outputEncoding = TextureEncoding::sRGBEncoding;
 
         auto aspect = (float)screenX / screenY;
-        camera = std::make_shared<PerspectiveCamera>( 70.f, aspect, .01f, 50.f );;
+        camera = std::make_shared<PerspectiveCamera>( 70.f, aspect, .01f, 500.f );;
         camera->position.set( 0, 0, 4 );
 
         scene = std::make_shared<Scene>();

@@ -1,10 +1,10 @@
 
 # 项目工程名
-project (three_cpp_gles)
+project (three_cpp_gl)
 
 if(MSVC)
   #设置VC输入代码编码格式为utf-8
-  #set(CMAKE_C_FLAGS /source-charset:utf-8)
+  set(CMAKE_C_FLAGS /source-charset:utf-8)
   add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
   add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
   #增加macro定义NOMINMAX，去除windows.h中min/max宏影响
@@ -162,11 +162,11 @@ file(GLOB THREECPP_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOUR
 
 #add_link_options("-stdlib=libc++")
 # 构建可执行程序
-ADD_EXECUTABLE(threecppgles ${ROOT_DIR}/src/examples/app_es/app_es.cpp)
-#add_library(threecppgles)
+ADD_EXECUTABLE(threelibgl ${ROOT_DIR}/src/examples/app_gl/app_gl.cpp)
+#add_library(threelibgl)
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
-target_sources(threecppgles PRIVATE  ${IMGUI_SOURCE} ${THREECPP_SOURCE})
-target_include_directories(threecppgles PRIVATE
+target_sources(threelibgl PRIVATE  ${IMGUI_SOURCE} ${THREECPP_SOURCE})
+target_include_directories(threelibgl PRIVATE
 ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
@@ -198,14 +198,14 @@ ${ROOT_DIR}/src/examples/threejs/postprocessing/
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
 if(MSVC)
-  target_link_options(threecppgles PUBLIC /DEBUG)
-  target_link_options(threecppgles PUBLIC /NODEFAULTLIB:library)
+  target_link_options(threelibgl PUBLIC /DEBUG)
+  target_link_options(threelibgl PUBLIC /NODEFAULTLIB:library)
   # 和上一个选项应该是等效的
-  set_property(TARGET threecppgles APPEND PROPERTY LINK_FLAGS "/NODEFAULTLIB:MSVCRT")
+  set_property(TARGET threelibgl APPEND PROPERTY LINK_FLAGS "/NODEFAULTLIB:MSVCRT")
 
 endif()
 
-# TARGET_LINK_LIBRARIES(threecppgles PUBLIC
+# TARGET_LINK_LIBRARIES(threelibgl PUBLIC
 #   glfw.3.3
 #   GLESv2
 #   EGL
@@ -213,7 +213,7 @@ endif()
 # )
 # 如果以FetchContent方式引用GSL，则需要添加'PRIVATE GSL'到traget_link_libraries
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  TARGET_LINK_LIBRARIES(threecppgles PUBLIC
+  TARGET_LINK_LIBRARIES(threelibgl PUBLIC
   # "-framework Cocoa"   # not necessary for system library
   # "-framework CoreGraphics"
   glfw.3.3
@@ -225,13 +225,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries
   LINK_DIRECTORIES(${ROOT_DIR}/lib/win64) #添加动态连接库的路径
-  TARGET_LINK_LIBRARIES(threecppgles PUBLIC
+  TARGET_LINK_LIBRARIES(threelibgl PUBLIC
   glfw3
   #glfw3d.lib for static debug build lib
   #angel相关dll要不拷贝到系统路径，要不拷贝到执行目录，lib用于编译引用，dll用于链接执行
-  libGLESv2.dll.lib
-  libEGL.dll.lib
-  #GLADd.lib
+#  libGLESv2.dll.lib
+#  libEGL.dll.lib
+  GLADd.lib
   #pcrecppd.lib
   #pcred.lib
   #GSL
