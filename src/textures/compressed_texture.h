@@ -8,14 +8,14 @@
 #include "texture.h"
 #include "common_types.h"
 class CompressedTexture : public Texture {
-    CompressedTexture(std::vector<threecpp::MipMap> mipmaps, unsigned width = 0, unsigned height = 0, TextureMapping mapping = TextureMapping::UVMapping,
+    CompressedTexture(std::vector<TexImageInfo::sptr> mipmaps, unsigned width = 0, unsigned height = 0, TextureMapping mapping = TextureMapping::UVMapping,
                       Wrapping wraps = Wrapping::ClampToEdgeWrapping, Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::NearestFilter,
                       TextureFilter minFilter = TextureFilter::NearestFilter, PixelFormat format = PixelFormat::RGBAFormat, TextureDataType type = TextureDataType::UnsignedByteType,
                       unsigned anisotropy = 1, TextureEncoding encoding = TextureEncoding::LinearEncoding)
-            :Texture(std::vector<unsigned char>(), mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy, encoding)
+            :Texture(std::make_shared<TexImageInfo>(), mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy, encoding)
     {
-        this->imageWidth = width;
-        this->imageHeight = height;
+        this->image->width = width;
+        this->image->height = height;
         this->generateMipmaps = false;
         this->flipY = false;
     }

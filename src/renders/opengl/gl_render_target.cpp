@@ -29,7 +29,7 @@ GLRenderTarget::GLRenderTarget(size_t width, size_t height ,GLRenderTargetParame
         int anisotropy = options->anisotropy;
         TextureEncoding encoding = options->encoding;
 
-        texture = std::make_shared<Texture>(std::vector<unsigned char>(),
+        texture = std::make_shared<Texture>(std::make_shared<TexImageInfo>(),
                                             mapping,
                                             wraps,
                                             wrapt,
@@ -40,8 +40,8 @@ GLRenderTarget::GLRenderTarget(size_t width, size_t height ,GLRenderTargetParame
                                             (unsigned)anisotropy,
                                             encoding);
 
-        texture->imageWidth = width;
-        texture->imageHeight = height;
+        texture->image->width = width;
+        texture->image->height = height;
 
         texture->generateMipmaps = options->generateMipmaps;
         texture->minFilter = options->minFilter;

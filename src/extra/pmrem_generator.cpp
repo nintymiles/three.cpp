@@ -580,9 +580,9 @@ void PMREMGenerator::_cleanup( GLRenderTarget::sptr outputTarget ) {
 
 GLRenderTarget::sptr PMREMGenerator::_fromTexture( Texture::sptr texture, GLRenderTarget::sptr renderTarget ) {
     if ( texture->mapping == TextureMapping::CubeReflectionMapping || texture->mapping == TextureMapping::CubeRefractionMapping ) {
-        _setSize( texture->image.size() == 0 ? 16 : texture->imageWidth );
+        _setSize( texture->image->imageData.size() == 0 ? 16 : texture->image->width );
     } else { // Equirectangular
-        _setSize( texture->imageWidth / 4 );
+        _setSize( texture->image->width / 4 );
     }
 
     _oldTarget = _renderer->getRenderTarget();

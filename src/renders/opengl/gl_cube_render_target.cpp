@@ -1,5 +1,5 @@
 //
-// Created by ultraman on 12/17/2023.
+// Created by SeanR on 12/17/2023.
 //
 
 #include "gl_cube_render_target.h"
@@ -19,8 +19,8 @@ GLCubeRenderTarget::GLCubeRenderTarget( int size,GLRenderTargetParameter::sptr o
 //        const image = { width: size, height: size, depth: 1 };
 //        const images = [ image, image, image, image, image, image ];
     auto tex = Texture::create();
-    tex->imageWidth = size;
-    tex->imageHeight = size;
+    tex->image->width = size;
+    tex->image->height = size;
     tex->depth = 1;
     std::vector<Texture::sptr> images = {tex,tex,tex,tex,tex,tex};
 
@@ -108,7 +108,7 @@ GLCubeRenderTarget& GLCubeRenderTarget::fromEquirectangularTexture( GLRenderer* 
     // Avoid blurred poles
     if ( texture->minFilter == TextureFilter::LinearMipmapLinearFilter ) texture->minFilter = TextureFilter::LinearFilter;
 
-    GLCubeRenderTarget::sptr renderTarget = GLCubeRenderTarget::create(texture->imageHeight);
+    GLCubeRenderTarget::sptr renderTarget = GLCubeRenderTarget::create(texture->image->height);
     renderTarget->clone(this);
     auto camera = new CubeCamera( 1, 10, renderTarget );
     Scene::sptr scene1 = Scene::create();

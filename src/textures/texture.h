@@ -21,7 +21,6 @@
 #include <cstddef>
 #include <vector>
 
-////todo: replace texture in images with TexImageInfo
 struct TexImageInfo{
     std::vector<unsigned char> imageData;
     size_t width,height;
@@ -44,15 +43,14 @@ public:
 
     std::string name;
     std::string sourceFile;
-    std::vector<unsigned char> image;
+    TexImageInfo::sptr image;
     std::vector<Texture::sptr> images;
 
-    GLsizei imageWidth;
-    GLsizei imageHeight;
+//    GLsizei imageWidth;
+//    GLsizei imageHeight;
+//    int channel;
+//    std::vector<unsigned char> image;
     GLsizei depth;
-
-    int channel;
-    //std::vector<unsigned char> image;
 
     std::vector<threecpp::MipMap> mipmaps;
     TextureMapping mapping;
@@ -103,11 +101,11 @@ public:
     threecpp::Signal<void(Texture&)> onDispose;
     threecpp::Signal<void(Texture&)> onUpdate;
 
-    Texture(std::vector<unsigned char> image=std::vector<unsigned char>(), TextureMapping mapping = TextureMapping::UVMapping, Wrapping wraps = Wrapping::ClampToEdgeWrapping, Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::LinearFilter, TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter, PixelFormat format = PixelFormat::RGBAFormat, TextureDataType type = TextureDataType::UnsignedByteType, unsigned anisotropy = 1, TextureEncoding encoding = TextureEncoding::LinearEncoding);
+    Texture(TexImageInfo::sptr image = std::make_shared<TexImageInfo>(), TextureMapping mapping = TextureMapping::UVMapping, Wrapping wraps = Wrapping::ClampToEdgeWrapping, Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::LinearFilter, TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter, PixelFormat format = PixelFormat::RGBAFormat, TextureDataType type = TextureDataType::UnsignedByteType, unsigned anisotropy = 1, TextureEncoding encoding = TextureEncoding::LinearEncoding);
 
     Texture(const Texture& source);
 
-    static sptr create(std::vector<unsigned char> image = std::vector<unsigned char>(),
+    static sptr create(TexImageInfo::sptr image = std::make_shared<TexImageInfo>(),
                       TextureMapping mapping = TextureMapping::UVMapping,
                       Wrapping wraps = Wrapping::ClampToEdgeWrapping,
                       Wrapping wrapt = Wrapping::ClampToEdgeWrapping,

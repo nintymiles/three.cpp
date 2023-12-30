@@ -116,6 +116,9 @@ namespace math {
 //const float M_PI = PI;
 //#endif
 
+template < typename T > inline T max(T t1,T t2) { return std::max(t1,t2); }
+
+template < typename T > inline T min(T t1,T t2) { return std::min(t1,t2); }
 
 template < typename T > inline T sqrt(T t) { return std::sqrt(t); }
 
@@ -145,7 +148,7 @@ template < typename T > inline T round(T n) { return (n > (T)0) ? std::floor(n +
 template < typename T > inline T round(T t) { return std::round(t); }
 #endif
 template < typename T > inline T ceil(T t) { return std::ceil(t); }
-template < typename T > inline T floor(T t) { return std::floor(t); }
+template < typename T > inline int floor(T t) { return std::floor(t); }
 
 template < typename T > inline T fmod(T a, T b) { return std::fmod(a, b); }
 

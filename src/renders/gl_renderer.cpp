@@ -1221,8 +1221,8 @@ void GLRenderer::copyFramebufferToTexture(const Vector2& position, const Texture
     if (level == std::numeric_limits<int>::quiet_NaN()) level = 0;
 
     auto levelScale = (float)std::pow(2, -level);
-    auto width = (float)std::floor(texture->imageWidth * levelScale);
-    auto height = (float)std::floor(texture->imageHeight * levelScale);
+    auto width = (float)std::floor(texture->image->width * levelScale);
+    auto height = (float)std::floor(texture->image->height * levelScale);
     auto glFormat = texture->format;
 
     textures->setTexture2D(*texture, 0);
@@ -1234,8 +1234,8 @@ void GLRenderer::copyFramebufferToTexture(const Vector2& position, const Texture
 void GLRenderer::copyTextureToTexture(const Vector2& position, const Texture::sptr& srcTexture, const Texture::sptr& dstTexture, int level){
     if (level == std::numeric_limits<int>::quiet_NaN()) level = 0;
 
-    auto width = srcTexture->imageWidth;
-    auto height = srcTexture->imageHeight;
+    auto width = srcTexture->image->width;
+    auto height = srcTexture->image->height;
     auto glFormat = dstTexture->format;
     auto glType = dstTexture->type;
 
@@ -1249,7 +1249,7 @@ void GLRenderer::copyTextureToTexture(const Vector2& position, const Texture::sp
 
     if (instanceOf<DataTexture>(srcTexture.get())) {
 
-        glTexSubImage2D(GL_TEXTURE_2D, level, position.x, position.y, width, height, (GLenum)glFormat, (GLenum)glType, &srcTexture->image[0]);
+        glTexSubImage2D(GL_TEXTURE_2D, level, position.x, position.y, width, height, (GLenum)glFormat, (GLenum)glType, &srcTexture->image->imageData[0]);
 
     } else {
         if (instanceOf<CompressedTexture>(srcTexture.get())) {
@@ -1259,7 +1259,7 @@ void GLRenderer::copyTextureToTexture(const Vector2& position, const Texture::sp
         }
         else {
 
-            glTexSubImage2D(GL_TEXTURE_2D, level, position.x, position.y, srcTexture->imageWidth,srcTexture->imageHeight,(GLenum)glFormat, (GLenum)glType, &srcTexture->image[0]);
+            glTexSubImage2D(GL_TEXTURE_2D, level, position.x, position.y, srcTexture->image->width,srcTexture->image->height,(GLenum)glFormat, (GLenum)glType, &srcTexture->image->imageData[0]);
 
         }
 

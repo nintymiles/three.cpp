@@ -78,6 +78,8 @@ private:
 
     bool textureNeedsPowerOfTwo(Texture& texture);
 
+    TexImageInfo::sptr GLTextures::resizeImage(TexImageInfo::sptr image, size_t maxSize, bool needsPowerOfTwo);
+
     std::vector<unsigned char> resizeImage(std::vector<unsigned char> image, unsigned inwidth,unsigned inheight,unsigned outwidth, unsigned outheight,int nChannel);
 
     std::vector<unsigned char> resizeImage(std::vector<unsigned char> image,GLsizei*inwidth,GLsizei*inheight,bool needsPowerOfTwo, GLsizei maxSize,int nChannel);

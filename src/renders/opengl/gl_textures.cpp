@@ -122,8 +122,9 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
 
     bool needsPowerOfTwo = textureNeedsPowerOfTwo(texture) && isPowerOfTwo(texture) ==  false;
     //todo:fix this - is resizeImage necessary?
-    std::vector<unsigned char> image = resizeImage(texture.image, &texture.imageWidth,&texture.imageHeight,needsPowerOfTwo, maxTexturesize,texture.channel);
+    //std::vector<unsigned char> image = resizeImage(texture.image, &texture.imageWidth,&texture.imageHeight,needsPowerOfTwo, maxTexturesize,texture.channel);
     //std::vector<unsigned char> &image = texture.image;
+    TexImageInfo::sptr image = resizeImage(texture.image,maxTexturesize,needsPowerOfTwo);
 
     bool supportsMips = isPowerOfTwo(texture) ? isPowerOfTwo(texture) : isGLES3;
     PixelFormat glFormat = texture.format;
@@ -178,7 +179,7 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
             }
 
         }
-        state->texImage2D((GLenum)TextureTarget::Texture2D, 0,(GLenum)glInternalFormat,(GLsizei) texture.imageWidth, (GLsizei)texture.imageHeight, 0,(GLenum)glFormat, (GLenum)glType);
+        state->texImage2D((GLenum)TextureTarget::Texture2D, 0,(GLenum)glInternalFormat,(GLsizei) texture.image->width, (GLsizei)texture.image->height, 0,(GLenum)glFormat, (GLenum)glType);
 
     }
     else if (texture.isDataTexture) {
@@ -201,7 +202,7 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
 
         }
         else {
-            state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texture.imageWidth, texture.imageHeight, 0, (GLenum)glFormat, (GLenum)glType, image);
+            state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texture.image->width, texture.image->height, 0, (GLenum)glFormat, (GLenum)glType, image->imageData);
             textureProperties.maxMipLevel= 0;
         }
 
@@ -231,12 +232,12 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
     }
     else if (texture.isDataTexture2DArray) {
 
-        state->texImage3D(GL_TEXTURE_2D_ARRAY, 0, glInternalFormat, texture.imageWidth, texture.imageHeight, texture.depth, 0, (GLenum)glFormat, (GLenum)glType, image);
+        state->texImage3D(GL_TEXTURE_2D_ARRAY, 0, glInternalFormat, texture.image->width, texture.image->height, texture.depth, 0, (GLenum)glFormat, (GLenum)glType, image->imageData);
         textureProperties.maxMipLevel = 0;
     }
     else if (texture.isDataTexture3D) {
 
-        state->texImage3D(GL_TEXTURE_3D, 0, glInternalFormat, texture.imageWidth, texture.imageHeight, texture.depth, 0, (GLenum)glFormat, (GLenum)glType, image);
+        state->texImage3D(GL_TEXTURE_3D, 0, glInternalFormat, texture.image->width, texture.image->height, texture.depth, 0, (GLenum)glFormat, (GLenum)glType, image->imageData);
         textureProperties.maxMipLevel = 0;
     }
     else {
@@ -258,14 +259,14 @@ void GLTextures::uploadTexture(Texture& texture, unsigned slot){
             textureProperties.maxMipLevel = mipmaps.size() - 1;
         }
         else {
-            state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texture.imageWidth,texture.imageHeight,0,(GLenum)glFormat, (GLenum)glType, image.data());
+            state->texImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texture.image->width,texture.image->height,0,(GLenum)glFormat, (GLenum)glType, image->imageData.data());
             textureProperties.maxMipLevel =0;
         }
 
     }
 
     if (textureNeedsGenerateMipmaps(texture, supportsMips)) {
-        generateMipmap(textureType, texture, texture.imageWidth, texture.imageHeight);
+        generateMipmap(textureType, texture, texture.image->width, texture.image->height);
     }
 
     textureProperties.version =texture.version;
@@ -298,7 +299,7 @@ void GLTextures::updateVideoTexture(Texture& texture){
 }
 
 bool GLTextures::isPowerOfTwo(const Texture& texture){
-    return math::isPowerOfTwo(texture.imageWidth) && math::isPowerOfTwo(texture.imageHeight);
+    return math::isPowerOfTwo(texture.image->width) && math::isPowerOfTwo(texture.image->height);
 }
 
 bool GLTextures::textureNeedsPowerOfTwo(Texture& texture){
@@ -308,11 +309,43 @@ bool GLTextures::textureNeedsPowerOfTwo(Texture& texture){
            (texture.minFilter !=  TextureFilter::NearestFilter && texture.minFilter !=  TextureFilter::LinearFilter);
 }
 
+TexImageInfo::sptr GLTextures::resizeImage(TexImageInfo::sptr image, size_t maxSize, bool needsPowerOfTwo){
+    TexImageInfo::sptr newImage;
+    if(!image)
+        return newImage;
+
+    float scale = 1;
+    // handle case if texture exceeds max size
+    if ( image->width > maxSize || image->height > maxSize ) {
+        scale = (float)maxSize / math::max( image->width, image->height );
+    }
+
+    // only perform resize if necessary
+    if ( scale < 1 || needsPowerOfTwo == true ) {
+
+        int (*pFloor)(double d);
+        pFloor = needsPowerOfTwo ? &math::floorPowerOfTwo : &math::floor<double>;
+
+        auto width = pFloor( scale * image->width );
+        auto height = pFloor( scale * image->height );
+
+        newImage->imageData = std::vector<unsigned char>( width * height * image->channels );
+        //output_image = (unsigned char*)malloc(outwidth * outheight * nChannel);
+
+        stbir_resize_uint8(image->imageData.data(), image->width, image->height, 0, newImage->imageData.data(), width, height, 0, image->channels);
+
+        newImage->width = width;
+        newImage->height = height;
+        newImage->channels = image->channels;
+        return newImage;
+    }else{
+        return image;
+    }
+}
+
 std::vector<unsigned char> GLTextures::resizeImage(std::vector<unsigned char> image, unsigned inwidth,unsigned inheight,unsigned outwidth, unsigned outheight,int nChannel){
     std::vector<unsigned char> output_image(outwidth * outheight * nChannel);
 
-    //output_image = (unsigned char*)malloc(outwidth * outheight * nChannel);
-    //todo:fix here
     stbir_resize_uint8(&image[0], inwidth, inheight, 0, output_image.data(), outwidth, outheight, 0, nChannel);
 
     return output_image;
@@ -593,10 +626,10 @@ void GLTextures::setupDepthTexture(GLuint framebuffer, GLRenderTarget& renderTar
     }
 
     if (depthTextureProperties.texture ||
-        renderTarget.depthTexture->imageWidth != renderTarget.width ||
-        renderTarget.depthTexture->imageHeight != renderTarget.height) {
-        renderTarget.depthTexture->imageWidth = renderTarget.width;
-        renderTarget.depthTexture->imageHeight = renderTarget.height;
+        renderTarget.depthTexture->image->width != renderTarget.width ||
+        renderTarget.depthTexture->image->height != renderTarget.height) {
+        renderTarget.depthTexture->image->width = renderTarget.width;
+        renderTarget.depthTexture->image->height = renderTarget.height;
         renderTarget.depthTexture->setNeedsUpdate(true);
     }
 
@@ -697,7 +730,7 @@ void GLTextures::setTexture2D(Texture& texture, unsigned slot){
 
     if (texture.isRenderTargetTexture == false && texture.version > 0 && textureProperties.version !=  texture.version) {
 
-        assert(texture.image.size() != 0);
+        assert(texture.image->imageData.size() != 0);
         uploadTexture(texture, slot);
         return;
     }
@@ -774,16 +807,16 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
             if (!isCompressed && !isDataTexture) {
                 //todo:fix resizeImage here
-                cubeImage[i] = texture.images[i]->image;//resizeImage(texture.images[i]->image, texture.images[i]->imageWidth,texture.images[i]->imageHeight,false, maxCubemapSize,texture.images[i]->channel);
+                cubeImage[i] = texture.images[i]->image->imageData;//resizeImage(texture.images[i]->image, texture.images[i]->image->width,texture.images[i]->image->height,false, maxCubemapSize,texture.images[i]->channel);
                 //cubeImage.push_back(texture.images[i]->image);
-                widths[i] = texture.images[i]->imageWidth;
-                heights[i] = texture.images[i]->imageHeight;
+                widths[i] = texture.images[i]->image->width;
+                heights[i] = texture.images[i]->image->height;
             }
             else {
                 if (texture.images[i]->isDataTexture) {
-                    cubeImage[i] = texture.images[i]->image;
-                    widths[i] = texture.images[i]->imageWidth;
-                    heights[i] = texture.images[i]->imageHeight;
+                    cubeImage[i] = texture.images[i]->image->imageData;
+                    widths[i] = texture.images[i]->image->width;
+                    heights[i] = texture.images[i]->image->height;
                 }
                 else
                     textures.push_back(texture.images[i]);
@@ -1157,7 +1190,6 @@ void GLTextures::onTextureDispose(Texture& texture){
     deallocateTexture(texture);
 
     if (texture.isVideoTexture) {
-        //_videoTextures.delete(texture);
         _videoTextures.erase(texture.uuid);
     }
 

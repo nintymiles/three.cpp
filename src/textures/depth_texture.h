@@ -23,7 +23,7 @@ public:
                  TextureFilter magFilter = TextureFilter::NearestFilter,
                  TextureFilter minFilter = TextureFilter::NearestFilter,
                  unsigned anisotropy = 1,
-                 PixelFormat  format = PixelFormat::None):Texture( {}, mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy ){
+                 PixelFormat  format = PixelFormat::None):Texture(std::make_shared<TexImageInfo>(), mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy ){
 
         if( format == PixelFormat::None ) format = PixelFormat::DepthFormat;
         if ( format != PixelFormat::DepthFormat && format != PixelFormat::DepthStencilFormat ) {
@@ -32,11 +32,10 @@ public:
         if(type == TextureDataType::None && format == PixelFormat::DepthFormat) type = TextureDataType::UnsignedIntType;
         if(type == TextureDataType::None && format == PixelFormat::DepthStencilFormat) type = TextureDataType::UnsignedInt248Type;
 
-//        Texture( {}, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy );
         isDepthTexture = true;
 
-        imageWidth = width;
-        imageHeight = height;
+        image->width = width;
+        image->height = height;
 
         flipY = false;
         generateMipmaps = false;

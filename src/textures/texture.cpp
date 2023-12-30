@@ -4,7 +4,7 @@
 #include "texture.h"
 
 size_t Texture::textureId = 0;
-Texture::Texture(std::vector<unsigned char> image,TextureMapping mapping,Wrapping wraps,Wrapping wrapt,TextureFilter magFilter,TextureFilter minFilter, PixelFormat format,TextureDataType type, unsigned anisotropy, TextureEncoding encoding){
+Texture::Texture(TexImageInfo::sptr image,TextureMapping mapping,Wrapping wraps,Wrapping wrapt,TextureFilter magFilter,TextureFilter minFilter, PixelFormat format,TextureDataType type, unsigned anisotropy, TextureEncoding encoding){
     id = textureId++;
 
     name = "";

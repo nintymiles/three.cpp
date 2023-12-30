@@ -33,15 +33,22 @@ public:
             else if (nrComponents == 4)
                 format = PixelFormat::RGBAFormat;
 
-            texture = Texture::create(image);
+            TexImageInfo::sptr texImage = std::make_shared<TexImageInfo>();
+            texImage->imageData = image;
+            texImage->width = width;
+            texImage->height = height;
+            texImage->channels = nrComponents;
+
+            texture = Texture::create(texImage);
             texture->format = format;
-            texture->imageWidth = width;
-            texture->imageHeight = height;
-            texture->setNeedsUpdate(true);
-            texture->channel = nrComponents;
+//            texture->imageWidth = width;
+//            texture->imageHeight = height;
+//            texture->channel = nrComponents;
             texture->wrapS = Wrapping::ClampToEdgeWrapping;
             texture->wrapT = Wrapping::ClampToEdgeWrapping;
             texture->wrapR = Wrapping::ClampToEdgeWrapping;
+
+            texture->setNeedsUpdate(true);
         }
 
 

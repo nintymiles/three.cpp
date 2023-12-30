@@ -14,7 +14,7 @@ public:
     CubeTexture(std::vector<Texture::sptr> images = {}, TextureMapping mapping = TextureMapping::CubeReflectionMapping, Wrapping wraps = Wrapping::ClampToEdgeWrapping,
                 Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::LinearFilter, TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter,
                 PixelFormat format = PixelFormat::RGBAFormat, TextureDataType type = TextureDataType::UnsignedByteType, unsigned anisotropy = 1, TextureEncoding encoding = TextureEncoding::LinearEncoding)
-            :Texture(std::vector<unsigned char>(), mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy, encoding) {
+            :Texture(std::make_shared<TexImageInfo>(), mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy, encoding) {
         this->images = images;
         flipY = false;
         isCubeTexture = true;

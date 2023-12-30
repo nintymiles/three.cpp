@@ -115,15 +115,16 @@ private:
     void initMaterials(){
         // Materials
         auto texImageInfo = generateTextureImage();
-        auto texture = Texture::create(texImageInfo->imageData);
+        auto texture = Texture::create(texImageInfo);
         texture->format = PixelFormat::RGBAFormat;
-        texture->imageWidth = texImageInfo->width;
-        texture->imageHeight = texImageInfo->height;
-        texture->setNeedsUpdate(true);
-        texture->channel = texImageInfo->channels;
+//        texture->imageidth = texImageInfo->width;
+//        texture->imageHeight = texImageInfo->height;
+//        texture->channel = texImageInfo->channels;
         texture->wrapS = Wrapping::ClampToEdgeWrapping;
         texture->wrapT = Wrapping::ClampToEdgeWrapping;
         texture->wrapR = Wrapping::ClampToEdgeWrapping;
+
+        texture->setNeedsUpdate(true);
 
         std::string rootDir = threecpp::getProjectPath();
         std::string fileSeparator = threecpp::getFileSeparator();

@@ -56,7 +56,7 @@ public:
                     } else {
                         //auto image = texture->image;
 
-                        if ( ( isEquirectMap && texture->image.size()>0 && texture->imageHeight > 0 ) || ( isCubeMap && texture->images.size()>0 && isCubeTextureComplete( texture->images ) ) ) {
+                        if ( ( isEquirectMap && texture->image->imageData.size()>0 && texture->image->height > 0 ) || ( isCubeMap && texture->images.size()>0 && isCubeTextureComplete( texture->images ) ) ) {
                             if ( pmremGenerator == nullptr ) pmremGenerator = PMREMGenerator::create( std::shared_ptr<GLRenderer>(renderer) );
 
                             auto renderTarget = isEquirectMap ? pmremGenerator->fromEquirectangular( texture ) : pmremGenerator->fromCubemap( texture );

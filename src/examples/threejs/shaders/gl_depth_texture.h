@@ -90,8 +90,8 @@ class GLDepthTexture: public ApplicationBase{
         target->texture->format = PixelFormat::RGBFormat;
         target->texture->type = TextureDataType::UnsignedShort565Type;
         target->texture->isRenderTargetTexture = true;
-        target->texture->imageHeight = screenY;
-        target->texture->imageWidth = screenX;
+        target->texture->image->height = screenY;
+        target->texture->image->width = screenX;
         target->texture->minFilter = TextureFilter::NearestFilter;
         target->texture->magFilter = TextureFilter::NearestFilter;
 //        target->stencilBuffer = true ;
