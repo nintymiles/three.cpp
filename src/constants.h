@@ -434,7 +434,8 @@ enum class StencilOp {
 //const int NotEqualStencilFunc = 517;
 //const int GreaterEqualStencilFunc = 518;
 //const int AlwaysStencilFunc = 519;
-enum class StencilFunc {
+enum class
+        StencilFunc {
     NeverStencilFunc		= GL_NEVER,
     LessStencilFunc			= GL_LESS,
     EqualStencilFunc		= GL_EQUAL,

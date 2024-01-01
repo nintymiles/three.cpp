@@ -44,6 +44,9 @@
 #include "gl_postprocessing_rgb_halftone.h"
 #include "gl_postprocessing_sobel.h"
 #include "gl_postprocessing_after_image.h"
+#include "gl_postprocessing_masking.h"
+
+#include "gl_geometry_teapot.h"
 
 // settings
 extern int display_w;
@@ -289,6 +292,30 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["GL_Postprocessing_AfterImage"];
                 currentDemoClass->renderer->clear();
             }
+//            if (ImGui::MenuItem("GL_Postprocessing_Masking", "")) {
+//                if (demoClasses.count("GL_Postprocessing_Masking") == 0)
+//                    demoClasses["GL_Postprocessing_Masking"] = std::make_shared<GLPostProcessingMasking>(display_w, display_h);
+//
+//                currentDemoClass = demoClasses["GL_Postprocessing_Masking"];
+//                currentDemoClass->renderer->clear();
+//            }
+
+
+
+            if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
+            ImGui::EndMenu();
+
+        }
+        if (ImGui::BeginMenu("geometry")){
+
+            if (ImGui::MenuItem("GL_Geometry_Teapot", "")) {
+                if (demoClasses.count("GL_Geometry_Teapot") == 0)
+                    demoClasses["GL_Geometry_Teapot"] = std::make_shared<GLGeometryTeapot>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Geometry_Teapot"];
+                currentDemoClass->renderer->clear();
+            }
+
 
 
 

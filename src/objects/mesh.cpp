@@ -52,7 +52,6 @@ Mesh::Mesh(const Geometry::sptr geometry, const Material::sptr material) :Object
         this->material = MeshBasicMaterial::create();
         //this->material->color->setHex(0xffffff);
         //this->materials.push_back(material);
-        this->material = material;
     }
     else {
         this->material = material;

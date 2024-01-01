@@ -15,6 +15,9 @@ namespace threecpp{
         //const context = renderer.getContext();
         auto state = renderer->state;
 
+//        state->enable(GL_DEPTH_TEST);
+//        state->stencilBuffer.setTest(true);
+
         // don't update color or depth
         state->colorBuffer.setMask( false );
         state->depthBuffer.setMask( false );
@@ -25,6 +28,8 @@ namespace threecpp{
 
         // set up stencil
         int writeValue, clearValue;
+
+        //inverse = true;
 
         if ( inverse ) {
             writeValue = 0;
@@ -39,8 +44,10 @@ namespace threecpp{
         state->stencilBuffer.setTest( true );
         state->stencilBuffer.setOp( StencilOp::ReplaceStencilOp, StencilOp::ReplaceStencilOp, StencilOp::ReplaceStencilOp );
         state->stencilBuffer.setFunc( StencilFunc::AlwaysStencilFunc, writeValue, 0xffffffff );
+        //state->stencilBuffer.setMask(0xff);
         state->stencilBuffer.setClear( clearValue );
         state->stencilBuffer.setLocked( true );
+
 
         // draw into the stencil buffer
         renderer->setRenderTarget( readBuffer );
@@ -57,9 +64,16 @@ namespace threecpp{
 
         // only render where stencil is set to 1
         state->stencilBuffer.setLocked( false );
-        state->stencilBuffer.setFunc( StencilFunc::EqualStencilFunc, 1, 0xffffffff ); // draw if == 1
+
+        state->stencilBuffer.setFunc( StencilFunc::EqualStencilFunc, 1, 0xffffffff );
+
+        // draw if == 1
         state->stencilBuffer.setOp( StencilOp::KeepStencilOp, StencilOp::KeepStencilOp, StencilOp::KeepStencilOp );
         state->stencilBuffer.setLocked( true );
+
+////        renderer->setRenderTarget( renderToScreen ? nullptr : readBuffer );
+////        renderer->render( scene, camera );
+//        state->depthBuffer.setTest(false);
 
         return *this;
 

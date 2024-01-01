@@ -27,6 +27,8 @@ namespace threecpp {
             renderTarget = GLRenderTarget::create(_width * _pixelRatio, _height * _pixelRatio);
             renderTarget->texture = Texture::create();
             renderTarget->texture->name = "EffectComposer.rt1";
+            renderTarget->stencilBuffer = true;
+            //renderTarget->depthBuffer = false;
 
         } else {
             _pixelRatio = 1;
@@ -41,6 +43,8 @@ namespace threecpp {
         renderTarget2->copy(*renderTarget1);
         renderTarget2->texture = Texture::create();
         renderTarget2->texture->name = "EffectComposer.rt2";
+        renderTarget2->stencilBuffer = true;
+        //renderTarget2->depthBuffer = false;
 
         writeBuffer = renderTarget1;
         readBuffer = renderTarget2;

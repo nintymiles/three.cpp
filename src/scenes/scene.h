@@ -72,14 +72,14 @@ public:
         return std::make_shared<Scene>();
     }
 
-    Texture::sptr& getBackgroundTexture() {
+    Texture::sptr getBackgroundTexture() {
         return texture;
     }
-    CubeTexture::sptr& getBackgroundCubeTexture() {
+    CubeTexture::sptr getBackgroundCubeTexture() {
         return cubeTexture;
     }
 
-    GLCubeRenderTarget::sptr& getBackgroundCubeRenderTarget() {
+    GLCubeRenderTarget::sptr getBackgroundCubeRenderTarget() {
         return cubeRenderTarget;
     }
 
@@ -94,14 +94,14 @@ public:
         isCubeTexture = false;
         isGLCubeRenderTarget = false;
     }
-    void setBackgroundTexture(Texture::sptr& value) {
+    void setBackgroundTexture(Texture::sptr value) {
         texture = value;
         isColor = false;
         isTexture = true;
         isCubeTexture = false;
         isGLCubeRenderTarget = false;
     }
-    void setBackgroundCubeTexture(CubeTexture::sptr& value) {
+    void setBackgroundCubeTexture(CubeTexture::sptr value) {
         cubeTexture = value;
         isColor = false;
         isTexture = false;
@@ -109,7 +109,7 @@ public:
         isGLCubeRenderTarget = false;
     }
 
-    void setBackgroundCubeRenderTarget(GLCubeRenderTarget::sptr& value) {
+    void setBackgroundCubeRenderTarget(GLCubeRenderTarget::sptr value) {
 
         cubeRenderTarget = value;
         isColor = false;

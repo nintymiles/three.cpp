@@ -11,7 +11,7 @@ void GLDepthTexture::render(){
     float delta = timer.getDelta();
 #endif
 
-//    // render scene into target
+    // render scene into target
 //    renderer->setClearColor(0x000000,1.f);
 //    renderer->clear(true,true,true);
     renderer->setRenderTarget( target );
@@ -21,16 +21,12 @@ void GLDepthTexture::render(){
 
 
     // render post FX
-    postMaterial->uniforms->set("tDiffuse",target->texture);//tDiffuse.value = target.texture;
+    postMaterial->uniforms->set("tDiffuse",target->texture);
     postMaterial->uniforms->set<Texture::sptr>("tDepth",target->depthTexture);
 
     renderer->setRenderTarget( nullptr );
     renderer->render( postScene, postCamera );
 
-//    controls.update(); // required because damping is enabled
-//
-//    stats.update();
-//
 //    ApplicationBase::render();
 }
 

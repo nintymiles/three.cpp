@@ -493,7 +493,7 @@ void GLTextures::setupRenderBufferStorage(GLuint renderbuffer, GLRenderTarget& r
         }
         else {
 
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, renderTarget.width, renderTarget.height);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, renderTarget.width, renderTarget.height);
 
         }
 

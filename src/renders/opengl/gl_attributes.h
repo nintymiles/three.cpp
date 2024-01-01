@@ -144,7 +144,8 @@ public:
         auto found = buffers.find(attribute.uuid);
 
         if (found == buffers.end()) {
-            createBuffer(buffers[attribute.uuid], attribute, bufferType);
+            if(attribute.array.size()>0)
+                createBuffer(buffers[attribute.uuid], attribute, bufferType);
         }
         else {
             Attribute& buffer = found->second;

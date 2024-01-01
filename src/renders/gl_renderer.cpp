@@ -83,7 +83,7 @@ void GLRenderer::initGLContext(int width, int height){
 
     background = std::make_shared<GLBackground>(state, objects, premultipliedAlpha);
 
-    bufferRenderer =GLBufferRenderer(extensions, info, capabilities);
+    bufferRenderer = GLBufferRenderer(extensions, info, capabilities);
 
     indexedBufferRenderer = GLIndexedBufferRenderer(extensions, info, capabilities);
 
@@ -690,8 +690,8 @@ GLRenderer::~GLRenderer(){
     glDepthFunc(GL_LESS);
     glClearDepthf(1);
 
-    glStencilMask(0xffffffff);
-    glStencilFunc(GL_ALWAYS, 0, 0xffffffff);
+    glStencilMask(0xff);
+    glStencilFunc(GL_ALWAYS, 0, 0xff);
     glStencilOp(GL_KEEP, GL_KEEP,GL_KEEP);
     glClearStencil(0);
 
@@ -1277,18 +1277,18 @@ void GLRenderer::initTexture(const Texture::sptr& texture){
 }
 
 void GLRenderer::initGLParameter(void){
-    glDisable(GL_BLEND);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_SCISSOR_TEST);
-    glDisable(GL_STENCIL_TEST);
-    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_ONE, GL_ZERO);
-    glBlendFuncSeparate(GL_ONE, GL_ZERO, GL_ONE, GL_ZERO);
-
+//    glDisable(GL_BLEND);
+//    glDisable(GL_CULL_FACE);
+//    glDisable(GL_DEPTH_TEST);
+//    glDisable(GL_POLYGON_OFFSET_FILL);
+//    glDisable(GL_SCISSOR_TEST);
+//    glDisable(GL_STENCIL_TEST);
+//    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+//
+//    glBlendEquation(GL_FUNC_ADD);
+//    glBlendFunc(GL_ONE, GL_ZERO);
+//    glBlendFuncSeparate(GL_ONE, GL_ZERO, GL_ONE, GL_ZERO);
+//
     glColorMask(true, true, true, true);
     glClearColor(0, 0, 0, 0);
 
@@ -1296,8 +1296,8 @@ void GLRenderer::initGLParameter(void){
     glDepthFunc(GL_LESS);
     glClearDepthf(1);
 
-    glStencilMask(0xffffffff);
-    glStencilFunc(GL_ALWAYS, 0, 0xffffffff);
+    glStencilMask(0xff);
+    glStencilFunc(GL_ALWAYS, 0, 0xff);
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     glClearStencil(0);
 

@@ -71,7 +71,8 @@ void GLGeometries::updateWireframeAttribute(BufferGeometry& geometry){
         auto array = geometryIndex->array;
         version = geometryIndex->version;
 
-        for (unsigned i = 0; i < array.size(); i += 3)
+        //todo:refactor for loop for unsigned or size_t here
+        for (int i = 0; i < (int)array.size() - 3; i += 3)
         {
             unsigned a = array[i + 0];
             unsigned b = array[i + 1];
