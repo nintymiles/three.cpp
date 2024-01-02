@@ -85,7 +85,7 @@ public:
         camera = perspectiveCamera;
 
         scene = std::make_shared<Scene>();
-        scene->setBackgroundColor(Color().set(0xAA0000));
+        scene->setBackgroundColor(Color().set(0xAAAAAA));
 
 
         // Lights
@@ -107,15 +107,18 @@ public:
         textureMap->anisotropy = 16;
 //        textureMap->encoding = TextureEncoding::sRGBEncoding;
 
-        resourceDir = resourceDir.append(fileSeparator).append("cube").append(fileSeparator).append("pisa").append(fileSeparator);
-        auto format = ".jpg";
+        resourceDir = resourceDir.append("cube").append(fileSeparator).append("pisa").append(fileSeparator);
+        auto format = ".png";
         auto fileurls = {
                 resourceDir + "px" + format, resourceDir + "nx" + format,
                 resourceDir + "py" + format, resourceDir + "ny" + format,
                 resourceDir + "pz" + format, resourceDir + "nz" + format
         };
 
-        textureCube = CubeTextureLoader::load( fileurls );
+        textureCube = CubeTextureLoader::load( fileurls,true );
+        textureCube->setNeedsUpdate(true);
+        //textureCube->flipY = true;
+        textureCube->format = PixelFormat::RGBFormat;
 
         cameraControl = std::make_shared<OrbitControl>(perspectiveCamera);
         cameraControl->minDistance = 1000;

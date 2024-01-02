@@ -29,8 +29,6 @@ namespace threecpp{
         // set up stencil
         int writeValue, clearValue;
 
-        //inverse = true;
-
         if ( inverse ) {
             writeValue = 0;
             clearValue = 1;
@@ -40,11 +38,24 @@ namespace threecpp{
             clearValue = 0;
 
         }
+//        glClear(GL_DEPTH_BUFFER_BIT);
+//        glEnable(GL_STENCIL_TEST);
+//        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+//        glDepthMask(GL_FALSE);
+//        glStencilFunc(GL_NEVER, 1, 0xFF);
+//        glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);  // draw 1s on test fail (always)
+//
+//        // draw stencil pattern
+//        glStencilMask(0xFF);
+//        glClear(GL_STENCIL_BUFFER_BIT);  // needs mask=0xFF
+
+//        state->depthBuffer.setTest(false);
 
         state->stencilBuffer.setTest( true );
-        state->stencilBuffer.setOp( StencilOp::ReplaceStencilOp, StencilOp::ReplaceStencilOp, StencilOp::ReplaceStencilOp );
-        state->stencilBuffer.setFunc( StencilFunc::AlwaysStencilFunc, writeValue, 0xffffffff );
-        //state->stencilBuffer.setMask(0xff);
+        //state->depthBuffer.setMask(true);
+        state->stencilBuffer.setOp( StencilOp::KeepStencilOp, StencilOp::KeepStencilOp, StencilOp::ReplaceStencilOp );
+        state->stencilBuffer.setFunc( StencilFunc::AlwaysStencilFunc, writeValue, 0xff );
+        state->stencilBuffer.setMask(0xff);
         state->stencilBuffer.setClear( clearValue );
         state->stencilBuffer.setLocked( true );
 
@@ -65,11 +76,25 @@ namespace threecpp{
         // only render where stencil is set to 1
         state->stencilBuffer.setLocked( false );
 
-        state->stencilBuffer.setFunc( StencilFunc::EqualStencilFunc, 1, 0xffffffff );
+        state->stencilBuffer.setFunc( StencilFunc::EqualStencilFunc, 1, 0xff );
+        state->stencilBuffer.setMask(0x00);
 
         // draw if == 1
         state->stencilBuffer.setOp( StencilOp::KeepStencilOp, StencilOp::KeepStencilOp, StencilOp::KeepStencilOp );
         state->stencilBuffer.setLocked( true );
+
+//        state->stencilBuffer.setClear(writeValue);
+
+//        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+//        glDepthMask(GL_TRUE);
+//        glStencilMask(0x00);
+//        // draw where stencil's value is 0
+//        glStencilFunc(GL_EQUAL, 0, 0xFF);
+//        /* (nothing to draw) */
+//        // draw only where stencil's value is 1
+//        glStencilFunc(GL_EQUAL, 1, 0xFF);
+//        glStencilMask(0xFF);
+//        glStencilFunc(GL_ALWAYS, 1, 0xFF);
 
 ////        renderer->setRenderTarget( renderToScreen ? nullptr : readBuffer );
 ////        renderer->render( scene, camera );

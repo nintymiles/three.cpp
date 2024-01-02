@@ -109,9 +109,9 @@ public:
         composer->addPass( maskPass1 );
         composer->addPass( texturePass1 );
         composer->addPass( clearMaskPass );
-//        composer->addPass( maskPass2 );
-////        composer->addPass( texturePass2 );
-////        composer->addPass( clearMaskPass );
+        composer->addPass( maskPass2 );
+        composer->addPass( texturePass2 );
+        composer->addPass( clearMaskPass );
         composer->addPass( outputPass );
 
 
