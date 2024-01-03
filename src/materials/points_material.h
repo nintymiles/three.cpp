@@ -9,16 +9,13 @@
 
 class PointsMaterial : public Material{
 public:
+    using sptr = std::shared_ptr<PointsMaterial>;
 
     PointsMaterial() :Material() {
         type = "PointsMaterial";
         name = "PointsMaterial";
         shaderId = "points";
-        color.set(0xffffff);// = new Color(0xffffff);
-
-        //map = null;
-
-        //alphaMap = null;
+        color.set(0xffffff);
 
         size = 1;
         sizeAttenuation = true;
@@ -38,6 +35,7 @@ public:
 
         morphTargets = source.morphTargets;
     }
+
     virtual ~PointsMaterial() = default;
 
     virtual PointsMaterial* clone() {
@@ -60,6 +58,10 @@ public:
 
         return *this;
 
+    }
+
+    static sptr create(){
+        return std::make_shared<PointsMaterial>();
     }
 };
 

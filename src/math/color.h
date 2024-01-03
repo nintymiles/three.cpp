@@ -204,7 +204,7 @@ public:
         float elements[3];
     };
 
-    using ptr = std::shared_ptr<Color>;
+    using sptr = std::shared_ptr<Color>;
 
     Color() {
         r = std::numeric_limits<float>::max();

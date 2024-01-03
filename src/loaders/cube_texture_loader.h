@@ -25,6 +25,8 @@ public:
         if(images.size()>=6)
             cubeTex->setNeedsUpdate(true);
 
+        cubeTex->flipY = isFlipY;
+
 
         return cubeTex;
     }

@@ -82,7 +82,9 @@ public:
         return _z;
     }
 
-    RotationOrder getOrder() const;
+    void x(float x){ setX(x); }
+    void y(float y){ setY(y); }
+    void z(float z){ setZ(z); }
 
     void setX(float x);
 
@@ -90,8 +92,9 @@ public:
 
     void setZ(float z);
 
-    void setOrder(RotationOrder order);
+    RotationOrder getOrder() const;
 
+    void setOrder(RotationOrder order);
 
     bool operator == (const Euler& euler) const;
 
