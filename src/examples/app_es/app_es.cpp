@@ -6,6 +6,10 @@
 #define IMGUI_IMPL_OPENGL_ES3
 #include "imgui_impl_opengl3.h"
 
+#define TINYGLTF_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 #include <iostream>
 //#include "gl_headers.h"
 #include <stdio.h>

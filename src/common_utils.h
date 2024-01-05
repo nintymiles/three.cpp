@@ -96,6 +96,12 @@ inline void checkError() {
         return "";
     }
 
+    inline std::string getFilePathExtension(const std::string &fileName) {
+        if (fileName.find_last_of(".") != std::string::npos)
+            return fileName.substr(fileName.find_last_of(".") + 1);
+        return "";
+    }
+
 
 } // namespace threecpp
 

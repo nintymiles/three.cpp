@@ -1277,18 +1277,18 @@ void GLRenderer::initTexture(const Texture::sptr& texture){
 }
 
 void GLRenderer::initGLParameter(void){
-//    glDisable(GL_BLEND);
-//    glDisable(GL_CULL_FACE);
-//    glDisable(GL_DEPTH_TEST);
-//    glDisable(GL_POLYGON_OFFSET_FILL);
-//    glDisable(GL_SCISSOR_TEST);
-//    glDisable(GL_STENCIL_TEST);
-//    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-//
-//    glBlendEquation(GL_FUNC_ADD);
-//    glBlendFunc(GL_ONE, GL_ZERO);
-//    glBlendFuncSeparate(GL_ONE, GL_ZERO, GL_ONE, GL_ZERO);
-//
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_STENCIL_TEST);
+    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ONE, GL_ZERO);
+    glBlendFuncSeparate(GL_ONE, GL_ZERO, GL_ONE, GL_ZERO);
+
     glColorMask(true, true, true, true);
     glClearColor(0, 0, 0, 0);
 

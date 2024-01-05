@@ -175,6 +175,8 @@ public:
 
     BufferAttribute& copyArray(Type* array, unsigned length);
 
+    BufferAttribute& copyArrayAt(Type *array, unsigned stride,unsigned size);
+
     BufferAttribute& copyVector2sArray(const std::vector<Vector2>& vectors);
 
     BufferAttribute& copyVector3sArray(const std::vector<Vector3>& vectors);
@@ -217,7 +219,9 @@ public:
     BufferAttribute& setXYZW(unsigned index, Type x, Type y, Type z, Type w);
 
     void convertBufferAttributeToNonIndexed(const BufferAttribute& attribute, const std::vector<unsigned>& indices);
+
 };
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::copy(const BufferAttribute& source)
 {
@@ -245,11 +249,13 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::copy(const BufferAttribute&
     return *this;
 
 }
+
 template<typename Type>
 inline BufferAttribute<Type>* BufferAttribute<Type>::clone()
 {
     return new BufferAttribute<Type>(*this);
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::copyAt(unsigned index1, BufferAttribute& attribute, unsigned index2)
 {
@@ -264,11 +270,29 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::copyAt(unsigned index1, Buf
 
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::copyArray(Type* array, unsigned length)
 {
-    std::memcpy(&this->array[0], array, sizeof(Type) * length);
+    //std::memcpy(&this->array[0], array, sizeof(Type) * length);
 
+    for (unsigned i = 0; i<length; i++) {
+        printf("%d: %f\n", i, array[i]);
+        this->array.push_back(array[i]);
+    }
+
+    return *this;
+}
+
+template<typename Type>
+inline BufferAttribute<Type>& BufferAttribute<Type>::copyArrayAt(Type *array, unsigned stride,unsigned size) {
+    for (unsigned i = 0; array[i] != NULL; i = i + stride) {
+        printf("%d: %s\n", i, array[i]);
+        for(unsigned j = 0; j < size; j++){
+            this->array.push_back(array[i+j]);
+        }
+
+    }
     return *this;
 }
 
@@ -291,6 +315,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::copyVector2sArray(const std
     }
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::copyVector3sArray(const std::vector<Vector3>& vectors)
 {
@@ -350,6 +375,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::copyVector4sArray(std::vect
     }
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::applyMatrix3(const Matrix3& m)
 {
@@ -368,6 +394,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::applyMatrix3(const Matrix3&
 
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::applyMatrix4(const Matrix4& m)
 {
@@ -386,6 +413,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::applyMatrix4(const Matrix4&
 
     return *this;
 }
+
 template<typename type>
 inline BufferAttribute<type>& BufferAttribute<type>::applyNormalMatrix(const Matrix3& m)
 {
@@ -404,6 +432,7 @@ inline BufferAttribute<type>& BufferAttribute<type>::applyNormalMatrix(const Mat
 
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::transformDirection(const Matrix4& m)
 {
@@ -422,6 +451,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::transformDirection(const Ma
 
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::set(Type* value, unsigned length, unsigned offset)
 {
@@ -434,50 +464,59 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::set(Type* value, unsigned l
 
     return *this;
 }
+
 template<typename Type>
 inline Type BufferAttribute<Type>::getX(unsigned index) const
 {
     return this->array[index * this->itemSize];
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::setX(unsigned index, Type x)
 {
     this->array[index * this->itemSize] = x;
     return *this;
 }
+
 template<typename Type>
 inline Type BufferAttribute<Type>::getY(unsigned index) const
 {
     return this->array[index * this->itemSize + 1];
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::setY(unsigned index, Type y)
 {
     this->array[index * this->itemSize + 1] = y;
     return *this;
 }
+
 template<typename Type>
 inline Type BufferAttribute<Type>::getZ(unsigned index) const
 {
     return this->array[index * this->itemSize + 2];
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::setZ(unsigned index, Type z)
 {
     this->array[index * this->itemSize + 2] = z;
     return *this;
 }
+
 template<typename Type>
 inline Type BufferAttribute<Type>::getW(unsigned index) const
 {
     return this->array[index * this->itemSize + 3];
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::setW(unsigned index, Type w)
 {
     this->array[index * this->itemSize + 3] = w;
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::setXY(unsigned index, Type x, Type y)
 {
@@ -488,6 +527,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::setXY(unsigned index, Type 
 
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::setXYZ(unsigned index, Type x, Type y, Type z)
 {
@@ -499,6 +539,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::setXYZ(unsigned index, Type
 
     return *this;
 }
+
 template<typename Type>
 inline BufferAttribute<Type>& BufferAttribute<Type>::setXYZW(unsigned index, Type x, Type y, Type z, Type w)
 {
@@ -511,6 +552,7 @@ inline BufferAttribute<Type>& BufferAttribute<Type>::setXYZW(unsigned index, Typ
 
     return *this;
 }
+
 template<typename Type>
 inline void BufferAttribute<Type>::convertBufferAttributeToNonIndexed(const BufferAttribute<Type>& attribute, const std::vector<unsigned>& indices)
 {
@@ -541,7 +583,6 @@ inline void BufferAttribute<Type>::convertBufferAttributeToNonIndexed(const Buff
 
     //std::copy(array2.begin(), array2.end(), this->array.begin());
 }
-
 
 //class Vector3;
 //class Vector2;

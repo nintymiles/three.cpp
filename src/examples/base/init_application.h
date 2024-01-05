@@ -18,9 +18,11 @@
 
 #include "gl_lines_sphere.h"
 #include "gl_lines_dashed.h"
+#include "gl_points_trails.h"
 
 #include "gl_loader_obj_mtl.h"
 #include "gl_buffer_geometry_attributes_none.h"
+#include "gl_loader_gltf_demo.h"
 
 #include "gl_lights_pointlights.h"
 #include "gl_lights_physical.h"
@@ -45,6 +47,7 @@
 #include "gl_postprocessing_sobel.h"
 #include "gl_postprocessing_after_image.h"
 #include "gl_postprocessing_masking.h"
+#include "gl_postprocessing_glitch.h"
 
 #include "gl_geometry_teapot.h"
 
@@ -110,11 +113,25 @@ static void ShowApplicationMenuBar() {
                 currentDemoClass = demoClasses["Lines-Dashed"];
                 currentDemoClass->renderer->clear();
             }
+            if (ImGui::MenuItem("GL_Points_Trails", "")) {
+                if (demoClasses.count("GL_Points_Trails") == 0)
+                    demoClasses["GL_Points_Trails"] = std::make_shared<GLPointsTrails>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Points_Trails"];
+                currentDemoClass->renderer->clear();
+            }
             if (ImGui::MenuItem("Obj-Mtl-Loader", "")) {
                 if (demoClasses.count("Obj-Mtl-Loader") == 0)
                     demoClasses["Obj-Mtl-Loader"] = std::make_shared<GLLoaderObjMtl>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Obj-Mtl-Loader"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GLTF-Loader-Demo", "")) {
+                if (demoClasses.count("GLTF-Loader-Demo") == 0)
+                    demoClasses["GLTF-Loader-Demo"] = std::make_shared<GLLoaderGLTFDemo>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GLTF-Loader-Demo"];
                 currentDemoClass->renderer->clear();
             }
             if (ImGui::MenuItem("Buffer_geometry_attributes_none", "")) {
@@ -299,6 +316,13 @@ static void ShowApplicationMenuBar() {
 //                currentDemoClass = demoClasses["GL_Postprocessing_Masking"];
 //                currentDemoClass->renderer->clear();
 //            }
+            if (ImGui::MenuItem("GL_Postprocessing_Glitch", "")) {
+                if (demoClasses.count("GL_Postprocessing_Glitch") == 0)
+                    demoClasses["GL_Postprocessing_Glitch"] = std::make_shared<GLPostProcessingGlitch>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Postprocessing_Glitch"];
+                currentDemoClass->renderer->clear();
+            }
 
 
 
