@@ -91,6 +91,8 @@ public:
 
     Matrix4& setPosition(const float x, const float y, const float z);
 
+    Matrix4& invert();
+
     /**
      * Sets this matrix to the inverse of matrix m.
      * Based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm.
@@ -160,6 +162,9 @@ public:
      * Creates a frustum matrix.
      */
     Matrix4& makePerspective(const float left, const float right, const float top, const float bottom, const float _near, const float _far);
+
+    Matrix4& makePerspective(double fov, double aspect, double nearVal, double farVal);
+
 
     /**
      * Creates an orthographic projection matrix.
@@ -276,7 +281,7 @@ public:
 //		return multiplyMatrices(m, *this);
 //	}
 //
-//    //实现一个operator*更好
+//
 //	Matrix4& multiplyMatrices(Matrix4& a,Matrix4& b){
 //		const double a11 = a.elements[ 0 ], a12 = a.elements[ 4 ], a13 = a.elements[ 8 ], a14 = a.elements[ 12 ];
 //		const double a21 = a.elements[ 1 ], a22 = a.elements[ 5 ], a23 = a.elements[ 9 ], a24 = a.elements[ 13 ];

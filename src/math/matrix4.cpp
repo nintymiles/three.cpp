@@ -454,6 +454,50 @@ Matrix4& Matrix4::setPosition(const float x, const float y, const float z)
     return *this;
 }
 
+Matrix4& Matrix4::invert() {
+//    // based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+//    const double
+//        n11 = elements[ 0 ], n21 = elements[ 1 ], n31 = elements[ 2 ], n41 = elements[ 3 ],
+//        n12 = elements[ 4 ], n22 = elements[ 5 ], n32 = elements[ 6 ], n42 = elements[ 7 ],
+//        n13 = elements[ 8 ], n23 = elements[ 9 ], n33 = elements[ 10 ], n43 = elements[ 11 ],
+//        n14 = elements[ 12 ], n24 = elements[ 13 ], n34 = elements[ 14 ], n44 = elements[ 15 ],
+//
+//        t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44,
+//        t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44,
+//        t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44,
+//        t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
+//
+//    const double det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
+//
+//    if (det == 0) return set( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+//
+//    const double detInv = 1 / det;
+//
+//    elements[ 0 ] = t11 * detInv;
+//    elements[ 1 ] = ( n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44 ) * detInv;
+//    elements[ 2 ] = ( n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44 ) * detInv;
+//    elements[ 3 ] = ( n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43 ) * detInv;
+//
+//    elements[ 4 ] = t12 * detInv;
+//    elements[ 5 ] = ( n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44 ) * detInv;
+//    elements[ 6 ] = ( n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44 ) * detInv;
+//    elements[ 7 ] = ( n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43 ) * detInv;
+//
+//    elements[ 8 ] = t13 * detInv;
+//    elements[ 9 ] = ( n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44 ) * detInv;
+//    elements[ 10 ] = ( n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44 ) * detInv;
+//    elements[ 11 ] = ( n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43 ) * detInv;
+//
+//    elements[ 12 ] = t14 * detInv;
+//    elements[ 13 ] = ( n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34 ) * detInv;
+//    elements[ 14 ] = ( n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34 ) * detInv;
+//    elements[ 15 ] = ( n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33 ) * detInv;
+//
+//    return *this;
+    return getInverse(*this);
+}
+
+
 Matrix4& Matrix4::getInverse(const Matrix4& m)
 {
     // based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
@@ -732,6 +776,15 @@ Matrix4& Matrix4::makePerspective(const float left, const float right, const flo
     te[3] = 0;	te[7] = 0;	te[11] = -1;	te[15] = 0;
 
     return *this;
+}
+
+Matrix4& Matrix4::makePerspective(double fov, double aspect, double nearVal, double farVal){
+    const double top = nearVal * tan( math_number::DEG2RAD * 0.5 * fov );
+    const double height = 2 * top;
+    const double width = aspect * height;
+    const double left = - 0.5 * width;
+
+    return makePerspective(left,left+width, top,top-height, nearVal, farVal);
 }
 
 Matrix4& Matrix4::makeOrthographic(const float left, const float right, const float top, const float bottom, const float _near, const float _far)

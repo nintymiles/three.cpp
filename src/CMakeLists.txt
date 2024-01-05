@@ -168,6 +168,7 @@ ADD_EXECUTABLE(threecppgles ${ROOT_DIR}/src/examples/app_es/app_es.cpp)
 #add_library(threecppgles)
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
 target_sources(threecppgles PRIVATE  ${IMGUI_SOURCE} ${THREECPP_SOURCE})
+target_compile_definitions(threecppgles PRIVATE IMGUI_IMPL_OPENGL_ES3)
 target_include_directories(threecppgles PRIVATE
 ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui

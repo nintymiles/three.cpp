@@ -12,6 +12,8 @@
 #include "line.h"
 #include "points.h"
 
+#include <memory>
+
 Material::sptr getDepthMaterialVariant(int useMorphing, int useSkinning, int useInstancing,std::unordered_map<int,Material::sptr> *materials){
     auto index = useMorphing << 0 | useSkinning << 1 | useInstancing << 2;
 
@@ -107,12 +109,12 @@ Material::sptr GLShadowMap::getDepthMaterial(GLRenderer& renderer,Object3D& obje
             if (light.lightType == LightType::PointLight) {
                 MeshDistanceMaterial* material1 = reinterpret_cast<MeshDistanceMaterial *>(material.get());
                 MeshDistanceMaterial::sptr cachedMaterial1 = std::make_shared<MeshDistanceMaterial>(*material1);
-                cachedMaterial = std::reinterpret_pointer_cast<Material>(cachedMaterial1);
+                cachedMaterial = cachedMaterial1;
             }
             else {
                 MeshDepthMaterial* material1 = reinterpret_cast<MeshDepthMaterial*>(material.get());
                 MeshDepthMaterial::sptr cachedMaterial1 = std::make_shared<MeshDepthMaterial>(*material1);
-                cachedMaterial = std::reinterpret_pointer_cast<Material>(cachedMaterial1);
+                cachedMaterial = cachedMaterial1;
             }
 
             materialsForVariant->insert({ keyB.str(), cachedMaterial });

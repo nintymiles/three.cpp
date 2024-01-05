@@ -148,7 +148,8 @@ void GLBackground::render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderLis
 
             material->needsUpdate = true;
 
-            currentBackground = (void *)&scene.getBackgroundTexture();
+            //fixme: refactor this shared_ptr to naked_ptr
+            currentBackground = (void *)scene.getBackgroundTexture().get();
             currentBackgroundVersion = scene.getBackgroundTexture()->version;
             currentTonemapping = renderer.toneMapping;
         }
