@@ -63,18 +63,18 @@ public:
 
         GLTFLoader gltfLoader{};
         std::string relPath = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
-                .append(threecpp::getFileSeparator()).append("gltf").append(threecpp::getFileSeparator());
-        Group::sptr gltfGroup = gltfLoader.load(dir + relPath +"Duck.gltf");
+                .append(threecpp::getFileSeparator()).append("gltf").append(threecpp::getFileSeparator())
+                .append("DamagedHelmet").append(threecpp::getFileSeparator());
+        Group::sptr gltfGroup = gltfLoader.load(dir + relPath +"DamagedHelmet.gltf");
 //        Geometry::sptr geometry1 = gltfGroup->children[0]->children[0]->children[0]->geometry;
 //        Mesh::sptr mesh = Mesh::create(geometry1,MeshBasicMaterial::create(0xff0000));
-        //gltfGroup->scale.multiplyScalar(150);
-        gltfGroup->position.setY(-60);
-        gltfGroup->rotation.y(-math_number::PI/2);
+        gltfGroup->scale.multiplyScalar(100);
+//        gltfGroup->position.setY(-100);
+//        gltfGroup->rotation.y(-math_number::PI/2);
         scene->add(gltfGroup);
 
 //        BoxGeometry::sptr box = BoxGeometry::create( 1, 1, 1, 1, 1, 1 );
 //        scene->add(Mesh::create(box,MeshBasicMaterial::create(0xff0000)));
-
 
         Vector4 screen = Vector4(0, 0, screenX, screenY);
         std::shared_ptr<TrackballControls> tcontroller = std::make_shared<TrackballControls>(camera, screen);
