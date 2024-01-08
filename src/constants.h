@@ -173,26 +173,18 @@ enum class Wrapping {
 };
 
 //const int NearestFilter = 1003;
-//const int NearestMipmapNearestFilter = 1004;
 //const int NearestMipMapNearestFilter = 1004;
-//const int NearestMipmapLinearFilter = 1005;
 //const int NearestMipMapLinearFilter = 1005;
 //const int LinearFilter = 1006;
-//const int LinearMipmapNearestFilter = 1007;
 //const int LinearMipMapNearestFilter = 1007;
-//const int LinearMipmapLinearFilter = 1008;
 //const int LinearMipMapLinearFilter = 1008;
 enum class TextureFilter {
     NearestFilter				= GL_NEAREST,
     NearestMipmapNearestFilter	= GL_NEAREST_MIPMAP_NEAREST,
-    NearestMipMapNearestFilter	= GL_NEAREST_MIPMAP_NEAREST,
     NearestMipmapLinearFilter	= GL_NEAREST_MIPMAP_LINEAR,
-    NearestMipMapLinearFilter	= GL_NEAREST_MIPMAP_LINEAR,
     LinearFilter				= GL_LINEAR,
     LinearMipmapNearestFilter	= GL_LINEAR_MIPMAP_NEAREST,
-    LinearMipMapNearestFilter	= GL_LINEAR_MIPMAP_NEAREST,
-    LinearMipmapLinearFilter	= GL_LINEAR_MIPMAP_LINEAR,
-    LinearMipMapLinearFilter	= GL_LINEAR_MIPMAP_LINEAR
+    LinearMipmapLinearFilter	= GL_LINEAR_MIPMAP_LINEAR
 };
 
 //const int UnsignedByteType = 1009;

@@ -3,7 +3,7 @@
 //
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
-#define IMGUI_IMPL_OPENGL_ES3
+//#define IMGUI_IMPL_OPENGL_ES3
 #include "imgui_impl_opengl3.h"
 
 #define TINYGLTF_IMPLEMENTATION

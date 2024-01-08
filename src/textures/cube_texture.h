@@ -12,7 +12,7 @@ class CubeTexture : public Texture {
 public:
     using sptr = std::shared_ptr<CubeTexture>;
     CubeTexture(std::vector<Texture::sptr> images = {}, TextureMapping mapping = TextureMapping::CubeReflectionMapping, Wrapping wraps = Wrapping::ClampToEdgeWrapping,
-                Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::LinearFilter, TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter,
+                Wrapping wrapt = Wrapping::ClampToEdgeWrapping, TextureFilter magFilter = TextureFilter::LinearFilter, TextureFilter minFilter = TextureFilter::LinearMipmapLinearFilter,
                 PixelFormat format = PixelFormat::RGBAFormat, TextureDataType type = TextureDataType::UnsignedByteType, unsigned anisotropy = 1, TextureEncoding encoding = TextureEncoding::LinearEncoding)
             :Texture(std::make_shared<TexImageInfo>(), mapping, wraps, wrapt, magFilter, minFilter, format, type, anisotropy, encoding) {
         this->images = images;
@@ -25,7 +25,7 @@ public:
                        Wrapping wraps = Wrapping::ClampToEdgeWrapping,
                        Wrapping wrapt = Wrapping::ClampToEdgeWrapping,
                        TextureFilter magFilter = TextureFilter::LinearFilter,
-                       TextureFilter minFilter = TextureFilter::LinearMipMapLinearFilter,
+                       TextureFilter minFilter = TextureFilter::LinearMipmapLinearFilter,
                        PixelFormat format = PixelFormat::RGBAFormat,
                        TextureDataType type = TextureDataType::UnsignedByteType,
                        unsigned anisotropy = 1,

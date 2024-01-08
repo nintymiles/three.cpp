@@ -59,7 +59,7 @@ Group::sptr GLTFLoader::load(const std::string& path){
         exit(-1);
     }
 
-    buildImages(model);
+    buildTextures(model);
     buildMaterials(model);
 
     // If the glTF asset has at least one scene, and doesn't define a default one
@@ -266,132 +266,133 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, G
             assert(it->second >= 0);
 
             const tinygltf::Accessor &accessor = model.accessors[it->second];
-            if(accessor.sparse.isSparse)
+            if (accessor.sparse.isSparse)
                 sparse_accessor = it->second;
             else
                 sparse_accessor = -1;
 
-            //bufferView是针对gpu buffer data中的对应数据记录，本地读取使用accessor中的数据即可
-            const tinygltf::BufferView &bufferView = model.bufferViews[accessor.bufferView];
-            if (bufferView.target == 0) {
-                std::cout << "WARN: bufferView.target is zero" << std::endl;
-                continue;  // Unsupported bufferView.
-            }
+            if (accessor.bufferView > -1) {
+                //bufferView是针对gpu buffer data中的对应数据记录，本地读取使用accessor中的数据即可
+                const tinygltf::BufferView &bufferView = model.bufferViews[accessor.bufferView];
+                if (bufferView.target == 0) {
+                    std::cout << "WARN: bufferView.target is zero" << std::endl;
+                    continue;  // Unsupported bufferView.
+                }
 
-            const tinygltf::Buffer &buffer = model.buffers[bufferView.buffer];
-            std::cout << "Attribute name= " << it->first << ", buffer.size= " << buffer.data.size()
-                      << ", byteOffset = " << bufferView.byteOffset << std::endl;
+                const tinygltf::Buffer &buffer = model.buffers[bufferView.buffer];
+                std::cout << "Attribute name= " << it->first << ", buffer.size= " << buffer.data.size()
+                          << ", byteOffset = " << bufferView.byteOffset << std::endl;
 
-            // copy the buffer to a temporary one for sparse patching
-            unsigned char *tmp_buffer = new unsigned char[bufferView.byteLength];
-            memcpy(tmp_buffer, buffer.data.data() + bufferView.byteOffset + accessor.byteOffset,
-                   bufferView.byteLength);
+                // copy the buffer to a temporary one for sparse patching
+                unsigned char *tmp_buffer = new unsigned char[bufferView.byteLength];
+                memcpy(tmp_buffer, buffer.data.data() + bufferView.byteOffset + accessor.byteOffset,
+                       bufferView.byteLength);
 //            std::vector<unsigned char> temp_buffer(bufferView.byteLength);
 //            std::copy(buffer.data.begin()+bufferView.byteOffset,buffer.data.begin()+bufferView.byteOffset+bufferView.byteLength,temp_buffer.begin());
-            const size_t size_of_object_in_buffer = ComponentTypeByteSize(accessor.componentType);
+                const size_t size_of_object_in_buffer = ComponentTypeByteSize(accessor.componentType);
 
-            if(sparse_accessor > 0) {
+                if (sparse_accessor > 0) {
 
-                const size_t size_of_sparse_indices = ComponentTypeByteSize(accessor.sparse.indices.componentType);
+                    const size_t size_of_sparse_indices = ComponentTypeByteSize(accessor.sparse.indices.componentType);
 
-                const auto &indices_buffer_view =
-                        model.bufferViews[accessor.sparse.indices.bufferView];
-                const auto &indices_buffer = model.buffers[indices_buffer_view.buffer];
+                    const auto &indices_buffer_view =
+                            model.bufferViews[accessor.sparse.indices.bufferView];
+                    const auto &indices_buffer = model.buffers[indices_buffer_view.buffer];
 
-                const auto &values_buffer_view =
-                        model.bufferViews[accessor.sparse.values.bufferView];
-                const auto &values_buffer = model.buffers[values_buffer_view.buffer];
+                    const auto &values_buffer_view =
+                            model.bufferViews[accessor.sparse.values.bufferView];
+                    const auto &values_buffer = model.buffers[values_buffer_view.buffer];
 
-                for (size_t sparse_index = 0; sparse_index < accessor.sparse.count;
-                     ++sparse_index) {
-                    int index = 0;
-                    // std::cout << "accessor.sparse.indices.componentType = " <<
-                    // accessor.sparse.indices.componentType << std::endl;
-                    switch (accessor.sparse.indices.componentType) {
-                        case TINYGLTF_COMPONENT_TYPE_BYTE:
-                        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
-                            index = (int) *(
-                                    unsigned char *) (indices_buffer.data.data() +
-                                                      indices_buffer_view.byteOffset +
-                                                      accessor.sparse.indices.byteOffset +
-                                                      (sparse_index * size_of_sparse_indices));
-                            break;
-                        case TINYGLTF_COMPONENT_TYPE_SHORT:
-                        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
-                            index = (int) *(
-                                    unsigned short *) (indices_buffer.data.data() +
-                                                       indices_buffer_view.byteOffset +
-                                                       accessor.sparse.indices.byteOffset +
-                                                       (sparse_index * size_of_sparse_indices));
-                            break;
-                        case TINYGLTF_COMPONENT_TYPE_INT:
-                        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
-                            index = (int) *(
-                                    unsigned int *) (indices_buffer.data.data() +
-                                                     indices_buffer_view.byteOffset +
-                                                     accessor.sparse.indices.byteOffset +
-                                                     (sparse_index * size_of_sparse_indices));
-                            break;
-                    }
-                    std::cout << "updating sparse data at index  : " << index
-                              << std::endl;
-                    // index is now the target of the sparse index to patch in
-                    const unsigned char *read_from =
-                            values_buffer.data.data() +
-                            (values_buffer_view.byteOffset +
-                             accessor.sparse.values.byteOffset) +
-                            (sparse_index * (size_of_object_in_buffer * accessor.type));
+                    for (size_t sparse_index = 0; sparse_index < accessor.sparse.count;
+                         ++sparse_index) {
+                        int index = 0;
+                        // std::cout << "accessor.sparse.indices.componentType = " <<
+                        // accessor.sparse.indices.componentType << std::endl;
+                        switch (accessor.sparse.indices.componentType) {
+                            case TINYGLTF_COMPONENT_TYPE_BYTE:
+                            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+                                index = (int) *(
+                                        unsigned char *) (indices_buffer.data.data() +
+                                                          indices_buffer_view.byteOffset +
+                                                          accessor.sparse.indices.byteOffset +
+                                                          (sparse_index * size_of_sparse_indices));
+                                break;
+                            case TINYGLTF_COMPONENT_TYPE_SHORT:
+                            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+                                index = (int) *(
+                                        unsigned short *) (indices_buffer.data.data() +
+                                                           indices_buffer_view.byteOffset +
+                                                           accessor.sparse.indices.byteOffset +
+                                                           (sparse_index * size_of_sparse_indices));
+                                break;
+                            case TINYGLTF_COMPONENT_TYPE_INT:
+                            case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+                                index = (int) *(
+                                        unsigned int *) (indices_buffer.data.data() +
+                                                         indices_buffer_view.byteOffset +
+                                                         accessor.sparse.indices.byteOffset +
+                                                         (sparse_index * size_of_sparse_indices));
+                                break;
+                        }
+                        std::cout << "updating sparse data at index  : " << index
+                                  << std::endl;
+                        // index is now the target of the sparse index to patch in
+                        const unsigned char *read_from =
+                                values_buffer.data.data() +
+                                (values_buffer_view.byteOffset +
+                                 accessor.sparse.values.byteOffset) +
+                                (sparse_index * (size_of_object_in_buffer * accessor.type));
 
-                    /*
-                    std::cout << ((float*)read_from)[0] << "\n";
-                    std::cout << ((float*)read_from)[1] << "\n";
-                    std::cout << ((float*)read_from)[2] << "\n";
-                    */
+                        /*
+                        std::cout << ((float*)read_from)[0] << "\n";
+                        std::cout << ((float*)read_from)[1] << "\n";
+                        std::cout << ((float*)read_from)[2] << "\n";
+                        */
 
 //                    unsigned char *write_to =
 //                            tmp_buffer + index * (size_of_object_in_buffer * accessor.type);
 //
 //                    memcpy(write_to, read_from, size_of_object_in_buffer * accessor.type);
+                    }
                 }
-            }
 
 //            glBindBuffer(GL_ARRAY_BUFFER, gBufferState[accessor.bufferView].vb);
 //            CheckErrors("bind buffer");
-            int size = 1;
-            if (accessor.type == TINYGLTF_TYPE_SCALAR) {
-                size = 1;
-            } else if (accessor.type == TINYGLTF_TYPE_VEC2) {
-                size = 2;
-            } else if (accessor.type == TINYGLTF_TYPE_VEC3) {
-                size = 3;
-            } else if (accessor.type == TINYGLTF_TYPE_VEC4) {
-                size = 4;
-            } else {
-                assert(0);
-            }
+                int size = 1;
+                if (accessor.type == TINYGLTF_TYPE_SCALAR) {
+                    size = 1;
+                } else if (accessor.type == TINYGLTF_TYPE_VEC2) {
+                    size = 2;
+                } else if (accessor.type == TINYGLTF_TYPE_VEC3) {
+                    size = 3;
+                } else if (accessor.type == TINYGLTF_TYPE_VEC4) {
+                    size = 4;
+                } else {
+                    assert(0);
+                }
 
-            // debug:
-            for(size_t p = 0; p < accessor.count * size; p++)
-            {
-                float* b = (float*)tmp_buffer;
-                std::cout << "modified_buffer [" << p << "] = " << b[p] << '\n';
-            }
+                // debug:
+                for (size_t p = 0; p < accessor.count * size; p++) {
+                    float *b = (float *) tmp_buffer;
+                    std::cout << "modified_buffer [" << p << "] = " << b[p] << '\n';
+                }
 
-            BufferAttribute<float>::sptr bufferAttr = BufferAttribute<float>::create((float*)tmp_buffer,accessor.count * size,size);
+                BufferAttribute<float>::sptr bufferAttr = BufferAttribute<float>::create((float *) tmp_buffer,
+                                                                                         accessor.count * size, size);
 //            bufferAttr->copyArray((float*)tmp_buffer,accessor.count * size);
 //            bufferAttr->itemSize = size;
 
-            if((it->first.compare("POSITION") == 0)) {
-                geometry->setAttribute(AttributeName::position,bufferAttr);
-            }
-            if((it->first.compare("NORMAL") == 0)) {
-                geometry->setAttribute(AttributeName::normal,bufferAttr);
-            }
-            if((it->first.compare("TEXCOORD_0") == 0)) {
-                geometry->setAttribute(AttributeName::uv,bufferAttr);
-            }
+                if ((it->first.compare("POSITION") == 0)) {
+                    geometry->setAttribute(AttributeName::position, bufferAttr);
+                }
+                if ((it->first.compare("NORMAL") == 0)) {
+                    geometry->setAttribute(AttributeName::normal, bufferAttr);
+                }
+                if ((it->first.compare("TEXCOORD_0") == 0)) {
+                    geometry->setAttribute(AttributeName::uv, bufferAttr);
+                }
 
-            delete[] tmp_buffer;
+                delete[] tmp_buffer;
 
 //            int byteStride = accessor.ByteStride(bufferView);
 
@@ -412,6 +413,7 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, G
 //                geometry->setAttribute(AttributeName::uv,bufferAttr);
 //            }
 
+            }
         }
 
         if (primitive.indices > -1) {
@@ -419,41 +421,43 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, G
 
             const size_t size_of_indices = ComponentTypeByteSize(indexAccessor.componentType);
 
-            const tinygltf::BufferView &indicesBufferView = model.bufferViews[indexAccessor.bufferView];
-            if (indicesBufferView.target == 0) {
-                std::cout << "WARN: IndexBufferView.target is zero" << std::endl;
-                continue;  // Unsupported bufferView.
-            }
+            if (indexAccessor.bufferView > -1) {
+                const tinygltf::BufferView &indicesBufferView = model.bufferViews[indexAccessor.bufferView];
+                if (indicesBufferView.target == 0) {
+                    std::cout << "WARN: IndexBufferView.target is zero" << std::endl;
+                    continue;  // Unsupported bufferView.
+                }
 
-            const tinygltf::Buffer &indices_buffer = model.buffers[indicesBufferView.buffer];
-            std::cout << "indices_buffer.size= " << indices_buffer.data.size()
-                      << ", byteOffset = " << indicesBufferView.byteOffset << std::endl;
+                const tinygltf::Buffer &indices_buffer = model.buffers[indicesBufferView.buffer];
+                std::cout << "indices_buffer.size= " << indices_buffer.data.size()
+                          << ", byteOffset = " << indicesBufferView.byteOffset << std::endl;
 
-            // copy the buffer to a temporary one for sparse patching
-            unsigned char *tmp_buffer = new unsigned char[indicesBufferView.byteLength];
-            memcpy(tmp_buffer, indices_buffer.data.data() + indicesBufferView.byteOffset + indexAccessor.byteOffset,
-                   indicesBufferView.byteLength);
+                // copy the buffer to a temporary one for sparse patching
+                unsigned char *tmp_buffer = new unsigned char[indicesBufferView.byteLength];
+                memcpy(tmp_buffer, indices_buffer.data.data() + indicesBufferView.byteOffset + indexAccessor.byteOffset,
+                       indicesBufferView.byteLength);
 
 //        std::vector<unsigned> indices{};
 //        BufferAttribute<unsigned>::sptr indexAttr = BufferAttribute<unsigned>::create();
-            std::vector<unsigned> indices_{};
-            for (int i = 0; i < indexAccessor.count; i++) {
-                unsigned short *indexArr = (unsigned short *) tmp_buffer;
-                indices_.push_back((unsigned) indexArr[i]);
-            }
-            BufferAttribute<unsigned>::sptr indexAttr = BufferAttribute<unsigned>::create(indices_, 1);
+                std::vector<unsigned> indices_{};
+                for (int i = 0; i < indexAccessor.count; i++) {
+                    unsigned short *indexArr = (unsigned short *) tmp_buffer;
+                    indices_.push_back((unsigned) indexArr[i]);
+                }
+                BufferAttribute<unsigned>::sptr indexAttr = BufferAttribute<unsigned>::create(indices_, 1);
 
 //        BufferAttribute<unsigned>::sptr indexAttr = BufferAttribute<unsigned>::create(indices,1);
 //        indexAttr->copyArray((unsigned short *)tmp_buffer,indicesBufferView.byteLength/size_of_indices);
-            indexAttr->itemSize = 1;
-            geometry->setIndex(indexAttr);
-            delete[] tmp_buffer;
+                indexAttr->itemSize = 1;
+                geometry->setIndex(indexAttr);
+                delete[] tmp_buffer;
+            }
         }
 
         // Material
-        tinygltf::Material &mat = model.materials[primitive.material];
-        printf("material.name = %s\n", mat.name.c_str());
-        auto diffuseTexId = mat.pbrMetallicRoughness.baseColorTexture.index;
+//        tinygltf::Material &mat = model.materials[primitive.material];
+//        printf("material.name = %s\n", mat.name.c_str());
+//        auto diffuseTexId = mat.pbrMetallicRoughness.baseColorTexture.index;
 //        if (mat.values.find("baseColorTexture") != mat.values.end()) {
 //            std::string diffuseTexName = mat.values["baseColorTexture"].string_value;
 ////            if (model.textures.find(diffuseTexName) != model.textures.end()) {
@@ -467,8 +471,8 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, G
         // Assume TEXTURE_2D target for the texture object.
         // glBindTexture(GL_TEXTURE_2D, gMeshState[mesh.name].diffuseTex[i]);
         Material::sptr material;
-        if(diffuseTexId > -1)
-            material = pMaterials[diffuseTexId];
+        if(primitive.material > -1)
+            material = pMaterials[primitive.material];
 //        else
 //            material->color = Color(0xFF0000);
 
@@ -517,22 +521,102 @@ void GLTFLoader::buildImages(const tinygltf::Model &model) {
     }
 }
 
-void GLTFLoader::buildMaterials(const tinygltf::Model &model) {
-    for (auto& gltfMaterial : model.materials) {
-        Material::sptr material = MeshPhongMaterial::create();
-        material->name = gltfMaterial.name;
+void GLTFLoader::buildTextures(const tinygltf::Model &model) {
+    for (auto& gltfTexture : model.textures) {
+        Texture::sptr pDstTexture = Texture::create();
         {
-            if (gltfMaterial.alphaMode == "BLEND") {
-//                material->blending
-            } else if (gltfMaterial.alphaMode == "MASK") {
-                assert(false);
-            }
-            if (gltfMaterial.doubleSided) {
-                material->side = Side::DoubleSide;
-            } else {
-                //material->side = Side::FrontSide;
+            auto& gltfImage = model.images[gltfTexture.source];
+            pDstTexture->image->width = gltfImage.width;
+            pDstTexture->image->height = gltfImage.height;
+            pDstTexture->image->channels = gltfImage.component;
+            pDstTexture->image->imageData = gltfImage.image;
+            switch (gltfImage.component) {
+                case 4:
+                    pDstTexture->format = PixelFormat::RGBAFormat;
+                    break;
+                case 3:
+                    pDstTexture->format = PixelFormat::RGBFormat;
+                    break;
+                case 2:
+                    pDstTexture->format = PixelFormat::RGFormat;
+                    break;
+                case 1:
+                    pDstTexture->format = PixelFormat::RedFormat;
+                    break;
+                default:
+                    break;
+
+            };
+
+            pDstTexture->type = TextureDataType::UnsignedByteType;
+
+            auto& gltfSampler = model.samplers[gltfTexture.sampler];
+            switch (gltfSampler.minFilter) {
+                case TINYGLTF_TEXTURE_FILTER_NEAREST:
+                    if (gltfSampler.magFilter == TINYGLTF_TEXTURE_FILTER_NEAREST) {
+                        pDstTexture->magFilter = TextureFilter::NearestFilter;
+                        pDstTexture->minFilter = TextureFilter::NearestFilter;
+                    }else {
+                        pDstTexture->magFilter = TextureFilter::LinearFilter;
+                        pDstTexture->minFilter = TextureFilter::LinearFilter;
+                    }
+                    break;
+                case TINYGLTF_TEXTURE_FILTER_LINEAR:
+                    pDstTexture->magFilter = TextureFilter::LinearFilter;
+                    pDstTexture->minFilter = TextureFilter::LinearFilter;
+                    break;
+                case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST:
+                    //samplerDesc.Filter = D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+                    pDstTexture->magFilter = TextureFilter::NearestMipmapNearestFilter;
+                    pDstTexture->minFilter = TextureFilter::NearestMipmapNearestFilter;
+                    break;
+                case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST:
+                    pDstTexture->magFilter = TextureFilter::LinearMipmapNearestFilter;
+                    pDstTexture->minFilter = TextureFilter::LinearMipmapNearestFilter;
+                    break;
+                case TINYGLTF_TEXTURE_FILTER_NEAREST_MIPMAP_LINEAR:
+                    pDstTexture->magFilter = TextureFilter::NearestMipmapLinearFilter;
+                    pDstTexture->minFilter = TextureFilter::NearestMipmapLinearFilter;
+                    break;
+                case TINYGLTF_TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR:
+                    pDstTexture->magFilter = TextureFilter::LinearMipmapLinearFilter;
+                    pDstTexture->minFilter = TextureFilter::LinearMipmapLinearFilter;
+                    break;
+                default:
+                    pDstTexture->magFilter = TextureFilter::LinearFilter;
+                    pDstTexture->minFilter = TextureFilter::LinearFilter;
+                    break;
             }
 
+            auto toTextureAddressMode = [](int wrap) {
+                switch (wrap) {
+                    case TINYGLTF_TEXTURE_WRAP_REPEAT:
+                        return Wrapping::RepeatWrapping;
+                    case TINYGLTF_TEXTURE_WRAP_CLAMP_TO_EDGE:
+                        return Wrapping::ClampToEdgeWrapping;
+                    case TINYGLTF_TEXTURE_WRAP_MIRRORED_REPEAT:
+                        return Wrapping::MirroredRepeatWrapping;
+                    default:
+                        assert(false);
+                        return Wrapping::RepeatWrapping;
+                }
+            };
+            pDstTexture->wrapS = toTextureAddressMode(gltfSampler.wrapS);
+            pDstTexture->wrapT = toTextureAddressMode(gltfSampler.wrapT);
+//            pDstTexture->wrapR = Wrapping::ClampToEdgeWrapping;
+            pDstTexture->setNeedsUpdate(true);
+
+            pTextures.push_back(pDstTexture);
+        }
+    }
+}
+
+
+void GLTFLoader::buildMaterials(const tinygltf::Model &model) {
+    for (auto& gltfMaterial : model.materials) {
+        Material::sptr material = MeshStandardMaterial::create();
+        material->name = gltfMaterial.name;
+        {
             auto& glTFPBRMetallicRoughness = gltfMaterial.pbrMetallicRoughness;
             auto& baseColorFactor = glTFPBRMetallicRoughness.baseColorFactor;
             if(!baseColorFactor.empty() && baseColorFactor.size()>3)
@@ -544,8 +628,97 @@ void GLTFLoader::buildMaterials(const tinygltf::Model &model) {
             if(glTFBaseColorTexture.index > -1)
                 material->map = pTextures[glTFBaseColorTexture.index];
             auto& glTFMetallicRoughnessTexture = glTFPBRMetallicRoughness.metallicRoughnessTexture;
-            if(glTFMetallicRoughnessTexture.index > -1)
+            if(glTFMetallicRoughnessTexture.index > -1) {
                 material->roughnessMap = pTextures[glTFMetallicRoughnessTexture.index];
+                material->metalnessMap = pTextures[glTFMetallicRoughnessTexture.index];
+            }
+
+            if (gltfMaterial.doubleSided) {
+                material->side = Side::DoubleSide;
+            } else {
+                //material->side = Side::FrontSide;
+            }
+//            if ( materialDef.doubleSided === true ) {
+//
+//                materialParams.side = THREE.DoubleSide;
+//
+//            }
+
+            if (gltfMaterial.alphaMode == "BLEND") {
+                material->transparent = true;
+                material->depthWrite = false;
+            } else if (gltfMaterial.alphaMode == "MASK") {
+                //assert(false);
+                material->alphaTest = gltfMaterial.alphaCutoff;
+            } else {
+                material->transparent = false;
+            }
+//            const alphaMode = materialDef.alphaMode || ALPHA_MODES.OPAQUE;
+//
+//            if ( alphaMode === ALPHA_MODES.BLEND ) {
+//
+//                materialParams.transparent = true; // See: https://github.com/mrdoob/three.js/issues/17706
+//
+//                materialParams.depthWrite = false;
+//
+//            } else {
+//
+//                materialParams.transparent = false;
+//
+//                if ( alphaMode === ALPHA_MODES.MASK ) {
+//
+//                    materialParams.alphaTest = materialDef.alphaCutoff !== undefined ? materialDef.alphaCutoff : 0.5;
+//
+//                }
+//
+//            }
+
+            if(gltfMaterial.normalTexture.index > -1){
+                material->normalMap = pTextures[gltfMaterial.normalTexture.index];
+                material->normalScale = Vector2(gltfMaterial.normalTexture.scale,gltfMaterial.normalTexture.scale);
+            }
+//            if ( materialDef.normalTexture !== undefined && materialType !== THREE.MeshBasicMaterial ) {
+//
+//                pending.push( parser.assignTexture( materialParams, 'normalMap', materialDef.normalTexture ) );
+//                materialParams.normalScale = new THREE.Vector2( 1, 1 );
+//
+//                if ( materialDef.normalTexture.scale !== undefined ) {
+//
+//                    const scale = materialDef.normalTexture.scale;
+//                    materialParams.normalScale.set( scale, scale );
+//
+//                }
+//
+//            }
+
+            if(gltfMaterial.occlusionTexture.index > -1){
+                material->aoMap = pTextures[gltfMaterial.occlusionTexture.index];
+                material->aoMapIntensity = gltfMaterial.occlusionTexture.strength;
+            }
+//            if ( materialDef.occlusionTexture !== undefined && materialType !== THREE.MeshBasicMaterial ) {
+//
+//                pending.push( parser.assignTexture( materialParams, 'aoMap', materialDef.occlusionTexture ) );
+//
+//                if ( materialDef.occlusionTexture.strength !== undefined ) {
+//
+//                    materialParams.aoMapIntensity = materialDef.occlusionTexture.strength;
+//
+//                }
+//
+//            }
+
+            auto emissiveFactor = gltfMaterial.emissiveFactor;
+            material->emissive = Color(emissiveFactor[0],emissiveFactor[1],emissiveFactor[2]);
+//            if ( materialDef.emissiveFactor !== undefined && materialType !== THREE.MeshBasicMaterial ) {
+//                materialParams.emissive = new THREE.Color().fromArray( materialDef.emissiveFactor );
+//            }
+
+            if(gltfMaterial.emissiveTexture.index > -1){
+                material->emissiveMap = pTextures[gltfMaterial.emissiveTexture.index];
+            }
+//            if ( materialDef.emissiveTexture !== undefined && materialType !== THREE.MeshBasicMaterial ) {
+//                pending.push( parser.assignTexture( materialParams, 'emissiveMap', materialDef.emissiveTexture, THREE.sRGBEncoding ) );
+//            }
         };
 
         pMaterials.push_back(material);

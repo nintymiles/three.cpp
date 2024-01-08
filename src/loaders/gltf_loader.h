@@ -22,6 +22,8 @@ class GLTFLoader {
 
     void buildImages(const tinygltf::Model &model);
 
+    void buildTextures(const tinygltf::Model &model);
+
     void buildMaterials(const tinygltf::Model &model);
 
 public:
