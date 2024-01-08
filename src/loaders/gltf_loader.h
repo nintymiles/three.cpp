@@ -13,12 +13,16 @@
 #include "group.h"
 
 class Texture;
+class Material;
 template<class T> class BufferAttribute;
 class GLTFLoader {
     std::vector<std::shared_ptr<Texture>> pTextures;
     std::vector<std::shared_ptr<BufferAttribute<float>>> pBuffers;
+    std::vector<std::shared_ptr<Material>> pMaterials;
 
     void buildImages(const tinygltf::Model &model);
+
+    void buildMaterials(const tinygltf::Model &model);
 
 public:
 
