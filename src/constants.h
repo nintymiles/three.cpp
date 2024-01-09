@@ -351,14 +351,29 @@ const int RGBA_BPTC_Format = 36492;
 const int LoopOnce = 2200;
 const int LoopRepeat = 2201;
 const int LoopPingPong = 2202;
-const int InterpolateDiscrete = 2300;
-const int InterpolateLinear = 2301;
-const int InterpolateSmooth = 2302;
+
+//const int InterpolateDiscrete = 2300;
+//const int InterpolateLinear = 2301;
+//const int InterpolateSmooth = 2302;
+enum class Interpolate : int {
+    Unknown			= 0,
+    InterpolateDiscrete = 2300,
+    InterpolateLinear = 2301,
+    InterpolateSmooth = 2302
+};
+
 const int ZeroCurvatureEnding = 2400;
 const int ZeroSlopeEnding = 2401;
 const int WrapAroundEnding = 2402;
-const int NormalAnimationBlendMode = 2500;
-const int AdditiveAnimationBlendMode = 2501;
+
+//const int NormalAnimationBlendMode = 2500;
+//const int AdditiveAnimationBlendMode = 2501;
+enum class AnimationBlendMode : int {
+    Unknown			= 0,
+    NormalAnimationBlendMode = 2500,
+    AdditiveAnimationBlendMode = 2501,
+};
+
 const int TrianglesDrawMode = 0;
 const int TriangleStripDrawMode = 1;
 const int TriangleFanDrawMode = 2;

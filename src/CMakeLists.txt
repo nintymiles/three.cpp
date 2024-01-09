@@ -35,8 +35,8 @@ file(GLOB_RECURSE CORE_SOURCE ${ROOT_DIR}/src/core/*.cpp)
 # file(GLOB_RECURSE CORE_INLINE ./detail/*.inl)
 file(GLOB_RECURSE CORE_HEADER ${ROOT_DIR}/src/core/*.h)
 
-file(GLOB MATH_SOURCE ${ROOT_DIR}/src/math/*.cpp)
-file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h)
+file(GLOB MATH_SOURCE ${ROOT_DIR}/src/math/*.cpp;${ROOT_DIR}/src/math/interpolants/*.cpp)
+file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h;${ROOT_DIR}/src/math/interpolants/*.h)
 
 file(GLOB CAMERAS_SOURCE ${ROOT_DIR}/src/cameras/*.cpp)
 file(GLOB CAMERAS_HEADER ${ROOT_DIR}/src/cameras/*.h)
@@ -174,6 +174,7 @@ ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
 ${ROOT_DIR}/src/math
+${ROOT_DIR}/src/math/interpolants
 ${ROOT_DIR}/src/core
 ${ROOT_DIR}/src/textures
 ${ROOT_DIR}/src/materials
