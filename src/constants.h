@@ -348,9 +348,17 @@ const int RGBA_ASTC_10x10_Format = 37819;
 const int RGBA_ASTC_12x10_Format = 37820;
 const int RGBA_ASTC_12x12_Format = 37821;
 const int RGBA_BPTC_Format = 36492;
-const int LoopOnce = 2200;
-const int LoopRepeat = 2201;
-const int LoopPingPong = 2202;
+
+
+//const int LoopOnce = 2200;
+//const int LoopRepeat = 2201;
+//const int LoopPingPong = 2202;
+enum class LoopMode : int {
+    Unknown			= 0,
+    LoopOnce = 2200,
+    LoopRepeat = 2201,
+    LoopPingPong = 2202
+};
 
 //const int InterpolateDiscrete = 2300;
 //const int InterpolateLinear = 2301;

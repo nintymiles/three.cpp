@@ -20,6 +20,8 @@ class AnimationClip {
     AnimationBlendMode blendMode;
     sole::uuid uuid;
 public:
+    using sptr = std::shared_ptr<AnimationClip>;
+
     AnimationClip(std::string name, std::vector<KeyframeTrack::sptr> tracks, float duration = - 1, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
                 name(name),tracks(tracks),duration(duration),blendMode(blendMode),uuid(sole::uuid1()){
         // this means it should figure out its duration by scanning the tracks
