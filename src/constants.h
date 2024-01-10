@@ -370,9 +370,15 @@ enum class Interpolate : int {
     InterpolateSmooth = 2302
 };
 
-const int ZeroCurvatureEnding = 2400;
-const int ZeroSlopeEnding = 2401;
-const int WrapAroundEnding = 2402;
+//const int ZeroCurvatureEnding = 2400;
+//const int ZeroSlopeEnding = 2401;
+//const int WrapAroundEnding = 2402;
+enum class InterpolateParam : int {
+    Unknown			= 0,
+    ZeroCurvatureEnding = 2400,
+    ZeroSlopeEnding = 2401,
+    WrapAroundEnding = 2402
+};
 
 //const int NormalAnimationBlendMode = 2500;
 //const int AdditiveAnimationBlendMode = 2501;

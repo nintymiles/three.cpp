@@ -36,7 +36,7 @@ public:
 
     AnimationAction& startAt( float time );
 
-//    AnimationAction& setLoop( mode, repetitions ) {
+//    AnimationAction& setLoop( LoopMode mode, repetitions ) {
 //
 //        this.loop = mode;
 //        this.repetitions = repetitions;
