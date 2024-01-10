@@ -183,6 +183,7 @@ public:
 
         return *this;
     }
+
     bool equals(const Quaternion& quaternion);
 
     Quaternion& fromArray(const float* array, unsigned offset = 0) {
@@ -275,7 +276,7 @@ public:
         return *this;
     }
 
-    Quaternion& slerpFlat(float* dst, unsigned dstOffset, const float* src0, unsigned srcOffset0, const float* src1, unsigned srcOffset1, float t) {
+    static float* slerpFlat(float* dst, unsigned dstOffset, const float* src0, unsigned srcOffset0, const float* src1, unsigned srcOffset1, float t) {
 
         float x0 = src0[srcOffset0 + 0], y0 = src0[srcOffset0 + 1], z0 = src0[srcOffset0 + 2], w0 = src0[srcOffset0 + 3],
                 x1 = src1[srcOffset1 + 0], y1 = src1[srcOffset1 + 1], z1 = src1[srcOffset1 + 2], w1 = src1[srcOffset1 + 3];
@@ -326,7 +327,81 @@ public:
         dst[dstOffset + 2] = z0;
         dst[dstOffset + 3] = w0;
 
-        return *this;
+        return dst;
+    }
+
+    static std::vector<float>& slerpFlat(std::vector<float>& dst, unsigned dstOffset, std::vector<float>& src0, unsigned srcOffset0, std::vector<float>& src1, unsigned srcOffset1, float t) {
+
+        float x0 = src0[srcOffset0 + 0], y0 = src0[srcOffset0 + 1], z0 = src0[srcOffset0 + 2], w0 = src0[srcOffset0 + 3],
+                x1 = src1[srcOffset1 + 0], y1 = src1[srcOffset1 + 1], z1 = src1[srcOffset1 + 2], w1 = src1[srcOffset1 + 3];
+
+        if (w0 != w1 || x0 != x1 || y0 != y1 || z0 != z1) {
+
+            float s = 1 - t,
+                    _cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1,
+                    sqrSin = 1 - _cos * _cos;
+
+            int dir = (_cos >= 0 ? 1 : -1);
+
+
+            // Skip the Slerp for tiny steps to avoid numeric problems:
+            if (sqrSin > std::numeric_limits<float>::epsilon()) {
+
+                float _sin = sqrt(sqrSin),
+                        len = atan2(_sin, _cos * dir);
+
+                s = sin(s * len) / _sin;
+                t = sin(t * len) / _sin;
+
+            }
+
+            float tDir = t * dir;
+
+            x0 = x0 * s + x1 * tDir;
+            y0 = y0 * s + y1 * tDir;
+            z0 = z0 * s + z1 * tDir;
+            w0 = w0 * s + w1 * tDir;
+
+            // Normalize in case we just did a lerp:
+            if (s == 1 - t) {
+
+                float f = 1 / sqrt(x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0);
+
+                x0 *= f;
+                y0 *= f;
+                z0 *= f;
+                w0 *= f;
+
+            }
+
+        }
+
+        dst[dstOffset] = x0;
+        dst[dstOffset + 1] = y0;
+        dst[dstOffset + 2] = z0;
+        dst[dstOffset + 3] = w0;
+
+        return dst;
+    }
+
+    static std::vector<float>& multiplyQuaternionsFlat(std::vector<float>& dst,int dstOffset,std::vector<float> src0,int srcOffset0,std::vector<float> src1,int srcOffset1) {
+
+        const double x0 = src0[ srcOffset0 ];
+        const double y0 = src0[ srcOffset0 + 1 ];
+        const double z0 = src0[ srcOffset0 + 2 ];
+        const double w0 = src0[ srcOffset0 + 3 ];
+
+        const double x1 = src1[ srcOffset1 ];
+        const double y1 = src1[ srcOffset1 + 1 ];
+        const double z1 = src1[ srcOffset1 + 2 ];
+        const double w1 = src1[ srcOffset1 + 3 ];
+
+        dst[ dstOffset ] = x0 * w1 + w0 * x1 + y0 * z1 - z0 * y1;
+        dst[ dstOffset + 1 ] = y0 * w1 + w0 * y1 + z0 * x1 - x0 * z1;
+        dst[ dstOffset + 2 ] = z0 * w1 + w0 * z1 + x0 * y1 - y0 * x1;
+        dst[ dstOffset + 3 ] = w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1;
+
+        return dst;
     }
 
     Quaternion& operator *=(const Quaternion& q) {
