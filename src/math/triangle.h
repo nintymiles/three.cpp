@@ -27,6 +27,12 @@ public:
 
     virtual ~Triangle() = default;
 
+    static Vector2& getUV(Vector3& point,Vector3& p1,Vector3& p2,Vector3 & p3,Vector2& uv1,Vector2& uv2,Vector2& uv3,Vector2& target);
+
+    static Vector3& getBarycoord(Vector3& point, Vector3& a, Vector3& b, Vector3& c, Vector3& target);
+
+    static Vector3& getNormal(Vector3& a,Vector3& b,Vector3& c,	Vector3& target);
+
     Triangle& set(Vector3 a, Vector3 b, Vector3 c);
 
     Triangle& setFromPointsAndIndices(Vector3* points,unsigned i0,	unsigned i1,unsigned i2);
@@ -43,8 +49,6 @@ public:
 
     Plane& getPlane(Plane* target);
 
-    Vector3& getBarycoord(Vector3& point, Vector3& a, Vector3& b, Vector3& c, Vector3* target);
-
     Vector3& getBarycoord(Vector3& point, Vector3* target);
 
 
@@ -60,14 +64,10 @@ public:
 
     bool equals(Triangle& triangle);
 
-    Vector3& getNormal(Vector3& a,Vector3& b,Vector3& c,	Vector3* target);
-
-
     bool containsPoint(Vector3& point, Vector3& a, Vector3& b, Vector3& c);
 
-    Vector2& getUV(Vector3& point,Vector3& p1,Vector3& p2,Vector3 & p3,Vector2& uv1,Vector2& uv2,Vector2& uv3,Vector2* target);
-
     bool isFrontFacing(Vector3& a, Vector3& b, Vector3& c, Vector3& direction);
+
 };
 
 ////#include <gsl/gsl>

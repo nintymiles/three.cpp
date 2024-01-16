@@ -10,6 +10,7 @@
 class AnimationAction;
 class PropertyMixer;
 class Interpolant;
+struct AnimationStatus;
 class AnimationMixer {
     Object3D::sptr _root;
     size_t _accuIndex;

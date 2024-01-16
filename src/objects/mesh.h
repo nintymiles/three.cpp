@@ -9,7 +9,10 @@
 #include "geometry.h"
 #include "material.h"
 
-class Mesh : public Object3D {
+#include <memory>
+
+class Ray;
+class Mesh : public Object3D,public std::enable_shared_from_this<Mesh> {
 public:
 
     Mesh();
@@ -26,8 +29,6 @@ public:
     using sptr = std::shared_ptr<Mesh>;
     unsigned drawMode;
 
-
-
     static sptr create() {
         return std::make_shared<Mesh>(Mesh());
     }
@@ -43,16 +44,20 @@ public:
     }
     void set(const Geometry::sptr& geometry, const Material::sptr& material);
     void updateMorphTargets();
-    //void raycast();
+
+    Vector3& getVertexPosition(size_t index, Vector3& target);
 
     virtual Mesh* clone(bool recursive = true);
 
-    /**
-     *
-     * @param object
-     * @param recursive
-     */
     virtual Mesh& copy(const Mesh& source, bool recursive = true);
+
+    Object3D& raycast(Raycaster& raycaster, std::vector<std::shared_ptr<IntersectionData>> &intersects) override;
 };
+
+std::shared_ptr<IntersectionData> checkIntersection( Mesh::sptr object, Material::sptr material, Raycaster& raycaster, Ray& ray,
+                                                     Vector3& pA, Vector3& pB, Vector3& pC, Vector3& targetPoint );
+
+std::shared_ptr<IntersectionData> checkBufferGeometryIntersection( Mesh::sptr object, Material::sptr material, Raycaster& raycaster,
+                                                                   Ray& ray, BufferAttribute<float>::sptr uv, BufferAttribute<float>::sptr uv2, size_t a, size_t b, size_t c );
 
 #endif //THREE_CPP_MESH_H

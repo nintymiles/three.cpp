@@ -139,6 +139,10 @@ Material* Material::clone(){
     return new Material(*this);
 }
 
+Material::sptr Material::cloneShared(){
+    return std::make_shared<Material>(*this);
+}
+
 Material& Material::copy(const Material& source){
     type = source.type;
     name = source.name;

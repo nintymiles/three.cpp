@@ -950,7 +950,7 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
     auto rangeCount = geometry->drawRange.count * rangeFactor;
 
     auto groupStart = geometryGroup != NULL ? geometryGroup->start * rangeFactor : 0;
-    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : std::numeric_limits<unsigned>::quiet_NaN();
+    unsigned groupCount = geometryGroup != NULL ? geometryGroup->count * rangeFactor : 0;
 
     auto drawStart = std::max(rangeStart, groupStart);
     auto drawEnd =   std::max(std::max(dataCount, rangeStart + rangeCount), groupStart + groupCount);
@@ -960,7 +960,6 @@ void GLRenderer::renderBufferDirect(const Camera::sptr& camera, Scene::sptr& sce
     if (drawCount <= 0) return;
 
     //
-
     if (instanceOf<Mesh>(object.get())) {
 
         if (material->wireframe == true) {

@@ -271,6 +271,10 @@ public:
 
     Vector3 getMouseProjectionOnBall(float pageX, float pageY);
 
+    Vector2 getMousePos() override{
+        return mousePos;
+    };
+
 //    OrbitControl& handleMouseDownRotate( event ) {
 //
 //        rotateStart.set( event.clientX, event.clientY );

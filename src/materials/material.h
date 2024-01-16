@@ -453,6 +453,8 @@ public:
      */
     virtual Material* clone();
 
+    virtual std::shared_ptr<Material> cloneShared();
+
     /**
      * Copy the parameters from the passed material into this material.
      * @param material

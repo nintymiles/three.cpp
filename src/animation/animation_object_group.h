@@ -48,6 +48,7 @@ class AnimationObjectGroup {
     size_t nCachedObjects_; // threshold
     std::map<sole::uuid,size_t> _indicesByUUID;
     std::vector<Object3D::sptr> _objects;
+    std::vector<Object3D::sptr> objects;
     std::vector<std::string> _paths,_parsedPaths;
     std::vector<std::shared_ptr<PropertyBinding>> _bindings;
     std::map<std::string,sole::uuid> _bindingsIndicesByPath;

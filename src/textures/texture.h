@@ -23,7 +23,7 @@
 
 struct TexImageInfo{
     std::vector<unsigned char> imageData;
-    size_t width,height;
+    size_t width,height,depth;
     int channels;
 
     using sptr = std::shared_ptr<TexImageInfo>;

@@ -53,14 +53,14 @@ struct UpdateRange {
     size_t start;
     size_t count;
 
-    UpdateRange(size_t offset = 0, size_t count = (std::numeric_limits<size_t>::quiet_NaN())) :start(offset), count(count) {}
+    UpdateRange(size_t offset = 0, int count = 0) :start(offset), count(count) {}
 };
 
 struct DrawRange {
     unsigned start =0;
-    unsigned count = std::numeric_limits<unsigned>::quiet_NaN();
-    int materialIndex=-1;
-    DrawRange() :start(0), count(std::numeric_limits<unsigned>::quiet_NaN()), materialIndex(-1) {}
+    unsigned count = 0;
+    int materialIndex = -1;
+    DrawRange() :start(0), count(0), materialIndex(-1) {}
     DrawRange(unsigned start, unsigned count, int materialIndex) : start(start), count(count), materialIndex(materialIndex) {}
     bool equals(const DrawRange& target) {
         return start == target.start && count == target.count && materialIndex == target.materialIndex;

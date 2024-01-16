@@ -420,7 +420,7 @@ public:
     }
 
     template<typename T>
-    Vector2& fromBufferAttribute(const BufferAttribute<T>& attribute, unsigned index);
+    Vector2& fromBufferAttribute(typename BufferAttribute<T>::sptr attribute, unsigned index);
 
     Vector2& rotateAround(const Vector2& center, float angle)
     {
@@ -440,6 +440,9 @@ public:
         return stream.str();
     }
 };
+
+template<typename T>
+Vector2& fillVector2FromBufferAttribute(Vector2& vec2,std::shared_ptr<BufferAttribute<T>> attribute,unsigned index);
 
 //#include <stdexcept>
 //#include <vector>

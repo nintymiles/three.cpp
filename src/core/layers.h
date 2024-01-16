@@ -1,7 +1,10 @@
 #ifndef SRC_CORE_LAYERS_H_
 #define SRC_CORE_LAYERS_H_
 
+#include <memory>
+
 struct Layers {
+    using sptr = std::shared_ptr<Layers>;
     unsigned mask;
 
 	Layers():mask( 1|0 ){};

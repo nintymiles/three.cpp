@@ -115,7 +115,7 @@ public:
         glBindBuffer(bufferType, buffer);
 
 
-        if (updateRange.count == -1) {
+        if (updateRange.count == 0) {
 
             glBufferSubData(bufferType, 0, attribute.size * sizeof(T), array);
 

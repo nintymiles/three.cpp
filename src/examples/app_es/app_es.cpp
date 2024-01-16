@@ -28,6 +28,8 @@
 // settings
 int display_w=1102;
 int display_h=999;
+float display_x_scale=2.0f;
+float display_y_scale=2.0f;
 
 GLFWwindow* window;
 
@@ -217,6 +219,7 @@ int main(){
         // Rendering
         ImGui::Render();
         glfwGetFramebufferSize(window, &display_w, &display_h);
+        glfwGetWindowContentScale(window, &display_x_scale, &display_y_scale);
         glViewport(0, 0, display_w, display_h);
         //glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         //glClear(GL_COLOR_BUFFER_BIT);

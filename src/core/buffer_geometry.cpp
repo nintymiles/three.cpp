@@ -8,6 +8,8 @@
 #include "box3.h"
 #include "math_utils.h"
 
+#include "buffer_attribute.h"
+
 namespace buffer_geometry {
     Matrix4 _m1;
     Box3 _box;

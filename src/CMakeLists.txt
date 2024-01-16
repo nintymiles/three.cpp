@@ -56,8 +56,8 @@ file(GLOB OBJECTS_HEADER ${ROOT_DIR}/src/objects/*.h)
 file(GLOB SCENES_SOURCE ${ROOT_DIR}/src/scenes/*.cpp)
 file(GLOB SCENES_HEADER ${ROOT_DIR}/src/scenes/*.h)
 
-file(GLOB GEOMETRIES_SOURCE ${ROOT_DIR}/src/geometries/*.cpp)
-file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h)
+file(GLOB GEOMETRIES_SOURCE ${ROOT_DIR}/src/geometries/*.cpp;${ROOT_DIR}/src/geometries/extra/*.cpp)
+file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h;${ROOT_DIR}/src/geometries/extra/*.h)
 
 file(GLOB CURVES_SOURCE ${ROOT_DIR}/src/curves/*.cpp)
 file(GLOB CURVES_HEADER ${ROOT_DIR}/src/curves/*.h)
@@ -183,6 +183,7 @@ ${ROOT_DIR}/src/lights
 ${ROOT_DIR}/src/objects
 ${ROOT_DIR}/src/scenes
 ${ROOT_DIR}/src/geometries
+${ROOT_DIR}/src/geometries/extra
 ${ROOT_DIR}/src/curves
 ${ROOT_DIR}/src/helpers
 ${ROOT_DIR}/src/extra

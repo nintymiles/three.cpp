@@ -1,8 +1,9 @@
 #ifndef SRC_CORE_BUFFER_ATTRIBUTE_H_
 #define SRC_CORE_BUFFER_ATTRIBUTE_H_
+
+#include "vector2.h"
 #include "vector3.h"
 #include "vector4.h"
-#include "vector2.h"
 #include "constants.h"
 #include "common_types.h"
 #include "color.h"
@@ -23,6 +24,8 @@ using namespace math;
     class Matrix3;
     class Matrix4;
 }*/
+
+class Vector2;
 
 template<typename Type>
 class BufferAttribute {
@@ -89,6 +92,8 @@ public:
 
         this->array.resize(size);
 
+        this->updateRange = {0,-1};
+
         std::copy(array1.begin(), array1.end(), this->array.begin());
     }
 
@@ -119,8 +124,8 @@ public:
     static sptr create() {
         return sptr(new BufferAttribute());
     }
-    static sptr create(unsigned size, unsigned itemsize, bool normalized = false) {
-        return sptr(new BufferAttribute(nullptr, size, itemsize, normalized));
+    static sptr create(unsigned size, unsigned itemSize, bool normalized = false) {
+        return sptr(new BufferAttribute(nullptr, size, itemSize, normalized));
     }
 
     static sptr create(Type* array, unsigned size, unsigned itemSize, bool normalized = false) {
@@ -142,7 +147,7 @@ public:
 
     Usage usage;
 
-    threecpp::UpdateRange updateRange;
+    threecpp::UpdateRange updateRange{};
 
     unsigned version;
 

@@ -129,6 +129,10 @@ public:
         return new MeshPhongMaterial(*this);
     }
 
+    std::shared_ptr<Material> cloneShared(){
+        return std::make_shared<MeshPhongMaterial>(*this);
+    }
+
     MeshPhongMaterial& copy(const MeshPhongMaterial& source){
         Material::copy(source);
 

@@ -66,23 +66,8 @@ Vector3& Triangle::getMidpoint(Vector3* target){
     return *target;
 }
 
-Vector3& Triangle::getNormal(Vector3& a, Vector3& b, Vector3& c, Vector3* target){
-    target->subVectors(c, b);
-    _v0.subVectors(a, b);
-    target->cross(_v0);
-
-    float targetLengthSq = target->lengthSq();
-    if (targetLengthSq > 0) {
-
-        return target->multiplyScalar(1 / std::sqrt(targetLengthSq));
-
-    }
-
-    return target->set(0, 0, 0);
-}
-
 Vector3& Triangle::getNormal(Vector3* target){
-    return getNormal(a, b, c, target);
+    return getNormal(a, b, c, *target);
 }
 
 Plane& Triangle::getPlane(Plane* target){
@@ -91,50 +76,18 @@ Plane& Triangle::getPlane(Plane* target){
     return *target;
 }
 
-Vector3& Triangle::getBarycoord(Vector3& point, Vector3& a, Vector3& b, Vector3& c, Vector3* target){
-    _v0.subVectors(c, a);
-    _v1.subVectors(b, a);
-    _v2.subVectors(point, a);
-
-    float dot00 = _v0.dot(_v0);
-    float dot01 = _v0.dot(_v1);
-    float dot02 = _v0.dot(_v2);
-    float dot11 = _v1.dot(_v1);
-    float dot12 = _v1.dot(_v2);
-
-    float denom = (dot00 * dot11 - dot01 * dot01);
-
-
-
-    // collinear or singular triangle
-    if (denom == 0) {
-
-        // arbitrary location outside of triangle?
-        // not sure if this is the best idea, maybe should be returning undefined
-        return target->set(-2, -1, -1);
-
-    }
-
-    float invDenom = 1 / denom;
-    float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-    float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-    // barycentric coordinates must always sum to 1
-    return target->set(1 - u - v, v, u);
-}
-
 bool Triangle::containsPoint(Vector3& point, Vector3& a, Vector3& b, Vector3& c){
-    getBarycoord(point, a, b, c, &_v3);
+    getBarycoord(point, a, b, c, _v3);
 
     return (_v3.x >= 0) && (_v3.y >= 0) && ((_v3.x + _v3.y) <= 1);
 }
 
 Vector3& Triangle::getBarycoord(Vector3& point, Vector3* target){
-    return getBarycoord(point,a, b, c, target);
+    return getBarycoord(point,a, b, c, *target);
 }
 
 Vector2& Triangle::getUV(Vector3& point, Vector2& uv1, Vector2& uv2, Vector2& uv3, Vector2* target){
-    return getUV(point, a, b, c, uv1, uv2, uv3, target);
+    return getUV(point, a, b, c, uv1, uv2, uv3, *target);
 
 }
 
@@ -238,19 +191,64 @@ bool Triangle::equals(Triangle& triangle)
     return triangle.a.equals(a) && triangle.b.equals(b) && triangle.c.equals(c);
 }
 
-Vector2& Triangle::getUV(Vector3& point, Vector3& p1, Vector3& p2, Vector3& p3, Vector2& uv1, Vector2& uv2, Vector2& uv3, Vector2* target){
-    getBarycoord(point, p1, p2, p3, &_v3);
-
-    target->set(0, 0);
-    target->addScaledVector(uv1, _v3.x);
-    target->addScaledVector(uv2, _v3.y);
-    target->addScaledVector(uv3, _v3.z);
-
-    return *target;
-}
-
 bool Triangle::isFrontFacing(Vector3& a, Vector3& b, Vector3& c, Vector3& direction){
     return false;
+}
+
+Vector2& Triangle::getUV(Vector3& point, Vector3& p1, Vector3& p2, Vector3& p3, Vector2& uv1, Vector2& uv2, Vector2& uv3, Vector2& target){
+    getBarycoord(point, p1, p2, p3, _v3);
+
+    target.set(0, 0);
+    target.addScaledVector(uv1, _v3.x);
+    target.addScaledVector(uv2, _v3.y);
+    target.addScaledVector(uv3, _v3.z);
+
+    return target;
+}
+
+Vector3& Triangle::getBarycoord(Vector3& point, Vector3& a, Vector3& b, Vector3& c, Vector3& target){
+    _v0.subVectors(c, a);
+    _v1.subVectors(b, a);
+    _v2.subVectors(point, a);
+
+    float dot00 = _v0.dot(_v0);
+    float dot01 = _v0.dot(_v1);
+    float dot02 = _v0.dot(_v2);
+    float dot11 = _v1.dot(_v1);
+    float dot12 = _v1.dot(_v2);
+
+    float denom = (dot00 * dot11 - dot01 * dot01);
+
+
+
+    // collinear or singular triangle
+    if (denom == 0) {
+
+        // arbitrary location outside of triangle?
+        // not sure if this is the best idea, maybe should be returning undefined
+        return target.set(-2, -1, -1);
+
+    }
+
+    float invDenom = 1 / denom;
+    float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+    // barycentric coordinates must always sum to 1
+    return target.set(1 - u - v, v, u);
+}
+
+Vector3& Triangle::getNormal(Vector3& a, Vector3& b, Vector3& c, Vector3& target){
+    target.subVectors(c, b);
+    _v0.subVectors(a, b);
+    target.cross(_v0);
+
+    float targetLengthSq = target.lengthSq();
+    if (targetLengthSq > 0) {
+        return target.multiplyScalar(1 / std::sqrt(targetLengthSq));
+    }
+
+    return target.set(0, 0, 0);
 }
 
 

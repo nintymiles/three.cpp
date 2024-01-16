@@ -25,40 +25,39 @@ AnimationObjectGroup::AnimationObjectGroup(std::initializer_list<Object3D::sptr>
 
 void AnimationObjectGroup::add() {
 
-    auto objects = this->_objects;
-//    auto indicesByUUID = this->_indicesByUUID;
-//            paths = this._paths,
-//            parsedPaths = this._parsedPaths,
-//            bindings = this._bindings,
-//            nBindings = bindings.length;
-//
-//    let knownObject = undefined,
-//            nObjects = objects.length,
-//            nCachedObjects = this.nCachedObjects_;
-//
-//    for ( let i = 0, n = arguments.length; i !== n; ++ i ) {
-//
-//        const object = arguments[ i ],
-//                uuid = object.uuid;
-//        let index = indicesByUUID[ uuid ];
-//
-//        if ( index === undefined ) {
-//
-//            // unknown object -> add it to the ACTIVE region
-//
-//            index = nObjects ++;
-//            indicesByUUID[ uuid ] = index;
-//            objects.push( object );
-//
-//            // accounting is done, now do the same for all bindings
-//
-//            for ( let j = 0, m = nBindings; j !== m; ++ j ) {
-//
-//                bindings[ j ].push( new PropertyBinding( object, paths[ j ], parsedPaths[ j ] ) );
-//
-//            }
-//
-//        } else if ( index < nCachedObjects ) {
+    auto objects = this->objects;
+    auto indicesByUUID = this->_indicesByUUID;
+    auto paths = this->_paths,
+            parsedPaths = this->_parsedPaths;
+    auto bindings = this->_bindings;
+    auto nBindings = bindings.size();
+
+    //let knownObject = undefined,
+    auto nObjects = objects.size();
+    auto nCachedObjects = this->nCachedObjects_;
+
+    for ( size_t i = 0, n = this->_objects.size(); i != n; ++ i ) {
+
+        auto object = this->_objects[ i ];
+        auto uuid = object->uuid;
+        auto index = indicesByUUID[ uuid ];
+
+        if ( index == 0 ) {
+            // unknown object -> add it to the ACTIVE region
+            index = nObjects ++;
+            indicesByUUID[ uuid ] = index;
+            objects.push_back( object );
+
+            // accounting is done, now do the same for all bindings
+
+            for ( size_t j = 0, m = nBindings; j != m; ++ j ) {
+                //todo:fix this
+                //bindings[ j ]->push( new PropertyBinding( object, paths[ j ], parsedPaths[ j ] ) );
+
+            }
+
+        }
+//        else if ( index < nCachedObjects ) {
 //
 //            knownObject = objects[ index ];
 //
@@ -104,8 +103,8 @@ void AnimationObjectGroup::add() {
 //                           'detected. Clean the caches or recreate your infrastructure when reloading scenes.' );
 //
 //        } // else the object is already where we want it to be
-//
-//    } // for arguments
+
+    } // for arguments
 //
 //    this.nCachedObjects_ = nCachedObjects;
 

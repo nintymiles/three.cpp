@@ -25,6 +25,9 @@ class Camera;
 
 class GLRenderTarget;
 
+class Raycaster;
+struct IntersectionData;
+
 namespace object3d {
 static size_t _objectIdCount = 0;
 static Vector3 DefaultUp = Vector3(0,1,0);
@@ -380,7 +383,7 @@ public:
 
     virtual Vector3& getWorldDirection(Vector3& target);
 
-    //Object3D& raycast(raycaster: Raycaster, intersects : Intersection[]) ;
+    virtual Object3D& raycast(Raycaster& Raycaster, std::vector<std::shared_ptr<IntersectionData>>& intersects){}
 
     void traverse(std::function<void(Object3D&)> callback);
 
@@ -421,6 +424,8 @@ public:
     bool isLight = false;
 
     bool isMesh = false;
+
+    bool isSkinnedMesh = false;
 
     bool isPoints = false;
 

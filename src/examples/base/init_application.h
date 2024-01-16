@@ -50,6 +50,7 @@
 #include "gl_postprocessing_glitch.h"
 
 #include "gl_geometry_teapot.h"
+#include "gl_demo_decals.h"
 
 // settings
 extern int display_w;
@@ -337,6 +338,14 @@ static void ShowApplicationMenuBar() {
                     demoClasses["GL_Geometry_Teapot"] = std::make_shared<GLGeometryTeapot>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Geometry_Teapot"];
+                currentDemoClass->renderer->clear();
+            }
+
+            if (ImGui::MenuItem("GL_Demo_Decals", "")) {
+                if (demoClasses.count("GL_Demo_Decals") == 0)
+                    demoClasses["GL_Demo_Decals"] = std::make_shared<GLDemoDecals>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Demo_Decals"];
                 currentDemoClass->renderer->clear();
             }
 
