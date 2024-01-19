@@ -122,12 +122,10 @@ inline bool reversePainterSortStable(const RenderItem::sptr& a, const RenderItem
         return b->id > a->id;
     }
 }
+
 using glRenderListMapPtr = std::shared_ptr<std::unordered_map<sole::uuid, GLRenderList::sptr>>;
 
 class GLRenderLists : public std::unordered_map<sole::uuid, glRenderListMapPtr> {
-    /*private:
-        using ScenePtr = std::shared_ptr<Scene>;
-        using CameraPtr = std::shared_Ptr<Camera>;*/
 public:
     using ScenePtr = std::shared_ptr<Scene>;
     using CameraPtr = std::shared_ptr<Camera>;
@@ -135,6 +133,7 @@ public:
     using sptr = std::shared_ptr<GLRenderLists>;
 
     GLRenderLists() :std::unordered_map<sole::uuid, glRenderListMapPtr>() {}
+
     virtual ~GLRenderLists() = default;
 
     void onSceneDispose(const Scene& scene);

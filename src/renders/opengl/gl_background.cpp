@@ -15,6 +15,7 @@
 #include "gl_renderer.h"
 #include "gl_render_target.h"
 #include "gl_cube_maps.h"
+#include "gl_cubeuv_maps.h"
 
 #include "shader_chunk.h"
 
@@ -45,7 +46,7 @@ void GLBackground::setClearAlpha(float alpha){
     setClear(clearColor, clearAlpha);
 }
 
-void GLBackground::render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderList& renderList,Scene& scene, Camera& camera, bool forceClear){
+void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& scene, Camera& camera, bool forceClear){
     if (!scene.hasBackground()) {
         setClear(clearColor, clearAlpha);
     }
@@ -68,9 +69,9 @@ void GLBackground::render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderLis
             boxMesh = Mesh::create(std::make_shared<BoxGeometry>(1, 1, 1));
             ShaderMaterial::sptr shaderMaterial = ShaderMaterial::create();
             shaderMaterial->type = "BackgroundCubeMaterial";
-            shaderMaterial->uniforms = std::make_shared<UniformValues>(getShader("cube").uniforms);
-            shaderMaterial->vertexShader = getShader("cube").vertexShader;
-            shaderMaterial->fragmentShader = getShader("cube").fragmentShader;
+            shaderMaterial->uniforms = std::make_shared<UniformValues>(getShader("backgroundCube").uniforms);
+            shaderMaterial->vertexShader = getShader("backgroundCube").vertexShader;
+            shaderMaterial->fragmentShader = getShader("backgroundCube").fragmentShader;
             shaderMaterial->side = Side::BackSide;
             shaderMaterial->depthTest = false;
             shaderMaterial->depthWrite = false;
@@ -89,30 +90,32 @@ void GLBackground::render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderLis
             shaderMaterial->envMap = tex;//(*shaderMaterial->uniforms)["envMap"].get<Texture::sptr>();//->get<Texture::ptr>("envMap");
             objects->update(*boxMesh);
         }
-        Texture::sptr emptyTexture;
-        //todo:fix here
-        Texture::sptr texture = scene.getBackgroundCubeTexture();//scene.isGLCubeRenderTarget ? scene.getBackgroundCubeRenderTarget()->texture : emptyTexture;
 
         ShaderMaterial::sptr material = std::dynamic_pointer_cast<ShaderMaterial>(boxMesh->material);
-        material->uniforms->set("envMap", texture);
+        material->uniforms->set("envMap", tex);
 
-        if (scene.isCubeTexture)
-            material->uniforms->set("flipEnvMap", -1);
-        else
-            material->uniforms->set("flipEnvMap", 1);
+        float flipEnv = ( tex->isCubeTexture && tex->isRenderTargetTexture == false ) ? - 1.f : 1.f;
+        material->uniforms->set("flipEnvMap", flipEnv);
 
-        if ((scene.isColor && !((Color*)currentBackground)->equals(scene.getBackgroundColor()))
-            || (texture!=nullptr && texture->version != currentBackgroundVersion)
-            || (currentTonemapping != renderer.toneMapping)) {
-            material->needsUpdate = true;
+//        boxMesh.material.uniforms.backgroundBlurriness.value = scene.backgroundBlurriness;
+//        boxMesh.material.uniforms.backgroundIntensity.value = scene.backgroundIntensity;
+//        boxMesh.material.toneMapped = ( background.encoding === sRGBEncoding ) ? false : true;
 
-            currentBackground = (void *)&scene.getBackgroundColor();
+//        if ((scene.isColor && !((Color*)currentBackground)->equals(scene.getBackgroundColor()))
+//            || (tex!=nullptr && tex->version != currentBackgroundVersion)
+//            || (currentTonemapping != renderer.toneMapping)) {
+//            material->needsUpdate = true;
+//
+//            currentBackground = (void *)&scene.getBackgroundColor();
+//
+//            if (tex!=nullptr)
+//                currentBackgroundVersion = tex->version;
+//
+//            currentTonemapping = renderer.toneMapping;
+//        }
+        material->setNeedsUpdate(true);
+        boxMesh->layers.enableAll();
 
-            if (texture!=nullptr)
-                currentBackgroundVersion = texture->version;
-
-            currentTonemapping = renderer.toneMapping;
-        }
         renderList.unshift(boxMesh, std::dynamic_pointer_cast<BufferGeometry>(boxMesh->geometry), boxMesh->material, 0, 0, nullptr);
     } else if (scene.isTexture) { //scene background is texture
         if (planeMesh == nullptr) {
@@ -142,17 +145,17 @@ void GLBackground::render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderLis
             scene.getBackgroundTexture()->updateMatrix();
         }
         material->uniforms->set("uvTransform", scene.getBackgroundTexture()->matrix);
-        if ((Texture*)currentBackground != scene.getBackgroundTexture().get() ||
-            currentBackgroundVersion != scene.getBackgroundTexture()->version ||
-            currentTonemapping != renderer.toneMapping) {
-
-            material->needsUpdate = true;
-
-            //fixme: refactor this shared_ptr to naked_ptr
-            currentBackground = (void *)scene.getBackgroundTexture().get();
-            currentBackgroundVersion = scene.getBackgroundTexture()->version;
-            currentTonemapping = renderer.toneMapping;
-        }
+//        if ((Texture*)currentBackground != scene.getBackgroundTexture().get() ||
+//            currentBackgroundVersion != scene.getBackgroundTexture()->version ||
+//            currentTonemapping != renderer.toneMapping) {
+//
+//            material->needsUpdate = true;
+//
+//            //fixme: refactor this shared_ptr to naked_ptr
+//            currentBackground = (void *)scene.getBackgroundTexture().get();
+//            currentBackgroundVersion = scene.getBackgroundTexture()->version;
+//            currentTonemapping = renderer.toneMapping;
+//        }
 
         renderList.unshift(planeMesh, std::dynamic_pointer_cast<BufferGeometry>(planeMesh->geometry), planeMesh->material, 0, 0, nullptr);
     }

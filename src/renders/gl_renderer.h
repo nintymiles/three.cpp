@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <typeinfo>
 #include <memory>
+#include <optional>
 
 class GLRenderer {
     struct GeometryProgram {
@@ -54,6 +55,11 @@ class GLRenderer {
 private:
     GLRenderState::sptr currentRenderState;
     GLRenderList::sptr currentRenderList;
+
+    // render() can be called from within a callback triggered by another render.
+    // We track this so that the nested render call gets its list and state isolated from the parent render call.
+    std::vector<GLRenderList::sptr> renderListStack{};
+    std::vector<GLRenderState::sptr> renderStateStack{};
 
     GLCapabilities::GLCapabilitiesParameters capabilitiesParameter;
 
@@ -105,9 +111,9 @@ private:
 
     GLBindingStates::sptr bindingStates;
 
-    GLCubeMaps* cubeMaps;
+    GLCubeMaps::sptr cubeMaps;
 
-    GLCubeUVMaps* cubeUVMaps;
+    GLCubeUVMaps::sptr cubeUVMaps;
 
     void initGLContext(int width,int height);
 
@@ -131,6 +137,8 @@ private:
 
     void renderObject(const Object3D::sptr& object, Scene::sptr& scene, const Camera::sptr& camera, const BufferGeometry::sptr& geometry,
                       const Material::sptr& material, threecpp::DrawRange* group=NULL);
+
+    void renderScene(GLRenderList::sptr& currentRenderList, Scene::sptr& scene, const Camera::sptr& camera, std::optional<Vector4> viewport = std::nullopt );
 
     void renderObjectImmediate(const Object3D::sptr& object, const GLProgram::sptr& program);
 
@@ -391,9 +399,9 @@ public:
      * @param activeCubeFace Specifies the active cube side (PX 0, NX 1, PY 2, NY 3, PZ 4, NZ 5) of {@link WebGLCubeRenderTarget}.
      * @param activeMipmapLevel Specifies the active mipmap level.
      */
-    void setRenderTarget(const GLRenderTarget::sptr& renderTarget, int activeCubeFace=std::numeric_limits<int>::quiet_NaN(), int activeMipmapLevel = std::numeric_limits<int>::quiet_NaN());
+    void setRenderTarget(const GLRenderTarget::sptr& renderTarget, int activeCubeFace=0, int activeMipmapLevel = 0);
 
-    void readRenderTargetPixels(const GLRenderTarget::sptr& renderTarget, float x, float y, float width, float height, int activeCubeFaceIndex = std::numeric_limits<int>::quiet_NaN());
+    void readRenderTargetPixels(const GLRenderTarget::sptr& renderTarget, float x, float y, float width, float height, int activeCubeFaceIndex = -1);
 
 
     /**
@@ -404,7 +412,7 @@ public:
      * @param texture Specifies the destination texture.
      * @param level Specifies the destination mipmap level of the texture.
      */
-    void copyFramebufferToTexture(const Vector2& position,const Texture::sptr& texture,int level=std::numeric_limits<int>::quiet_NaN());
+    void copyFramebufferToTexture(const Vector2& position,const Texture::sptr& texture,int level=0);
 
     /**
      * Copies srcTexture to the specified level of dstTexture, offset by the input position.
@@ -414,7 +422,7 @@ public:
      * @param dstTexture Specifies the destination texture.
      * @param level Specifies the destination mipmap level of the texture.
      */
-    void copyTextureToTexture(const Vector2& position, const Texture::sptr& srcTexture, const Texture::sptr& dstTexture, int level = std::numeric_limits<int>::quiet_NaN());
+    void copyTextureToTexture(const Vector2& position, const Texture::sptr& srcTexture, const Texture::sptr& dstTexture, int level = 0);
 
     /**
      * Initializes the given texture. Can be used to preload a texture rather than waiting until first render (which can cause noticeable lags due to decode and GPU upload overhead).

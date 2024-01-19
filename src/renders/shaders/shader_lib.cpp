@@ -192,11 +192,23 @@ public:
             )
         );
 
+        add("backgroundCube",
+            GLShader(getShaderChunk(ShaderLibID::backgroundCube_vert), getShaderChunk(ShaderLibID::backgroundCube_frag),
+                     merged({
+                                    "envMap"
+                            }).add({
+                                {"flipEnvMap",1.0f},
+                                {"backgroundBlurriness",1.0f},
+                                {"backgroundIntensity",1.0f}
+                            })
+            )
+        );
+
 
         add("cube",
             GLShader(getShaderChunk(ShaderLibID::cube_vert), getShaderChunk(ShaderLibID::cube_frag),
                      merged({
-                                    "envmap"
+                                    "tCube"
                             }).add({
                                            {"opacity",1.0f}
                                    })

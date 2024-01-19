@@ -60,8 +60,8 @@ void GLRenderer::initGLContext(int width, int height){
     state->scissor(_currentScissor);
     state->viewport(_currentViewport);
 
-    cubeMaps = new GLCubeMaps(this);
-    cubeUVMaps = new GLCubeUVMaps(this);
+    cubeMaps = GLCubeMaps::create(this);
+    cubeUVMaps = GLCubeUVMaps::create(this);
 
     textures = std::make_shared<GLTextures>(extensions, state, properties, capabilities, info);
 
@@ -81,7 +81,7 @@ void GLRenderer::initGLContext(int width, int height){
 
     renderStates = std::make_shared<GLRenderStates>();
 
-    background = std::make_shared<GLBackground>(state, objects, premultipliedAlpha);
+    background = std::make_shared<GLBackground>(cubeMaps,cubeUVMaps,state, objects, premultipliedAlpha);
 
     bufferRenderer = GLBufferRenderer(extensions, info, capabilities);
 
@@ -656,6 +656,37 @@ void GLRenderer::renderObject(const Object3D::sptr& object, Scene::sptr& scene, 
     currentRenderState = renderStates->get(scene, _currentArrayCamera != nullptr ? _currentArrayCamera : camera);
 }
 
+void GLRenderer::renderScene(GLRenderList::sptr& currentRenderList, Scene::sptr& scene, const Camera::sptr& camera, std::optional<Vector4> viewport ) {
+
+//    const opaqueObjects = currentRenderList.opaque;
+//    const transmissiveObjects = currentRenderList.transmissive;
+//    const transparentObjects = currentRenderList.transparent;
+    auto opaqueObjects = currentRenderList->opaque;
+    auto transparentObjects = currentRenderList->transparent;
+
+    //currentRenderState->setupLightsView( camera );
+
+    //if ( transmissiveObjects.length > 0 ) renderTransmissionPass( opaqueObjects, scene, camera );
+
+    if ( viewport ) state->viewport( _currentViewport.copy( viewport.value() ) );
+
+    if (opaqueObjects.size())
+        renderObjects(opaqueObjects, scene, camera);
+
+//    if ( transmissiveObjects.length > 0 ) renderObjects( transmissiveObjects, scene, camera );
+
+    if (transparentObjects.size())
+        renderObjects(transparentObjects, scene, camera);
+
+    // Ensure depth buffer writing is enabled so it can be cleared on next render
+    state->depthBuffer.setTest(true);
+    state->depthBuffer.setMask(true);
+    state->colorBuffer.setMask(true);
+
+    state->setPolygonOffset(false);
+
+}
+
 void GLRenderer::renderObjectImmediate(const Object3D::sptr& object, const GLProgram::sptr& program){
     renderBufferImmediate(object, program);
 }
@@ -1045,14 +1076,21 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
     if (scene->autoUpdate == true) scene->updateMatrixWorld();
 
     // update camera matrices and frustum
-    if (camera->parent == nullptr) camera->updateMatrixWorld();
+    if (!camera->parent && camera->matrixAutoUpdate == true) camera->updateMatrixWorld();
 
-    //std::any _renderTarget = static_cast<std::any>(renderTarget.get());
+//    if ( xr.enabled === true && xr.isPresenting === true ) {
+//        if ( xr.cameraAutoUpdate === true ) xr.updateCamera( camera );
+//
+//        camera = xr.getCamera(); // use XR camera for rendering
+//    }
 
-    //scene->onBeforeRender.emitSignal(*this, *scene, *camera, *renderTarget,NULL);
+//    if ( sceneisScene == true ) scene.onBeforeRender( _this, scene, camera, _currentRenderTarget );
+//    scene->onBeforeRender.emitSignal(*this, *scene, *camera, *renderTarget,NULL);
 
     currentRenderState = renderStates->get(scene, camera);
     currentRenderState->init();
+
+    renderStateStack.push_back( currentRenderState );
 
     _projScreenMatrix.multiplyMatrices(camera->projectionMatrix, camera->matrixWorldInverse);
     _frustum.setFromProjectionMatrix(_projScreenMatrix);
@@ -1062,6 +1100,8 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
 
     currentRenderList = renderLists->get(scene, camera);
     currentRenderList->init();
+
+    renderListStack.push_back(currentRenderList);
 
     projectObject(scene, *camera, 0, sortObjects);
 
@@ -1081,25 +1121,30 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
 
     if (info->autoReset) info->reset();
 
+    //autoClear = scene->clearBeforeRender;
+    background->render(*this,*currentRenderList, *scene, *camera, forceClear);
+
     currentRenderState->setupLights(camera);
 
     if (renderTarget != nullptr) {
         setRenderTarget(renderTarget);
     }
 
-    //autoClear = scene->clearBeforeRender;
-    background->render(*this,cubeMaps,*currentRenderList, *scene, *camera, forceClear);
+    if ( camera->isArrayCamera ) {
+//        const cameras = camera->cameras;
+//
+//        for ( let i = 0, l = cameras.length; i < l; i ++ ) {
+//
+//            const camera2 = cameras[ i ];
+//
+//            renderScene( currentRenderList, scene, camera2, camera2.viewport );
+//
+//        }
+    } else {
+        renderScene( currentRenderList, scene, camera );
+    }
 
-    auto opaqueObjects = currentRenderList->opaque;
-    auto transparentObjects = currentRenderList->transparent;
 
-    if (opaqueObjects.size())
-        renderObjects(opaqueObjects, scene, camera);
-
-    if (transparentObjects.size())
-        renderObjects(transparentObjects, scene, camera);
-
-    //scene->onAfterRender.emitSignal(*this, *scene, *camera,nullObject,NULL);
     if (_currentRenderTarget != nullptr) {
         // Generate mipmap if we're using any kind of mipmap filtering
         textures->updateRenderTargetMipmap(*_currentRenderTarget);
@@ -1107,15 +1152,29 @@ void GLRenderer::render(Scene::sptr& scene, const Camera::sptr& camera){
         // resolve multisample renderbuffers to a single-sample texture if necessary
         textures->updateMultisampleRenderTarget(*_currentRenderTarget);
     }
+    //scene->onAfterRender.emitSignal(*this, *scene, *camera,nullObject,NULL);
 
-    // Ensure depth buffer writing is enabled so it can be cleared on next render
-    state->depthBuffer.setTest(true);
-    state->depthBuffer.setMask(true);
-    state->colorBuffer.setMask(true);
+    // _gl.finish();
 
-    state->setPolygonOffset(false);
+    bindingStates->resetDefaultState();
+    _currentMaterialId = - 1;
+    _currentCamera = nullptr;
 
-    currentRenderList.reset();
+    renderStateStack.pop_back();
+
+    if ( renderStateStack.size() > 0 ) {
+        currentRenderState = renderStateStack[ renderStateStack.size() - 1 ];
+    } else {
+        currentRenderState = nullptr;
+    }
+
+    renderListStack.pop_back();
+
+    if ( renderListStack.size() > 0 ) {
+        currentRenderList = renderListStack[ renderListStack.size() - 1 ];
+    } else {
+        currentRenderList = nullptr;
+    }
 }
 
 int GLRenderer::getActiveCubeFace(){
@@ -1140,7 +1199,7 @@ void GLRenderer::setRenderTarget(const GLRenderTarget::sptr& renderTarget, int a
     bool containFrameBuffer = false;
     if (renderTarget!=nullptr) {
         auto& rtProperties = properties->getProperties(renderTarget->uuid);
-        if (rtProperties.framebuffer)
+        if ( rtProperties.framebuffer > -1 || rtProperties.framebuffers.size() > 0 )
             containFrameBuffer = true;
     }
     if (renderTarget != nullptr && !containFrameBuffer) {
@@ -1154,7 +1213,7 @@ void GLRenderer::setRenderTarget(const GLRenderTarget::sptr& renderTarget, int a
         auto& rtProperties = properties->getProperties(renderTarget->uuid);
         if (renderTarget->isGLCubeRenderTarget) {
             std::vector<GLint> __glFramebuffer = rtProperties.framebuffers;
-            framebuffer = __glFramebuffer[activeCubeFace || 0];
+            framebuffer = __glFramebuffer[activeCubeFace];
             isCube = true;
         }
         else if (renderTarget->isGLMultisampleRenderTarget) {
@@ -1184,8 +1243,8 @@ void GLRenderer::setRenderTarget(const GLRenderTarget::sptr& renderTarget, int a
 
     if (isCube) {
         auto& textureProperties = properties->getProperties(renderTarget->texture->uuid);
-        GLuint glTexture = textureProperties.texture;
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + (activeCubeFace || 0), glTexture, activeMipmapLevel || 0);
+        GLuint glTexture = textureProperties.texture; //renderTarget->texture->images[0]->id
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + activeCubeFace, glTexture, activeMipmapLevel);
     }
 
 }

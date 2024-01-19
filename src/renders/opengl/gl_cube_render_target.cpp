@@ -14,7 +14,7 @@
 GLCubeRenderTarget::GLCubeRenderTarget( int size,GLRenderTargetParameter::sptr options ) : GLRenderTarget(size,size,options) {
     this->type = "GLCubeRenderTarget";
 
-    isGLCubeRenderTarget = true;
+    this->isGLCubeRenderTarget = true;
 
 //        const image = { width: size, height: size, depth: 1 };
 //        const images = [ image, image, image, image, image, image ];
@@ -33,7 +33,6 @@ GLCubeRenderTarget::GLCubeRenderTarget( int size,GLRenderTargetParameter::sptr o
     // three.js uses a right-handed coordinate system. So environment maps used in three.js appear to have px and nx swapped
     // and the flag isRenderTargetTexture controls this conversion. The flip is not required when using WebGLCubeRenderTarget.texture
     // as a cube texture (this is detected when isRenderTargetTexture is set to true for cube textures).
-
     texture->isRenderTargetTexture = true;
 
     texture->generateMipmaps = options->generateMipmaps;
@@ -64,42 +63,42 @@ GLCubeRenderTarget& GLCubeRenderTarget::fromEquirectangularTexture( GLRenderer* 
 
                 varying vec3 vWorldDirection;
 
-                vec3 transformDirection( in vec3 dir, in mat4 matrix ) {
+				vec3 transformDirection( in vec3 dir, in mat4 matrix ) {
 
-                    return normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );
+					return normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );
 
-                }
+				}
 
-                void main() {
+				void main() {
 
-                    vWorldDirection = transformDirection( position, modelMatrix );
+					vWorldDirection = transformDirection( position, modelMatrix );
 
-                    #include <begin_vertex>
-                    #include <project_vertex>
+					#include <begin_vertex>
+					#include <project_vertex>
 
-                }
+				}
         )"";
 
     shaderMaterial->fragmentShader = /* glsl */R""(
 
                 uniform sampler2D tEquirect;
 
-                varying vec3 vWorldDirection;
+				varying vec3 vWorldDirection;
 
-#include <common>
+				#include <common>
 
-                void main() {
+				void main() {
 
-                    vec3 direction = normalize( vWorldDirection );
+					vec3 direction = normalize( vWorldDirection );
 
-                    vec2 sampleUV = equirectUv( direction );
+					vec2 sampleUV = equirectUv( direction );
 
-                    gl_FragColor = texture2D( tEquirect, sampleUV );
+					gl_FragColor = texture2D( tEquirect, sampleUV );
 
-                }
+				}
         )"";
     shaderMaterial->side = Side::BackSide;
-    //shaderMaterial->blending = NoBlending;
+    shaderMaterial->blending = Blending::NoBlending;
 
     auto mesh = Mesh::create( geometry, shaderMaterial );
 
@@ -108,12 +107,10 @@ GLCubeRenderTarget& GLCubeRenderTarget::fromEquirectangularTexture( GLRenderer* 
     // Avoid blurred poles
     if ( texture->minFilter == TextureFilter::LinearMipmapLinearFilter ) texture->minFilter = TextureFilter::LinearFilter;
 
-    GLCubeRenderTarget::sptr renderTarget = GLCubeRenderTarget::create(texture->image->height);
-    renderTarget->clone(this);
-    auto camera = new CubeCamera( 1, 10, renderTarget );
-    Scene::sptr scene1 = Scene::create();
-    scene1->add(mesh);
-    camera->update( renderer, scene1 );
+    auto camera = CubeCamera( 1, 10, shared_from_this() );
+    Scene::sptr scene = Scene::create();
+    scene->add(mesh);
+    camera.update( renderer, scene );
     //delete camera;
 
     texture->minFilter = currentMinFilter;

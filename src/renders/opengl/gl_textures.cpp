@@ -877,7 +877,7 @@ void GLTextures::setTextureCube(Texture& texture, unsigned slot){
 
                     }
 
-                }else {
+                }else{
                     state->texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, glInternalFormat, widths[i],heights[i],0,glFormat, glType, cubeImage[i]);
 
                     for (int j = 0; j < mipmaps.size(); j++) {

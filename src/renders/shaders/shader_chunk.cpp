@@ -140,6 +140,8 @@
 #include "shader_lib/sprite_frag.h"
 #include "shader_lib/background_vert.h"
 #include "shader_lib/background_frag.h"
+#include "shader_lib/backgroundCube_vert.h"
+#include "shader_lib/backgroundCube_frag.h"
 #include "shader_lib/cube_vert.h"
 #include "shader_lib/cube_frag.h"
 #include "shader_lib/equirect_vert.h"
@@ -289,6 +291,8 @@ static const std::unordered_map<std::string,ShaderLibID> ShaderLibMap = {
         {"sprite_frag",ShaderLibID::sprite_frag},
         {"background_vert",ShaderLibID::background_vert},
         {"background_frag",ShaderLibID::background_frag},
+        {"backgroundCube_vert",ShaderLibID::backgroundCube_vert},
+        {"backgroundCube_frag",ShaderLibID::backgroundCube_frag},
         {"cube_vert",ShaderLibID::cube_vert},
         {"cube_frag",ShaderLibID::cube_frag},
         {"equirect_vert",ShaderLibID::equirect_vert},
@@ -438,6 +442,8 @@ static const std::unordered_map<ShaderLibID,const char*> ShaderChunkMap = {
         {ShaderLibID::sprite_frag, sprite_frag},
         {ShaderLibID::background_vert,background_vert},
         {ShaderLibID::background_frag, background_frag},
+        {ShaderLibID::backgroundCube_vert,backgroundCube_vert},
+        {ShaderLibID::backgroundCube_frag,backgroundCube_frag},
         {ShaderLibID::cube_vert,cube_vert},
         {ShaderLibID::cube_frag, cube_frag},
         {ShaderLibID::equirect_vert,equirect_vert},

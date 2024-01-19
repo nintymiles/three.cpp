@@ -70,12 +70,12 @@ public:
 
         resourceDir = std::string(rootDir).append(fileSeparator).append("asset").append(fileSeparator)
                 .append("textures").append(fileSeparator);
-        auto textureEquirec = TextureLoader::load( resourceDir + "2294472375_24a3b8ef46_o.jpg" );
+        auto textureEquirec = TextureLoader::load(resourceDir + "2294472375_24a3b8ef46_o.jpg" );
         textureEquirec->mapping = TextureMapping::EquirectangularReflectionMapping;
-        //textureEquirec.encoding = THREE.sRGBEncoding;
+        //textureEquirec->encoding = TextureEncoding::sRGBEncoding;
 
-        scene->setBackgroundCubeTexture(texCube);
-//        scene->setBackgroundTexture(textureEquirec);
+//        scene->setBackgroundCubeTexture(texCube);
+        scene->setBackgroundTexture(textureEquirec);
 
         //
         auto geometry = IcosahedronBufferGeometry::create( 400, 5 );

@@ -43,6 +43,7 @@ void GLRenderList::push(const Object3D::sptr& object, const BufferGeometry::sptr
     else
         opaque.push_back(renderItem);
 }
+
 void GLRenderList::unshift(const Object3D::sptr& object, const BufferGeometry::sptr& geometry, const Material::sptr& material, int groupOrder, float z,
                            threecpp::DrawRange* group){
     auto renderItem = getNextRenderItem(object, geometry, material, groupOrder, z, group);
@@ -109,10 +110,9 @@ const GLRenderList::sptr& GLRenderLists::get(ScenePtr scene, CameraPtr camera){
         if (cameras->count(camera->uuid) == 0) {
             list = std::make_shared<GLRenderList>();
             cameras->insert({ camera->uuid,list });
+        } else {
+            list = cameras->at(camera->uuid);
         }
-        /*else {
-            list = cameras->at(camera->uuid.str());
-        }*/
     }
     return this->at(scene->uuid)->at(camera->uuid);
 }

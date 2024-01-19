@@ -12,7 +12,7 @@
 #include "gl_renderer.h"
 
 class CubeCamera: public Object3D{
-    const float fov = 90, aspect = 1;
+    const float fov = - 90, aspect = 1;
     GLRenderTarget::sptr renderTarget;
 
 public:
@@ -23,37 +23,37 @@ public:
 
         auto cameraPX = PerspectiveCamera::create( fov, aspect, _near, _far );
         cameraPX->layers = this->layers;
-        cameraPX->up.set( 0, - 1, 0 );
+        cameraPX->up.set( 0, 1, 0 );
         cameraPX->lookAt( Vector3( 1, 0, 0 ) );
         add( cameraPX );
 
         auto cameraNX = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraNX->layers = this->layers;
-        cameraNX->up.set( 0, - 1, 0 );
+        cameraNX->up.set( 0, 1, 0 );
         cameraNX->lookAt( Vector3( - 1, 0, 0 ) );
         add( cameraNX );
 
         auto cameraPY = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraPY->layers = this->layers;
-        cameraPY->up.set( 0, 0, 1 );
+        cameraPY->up.set( 0, 0, - 1 );
         cameraPY->lookAt( Vector3( 0, 1, 0 ) );
         add( cameraPY );
 
         auto cameraNY = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraNY->layers = this->layers;
-        cameraNY->up.set( 0, 0, - 1 );
+        cameraNY->up.set( 0, 0, 1 );
         cameraNY->lookAt( Vector3( 0, - 1, 0 ) );
         add( cameraNY );
 
         auto cameraPZ = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraPZ->layers = this->layers;
-        cameraPZ->up.set( 0, - 1, 0 );
+        cameraPZ->up.set( 0, 1, 0 );
         cameraPZ->lookAt( Vector3( 0, 0, 1 ) );
         add( cameraPZ );
 
         auto cameraNZ = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraNZ->layers = this->layers;
-        cameraNZ->up.set( 0, - 1, 0 );
+        cameraNZ->up.set( 0, 1, 0 );
         cameraNZ->lookAt( Vector3( 0, 0, - 1 ) );
         add( cameraNZ );
     }
@@ -62,7 +62,7 @@ public:
 
         if ( this->parent == nullptr ) this->updateMatrixWorld();
 
-        auto renderTarget = this->renderTarget;
+        auto renTarget = this->renderTarget;
 
         //const [ cameraPX, cameraNX, cameraPY, cameraNY, cameraPZ, cameraNZ ] = this.children;
         auto cameraPX = std::dynamic_pointer_cast<Camera>(children[0]);
@@ -80,30 +80,30 @@ public:
         renderer->toneMapping = ToneMapping::NoToneMapping;
         //renderer->xr.enabled = false;
 
-        auto generateMipmaps = renderTarget->texture->generateMipmaps;
+        auto generateMipmaps = renTarget->texture->generateMipmaps;
 
-        renderTarget->texture->generateMipmaps = false;
+        renTarget->texture->generateMipmaps = false;
 
 //        GLRenderTarget::sptr rendTarget;
 //        rendTarget.reset(renderTarget);
-        renderer->setRenderTarget( renderTarget, 0 );
+        renderer->setRenderTarget( renTarget, 0 );
         renderer->render( scene, cameraPX );
 
-        renderer->setRenderTarget( renderTarget, 1 );
+        renderer->setRenderTarget( renTarget, 1 );
         renderer->render( scene, cameraNX );
 
-        renderer->setRenderTarget( renderTarget, 2 );
+        renderer->setRenderTarget( renTarget, 2 );
         renderer->render( scene, cameraPY );
 
-        renderer->setRenderTarget( renderTarget, 3 );
+        renderer->setRenderTarget( renTarget, 3 );
         renderer->render( scene, cameraNY );
 
-        renderer->setRenderTarget( renderTarget, 4 );
+        renderer->setRenderTarget( renTarget, 4 );
         renderer->render( scene, cameraPZ );
 
-        renderTarget->texture->generateMipmaps = generateMipmaps;
+        renTarget->texture->generateMipmaps = generateMipmaps;
 
-        renderer->setRenderTarget( renderTarget, 5 );
+        renderer->setRenderTarget( renTarget, 5 );
         renderer->render( scene, cameraNZ );
 
         renderer->setRenderTarget( currentRenderTarget );
@@ -111,7 +111,7 @@ public:
         renderer->toneMapping = currentToneMapping;
         //renderer.xr.enabled = currentXrEnabled;
 
-        renderTarget->texture->needsPMREMUpdate = true;
+        //renderTarget->texture->needsPMREMUpdate = true;
 
     }
 

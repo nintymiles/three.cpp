@@ -656,6 +656,8 @@ enum class ShaderLibID : unsigned {
     worldpos_vertex,
     background_frag,
     background_vert,
+    backgroundCube_frag,
+    backgroundCube_vert,
     cube_frag,
     cube_vert,
     depth_frag,

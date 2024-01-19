@@ -17,6 +17,7 @@ class GLRenderer;
 class GLRenderList;
 class GLRenderTarget;
 class GLCubeMaps;
+class GLCubeUVMaps;
 
 class GLBackground{
 private:
@@ -44,7 +45,11 @@ public:
 
     bool premultipliedAlpha=false;
 
-    GLBackground(GLState::sptr& state, GLObjects::sptr& objects, bool premultipliedAlpha) : state(state), objects(objects), premultipliedAlpha(premultipliedAlpha) {}
+    std::shared_ptr<GLCubeMaps> cubeMaps;
+    std::shared_ptr<GLCubeUVMaps> cubeUVMaps;
+
+    GLBackground(std::shared_ptr<GLCubeMaps> cubeMaps,std::shared_ptr<GLCubeUVMaps> cubeUVMaps,GLState::sptr& state, GLObjects::sptr& objects, bool premultipliedAlpha) : cubeMaps(cubeMaps),cubeUVMaps(cubeUVMaps),state(state), objects(objects), premultipliedAlpha(premultipliedAlpha) {}
+
     virtual ~GLBackground() = default;
 
     Color& getClearColor();
@@ -55,7 +60,7 @@ public:
 
     void setClearAlpha(const float alpha);
 
-    void render(GLRenderer& renderer,GLCubeMaps* cubeMaps, GLRenderList& renderList, Scene& scene, Camera& camera, bool forceClear = false);
+    void render(GLRenderer& renderer, GLRenderList& renderList, Scene& scene, Camera& camera, bool forceClear = false);
 
     void beforeRender(GLRenderer& renderer, const std::shared_ptr<Scene>& scene, const std::shared_ptr<Camera>& camera, const std::shared_ptr<Object3D>& object,
                       const std::shared_ptr<BufferGeometry>& geometry, const std::shared_ptr<Material>& material, const std::shared_ptr<GLRenderTarget>& renderTarget,

@@ -18,7 +18,7 @@ struct GLRenderTargetParameter {
     Wrapping wrapS = Wrapping::ClampToEdgeWrapping;
     Wrapping wrapT = Wrapping::ClampToEdgeWrapping;
     TextureFilter magFilter = TextureFilter::LinearFilter;
-    TextureFilter minFilter = TextureFilter::LinearMipmapLinearFilter;
+    TextureFilter minFilter = TextureFilter::LinearFilter;
     PixelFormat format = PixelFormat::RGBAFormat;
     TextureDataType type = TextureDataType::UnsignedByteType;
     int anisotropy = 1;

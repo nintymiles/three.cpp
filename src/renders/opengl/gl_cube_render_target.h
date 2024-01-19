@@ -10,7 +10,7 @@
 
 class GLRenderer;
 
-class GLCubeRenderTarget : public GLRenderTarget {
+class GLCubeRenderTarget : public GLRenderTarget, public std::enable_shared_from_this<GLCubeRenderTarget>{
 public:
     using sptr = std::shared_ptr<GLCubeRenderTarget>;
 

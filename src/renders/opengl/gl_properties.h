@@ -21,17 +21,17 @@
 struct Properties{
     GLuint image_textureCube = 0;
     bool glInit = false;
-    GLuint texture=0;
-    float currentAnisotropy=0;
+    GLuint texture = 0;
+    float currentAnisotropy = 0;
     GLint version = -1;
     int maxMipLevel = 0;
-    GLuint framebuffer=0;
-    GLuint depthbuffer=0;
+    GLint framebuffer = -1;
+    GLuint depthbuffer = 0;
     std::vector<GLint> framebuffers;
     std::vector<GLint> depthbuffers;
-    GLint multisampledFramebuffer=0;
-    GLint colorRenderbuffer=0;
-    GLint depthRenderbuffer=0;
+    GLint multisampledFramebuffer = 0;
+    GLint colorRenderbuffer = 0;
+    GLint depthRenderbuffer = 0;
 };
 
 class GLProgram;

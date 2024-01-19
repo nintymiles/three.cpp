@@ -41,7 +41,7 @@ public:
                     auto image = texture->image;
 
                     if ( image->imageData.size()>0 ) {
-                        auto renderTarget = GLCubeRenderTarget::create( texture->image->height / 2 );
+                        auto renderTarget = GLCubeRenderTarget::create( image->height/2 );
                         //renderTarget->height = texture->imageHeight / 2;
 
                         renderTarget->fromEquirectangularTexture( renderer, texture );

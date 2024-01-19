@@ -57,7 +57,7 @@ int GLPrograms::getMaxBones(const SkinnedMesh& skinnedMesh)
     }
 }
 
-GLPrograms::GLPrograms(GLCubeMaps* cubeMaps,GLCubeUVMaps* cubeUVMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping)
+GLPrograms::GLPrograms(std::shared_ptr<GLCubeMaps> cubeMaps,std::shared_ptr<GLCubeUVMaps> cubeUVMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping)
         :cubeMaps(cubeMaps),cubeUVMaps(cubeUVMaps),extensions(extensions),capabilities(capabilities),bindingStates(bindingStates),clipping(clipping){
     isGLES3 = capabilities->isGLES3;
     logarithmicDepthBuffer = capabilities->logarithmicDepthBuffer;

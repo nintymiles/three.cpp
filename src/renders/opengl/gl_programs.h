@@ -67,8 +67,8 @@ protected:
 
     GLCapabilities::sptr capabilities;
 
-    GLCubeMaps* cubeMaps;
-    GLCubeUVMaps* cubeUVMaps;
+    std::shared_ptr<GLCubeMaps> cubeMaps;
+    std::shared_ptr<GLCubeUVMaps> cubeUVMaps;
 
     GLBindingStates::sptr bindingStates;
 
@@ -79,7 +79,7 @@ public :
 
     std::vector<std::shared_ptr<GLProgram>> programs;
 
-    GLPrograms(GLCubeMaps* cubeMaps,GLCubeUVMaps* cubeUVMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping);
+    GLPrograms(std::shared_ptr<GLCubeMaps> cubeMaps,std::shared_ptr<GLCubeUVMaps> cubeUVMaps, const GLExtensions::sptr& extensions, const GLCapabilities::sptr& capabilities, const GLBindingStates::sptr& bindingStates, std::shared_ptr<GLClipping>& clipping);
 
     virtual ~GLPrograms() = default;
 
