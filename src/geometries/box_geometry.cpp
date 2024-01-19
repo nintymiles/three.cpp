@@ -53,8 +53,8 @@ void BoxGeometry::buildPlane(unsigned char u, unsigned char v, unsigned char w, 
             _normals.push_back(vector.z);
 
             // uvs
-            _uvs.push_back(ix / gridX);
-            _uvs.push_back(1 - (iy / gridY));
+            _uvs.push_back((float)ix / gridX);
+            _uvs.push_back(1 - ((float)iy / gridY));
 
             // counters
             vertexCounter += 1;

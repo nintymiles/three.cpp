@@ -213,31 +213,24 @@ Vector3 Object3D::worldToLocal(Vector3& vector){
 
 void Object3D::lookAt(const Vector3& vector){
     _target.copy(vector);
-    //var parent = this.parent;
 
     updateWorldMatrix(true, false);
 
     _position.setFromMatrixPosition(matrixWorld);
 
     if (isCamera || isLight) {
-
         _m1.lookAt(_position, _target, up);
-
     }
     else {
-
         _m1.lookAt(_target, _position, up);
-
     }
 
     quaternion.setFromRotationMatrix(_m1);
 
     if (parent) {
-
         _m1.extractRotation(parent->matrixWorld);
         _q1.setFromRotationMatrix(_m1);
         quaternion.premultiply(_q1.inverse());
-
     }
 
 }
@@ -245,33 +238,6 @@ void Object3D::lookAt(const Vector3& vector){
 void Object3D::lookAt(float x, float y, float z){
     Vector3 vector(x, y, z);
     lookAt(vector);
-    /*_target.set(x, y, z);
-
-    updateWorldMatrix(true, false);
-
-    _position.setFromMatrixPosition(matrixWorld);
-
-    if (isCamera || isLight) {
-
-        _m1.lookAt(_position, _target, up);
-
-    }
-    else {
-
-        _m1.lookAt(_target, _position,up);
-
-    }
-
-    quaternion.setFromRotationMatrix(_m1);
-
-    if (parent) {
-
-        _m1.extractRotation(parent->matrixWorld);
-        _q1.setFromRotationMatrix(_m1);
-        quaternion.premultiply(_q1.inverse());
-    }*/
-
-
 }
 
 Object3D& Object3D::add(const Object3D::sptr& object){

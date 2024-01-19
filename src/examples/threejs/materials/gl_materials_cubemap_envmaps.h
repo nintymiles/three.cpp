@@ -42,7 +42,7 @@ public:
 
         auto aspect = (float)screenX / screenY;
         perspectiveCamera = std::make_shared<PerspectiveCamera>(70.f, aspect , 1.f, 100000.f);
-        perspectiveCamera->position.set( 0, 0, 1000 );
+        perspectiveCamera->position.set( 0, 0, 1500 );
         //scene->add(camera);
 
         camera = perspectiveCamera;

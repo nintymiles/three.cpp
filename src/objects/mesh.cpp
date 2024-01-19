@@ -344,7 +344,7 @@ std::shared_ptr<IntersectionData> checkIntersection( Mesh::sptr object, Material
 
     auto distance = raycaster.ray.origin.distanceTo( _intersectionPointWorld );
 
-    if ( distance < raycaster.near || distance > raycaster.far ) return nullptr;
+    if ( distance < raycaster.pNear || distance > raycaster.pFar ) return nullptr;
 
     std::shared_ptr<IntersectionData> intersect = std::make_shared<IntersectionData>();
 

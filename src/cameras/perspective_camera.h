@@ -65,8 +65,8 @@ public:
     }
 
     static sptr create(float fov, float aspect, float _near, float _far) {
-        return sptr(new PerspectiveCamera(fov, aspect, _near, _far));
-        //return std::make_shared<PerspectiveCamera>(fov, aspect, _near, _far);
+        //return sptr(new PerspectiveCamera(fov, aspect, _near, _far));
+        return std::make_shared<PerspectiveCamera>(fov, aspect, _near, _far);
     }
 
     virtual ~PerspectiveCamera() = default;

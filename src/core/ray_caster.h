@@ -32,13 +32,13 @@ void intersectObject( Object3D::sptr object, Raycaster& raycaster, std::vector<s
 
 class Raycaster {
 	public:
-		double near,far;
+		double pNear,pFar;
         Ray ray;
         Camera::sptr camera;
         Layers::sptr layers;
 
 		Raycaster(Vector3& origin,Vector3& direction,double near = 0,double far = math_number::INF): ray(Ray(origin, direction)), camera(
-            nullptr), near(near), far(far),layers(std::make_shared<Layers>()){}
+            nullptr), pNear(near), pFar(far),layers(std::make_shared<Layers>()){}
 
 	// constructor( origin, direction, near = 0, far = Infinity ) {
 

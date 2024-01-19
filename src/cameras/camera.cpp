@@ -24,7 +24,7 @@ Camera::Camera(const Camera& camera) : Object3D(camera) {
 }
 
 Vector3& Camera::getWorldDirection(Vector3& target){
-    this->updateMatrixWorld(true);
+    this->updateWorldMatrix(true,false);
 
     float* e = matrixWorld.elements;
 
@@ -35,13 +35,13 @@ Vector3& Camera::getWorldDirection(Vector3& target){
 void Camera::updateMatrixWorld(bool force){
     Object3D::updateMatrixWorld(force);
 
-    matrixWorldInverse.getInverse(this->matrixWorld);
+    matrixWorldInverse.copy(this->matrixWorld).invert();
 }
 
 void Camera::updateWorldMatrix(bool updateParents, bool updateChildren){
     Object3D::updateWorldMatrix(updateParents, updateChildren);
 
-    matrixWorldInverse.getInverse(this->matrixWorld);
+    matrixWorldInverse.copy(this->matrixWorld).invert();
 }
 
 Camera& Camera::copy(Camera& source, bool recursive) {

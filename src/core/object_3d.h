@@ -383,7 +383,10 @@ public:
 
     virtual Vector3& getWorldDirection(Vector3& target);
 
-    virtual Object3D& raycast(Raycaster& Raycaster, std::vector<std::shared_ptr<IntersectionData>>& intersects){}
+    virtual Object3D& raycast(Raycaster& Raycaster, std::vector<std::shared_ptr<IntersectionData>>& intersects){
+        std::cerr << "Derivative class of Object3D should implement this method！" << std::endl;
+        return *this;
+    }
 
     void traverse(std::function<void(Object3D&)> callback);
 

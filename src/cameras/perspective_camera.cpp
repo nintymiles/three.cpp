@@ -116,9 +116,9 @@ void PerspectiveCamera::clearViewOffset(){
 }
 
 void PerspectiveCamera::updateProjectionMatrix(){
-    Camera::updateProjectionMatrix();
-    //float near = this.near,
-    float top = _near * tan(math_number::DEG2RAD * 0.5f * fov) / zoom;
+    //Camera::updateProjectionMatrix();
+    float pNear = this->_near;
+    float top = pNear * math::tan(math_number::DEG2RAD * 0.5f * fov) / zoom;
     float height = 2 * top;
     float width = aspect * height;
     float left = -0.5f * width;
@@ -138,7 +138,7 @@ void PerspectiveCamera::updateProjectionMatrix(){
     float skew = filmOffset;
     if (skew != 0) left += _near * skew / getFilmWidth();
 
-    projectionMatrix.makePerspective(left, left + width, top, top - height, _near, _far);
+    projectionMatrix.makePerspective(left, left + width, top, top - height, pNear, _far);
 
-    projectionMatrixInverse.getInverse(projectionMatrix);
+    projectionMatrixInverse.copy(projectionMatrix).invert();
 }
