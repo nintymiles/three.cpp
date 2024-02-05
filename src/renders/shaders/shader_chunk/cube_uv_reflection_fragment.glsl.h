@@ -1,5 +1,5 @@
 //
-// Created by Willie on 2023/6/22.
+// Created by SeanR on 2023/6/22.
 //
 
 #ifndef THREE_CPP_CUBE_UV_REFLECTION_FRAGMENT_GLSL_H
@@ -95,7 +95,7 @@ const char* cube_uv_reflection_fragment = R""(
 
 		float faceSize = exp2( mipInt );
 
-		vec2 uv = getUV( direction, face ) * ( faceSize - 2.0 ) + 1.0;
+		highp vec2 uv = getUV( direction, face ) * ( faceSize - 2.0 ) + 1.0; // #25071
 
 		if ( face > 2.0 ) {
 
