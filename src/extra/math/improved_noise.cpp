@@ -2,11 +2,11 @@
 // Created by SeanR on 3/3/2024.
 //
 
-#include "ImprovedNoise.h"
+#include "improved_noise.h"
 
 #include <vector>
 
-namespace imroved_noise{
+namespace improved_noise{
     std::vector<int> _p = {151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10,
                                  23, 190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56, 87,
                                  174, 20, 125, 136, 171, 168, 68, 175, 74, 165, 71, 134, 139, 48, 27, 166, 77, 146, 158, 231, 83, 111, 229, 122, 60, 211,
@@ -30,7 +30,7 @@ namespace imroved_noise{
                            93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180};
 }
 
-using namespace imroved_noise;
+using namespace improved_noise;
 float ImprovedNoise::noise(float x, float y, float z) {
 
     const int floorX = math::floor( x ), floorY = math::floor( y ), floorZ = math::floor( z );

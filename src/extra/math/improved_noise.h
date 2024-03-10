@@ -2,8 +2,8 @@
 // Created by SeanR on 3/3/2024.
 //
 
-#ifndef THREE_CPP_IMPROVEDNOISE_H
-#define THREE_CPP_IMPROVEDNOISE_H
+#ifndef THREE_CPP_IMPROVED_NOISE_H
+#define THREE_CPP_IMPROVED_NOISE_H
 
 #include "math_utils.h"
 
@@ -34,4 +34,4 @@ private:
 };
 
 
-#endif //THREE_CPP_IMPROVEDNOISE_H
+#endif //THREE_CPP_IMPROVED_NOISE_H
