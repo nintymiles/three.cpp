@@ -74,8 +74,8 @@ file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/ope
 file(GLOB CONTROLS_SOURCE ${ROOT_DIR}/src/control/*.cpp)
 file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 
-file(GLOB EXTRA_SOURCE ${ROOT_DIR}/src/extra/shaders/*.cpp;${ROOT_DIR}/src/extra/postprocessing/*.cpp;${ROOT_DIR}/src/extra/*.cpp)
-file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/shaders/*.h;${ROOT_DIR}/src/extra/postprocessing/*.h;${ROOT_DIR}/src/extra/*.h)
+file(GLOB EXTRA_SOURCE ${ROOT_DIR}/src/extra/shaders/*.cpp;${ROOT_DIR}/src/extra/postprocessing/*.cpp;${ROOT_DIR}/src/extra/math/*.cpp;${ROOT_DIR}/src/extra/*.cpp)
+file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/shaders/*.h;${ROOT_DIR}/src/extra/postprocessing/*.h;${ROOT_DIR}/src/extra/math/*.h;${ROOT_DIR}/src/extra/*.h)
 
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
@@ -86,14 +86,14 @@ file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/geometries/*.
                                   ${ROOT_DIR}/src/examples/threejs/materials/*.cpp;
                                   ${ROOT_DIR}/src/examples/threejs/lights/*.cpp;
                                   ${ROOT_DIR}/src/examples/threejs/lines/*.cpp;
-                                  ${ROOT_DIR}/src/examples/loaders/*.cpp)
+                                  ${ROOT_DIR}/src/examples/threejs/features/*.cpp)
 file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/geometries/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/postprocessing/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/shaders/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/materials/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/lights/*.h;
                                   ${ROOT_DIR}/src/examples/threejs/lines/*.h;
-                                  ${ROOT_DIR}/src/examples/loaders/*.h)
+                                  ${ROOT_DIR}/src/examples/threejs/features/*.h)
 
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
@@ -189,6 +189,7 @@ ${ROOT_DIR}/src/helpers
 ${ROOT_DIR}/src/extra
 ${ROOT_DIR}/src/extra/shaders/
 ${ROOT_DIR}/src/extra/postprocessing/
+${ROOT_DIR}/src/extra/math/
 ${ROOT_DIR}/src/renders
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders
@@ -202,6 +203,7 @@ ${ROOT_DIR}/src/examples/threejs/materials/
 ${ROOT_DIR}/src/examples/threejs/shaders/
 ${ROOT_DIR}/src/examples/threejs/postprocessing/
 ${ROOT_DIR}/src/examples/threejs/geometries/
+${ROOT_DIR}/src/examples/threejs/features/
 )
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
