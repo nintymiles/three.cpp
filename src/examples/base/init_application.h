@@ -49,6 +49,8 @@
 #include "gl_postprocessing_masking.h"
 #include "gl_postprocessing_glitch.h"
 
+#include "gl_volume_cloud.h"
+
 #include "gl_geometry_teapot.h"
 #include "gl_demo_decals.h"
 
@@ -268,7 +270,6 @@ static void ShowApplicationMenuBar() {
             }
 
 
-
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();
 
@@ -331,6 +332,7 @@ static void ShowApplicationMenuBar() {
             ImGui::EndMenu();
 
         }
+
         if (ImGui::BeginMenu("geometry")){
 
             if (ImGui::MenuItem("GL_Geometry_Teapot", "")) {
@@ -351,6 +353,21 @@ static void ShowApplicationMenuBar() {
 
 
 
+
+            if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
+            ImGui::EndMenu();
+
+        }
+
+        if (ImGui::BeginMenu("features")){
+
+            if (ImGui::MenuItem("GL_Volume_Cloud", "")) {
+                if (demoClasses.count("GL_Volume_Cloud") == 0)
+                    demoClasses["GL_Volume_Cloud"] = std::make_shared<GLVolumeCloud>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Volume_Cloud"];
+                currentDemoClass->renderer->clear();
+            }
 
             if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
             ImGui::EndMenu();
