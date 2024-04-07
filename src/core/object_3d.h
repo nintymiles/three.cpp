@@ -434,6 +434,8 @@ public:
 
     bool isLine = false;
 
+    bool isBone = false;
+
     bool isLightProbe = false;
 
     bool isInstancedMesh = false;

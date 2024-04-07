@@ -4,7 +4,7 @@
 
 #include "skeleton.h"
 
-Skeleton::Skeleton(const std::vector<Bone>& bones, const std::vector<Matrix4>& boneInverses){
+Skeleton::Skeleton(const std::vector<Bone::sptr>& bones, const std::vector<Matrix4>& boneInverses){
     //std::copy(bones.begin(), bones.end(), this->bones.begin());
     this->bones=bones;
     this->boneMatrices = std::vector<unsigned char>(bones.size() * 16);
@@ -33,7 +33,7 @@ void Skeleton::calculateInverses(){
 
         auto inverse = Matrix4();
 
-        inverse.getInverse(this->bones[i].matrixWorld);
+        inverse.getInverse(this->bones[i]->matrixWorld);
 
 
         boneInverses.push_back(inverse);
@@ -41,7 +41,39 @@ void Skeleton::calculateInverses(){
     }
 }
 
-void Skeleton::pose(){}
+void Skeleton::pose(){
+    // recover the bind-time world matrices
+    for ( size_t i = 0, il = this->bones.size(); i < il; i ++ ) {
+        auto bone = this->bones[ i ];
+
+        if ( bone ) {
+
+            bone->matrixWorld.copy( this->boneInverses[ i ] ).invert();
+
+        }
+
+    }
+
+    // compute the local matrices, positions, rotations and scales
+    for ( size_t i = 0, il = this->bones.size(); i < il; i ++ ) {
+        auto bone = this->bones[ i ];
+
+        if ( bone ) {
+            if ( bone->parent && bone->parent->isBone ) {
+                bone->matrix.copy( bone->parent->matrixWorld ).invert();
+                bone->matrix.multiply( bone->matrixWorld );
+
+            } else {
+                bone->matrix.copy( bone->matrixWorld );
+
+            }
+
+            bone->matrix.decompose( &bone->position, &bone->quaternion, &bone->scale );
+
+        }
+
+    }
+}
 
 void Skeleton::update(){}
 

@@ -15,7 +15,7 @@ public:
 
     bool useVertexTexture = false;
 
-    std::vector<Bone> bones;
+    std::vector<Bone::sptr> bones;
 
     std::vector<unsigned char> boneMatrices;
 
@@ -29,13 +29,13 @@ public:
 
     Skeleton() : Object3D() {}
 
-    Skeleton(const std::vector<Bone>& bones, const std::vector<Matrix4>& boneInverses);
+    Skeleton(const std::vector<Bone::sptr>& bones, const std::vector<Matrix4>& boneInverses);
 
     static sptr create() {
         return std::make_shared<Skeleton>();
     }
 
-    static sptr create(const std::vector<Bone>& bones, const std::vector<Matrix4>& boneInverses) {
+    static sptr create(const std::vector<Bone::sptr>& bones, const std::vector<Matrix4>& boneInverses) {
         return std::make_shared<Skeleton>(bones, boneInverses);
     }
 
