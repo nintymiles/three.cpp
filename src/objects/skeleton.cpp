@@ -4,10 +4,17 @@
 
 #include "skeleton.h"
 
+namespace skeleton_cpp{
+    auto _offsetMatrix = Matrix4();
+    auto _identityMatrix = Matrix4();
+}
+
+using namespace skeleton_cpp;
+
 Skeleton::Skeleton(const std::vector<Bone::sptr>& bones, const std::vector<Matrix4>& boneInverses){
     //std::copy(bones.begin(), bones.end(), this->bones.begin());
     this->bones=bones;
-    this->boneMatrices = std::vector<unsigned char>(bones.size() * 16);
+    this->boneMatrices = std::vector<float>(bones.size() * 16);
 
     if (boneInverses.size() == 0) {
         calculateInverses();
@@ -75,7 +82,28 @@ void Skeleton::pose(){
     }
 }
 
-void Skeleton::update(){}
+void Skeleton::update(){
+    auto bones = this->bones;
+    auto boneInverses = this->boneInverses;
+    auto boneMatrices = this->boneMatrices;
+    auto boneTexture = this->boneTexture;
+
+    // flatten bone matrices to array
+    for ( size_t i = 0, il = bones.size(); i < il; i ++ ) {
+
+        // compute the offset between the current and the original transform
+        auto matrix = bones[ i ] ? bones[ i ]->matrixWorld : _identityMatrix;
+
+        _offsetMatrix.multiplyMatrices( matrix, boneInverses[ i ] );
+        _offsetMatrix.toArray( boneMatrices.data(), i * 16 );
+
+    }
+
+    if ( boneTexture != nullptr ) {
+        boneTexture->needsUpdate = true;
+    }
+
+}
 
 Bone* Skeleton::getBoneByName(const std::string& name){
     return nullptr;

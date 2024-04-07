@@ -17,7 +17,7 @@ public:
 
     std::vector<Bone::sptr> bones;
 
-    std::vector<unsigned char> boneMatrices;
+    std::vector<float> boneMatrices;
 
     DataTexture::sptr boneTexture = nullptr;
 
