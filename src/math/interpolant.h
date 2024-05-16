@@ -198,7 +198,7 @@ public:
         // empty
     }
 
-private:
+protected:
     std::vector<float>& copySampleValue_( size_t index ) {
         // copies a sample value to the result buffer
         auto& result = this->resultBuffer;
