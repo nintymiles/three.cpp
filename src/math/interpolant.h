@@ -32,13 +32,13 @@
 class Interpolant {
 protected:
     size_t _cachedIndex;
-    std::vector<float> parameterPositions;
+    std::vector<size_t> parameterPositions;
     std::vector<float> resultBuffer;
     std::vector<float> sampleValues;
     size_t valueSize;
 public:
 
-    Interpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),resultBuffer(resultBuffer){
+    Interpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),resultBuffer(resultBuffer){
         if(resultBuffer.empty())
             resultBuffer = std::vector<float>(sampleSize);
 

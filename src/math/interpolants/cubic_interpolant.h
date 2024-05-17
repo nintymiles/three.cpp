@@ -22,7 +22,7 @@ public:
         InterpolateParam endingStart;
         InterpolateParam endingEnd;
     };
-    CubicInterpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer): Interpolant(parameterPositions,sampleValues,sampleSize,resultBuffer){
+    CubicInterpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer): Interpolant(parameterPositions,sampleValues,sampleSize,resultBuffer){
 
         _weightPrev = - 0;
         _offsetPrev = - 0;
@@ -57,45 +57,43 @@ public:
         auto stride = this->valueSize;
 
         auto o1 = i1 * stride, o0 = o1 - stride,
-        oP = _offsetPrev, oN = _offsetNext,
-        wP = _weightPrev, wN = _weightNext,
+        oP = _offsetPrev, oN = _offsetNext;
+
+        auto wP = _weightPrev, wN = _weightNext,
         p = (t - t0) / (t1 - t0),
         pp = p * p,
         ppp = pp * p;
 
         // evaluate polynomials
+        const float sP = -wP * ppp + 2 * wP * pp - wP * p;
+        const float s0 = (1 + wP) * ppp + (-1.5 - 2 * wP) * pp + (-0.5 + wP) * p + 1;
+        const float s1 = (-1 - wN) * ppp + (1.5 + wN) * pp + 0.5 * p;
+        const float sN = wN * ppp - wN * pp;
 
-        const sP = -wP * ppp + 2 * wP * pp - wP * p;
-        const s0 = (1 + wP) * ppp + (-1.5 - 2 * wP) * pp + (-0.5 + wP) * p + 1;
-        const s1 = (-1 - wN) * ppp + (1.5 + wN) * pp + 0.5 * p;
-        const sN = wN * ppp - wN * pp;
-//
-//        // combine data linearly
-//
-//        for (let i = 0; i != = stride; ++i) {
-//
-//            result[i] =
-//                    sP * values[oP + i] +
-//                    s0 * values[o0 + i] +
-//                    s1 * values[o1 + i] +
-//                    sN * values[oN + i];
-//
-//        }
-//
-//        return result;
+        // combine data linearly
+        for (size_t i = 0; i != stride; ++i) {
+            result[i] =
+                    sP * values[oP + i] +
+                    s0 * values[o0 + i] +
+                    s1 * values[o1 + i] +
+                    sN * values[oN + i];
+
+        }
+
+        return *this;
 
     }
 
-    CubicInterpolant& intervalChanged_( size_t i1,float t0,float t1) {
-
-//        const pp = this.parameterPositions;
-//        let iPrev = i1 - 2,
-//                iNext = i1 + 1,
+//    CubicInterpolant& intervalChanged_( size_t i1,float t0,float t1) {
 //
-//                tPrev = pp[iPrev],
-//                tNext = pp[iNext];
+//        auto& pp = this->parameterPositions;
+//        auto iPrev = i1 - 2,
+//             iNext = i1 + 1,
 //
-//        if (tPrev == = undefined) {
+//             tPrev = pp[iPrev],
+//             tNext = pp[iNext];
+//
+//        if (tPrev == 0) {
 //
 //            switch (this.getSettings_().endingStart) {
 //
@@ -162,14 +160,15 @@ public:
 //        this._weightNext = halfDt / (tNext - t1);
 //        this._offsetPrev = iPrev * stride;
 //        this._offsetNext = iNext * stride;
-
-    }
+//
+//    }
 
 
 
 
 private:
-    float _weightPrev, _offsetPrev,_weightNext,_offsetNext;
+    size_t  _offsetPrev,_offsetNext;
+    float _weightPrev,_weightNext;
     CubicInterpolantSetting defaultSetting_;
 
 };
