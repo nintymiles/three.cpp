@@ -18,10 +18,10 @@
 class CubicInterpolant: public Interpolant{
 
 public:
-    struct CubicInterpolantSetting{
-        InterpolateParam endingStart;
-        InterpolateParam endingEnd;
-    };
+//    struct CubicInterpolantSetting{
+//        InterpolateParam endingStart;
+//        InterpolateParam endingEnd;
+//    };
     CubicInterpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer): Interpolant(parameterPositions,sampleValues,sampleSize,resultBuffer){
 
         _weightPrev = - 0;
@@ -29,7 +29,7 @@ public:
         _weightNext = - 0;
         _offsetNext = - 0;
 
-        defaultSetting_ = {InterpolateParam::ZeroCurvatureEnding,InterpolateParam::ZeroCurvatureEnding};
+        defaultSettings_ = {InterpolateParam::ZeroCurvatureEnding,InterpolateParam::ZeroCurvatureEnding};
     }
 
 //    virtual Interpolant& interpolate_( size_t i1,float t0,float t,float t1/* i1, t0, t, t1 */ ) override{
@@ -84,59 +84,51 @@ public:
 
     }
 
-//    CubicInterpolant& intervalChanged_( size_t i1,float t0,float t1) {
+    CubicInterpolant& intervalChanged_( size_t i1,float t0,float t1) {
+
+        auto &pp = this->parameterPositions;
+        int iPrev = (int) i1 - 2;
+        size_t iNext = i1 + 1, tNext = pp[iNext];
+
+        size_t tPrev;
+        if (iPrev < 0) {
+            switch (this->getSettings_().endingStart) {
+                case InterpolateParam::ZeroSlopeEnding:
+                    // f'(t0) = 0
+                    iPrev = i1;
+                    tPrev = 2 * t0 - t1;
+
+                    break;
+
+                case InterpolateParam::WrapAroundEnding:
+                    // use the other end of the curve
+                    iPrev = pp.size() - 2;
+                    tPrev = t0 + pp[iPrev] - pp[iPrev + 1];
+
+                    break;
+
+                default: // ZeroCurvatureEnding
+                    // f''(t0) = 0 a.k.a. Natural Spline
+                    iPrev = i1;
+                    tPrev = t1;
+            }
+
+        } else {
+            tPrev = pp[iPrev];
+        }
+
+//        size_t tNext;
+//        if (iNext < 0) {
+//            switch (this->getSettings_().endingEnd) {
 //
-//        auto& pp = this->parameterPositions;
-//        auto iPrev = i1 - 2,
-//             iNext = i1 + 1,
-//
-//             tPrev = pp[iPrev],
-//             tNext = pp[iNext];
-//
-//        if (tPrev == 0) {
-//
-//            switch (this.getSettings_().endingStart) {
-//
-//                case ZeroSlopeEnding:
-//
-//                    // f'(t0) = 0
-//                    iPrev = i1;
-//                    tPrev = 2 * t0 - t1;
-//
-//                    break;
-//
-//                case WrapAroundEnding:
-//
-//                    // use the other end of the curve
-//                    iPrev = pp.length - 2;
-//                    tPrev = t0 + pp[iPrev] - pp[iPrev + 1];
-//
-//                    break;
-//
-//                default: // ZeroCurvatureEnding
-//
-//                    // f''(t0) = 0 a.k.a. Natural Spline
-//                    iPrev = i1;
-//                    tPrev = t1;
-//
-//            }
-//
-//        }
-//
-//        if (tNext == = undefined) {
-//
-//            switch (this.getSettings_().endingEnd) {
-//
-//                case ZeroSlopeEnding:
-//
+//                case InterpolateParam::ZeroSlopeEnding:
 //                    // f'(tN) = 0
 //                    iNext = i1;
 //                    tNext = 2 * t1 - t0;
 //
 //                    break;
 //
-//                case WrapAroundEnding:
-//
+//                case InterpolateParam::WrapAroundEnding:
 //                    // use the other end of the curve
 //                    iNext = 1;
 //                    tNext = t1 + pp[1] - pp[0];
@@ -144,24 +136,24 @@ public:
 //                    break;
 //
 //                default: // ZeroCurvatureEnding
-//
 //                    // f''(tN) = 0, a.k.a. Natural Spline
 //                    iNext = i1 - 1;
 //                    tNext = t0;
-//
 //            }
 //
+//        }else{
+//                tNext = pp[iNext];
 //        }
-//
-//        const halfDt = (t1 - t0) * 0.5,
-//                stride = this.valueSize;
-//
-//        this._weightPrev = halfDt / (t0 - tPrev);
-//        this._weightNext = halfDt / (tNext - t1);
-//        this._offsetPrev = iPrev * stride;
-//        this._offsetNext = iNext * stride;
-//
-//    }
+
+        const float halfDt = (t1 - t0) * 0.5;
+        auto stride = this->valueSize;
+
+        this->_weightPrev = halfDt / (t0 - tPrev);
+        this->_weightNext = halfDt / (tNext - t1);
+        this->_offsetPrev = iPrev * stride;
+        this->_offsetNext = iNext * stride;
+
+    }
 
 
 
@@ -169,7 +161,7 @@ public:
 private:
     size_t  _offsetPrev,_offsetNext;
     float _weightPrev,_weightNext;
-    CubicInterpolantSetting defaultSetting_;
+
 
 };
 

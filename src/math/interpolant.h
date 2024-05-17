@@ -29,6 +29,13 @@
 #include <vector>
 #include <iostream>
 
+#include "constants.h"
+
+struct InterpolantSetting{
+    InterpolateParam endingStart;
+    InterpolateParam endingEnd;
+};
+
 class Interpolant {
 protected:
     size_t _cachedIndex;
@@ -36,6 +43,8 @@ protected:
     std::vector<float> resultBuffer;
     std::vector<float> sampleValues;
     size_t valueSize;
+    InterpolantSetting defaultSettings_;
+    InterpolantSetting settings;
 public:
 
     Interpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),resultBuffer(resultBuffer){
@@ -185,6 +194,10 @@ public:
         this->interpolate_( i1, t0, t, t1 );
 
         return *this;
+    }
+
+    InterpolantSetting& getSettings_() {
+        return defaultSettings_;
     }
 
     // Template methods for derived classes:
