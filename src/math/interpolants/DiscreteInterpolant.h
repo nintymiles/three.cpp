@@ -10,7 +10,7 @@
 
 class DiscreteInterpolant: public Interpolant{
 public:
-    DiscreteInterpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):
+    DiscreteInterpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):
                                                                                     Interpolant(parameterPositions,sampleValues,sampleSize,resultBuffer){
 
     }
