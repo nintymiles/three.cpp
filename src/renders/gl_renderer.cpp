@@ -413,11 +413,11 @@ GLProgram::sptr GLRenderer::setProgram(const Camera::sptr& camera, const Scene::
                     size = ceilPowerOfTwo(size);
                     size = (int)std::max(size, 4.0f);
 
-                    std::vector<unsigned char> boneMatrices((int)(size * size * 4));
+                    std::vector<float> boneMatrices((int)(size * size * 4));
 
                     std::copy(skeleton->boneMatrices.begin(), skeleton->boneMatrices.end(), boneMatrices.begin());
 
-                    DataTexture::sptr boneTexture = std::make_shared<DataTexture>(boneMatrices, size, size,
+                    DataTexture::sptr boneTexture = std::make_shared<DataTexture>( size, size,
                                                                                  TextureMapping::UVMapping,Wrapping::ClampToEdgeWrapping,Wrapping::ClampToEdgeWrapping,
                                                                                  TextureFilter::NearestFilter,TextureFilter::NearestFilter,
                                                                                  PixelFormat::RGBAFormat, TextureDataType::FloatType,
