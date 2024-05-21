@@ -17,12 +17,12 @@
 class Interpolant;
 class KeyframeTrack {
 public:
-    std::vector<float> times;
+    std::vector<size_t> times;
     std::vector<float> values;
 
     using sptr = std::shared_ptr<KeyframeTrack>;
 
-    KeyframeTrack(std::string name,std::vector<float> times,std::vector<float> values,Interpolate interpolation);
+    KeyframeTrack(std::string name,std::vector<size_t> times,std::vector<float> values,Interpolate interpolation);
     using InterpolantFactoryMethodType = std::shared_ptr<Interpolant> (KeyframeTrack::*)(std::vector<float>&);
     InterpolantFactoryMethodType createInterpolant;
 
