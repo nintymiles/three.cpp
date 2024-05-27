@@ -193,7 +193,7 @@ public:
         for ( size_t i = 0, n = tracks.size(); i != n; ++ i ) {
             auto& track = tracks[ i ];
 
-            duration = math::max( duration, track->times[ track->times.size() - 1 ] );
+            duration = math::max( duration, (float)track->times[ track->times.size() - 1 ] );
 
         }
 

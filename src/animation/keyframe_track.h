@@ -19,12 +19,18 @@ class KeyframeTrack {
 public:
     std::vector<size_t> times;
     std::vector<float> values;
+    std::string name;
+
+    using InterpolantFactoryMethodType = std::shared_ptr<Interpolant> (KeyframeTrack::*)(std::vector<float>&);
+    InterpolantFactoryMethodType createInterpolant;
 
     using sptr = std::shared_ptr<KeyframeTrack>;
 
-    KeyframeTrack(std::string name,std::vector<size_t> times,std::vector<float> values,Interpolate interpolation);
-    using InterpolantFactoryMethodType = std::shared_ptr<Interpolant> (KeyframeTrack::*)(std::vector<float>&);
-    InterpolantFactoryMethodType createInterpolant;
+    KeyframeTrack(std::string name,std::vector<size_t> times,std::vector<float> values,Interpolate interpolation = Interpolate::InterpolateLinear)
+                :times(times),values(values),name(name){
+        setInterpolation(interpolation);
+    }
+
 
     KeyframeTrack& setInterpolation( Interpolate interpolation ) {
         InterpolantFactoryMethodType factoryMethod;
