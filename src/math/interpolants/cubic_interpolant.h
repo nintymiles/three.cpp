@@ -166,6 +166,4 @@ private:
 };
 
 
-
-
 #endif //THREE_CPP_CUBIC_INTERPOLANT_H

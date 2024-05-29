@@ -17,9 +17,8 @@
 class Interpolant;
 class KeyframeTrack {
 public:
-    std::vector<size_t> times;
+    std::vector<float> times;
     std::vector<float> values;
-
     using sptr = std::shared_ptr<KeyframeTrack>;
 
     KeyframeTrack(std::string name,std::vector<size_t> times,std::vector<float> values,Interpolate interpolation);

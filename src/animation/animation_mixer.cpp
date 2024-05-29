@@ -34,3 +34,8 @@ void AnimationMixer::_initMemoryManager() {
 
 
 }
+
+bool AnimationMixer::_isActiveAction(AnimationAction &action) {
+        const auto index = action._cacheIndex;
+        return /**index >= 0  && **/index < this->_nActiveActions;
+}
