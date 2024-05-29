@@ -17,6 +17,7 @@ public:
     Object3D::sptr _localRoot;
     AnimationBlendMode blendMode;
     size_t _cacheIndex; // for the memory manager
+    size_t _byClipCacheIndex; // for the memory manager
 
     AnimationAction(std::shared_ptr<AnimationMixer> mixer, AnimationClip::sptr clip, Object3D::sptr localRoot, AnimationBlendMode blendMode):
                         _mixer(mixer),_clip(clip),_localRoot(localRoot),blendMode(blendMode){

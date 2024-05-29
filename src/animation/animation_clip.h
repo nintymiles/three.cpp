@@ -14,6 +14,7 @@
 #include "sole.h"
 
 class AnimationClip {
+public:
     std::string name;
     std::vector<KeyframeTrack::sptr> tracks;
     float duration;

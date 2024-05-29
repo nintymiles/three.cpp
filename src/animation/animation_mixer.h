@@ -12,6 +12,7 @@ class AnimationAction;
 class PropertyMixer;
 class Interpolant;
 struct AnimationStatus;
+struct ActionsForClip;
 class AnimationMixer {
     Object3D::sptr _root;
     size_t _accuIndex;
@@ -20,7 +21,7 @@ class AnimationMixer {
 
     std::vector<std::shared_ptr<AnimationAction>> _actions;
     size_t _nActiveActions;
-    std::map<sole::uuid,std::shared_ptr<AnimationAction>> _actionsByClip;
+    std::map<sole::uuid,std::shared_ptr<ActionsForClip>> _actionsByClip;
     std::vector<std::shared_ptr<AnimationAction>> _bindings;
     size_t _nActiveBindings;
     std::map<std::string,std::shared_ptr<PropertyMixer>> _bindingsByRootAndName;
@@ -43,39 +44,9 @@ public:
     // 检查是否有排定的action index，并且索引小于激活的action数目，用以判断是否正在播放中
     bool _isActiveAction( AnimationAction& action );
 
-    AnimationMixer& _addInactiveAction( AnimationAction& action, sole::uuid clipUuid, sole::uuid rootUuid ) {
+    AnimationMixer& _addInactiveAction( std::shared_ptr<AnimationAction> action, sole::uuid clipUuid, sole::uuid rootUuid );
 
-        auto& actions = this->_actions;
-        auto& actionsByClip = this->_actionsByClip;
-
-        auto& actionsForClip = actionsByClip[ clipUuid ];
-
-        if ( actionsForClip == nullptr ) {
-//            actionsForClip = {
-//                knownActions: [ action ],
-//                actionByRoot: {}
-//            };
-//
-//            action._byClipCacheIndex = 0;
-//
-//            actionsByClip[ clipUuid ] = actionsForClip;
-
-        } else {
-
-//            const knownActions = actionsForClip.knownActions;
-//
-//            action._byClipCacheIndex = knownActions.length;
-//            knownActions.push( action );
-
-        }
-
-//        action._cacheIndex = actions.length;
-//        actions.push( action );
-//
-//        actionsForClip.actionByRoot[ rootUuid ] = action;
-
-        return *this;
-    }
+    AnimationMixer& _removeInactiveAction( std::shared_ptr<AnimationAction> action );
 };
 
 struct AnimationStatus{
@@ -109,6 +80,13 @@ struct AnimationStatus{
 private:
     std::shared_ptr<AnimationMixer> actionObj;
 
+};
+
+struct ActionsForClip{
+    std::vector<std::shared_ptr<AnimationAction>> knownActions;
+    std::map<sole::uuid,std::shared_ptr<AnimationAction>> actionByRoot;
+
+    //ActionsForClip(std::vector<std::shared_ptr<AnimationAction>> knownActions,std::map<sole::uuid,std::shared_ptr<AnimationAction>> actionByRoot):knownActions(knownActions),actionByRoot(actionByRoot){}
 };
 
 
