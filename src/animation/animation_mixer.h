@@ -11,6 +11,7 @@
 class AnimationAction;
 class PropertyMixer;
 class Interpolant;
+class PropertyMixer;
 struct AnimationStatus;
 struct ActionsForClip;
 class AnimationMixer {
@@ -47,6 +48,8 @@ public:
     AnimationMixer& _addInactiveAction( std::shared_ptr<AnimationAction> action, sole::uuid clipUuid, sole::uuid rootUuid );
 
     AnimationMixer& _removeInactiveAction( std::shared_ptr<AnimationAction> action );
+    AnimationMixer& _removeInactiveBindingsForAction( std::shared_ptr<AnimationAction> action );
+    AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<PropertyMixer> binding );
 };
 
 struct AnimationStatus{

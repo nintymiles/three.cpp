@@ -6,6 +6,7 @@
 
 #include "animation_action.h"
 #include "animation_clip.h"
+#include "property_mixer.h"
 
 void AnimationMixer::_initMemoryManager() {
 
@@ -112,7 +113,47 @@ AnimationMixer& AnimationMixer::_removeInactiveAction( std::shared_ptr<Animation
         actionsByClip[ clipUuid ] = nullptr;
     }
 
-    //todo: implement _removeInactiveBindingsForAction
-    //this->_removeInactiveBindingsForAction( action );
+    this->_removeInactiveBindingsForAction( action );
+
+    return *this;
+}
+
+AnimationMixer& AnimationMixer::_removeInactiveBindingsForAction( std::shared_ptr<AnimationAction> action ) {
+
+    auto bindings = action->_propertyBindings;
+
+    for ( size_t i = 0, n = bindings.size(); i != n; ++ i ) {
+        auto binding = bindings[ i ];
+
+        if ( -- binding->referenceCount == 0 ) {
+            this->_removeInactiveBinding( binding );
+        }
+    }
+    return *this;
+}
+
+AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<PropertyMixer> binding ) {
+
+        auto& bindings = this->_bindings;
+        auto propBinding = binding->binding;
+//        auto rootUuid = propBinding->rootNode->uuid,
+//        trackName = propBinding.path,
+//        bindingsByRoot = this._bindingsByRootAndName,
+//        bindingByName = bindingsByRoot[ rootUuid ],
+//
+//        lastInactiveBinding = bindings[ bindings.length - 1 ],
+//        cacheIndex = binding._cacheIndex;
+//
+//        lastInactiveBinding._cacheIndex = cacheIndex;
+//        bindings[ cacheIndex ] = lastInactiveBinding;
+//        bindings.pop();
+//
+//        delete bindingByName[ trackName ];
+//
+//        if ( Object.keys( bindingByName ).length === 0 ) {
+//
+//            delete bindingsByRoot[ rootUuid ];
+//
+//        }
 
 }

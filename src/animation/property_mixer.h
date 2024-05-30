@@ -15,6 +15,7 @@ class PropertyBinding;
 
 template<typename T>
 class PropertyMixer {
+public:
     std::shared_ptr<PropertyBinding> binding;
     std::string typeName;
     size_t valueSize;
@@ -246,6 +247,7 @@ public:
 };
 
 template<> class PropertyMixer<Quaternion> {
+public:
     std::shared_ptr<PropertyBinding> binding;
     std::string typeName;
     size_t valueSize;
@@ -481,6 +483,7 @@ public:
 };
 
 template<> class PropertyMixer<bool> {
+public:
     std::shared_ptr<PropertyBinding> binding;
     std::string typeName;
     size_t valueSize;
