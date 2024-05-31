@@ -35,8 +35,8 @@ file(GLOB_RECURSE CORE_SOURCE ${ROOT_DIR}/src/core/*.cpp)
 # file(GLOB_RECURSE CORE_INLINE ./detail/*.inl)
 file(GLOB_RECURSE CORE_HEADER ${ROOT_DIR}/src/core/*.h)
 
-file(GLOB MATH_SOURCE ${ROOT_DIR}/src/math/*.cpp)
-file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h)
+file(GLOB MATH_SOURCE ${ROOT_DIR}/src/math/*.cpp;${ROOT_DIR}/src/math/interpolants/*.cpp)
+file(GLOB MATH_HEADER ${ROOT_DIR}/src/math/*.h;${ROOT_DIR}/src/math/interpolants/*.h)
 
 file(GLOB CAMERAS_SOURCE ${ROOT_DIR}/src/cameras/*.cpp)
 file(GLOB CAMERAS_HEADER ${ROOT_DIR}/src/cameras/*.h)
@@ -56,8 +56,8 @@ file(GLOB OBJECTS_HEADER ${ROOT_DIR}/src/objects/*.h)
 file(GLOB SCENES_SOURCE ${ROOT_DIR}/src/scenes/*.cpp)
 file(GLOB SCENES_HEADER ${ROOT_DIR}/src/scenes/*.h)
 
-file(GLOB GEOMETRIES_SOURCE ${ROOT_DIR}/src/geometries/*.cpp)
-file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h)
+file(GLOB GEOMETRIES_SOURCE ${ROOT_DIR}/src/geometries/*.cpp;${ROOT_DIR}/src/geometries/extra/*.cpp)
+file(GLOB GEOMETRIES_HEADER ${ROOT_DIR}/src/geometries/*.h;${ROOT_DIR}/src/geometries/extra/*.h)
 
 file(GLOB CURVES_SOURCE ${ROOT_DIR}/src/curves/*.cpp)
 file(GLOB CURVES_HEADER ${ROOT_DIR}/src/curves/*.h)
@@ -74,8 +74,8 @@ file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/ope
 file(GLOB CONTROLS_SOURCE ${ROOT_DIR}/src/control/*.cpp)
 file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 
-file(GLOB EXTRA_SOURCE ${ROOT_DIR}/src/extra/shaders/*.cpp;${ROOT_DIR}/src/extra/postprocessing/*.cpp;${ROOT_DIR}/src/extra/*.cpp)
-file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/shaders/*.h;${ROOT_DIR}/src/extra/postprocessing/*.h;${ROOT_DIR}/src/extra/*.h)
+file(GLOB EXTRA_SOURCE ${ROOT_DIR}/src/extra/shaders/*.cpp;${ROOT_DIR}/src/extra/postprocessing/*.cpp;${ROOT_DIR}/src/extra/math/*.cpp;${ROOT_DIR}/src/extra/*.cpp)
+file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/shaders/*.h;${ROOT_DIR}/src/extra/postprocessing/*.h;${ROOT_DIR}/src/extra/math/*.h;${ROOT_DIR}/src/extra/*.h)
 
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
@@ -86,14 +86,14 @@ file(GLOB THREEJS_EXAMPLES_SOURCE ${ROOT_DIR}/src/examples/threejs/geometries/*.
         ${ROOT_DIR}/src/examples/threejs/materials/*.cpp;
         ${ROOT_DIR}/src/examples/threejs/lights/*.cpp;
         ${ROOT_DIR}/src/examples/threejs/lines/*.cpp;
-        ${ROOT_DIR}/src/examples/loaders/*.cpp)
+        ${ROOT_DIR}/src/examples/threejs/features/*.cpp)
 file(GLOB THREEJS_EXAMPLES_HEADER ${ROOT_DIR}/src/examples/threejs/geometries/*.h;
         ${ROOT_DIR}/src/examples/threejs/postprocessing/*.h;
         ${ROOT_DIR}/src/examples/threejs/shaders/*.h;
         ${ROOT_DIR}/src/examples/threejs/materials/*.h;
         ${ROOT_DIR}/src/examples/threejs/lights/*.h;
         ${ROOT_DIR}/src/examples/threejs/lines/*.h;
-        ${ROOT_DIR}/src/examples/loaders/*.h)
+        ${ROOT_DIR}/src/examples/threejs/features/*.h)
 
 source_group("Core" FILES ${CORE_SOURCE})
 source_group("Core" FILES ${CORE_HEADER})
@@ -181,9 +181,13 @@ ${ROOT_DIR}/src/lights
 ${ROOT_DIR}/src/objects
 ${ROOT_DIR}/src/scenes
 ${ROOT_DIR}/src/geometries
+${ROOT_DIR}/src/geometries/extra
 ${ROOT_DIR}/src/curves
 ${ROOT_DIR}/src/helpers
-${ROOT_DIR}/src/extra ${ROOT_DIR}/src/extra/shaders/ ${ROOT_DIR}/src/extra/postprocessing/
+${ROOT_DIR}/src/extra
+${ROOT_DIR}/src/extra/shaders/
+${ROOT_DIR}/src/extra/postprocessing/
+${ROOT_DIR}/src/extra/math/
 ${ROOT_DIR}/src/renders
 ${ROOT_DIR}/src/renders/opengl
 ${ROOT_DIR}/src/renders/shaders
@@ -197,6 +201,7 @@ ${ROOT_DIR}/src/examples/threejs/materials/
 ${ROOT_DIR}/src/examples/threejs/shaders/
 ${ROOT_DIR}/src/examples/threejs/postprocessing/
 ${ROOT_DIR}/src/examples/threejs/geometries/
+${ROOT_DIR}/src/examples/threejs/features/
 )
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误

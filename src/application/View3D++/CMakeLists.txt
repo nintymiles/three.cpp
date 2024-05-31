@@ -2,21 +2,41 @@
 # 项目工程名
 project (View3D++)
 
+if(MSVC)
+  #设置VC输入代码编码格式为utf-8
+  #set(CMAKE_C_FLAGS /source-charset:utf-8)
+  add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+  add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+  #增加macro定义NOMINMAX，去除windows.h中min/max宏影响
+  add_definitions(-DNOMINMAX)
+
+  #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+  #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+  #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  #message("debugflag: ${CMAKE_CXX_FLAGS_DEBUG}")
+  #string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+  message("debugflag: ${CMAKE_CXX_FLAGS_DEBUG}")
+endif()
+
+
 add_definitions(-D_DEBUG)
 
-
+file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/*.h;${ROOT_DIR}/src/*.cpp;)
 file(GLOB IMGUI_SOURCE ${ROOT_DIR}/src/imgui/backends/*.h;${ROOT_DIR}/src/imgui/backends/*.cpp;${ROOT_DIR}/src/imgui/*.h;${ROOT_DIR}/src/imgui/*.cpp)
+file(GLOB IMGUI_FILEDIALOG_SOURCE ${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.h;${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.cpp;${ROOT_DIR}/src/ImGuiFileDialog/dirent/*.h;)
 
 # 构建可执行程序
 ADD_EXECUTABLE(View3D++ ${ROOT_DIR}/src/application/View3D++/view3d_main.cpp)
 
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
-target_sources(View3D++ PRIVATE  ${IMGUI_SOURCE})
+target_sources(View3D++ PRIVATE  ${IMGUI_SOURCE} ${IMGUI_FILEDIALOG_SOURCE} ${THREECPP_SOURCE})
 target_compile_definitions(View3D++ PRIVATE IMGUI_IMPL_OPENGL_ES3)
 target_include_directories(View3D++ PRIVATE
 ${ROOT_DIR}/src
 ${ROOT_DIR}/src/imgui
 ${ROOT_DIR}/src/imgui/backends
+${ROOT_DIR}/src/imgui/ImGuiFileDialog
+${ROOT_DIR}/src/imgui/ImGuiFileDialog/dirent
 ${ROOT_DIR}/src/utils
 )
 
