@@ -25,7 +25,7 @@
 
 #include "ImGuiFileDialog.h"
 #include "common_utils.h"
-
+#include "gl_utils.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
@@ -45,11 +45,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+void drawTriangleDialog();
+void drawTriangle(GLuint shaderProgram);
+
+
 ImGuiIO* demoIO;
 
-// Our state
+// ImGui state
 bool show_demo_window = false;
 bool show_another_window = false;
+bool main_window_active = true;
+
+
 
 int main(){
     glfwSetErrorCallback(glfw_error_callback);
@@ -144,10 +151,52 @@ int main(){
 
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    
+
+    glfwGetFramebufferSize(window, &display_w, &display_h);
+    framebuffer_size_callback(window, display_w, display_h);
+
+//    // Basic vertex shader in GLSL (OpenGL Shading Language)
+//    const char *vertexShaderSource =
+//            "#version 300 es\n"
+//            "layout (location = 0) in vec3 aPos;\n"
+//            "void main() {\n"
+//            "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+//            "}\0";
+//
+//    // Basic fragment shader
+//    const char *fragmentShaderSource =
+//            "#version 300 es\n"
+//            "precision highp float; \n"
+//            "out vec4 FragColor;\n"
+//            "void main() {\n"
+//            "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+//            "}\0";
+
+    // Basic vertex shader in GLSL (OpenGL Shading Language)
+    const char *vertexShaderSourceR = R"*(#version 300 es
+            precision highp float;
+            layout (location = 0) in vec3 aPos;
+            void main() {
+                gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+            })*";
+
+// Basic fragment shader
+    const char *fragmentShaderSourceR = R"*(#version 300 es
+            precision highp float;
+            out vec4 FragColor;
+            void main() {
+                FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+            })*";
+
+    GLuint shaderProgram = glCreateProgram();
+    loadAndCompileShader(shaderProgram,vertexShaderSourceR,fragmentShaderSourceR);
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        framebuffer_size_callback(window, display_w, display_h);
+
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -160,126 +209,165 @@ int main(){
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        //main menu bar
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Open..", "Ctrl+O")) {
+                    IGFD::FileDialogConfig config;
+                    config.path = ".";
+                    config.sidePaneWidth = 256.f;
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
+                }
+                if (ImGui::MenuItem("Save", "Ctrl+S"))   { /* Do stuff */ }
+                if (ImGui::MenuItem("Close", "Ctrl+W"))  { main_window_active = false; }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
+
+        //drawTriangle();
+
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            static float f = 0.0f;
-            static int counter = 0;
+        // display
+        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                // action
+                std::cout << "filePath = " << filePath << " | name=" << filePathName << std::endl;
 
-            static const int app_address_buf_size = 1024;
-            char appAddress[app_address_buf_size] = {};
+//                    drawTriangleDialog();
+                //drawTriangle(shaderProgram);
+            }
 
-            bool main_window_active = true;
+            // close
+            ImGuiFileDialog::Instance()->Close();
+        }
 
-
-            /**
-             * 在IMGui中实现独占充满主窗口，比如填满glfw窗口。 https://github.com/ocornut/imgui/issues/933
-             */
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-            ImGui::SetNextWindowPos(viewport->Pos);
-            ImGui::SetNextWindowSize(viewport->Size);
-            ImGui::Begin("main window", &main_window_active, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |ImGuiWindowFlags_MenuBar);
-
-            //ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-            bool my_tool_active = true;
+//        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+//        {
+//            static float f = 0.0f;
+//            static int counter = 0;
+//
+//            static const int app_address_buf_size = 1024;
+//            char appAddress[app_address_buf_size] = {};
+//
+//            /**
+//             * 在IMGui中实现独占充满主窗口，比如填满glfw窗口。 https://github.com/ocornut/imgui/issues/933
+//             */
+//            ImGuiViewport* viewport = ImGui::GetMainViewport();
+//            ImGui::SetNextWindowPos(viewport->Pos);
+//            ImGui::SetNextWindowSize(viewport->Size);
+//            ImGui::Begin("main window", &main_window_active, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize );
+//
+//            //ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 //            // Create a window called "My First Tool", with a menu bar.
-//            ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
-            if (ImGui::BeginMenuBar())
-            {
-                if (ImGui::BeginMenu("File"))
-                {
-                    if (ImGui::MenuItem("Open..", "Ctrl+O")) {
-                            IGFD::FileDialogConfig config;
-                            config.path = ".";
-                            config.sidePaneWidth = 256.f;
-                            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
-                    }
-                    if (ImGui::MenuItem("Save", "Ctrl+S"))   { /* Do stuff */ }
-                    if (ImGui::MenuItem("Close", "Ctrl+W"))  { main_window_active = false; }
-                    ImGui::EndMenu();
-                }
-                ImGui::EndMenuBar();
-            }
+//            if (main_window_active) {
+//                ImGui::Begin("My Main Window", &main_window_active, ImGuiWindowFlags_MenuBar);
+//                if (ImGui::BeginMenuBar()) {
+//                    if (ImGui::BeginMenu("File")) {
+//                        if (ImGui::MenuItem("Open..", "Ctrl+O")) {
+//                            IGFD::FileDialogConfig config;
+//                            config.path = ".";
+//                            config.sidePaneWidth = 256.f;
+//                            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
+//                        }
+//                        if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+//                        if (ImGui::MenuItem("Close", "Ctrl+W")) { main_window_active = false; }
+//                        ImGui::EndMenu();
+//                    }
+//                    ImGui::EndMenuBar();
+//                }
+//
+//                ImGui::Text(
+//                        "This is some useful text.");               // Display some text (you can use a format strings too)
+//
+//                // open Dialog Simple
+//                if (ImGui::Button("Open File Dialog")) {
+//                    IGFD::FileDialogConfig config;
+//                    config.path = ".";
+//                    config.sidePaneWidth = 256.f;
+//                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
+//                }
+//
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 
-            // open Dialog Simple
-            if (ImGui::Button("Open File Dialog")) {
-                IGFD::FileDialogConfig config;
-                config.path = ".";
-                config.sidePaneWidth = 256.f;
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
-            }
+//                ImGui::InputText("App Address", appAddress, app_address_buf_size);
+//                //std::cout << appAddress << std::endl;
+//                ImGui::LogText(appAddress);
+//
+//                ImGui::Checkbox("Another Window", &show_another_window);
+//                ImGui::Checkbox("Demo Window", &show_demo_window);
+//
+//                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+//                ImGui::ColorEdit3("clear color", (float *) &clear_color); // Edit 3 floats representing a color
+//
+//                if (ImGui::Button(
+//                        "Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+//                    counter++;
+//                ImGui::SameLine();
+//                ImGui::Text("counter = %d", counter);
+//
+//                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+//                            ImGui::GetIO().Framerate);
+//                ImGui::End();
+//            }
+//        }
+//
+//        {
+//            //绘制三角形窗口
+        //drawTriangleDialog();
+//        }
+//
+//        // 3. Show another simple window.
+//        if (show_another_window)
+//        {
+//            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+//            ImGui::Text("Hello from another window!");
+//            if (ImGui::Button("Close Me"))
+//                show_another_window = false;
+//            ImGui::End();
+//        }
 
-            // display
-            if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"))
-            {
-                // action if OK
-                if (ImGuiFileDialog::Instance()->IsOk())
-                {
-                    std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-                    std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-                    // action
-                }
 
-                // close
-                ImGuiFileDialog::Instance()->Close();
-            }
-            
-            ImGui::InputText("App Address",appAddress,app_address_buf_size);
-            //std::cout << appAddress << std::endl;
-            ImGui::LogText(appAddress);
+        //此处直接执行OpenGL绘制到当前FrameBuffer可能在ImGui::Render()调用时被清理
+        //drawTriangleO();
+        //drawTriangleDialog();
 
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-        
-        {
-            //绘制三角形窗口
-            //drawTriangleDialog();
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
-
-        // Rendering
+        //Rendering
+        //此处ImGui frame准备完毕，最终ImGui绘制数据完成
         ImGui::Render();
-        int display_w, display_h;
+
+        //绘制前设置viewport
         glfwGetFramebufferSize(window, &display_w, &display_h);
+        glfwGetWindowContentScale(window, &display_x_scale, &display_y_scale);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        //若直接绘制OpenGL到当前framebuffer,则此处绘制较合理
+        //drawTriangleO();
+        glViewport((display_w - 640)/2, (display_h - 640)/2, 640,640);
+        drawTriangle(shaderProgram);
+
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
+
     }
 
     // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwDestroyWindow(window);
+//    ImGui_ImplOpenGL3_Shutdown();
+//    ImGui_ImplGlfw_Shutdown();
+//    ImGui::DestroyContext();
+//
+//    glfwDestroyWindow(window);
     glfwTerminate();
 
     return 0;
@@ -355,4 +443,249 @@ void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
 //    //std::cout << "mouse wheel delta: " << yoffset << std::endl;
 //    currentDemoClass->controller->mouseWheel((float)(yoffset*120));
 }
+
+void drawTriangleDialog(){
+    // Basic vertex shader in GLSL (OpenGL Shading Language)
+    const char *vertexShaderSource =
+            "#version 300 es\n"
+            "layout (location = 0) in vec3 aPos;\n"
+            "void main() {\n"
+            "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+            "}\0";
+
+// Basic fragment shader
+    const char *fragmentShaderSource =
+            "#version 300 es\n"
+            "precision highp float;"
+            "out vec4 FragColor;\n"
+            "void main() {\n"
+            "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+            "}\0";
+
+    constexpr int fboWidth(800);
+    constexpr int fboHeight(640);
+
+    GLuint framebuffer;
+    GLuint depthRenderbuffer;
+    GLuint texture;
+    // GLint texWidth = 480,
+    // texHeight = 320;
+    GLint maxRenderbufferSize;
+
+    glGetIntegerv ( GL_MAX_RENDERBUFFER_SIZE, &maxRenderbufferSize);
+    // check if GL_MAX_RENDERBUFFER_SIZE is >= texWidth and texHeight
+
+    if ( ( maxRenderbufferSize <= fboWidth ) || ( maxRenderbufferSize <= fboHeight ) ) {
+        // cannot use framebuffer objects, as we need to create
+        // a depth buffer as a renderbuffer object
+        // return with appropriate error
+
+    }
+
+    // generate the framebuffer, renderbuffer, and texture object names
+    glGenFramebuffers (1, &framebuffer);
+    glGenRenderbuffers (1, &depthRenderbuffer);
+    glGenTextures (1, &texture);
+
+    // bind texture and load the texture mip level 0
+    // texels are RGB565
+    // no texels need to be specified as we are going to draw into
+    // the texture
+    glBindTexture ( GL_TEXTURE_2D, texture );
+    glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, fboWidth, fboHeight, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL );
+
+    glTexParameteri ( GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+
+    glTexParameteri ( GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+
+    glTexParameteri ( GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+    glTexParameteri ( GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    // bind renderbuffer and create a 16-bit depth buffer
+    // width and height of renderbuffer = width and height of
+    // the texture
+    glBindRenderbuffer ( GL_RENDERBUFFER, depthRenderbuffer );
+    glRenderbufferStorage ( GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, fboWidth, fboHeight );
+
+    // bind the framebuffer
+    glBindFramebuffer ( GL_FRAMEBUFFER, framebuffer );
+
+    // specify texture as color attachment
+    glFramebufferTexture2D ( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0 );
+    // specify depth_renderbuffer as depth attachment
+    glFramebufferRenderbuffer ( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+
+    glBindFramebuffer ( GL_FRAMEBUFFER, 0 );
+
+
+    static float f = 0.0f;
+    static int counter = 0;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    glViewport(0, 0, fboWidth, fboHeight);
+
+    constexpr GLfloat color[]{ 0.2f, 0.3f, 0.5f, 0.8f }, depth(1.0f);
+    glClearBufferfv(GL_COLOR, 0, color);
+    glClearBufferfv(GL_DEPTH, 0, &depth);
+
+    int success;
+    char infoLog[512];
+    // Create a vertex shader object
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    // Attach the shader source code to the shader object
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+
+    // Compile the vertex shader dynamically
+    glCompileShader(vertexShader);
+
+    // Check if compilation was successful
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n";
+        std::cout << infoLog << std::endl;
+    }
+
+    // Create a fragment shader object
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+    // Attach the shader source code to the shader object
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+
+    // Compile the fragment shader dynamically
+    glCompileShader(fragmentShader);
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n";
+        std::cout << infoLog << std::endl;
+    }
+
+
+    // 2. Link shaders
+
+    // Create a shader program
+    unsigned int shaderProgram;
+    shaderProgram = glCreateProgram();
+
+    // Attach the compiled shaders to the shader program
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    // Check if linking was successful
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::PROGRAM::LINKING_FAILED\n";
+        std::cout << infoLog << std::endl;
+    }
+
+    // Delete shader objects if we no longer need them anymore
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+
+    // 3. Set up vertex data and configure vertex attributes
+
+    // Define three vertices with 3D positions
+    float vertices[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f,  0.5f, 0.0f
+    };
+
+    // Generate vertex buffer object (VBO) and vertex array object (VAO)
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    // Bind VAO, then bind VBO
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Copy the vertex data into the buffer's memory
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Set attributes that describe how OpenGL should interpret the vertex data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+
+    // Unbind so other calls won't modify VBO and VAO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    //ImDrawList::AddCallback(graphicsEngine->render(),nullptr);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    ImGui::Begin("OpenGL");                          // Create a window called "Hello, world!" and append into it.
+    ImGui::SetWindowSize(ImVec2(fboWidth, fboHeight+60));
+
+    //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+    ImGui::Image((void*)(intptr_t)texture, ImVec2(fboWidth, fboHeight),ImVec2(0, 1), ImVec2(1, 0));
+
+    //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    ImGui::End();
+    //ImGui::Render();
+
+}
+
+void drawTriangle(GLuint shaderProgram){
+
+    constexpr GLfloat color[]{ 0.2f, 0.3f, 0.5f, 0.8f }, depth(1.0f);
+    glClearBufferfv(GL_COLOR, 0, color);
+    glClearBufferfv(GL_DEPTH, 0, &depth);
+
+
+    // 3. Set up vertex data and configure vertex attributes
+
+    // Define three vertices with 3D positions
+    float vertices[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f,  0.5f, 0.0f
+    };
+
+    // Generate vertex buffer object (VBO) and vertex array object (VAO)
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    // Bind VAO, then bind VBO
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Copy the vertex data into the buffer's memory
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Set attributes that describe how OpenGL should interpret the vertex data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+
+    // Unbind so other calls won't modify VBO and VAO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+}
+
 

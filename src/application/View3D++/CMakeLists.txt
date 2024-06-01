@@ -21,7 +21,7 @@ endif()
 
 add_definitions(-D_DEBUG)
 
-file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/*.h;${ROOT_DIR}/src/*.cpp;)
+file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/*.h;${ROOT_DIR}/src/*.cpp;${ROOT_DIR}/src/utils/gl_utils.h;${ROOT_DIR}/src/utils/gl_utils.cpp;)
 file(GLOB IMGUI_SOURCE ${ROOT_DIR}/src/imgui/backends/*.h;${ROOT_DIR}/src/imgui/backends/*.cpp;${ROOT_DIR}/src/imgui/*.h;${ROOT_DIR}/src/imgui/*.cpp)
 file(GLOB IMGUI_FILEDIALOG_SOURCE ${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.h;${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.cpp;${ROOT_DIR}/src/ImGuiFileDialog/dirent/*.h;)
 
