@@ -21,23 +21,40 @@ endif()
 
 add_definitions(-D_DEBUG)
 
-file(GLOB THREECPP_SOURCE ${ROOT_DIR}/src/*.h;${ROOT_DIR}/src/*.cpp;${ROOT_DIR}/src/utils/gl_utils.h;${ROOT_DIR}/src/utils/gl_utils.cpp;)
-file(GLOB IMGUI_SOURCE ${ROOT_DIR}/src/imgui/backends/*.h;${ROOT_DIR}/src/imgui/backends/*.cpp;${ROOT_DIR}/src/imgui/*.h;${ROOT_DIR}/src/imgui/*.cpp)
-file(GLOB IMGUI_FILEDIALOG_SOURCE ${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.h;${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.cpp;${ROOT_DIR}/src/ImGuiFileDialog/dirent/*.h;)
+file(GLOB IMGUI_FILEDIALOG_SOURCE ${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.h;
+        ${ROOT_DIR}/src/imgui/ImGuiFileDialog/*.cpp;${ROOT_DIR}/src/ImGuiFileDialog/dirent/*.h;)
+
+file(GLOB BASE_SOURCE ${ROOT_DIR}/src/application/base/*.cpp)
+file(GLOB BASE_HEADER ${ROOT_DIR}/src/application/base/*.h)
+
+file(GLOB APPLICATION_SPEC_SOURCE ${ROOT_DIR}/src/application/View3D++/*.cpp)
+file(GLOB APPLICATION_SPEC_HEADER ${ROOT_DIR}/src/application/View3D++/*.h)
+
+
+file(GLOB APPLICATION_SOURCES ${THREECPP_LIB_SOURCE};
+        ${BASE_SOURCE};${BASE_HEADER};
+        ${APPLICATION_SPEC_SOURCE};${APPLICATION_SPEC_HEADER})
+
+
+list(APPEND APP_INCLUDES
+        ${ROOT_DIR}/src/application/base/
+        ${ROOT_DIR}/src/application/View3D++/)
+
 
 # 构建可执行程序
 ADD_EXECUTABLE(View3D++ ${ROOT_DIR}/src/application/View3D++/view3d_main.cpp)
 
 # 如果headers作为源码的一部分，那么当然也是作为source来管理的
-target_sources(View3D++ PRIVATE  ${IMGUI_SOURCE} ${IMGUI_FILEDIALOG_SOURCE} ${THREECPP_SOURCE})
+target_sources(View3D++ PRIVATE  ${IMGUI_SOURCE} ${IMGUI_FILEDIALOG_SOURCE} ${THREECPP_LIB_SOURCE} ${APPLICATION_SOURCES})
+
 target_compile_definitions(View3D++ PRIVATE IMGUI_IMPL_OPENGL_ES3)
+#此处这种定义宏的方式并不适用于tinygltf
+#target_compile_definitions(View3D++ PUBLIC TINYGLTF_IMPLEMENTATION INTERFACE STB_IMAGE_WRITE_IMPLEMENTATION)
+
 target_include_directories(View3D++ PRIVATE
-${ROOT_DIR}/src
-${ROOT_DIR}/src/imgui
-${ROOT_DIR}/src/imgui/backends
-${ROOT_DIR}/src/imgui/ImGuiFileDialog
-${ROOT_DIR}/src/imgui/ImGuiFileDialog/dirent
-${ROOT_DIR}/src/utils
+    ${THREECPP_LIB_INCLUDES}
+    ${IMGUI_INCLUDES}
+    ${APP_INCLUDES}
 )
 
 #MSVC编译时需要添加一些额外的参数，否则会导致一些奇怪的错误
