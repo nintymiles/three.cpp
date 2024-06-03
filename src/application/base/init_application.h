@@ -7,8 +7,10 @@
 
 #include "application_model.h"
 
-#include <GLFW/glfw3.h>
 #include "trackball_control.h"
+#include "view_objects_stage.h"
+
+#include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
@@ -17,22 +19,29 @@
 extern int display_w;
 extern int display_h;
 
-ApplicationBase::sptr currentDemoClass;
+ApplicationBase::sptr renderClass;
 
-std::unordered_map<std::string, std::shared_ptr<ApplicationBase>> demoClasses;
+std::unordered_map<std::string, std::shared_ptr<ApplicationBase>> renderClasses;
 
 GLRenderer::sptr glRenderer;
 
 void initRenderer() {
-
-    /*demoClasses.insert({ "02-First-Scene",std::make_shared<FirstScene>(display_w,display_h) });
-    demoClasses.insert({ "03-Material-Light",std::make_shared<MaterialLight>(display_w,display_h) });*/
+    renderClass = std::make_shared<ViewObjectsStage>(display_w, display_h);
+    /*renderClasses.insert({ "02-First-Scene",std::make_shared<FirstScene>(display_w,display_h) });
+    renderClasses.insert({ "03-Material-Light",std::make_shared<MaterialLight>(display_w,display_h) });*/
 }
 
 
 static void ShowApplicationMenuBar() {
     if (ImGui::BeginMainMenuBar()){
         if (ImGui::BeginMenu("File")){
+
+            if (ImGui::MenuItem("Open..", "Ctrl+O")) {
+                IGFD::FileDialogConfig config;
+                config.path = ".";
+                config.sidePaneWidth = 256.f;
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
+            }
 
             if (ImGui::MenuItem("Exit", "CTRL+E")) {
                 exit(0);
@@ -62,7 +71,7 @@ static void ShowApplicationMenuBar() {
 //                currentDemoClass->renderer->clear();
 //            }
 
-            if (currentDemoClass != nullptr) currentDemoClass->initialized = false;
+            if (renderClass != nullptr) renderClass->initialized = false;
             ImGui::EndMenu();
 
         }

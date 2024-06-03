@@ -27,7 +27,7 @@
 #include "ImGuiFileDialog.h"
 #include "common_utils.h"
 #include "gl_utils.h"
-#include "init_application_menu.h"
+#include "init_application.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
@@ -51,7 +51,7 @@ void drawTriangleDialog();
 void drawTriangle(GLuint shaderProgram);
 
 
-ImGuiIO* demoIO;
+ImGuiIO* appGuiIO;
 
 // ImGui state
 bool show_demo_window = false;
@@ -116,7 +116,7 @@ int main(){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    demoIO = &io;
+    appGuiIO = &io;
     ImGui::StyleColorsDark();
 
     //const char* glsl_version = "#version 460";
@@ -193,12 +193,11 @@ int main(){
     GLuint shaderProgram = glCreateProgram();
     loadAndCompileShader(shaderProgram,vertexShaderSourceR,fragmentShaderSourceR);
 
+    initRenderer();
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        framebuffer_size_callback(window, display_w, display_h);
-
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -211,7 +210,38 @@ int main(){
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+
         ShowApplicationMenuBar();
+
+        if (renderClass != nullptr) {
+
+            if (!renderClass->initialized) {
+                Color c = renderClass->renderer->getClearColor();
+                glClearColor(c.r, c.g, c.b,1.0f);
+                renderClass->renderer->clear(true, true, true);
+                renderClass->init();
+                glfwGetFramebufferSize(window, &display_w, &display_h);
+                framebuffer_size_callback(window, display_w, display_h);
+                renderClass->initialized = true;
+            }
+
+            if (!io.WantCaptureMouse) {
+                renderClass->controller->update();
+            }
+            renderClass->render();
+
+        }
+
+        //ImGui未初始化之前调用，将会出现imgui Assertion failed: g.WithinFrameScope错误
+        if (renderClass != nullptr) {
+            renderClass->showControls();
+            // save boundTextures before ImGui Render
+            //currentBoundTextures = renderClass->renderer->state->currentBoundTextures;
+        }
+
+//        glfwGetFramebufferSize(window, &display_w, &display_h);
+//        framebuffer_size_callback(window, display_w, display_h);
+
 
 //        //main menu bar
 //        if (ImGui::BeginMainMenuBar())
@@ -237,22 +267,24 @@ int main(){
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-//        // display
-//        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
-//            // action if OK
-//            if (ImGuiFileDialog::Instance()->IsOk()) {
-//                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-//                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-//                // action
-//                std::cout << "filePath = " << filePath << " | name=" << filePathName << std::endl;
-//
-////                    drawTriangleDialog();
-//                //drawTriangle(shaderProgram);
-//            }
-//
-//            // close
-//            ImGuiFileDialog::Instance()->Close();
-//        }
+        // display
+        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                // action
+                std::cout << "filePath = " << filePath << " | name=" << filePathName << std::endl;
+
+                std::string fileName = filePath + threecpp::getFileSeparator() + filePathName;
+                renderClass->loadObj(fileName);
+            }
+
+
+
+            // close
+            ImGuiFileDialog::Instance()->Close();
+        }
 
 //        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 //        {
@@ -352,13 +384,13 @@ int main(){
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glfwGetWindowContentScale(window, &display_x_scale, &display_y_scale);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+        //glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        //glClear(GL_COLOR_BUFFER_BIT);
 
         //若直接绘制OpenGL到当前framebuffer,则此处绘制较合理
         //drawTriangleO();
-        glViewport((display_w - 640)/2, (display_h - 640)/2, 640,640);
-        drawTriangle(shaderProgram);
+        //glViewport((display_w - 640)/2, (display_h - 640)/2, 640,640);
+        //drawTriangle(shaderProgram);
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -385,22 +417,22 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     //glViewport(0, 0, width, height);
     display_w = width;
     display_h = height;
-//    if (currentDemoClass == nullptr) return;
-//    currentDemoClass->controller->sizeChanged(Vector4(0, 0, width, height));
-//
-//    if (currentDemoClass != nullptr)
-//        currentDemoClass->renderer->setViewport(0, 0, display_w, display_h);
+    if (renderClass == nullptr) return;
+    renderClass->controller->sizeChanged(Vector4(0, 0, width, height));
+
+    if (renderClass != nullptr)
+        renderClass->renderer->setViewport(0, 0, display_w, display_h);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-//    if (currentDemoClass == nullptr) return;
-//    currentDemoClass->controller->mouseMove((int)xpos, (int)ypos);
+    if (renderClass == nullptr) return;
+    renderClass->controller->mouseMove((int)xpos, (int)ypos);
 }
 
 void mouse_button_callback(GLFWwindow* window, int button,int action,int modes) {
 
-//    if (currentDemoClass == nullptr) return;
-    if (demoIO->WantCaptureMouse) return;
+    if (renderClass == nullptr) return;
+    if (appGuiIO->WantCaptureMouse) return;
     bool lbutton_down = false;
     bool rbutton_down = false;
     bool mbutton_down = false;
@@ -429,23 +461,23 @@ void mouse_button_callback(GLFWwindow* window, int button,int action,int modes) 
         double x, y;
         glfwGetCursorPos(window, &x, &y);
         if (lbutton_down) {
-//            currentDemoClass->controller->mouseDown(0, (int)x, (int)y);//ROTATE
+            renderClass->controller->mouseDown(0, (int)x, (int)y);//ROTATE
         }else if(rbutton_down){
-//            currentDemoClass->controller->mouseDown(1, (int)x, (int)y);//DOLLY
+            renderClass->controller->mouseDown(1, (int)x, (int)y);//DOLLY
         }else {
-//            currentDemoClass->controller->mouseDown(2, (int) x, (int) y); //PAN
+            renderClass->controller->mouseDown(2, (int) x, (int) y); //PAN
         }
 
     }
     else {
-//        currentDemoClass->controller->mouseUp();
+        renderClass->controller->mouseUp();
     }
 }
 
 void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
-//    if (currentDemoClass == nullptr) return;
-//    //std::cout << "mouse wheel delta: " << yoffset << std::endl;
-//    currentDemoClass->controller->mouseWheel((float)(yoffset*120));
+    if (renderClass == nullptr) return;
+    //std::cout << "mouse wheel delta: " << yoffset << std::endl;
+    renderClass->controller->mouseWheel((float)(yoffset*120));
 }
 
 void drawTriangleDialog(){

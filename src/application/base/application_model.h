@@ -38,6 +38,9 @@ public:
     virtual void render() {
         renderer->render(scene, camera);
     }
+
+    virtual void loadObj(std::string fileName){}
+
 };
 
 #endif //THREE_CPP_APPLICATION_MODEL_H
