@@ -27,6 +27,7 @@
 #include "ImGuiFileDialog.h"
 #include "common_utils.h"
 #include "gl_utils.h"
+#include "init_application_menu.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
@@ -210,23 +211,25 @@ int main(){
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        //main menu bar
-        if (ImGui::BeginMainMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
-            {
-                if (ImGui::MenuItem("Open..", "Ctrl+O")) {
-                    IGFD::FileDialogConfig config;
-                    config.path = ".";
-                    config.sidePaneWidth = 256.f;
-                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
-                }
-                if (ImGui::MenuItem("Save", "Ctrl+S"))   { /* Do stuff */ }
-                if (ImGui::MenuItem("Close", "Ctrl+W"))  { main_window_active = false; }
-                ImGui::EndMenu();
-            }
-            ImGui::EndMainMenuBar();
-        }
+        ShowApplicationMenuBar();
+
+//        //main menu bar
+//        if (ImGui::BeginMainMenuBar())
+//        {
+//            if (ImGui::BeginMenu("File"))
+//            {
+//                if (ImGui::MenuItem("Open..", "Ctrl+O")) {
+//                    IGFD::FileDialogConfig config;
+//                    config.path = ".";
+//                    config.sidePaneWidth = 256.f;
+//                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
+//                }
+//                if (ImGui::MenuItem("Save", "Ctrl+S"))   { /* Do stuff */ }
+//                if (ImGui::MenuItem("Close", "Ctrl+W"))  { main_window_active = false; }
+//                ImGui::EndMenu();
+//            }
+//            ImGui::EndMainMenuBar();
+//        }
 
         //drawTriangle();
 
@@ -234,22 +237,22 @@ int main(){
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        // display
-        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
-            // action if OK
-            if (ImGuiFileDialog::Instance()->IsOk()) {
-                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-                // action
-                std::cout << "filePath = " << filePath << " | name=" << filePathName << std::endl;
-
-//                    drawTriangleDialog();
-                //drawTriangle(shaderProgram);
-            }
-
-            // close
-            ImGuiFileDialog::Instance()->Close();
-        }
+//        // display
+//        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
+//            // action if OK
+//            if (ImGuiFileDialog::Instance()->IsOk()) {
+//                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+//                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+//                // action
+//                std::cout << "filePath = " << filePath << " | name=" << filePathName << std::endl;
+//
+////                    drawTriangleDialog();
+//                //drawTriangle(shaderProgram);
+//            }
+//
+//            // close
+//            ImGuiFileDialog::Instance()->Close();
+//        }
 
 //        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 //        {

@@ -13,10 +13,6 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
-
-#include "gltf_loader.h"
-
-
 // settings
 extern int display_w;
 extern int display_h;
