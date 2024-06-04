@@ -26,8 +26,8 @@ public:
         renderer->shadowMap->enabled = true;
         //renderer->shadowMap->type = ShadowMapType::PCFSoftShadowMap;
 
-        camera = std::make_shared<PerspectiveCamera>(45.0f, screenX/screenY , 1.f, 2000.0f);
-        camera->position.set(0.0f, 0.0f, 250.0f);
+        camera = std::make_shared<PerspectiveCamera>(60.0f, screenX/screenY , 1.f, 2000.0f);
+        camera->position.set(0.0f, 0.0f, 500.0f);
         //camera->lookAt(Vector3());
         isPerspective = true;
 
@@ -39,7 +39,7 @@ public:
         scene->add(ambientLight);
 
         auto pointLight = PointLight::create(Color().setHex(0xffffff),2.0f);
-        pointLight->position.set(30, 20, 50);
+        pointLight->position.set(80, 220, 250);
         pointLight->castShadow = true;
         scene->add(pointLight);
 

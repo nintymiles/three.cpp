@@ -25,16 +25,22 @@ void ViewObjectsStage::loadObj(std::string fileName){
 
     objGroup = loader.load(fileName);
 
+    objGroup->geometry->center();
 
-    objGroup->traverse([&](Object3D& o) {
-        o.material = meshMaterial;
-        if (instanceOf<Mesh>(&o) && o.materials.size() > 1) {
-            int size = o.materials.size();
-            for (int i = 0; i < size; i++)
-                o.materials.push_back(meshMaterial);
-        }
-    });
-    objGroup->scale.set(4, 4, 4);
+//    objGroup->position.setZ(-30);
+//    objGroup->position.setY(-95);
+//    objGroup->position.setX(50);
+
+
+//    objGroup->traverse([&](Object3D& o) {
+//        o.material = meshMaterial;
+//        if (instanceOf<Mesh>(&o) && o.materials.size() > 1) {
+//            int size = o.materials.size();
+//            for (int i = 0; i < size; i++)
+//                o.materials.push_back(meshMaterial);
+//        }
+//    });
+    //objGroup->scale.set(4, 4, 4);
 
     scene->add(objGroup);
 }

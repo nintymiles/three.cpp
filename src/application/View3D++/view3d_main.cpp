@@ -198,20 +198,6 @@ int main(){
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-        glfwPollEvents();
-
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-
-        ShowApplicationMenuBar();
 
         if (renderClass != nullptr) {
 
@@ -231,6 +217,23 @@ int main(){
             renderClass->render();
 
         }
+
+        // Poll and handle events (inputs, window resize, etc.)
+        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
+        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
+        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+        glfwPollEvents();
+
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+
+        ShowApplicationMenuBar();
+
+
 
         //ImGui未初始化之前调用，将会出现imgui Assertion failed: g.WithinFrameScope错误
         if (renderClass != nullptr) {
@@ -277,7 +280,7 @@ int main(){
                 std::cout << "filePath = " << filePath << " | name=" << filePathName << std::endl;
 
                 std::string fileName = filePath + threecpp::getFileSeparator() + filePathName;
-                renderClass->loadObj(fileName);
+                renderClass->loadObj(filePathName);
             }
 
 
