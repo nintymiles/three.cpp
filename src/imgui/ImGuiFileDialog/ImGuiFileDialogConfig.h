@@ -4,21 +4,21 @@
 
 // uncomment if you need to use your FileSystem Interface
 // if commented, you have two defualt interface, std::filesystem or dirent
-// #define USE_CUSTOM_FILESYSTEM
+ #define USE_CUSTOM_FILESYSTEM
 
 // this options need c++17
 #define USE_STD_FILESYSTEM
 
 // #define MAX_FILE_DIALOG_NAME_BUFFER 1024
-// #define MAX_PATH_BUFFER_SIZE 1024
+ #define MAX_PATH_BUFFER_SIZE 1024
 
 // the slash's buttons in path cna be used for quick select parallles directories
-// #define USE_QUICK_PATH_SELECT
+ #define USE_QUICK_PATH_SELECT
 
 // the spacing between button path's can be customized.
 // if disabled the spacing is defined by the imgui theme
 // define the space between path buttons
-// #define CUSTOM_PATH_SPACING 2
+ #define CUSTOM_PATH_SPACING 2
 
 // #define USE_THUMBNAILS
 // the thumbnail generation use the stb_image and stb_resize lib who need to define the implementation
@@ -55,7 +55,7 @@
 
 // widget
 // begin combo widget
-// #define IMGUI_BEGIN_COMBO ImGui::BeginCombo
+ #define IMGUI_BEGIN_COMBO ImGui::BeginCombo
 // when auto resized, FILTER_COMBO_MIN_WIDTH will be considered has minimum width
 // FILTER_COMBO_AUTO_SIZE is enabled by default now to 1
 // uncomment if you want disable
@@ -63,30 +63,30 @@
 // filter combobox width
  #define FILTER_COMBO_MIN_WIDTH 120.0f
 // button widget use for compose path
-// #define IMGUI_PATH_BUTTON ImGui::Button
+ #define IMGUI_PATH_BUTTON ImGui::Button
 // standard button
-// #define IMGUI_BUTTON ImGui::Button
+ #define IMGUI_BUTTON ImGui::Button
 
 // locales string
-// #define createDirButtonString "+"
-// #define resetButtonString "R"
-// #define drivesButtonString "Drives"
-// #define editPathButtonString "E"
-// #define searchString "Search"
-// #define dirEntryString "[DIR] "
-// #define linkEntryString "[LINK] "
-// #define fileEntryString "[FILE] "
-// #define fileNameString "File Name : "
-// #define dirNameString "Directory Path :"
-// #define buttonResetSearchString "Reset search"
-// #define buttonDriveString "Drives"
-// #define buttonEditPathString "Edit path\nYou can also right click on path buttons"
-// #define buttonResetPathString "Reset to current directory"
-// #define buttonCreateDirString "Create Directory"
-// #define OverWriteDialogTitleString "The file Already Exist !"
-// #define OverWriteDialogMessageString "Would you like to OverWrite it ?"
-// #define OverWriteDialogConfirmButtonString "Confirm"
-// #define OverWriteDialogCancelButtonString "Cancel"
+ #define createDirButtonString "+"
+ #define resetButtonString "R"
+ #define drivesButtonString "Drives"
+ #define editPathButtonString "E"
+ #define searchString "Search"
+ #define dirEntryString "[DIR] "
+ #define linkEntryString "[LINK] "
+ #define fileEntryString "[FILE] "
+ #define fileNameString "File Name : "
+ #define dirNameString "Directory Path :"
+ #define buttonResetSearchString "Reset search"
+ #define buttonDriveString "Drives"
+ #define buttonEditPathString "Edit path\nYou can also right click on path buttons"
+ #define buttonResetPathString "Reset to current directory"
+ #define buttonCreateDirString "Create Directory"
+ #define OverWriteDialogTitleString "The file Already Exist !"
+ #define OverWriteDialogMessageString "Would you like to OverWrite it ?"
+ #define OverWriteDialogConfirmButtonString "Confirm"
+ #define OverWriteDialogCancelButtonString "Cancel"
 
 // Validation buttons
 // #define okButtonString " OK"
@@ -126,16 +126,16 @@
 // #define defaultSortOrderDate true
 // #define defaultSortOrderThumbnails true
 
-// #define USE_PLACES_FEATURE
-// #define PLACES_PANE_DEFAULT_SHOWN false
-// #define placesPaneWith 150.0f
+ #define USE_PLACES_FEATURE
+ #define PLACES_PANE_DEFAULT_SHOWN false
+ #define placesPaneWith 150.0f
 // #define IMGUI_TOGGLE_BUTTON ToggleButton
-// #define placesButtonString "Place"
-// #define placesButtonHelpString "Places"
-// #define addPlaceButtonString "+"
-// #define removePlaceButtonString "-"
-// #define validatePlaceButtonString "ok"
-// #define editPlaceButtonString "E"
+ #define placesButtonString "Place"
+ #define placesButtonHelpString "Places"
+ #define addPlaceButtonString "+"
+ #define removePlaceButtonString "-"
+ #define validatePlaceButtonString "ok"
+ #define editPlaceButtonString "E"
 
 // a group for bookmarks will be added by default, but you can also create it yourself and many more
 // #define USE_PLACES_BOOKMARKS
@@ -145,7 +145,7 @@
 
 // a group for system devices (returned by IFileSystem), but you can also add yours
 // by ex if you would like to display a specific icon for some devices
-// #define USE_PLACES_DEVICES
-// #define PLACES_DEVICES_DEFAULT_OPEPEND true
-// #define placesDevicesGroupName "Devices"
-// #define placesDevicesDisplayOrder 10  // to the end
+ #define USE_PLACES_DEVICES
+ #define PLACES_DEVICES_DEFAULT_OPEPEND true
+ #define placesDevicesGroupName "Devices"
+ #define placesDevicesDisplayOrder 10  // to the end
