@@ -34,9 +34,9 @@ public:
         return *this;
     }
 
-    SkinnedMesh& normalizeSkinWeights();
+    SkinnedMesh& normalizeSkinWeights(){};
 
-    void updateMatrixWorld( bool force );
+    void updateMatrixWorld( bool force ){};
 
 //    boneTransform( index, target )
 };
