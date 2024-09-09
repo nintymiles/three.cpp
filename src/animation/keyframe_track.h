@@ -15,6 +15,7 @@
 #include <functional>
 
 class Interpolant;
+template<typename ValueBufferType,typename DefaultInterpolation>
 class KeyframeTrack {
 public:
     std::vector<float> times;

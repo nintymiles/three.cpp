@@ -13,6 +13,8 @@
 #include <string>
 #include "sole.h"
 
+
+
 class AnimationClip {
 public:
     std::string name;
@@ -23,7 +25,7 @@ public:
 public:
     using sptr = std::shared_ptr<AnimationClip>;
 
-    AnimationClip(std::string name, std::vector<KeyframeTrack::sptr> tracks, float duration = - 1, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
+    AnimationClip(std::string name, float duration = - 1, std::vector<KeyframeTrack::sptr> tracks, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
                 name(name),tracks(tracks),duration(duration),blendMode(blendMode),uuid(sole::uuid1()){
         // this means it should figure out its duration by scanning the tracks
         if ( this->duration < 0 ) {
@@ -57,6 +59,145 @@ public:
         return nullptr;
 
     }
+
+    static AnimationClip::sptr CreateFromMorphTargetSequence( std::string name, std::vector<MorphTarget> morphTargetSequence, float fps, bool noLoop ) {
+
+        const int numMorphTargets = morphTargetSequence.size();
+        std::vector<KeyframeTrack::sptr > newTracks = {};
+
+        for ( auto i = 0; i < numMorphTargets; i ++ ) {
+
+            std::vector<int> times = {(i + numMorphTargets - 1) % numMorphTargets,i,( i + 1 ) % numMorphTargets};
+            std::vector<float> values = {0, 1, 0};
+
+//            times.push_back(( i + numMorphTargets - 1 ) % numMorphTargets);
+//            times.push_back(i);
+//            times.push_back( ( i + 1 ) % numMorphTargets );
+//
+//            values.push_back( 0, 1, 0 );
+//            values.push_back( 0, 1, 0 );
+//            values.push_back( 0, 1, 0 );
+
+            auto order = AnimationUtils::getKeyframeOrder( times );
+            times = AnimationUtils::sortedArray<int>( times, 1, order );
+            values = AnimationUtils::sortedArray<float>( values, 1, order );
+
+            // if there is a key at the first frame, duplicate it as the
+            // last frame as well for perfect loop.
+            if ( !noLoop && times[ 0 ] == 0 ) {
+                times.push_back( numMorphTargets );
+                values.push_back( values[ 0 ] );
+            }
+
+            KeyframeTrack::sptr track; // = KeyframeTrack
+//            new NumberKeyframeTrack(
+//                    '.morphTargetInfluences[' + morphTargetSequence[ i ].name + ']',
+//                    times, values
+//            ).scale( 1.0 / fps )
+            newTracks.push_back(track);
+
+        }
+
+        return std::make_shared<AnimationClip>(name,-1,newTracks);
+    }
+
+
+
+    AnimationClip& resetDuration() {
+
+        auto& tracks = this->tracks;
+        float duration = 0;
+
+        for ( size_t i = 0, n = tracks.size(); i != n; ++ i ) {
+            auto& track = tracks[ i ];
+
+            duration = math::max( duration, (float)track->times[ track->times.size() - 1 ] );
+
+        }
+
+        this->duration = duration;
+
+        return *this;
+    }
+
+    AnimationClip& trim() {
+
+        for ( size_t i = 0; i < this->tracks.size(); i ++ ) {
+            this->tracks[ i ]->trim( 0, this->duration );
+        }
+
+        return *this;
+    }
+
+    bool validate() {
+
+        bool valid = true;
+
+        for ( size_t i = 0; i < this->tracks.size(); i ++ ) {
+
+            valid = valid && this->tracks[ i ]->validate();
+
+        }
+
+        return valid;
+    }
+
+    AnimationClip& optimize() {
+
+        for ( size_t i = 0; i < this->tracks.size(); i ++ ) {
+            this->tracks[ i ]->optimize();
+
+        }
+
+        return *this;
+
+    }
+
+
+
+};
+
+//function getTrackTypeForValueTypeName( typeName ) {
+//
+//    switch ( typeName.toLowerCase() ) {
+//
+//        case 'scalar':
+//        case 'double':
+//        case 'float':
+//        case 'number':
+//        case 'integer':
+//
+//            return NumberKeyframeTrack;
+//
+//        case 'vector':
+//        case 'vector2':
+//        case 'vector3':
+//        case 'vector4':
+//
+//            return VectorKeyframeTrack;
+//
+//        case 'color':
+//
+//            return ColorKeyframeTrack;
+//
+//        case 'quaternion':
+//
+//            return QuaternionKeyframeTrack;
+//
+//        case 'bool':
+//        case 'boolean':
+//
+//            return BooleanKeyframeTrack;
+//
+//        case 'string':
+//
+//            return StringKeyframeTrack;
+//
+//    }
+//
+//    throw new Error( 'THREE.KeyframeTrack: Unsupported typeName: ' + typeName );
+//
+//}
 
 //    // parse the animation.hierarchy format
 //    static std::shared_ptr<AnimationClip> parseAnimation( animation, bones ) {
@@ -185,102 +326,6 @@ public:
 //        return clip;
 //
 //    }
-
-    AnimationClip& resetDuration() {
-
-        auto& tracks = this->tracks;
-        float duration = 0;
-
-        for ( size_t i = 0, n = tracks.size(); i != n; ++ i ) {
-            auto& track = tracks[ i ];
-
-            duration = math::max( duration, (float)track->times[ track->times.size() - 1 ] );
-
-        }
-
-        this->duration = duration;
-
-        return *this;
-    }
-
-    AnimationClip& trim() {
-
-        for ( size_t i = 0; i < this->tracks.size(); i ++ ) {
-            this->tracks[ i ]->trim( 0, this->duration );
-        }
-
-        return *this;
-    }
-
-    bool validate() {
-
-        bool valid = true;
-
-        for ( size_t i = 0; i < this->tracks.size(); i ++ ) {
-
-            valid = valid && this->tracks[ i ]->validate();
-
-        }
-
-        return valid;
-    }
-
-    AnimationClip& optimize() {
-
-        for ( size_t i = 0; i < this->tracks.size(); i ++ ) {
-            this->tracks[ i ]->optimize();
-
-        }
-
-        return *this;
-
-    }
-
-
-
-};
-
-//function getTrackTypeForValueTypeName( typeName ) {
-//
-//    switch ( typeName.toLowerCase() ) {
-//
-//        case 'scalar':
-//        case 'double':
-//        case 'float':
-//        case 'number':
-//        case 'integer':
-//
-//            return NumberKeyframeTrack;
-//
-//        case 'vector':
-//        case 'vector2':
-//        case 'vector3':
-//        case 'vector4':
-//
-//            return VectorKeyframeTrack;
-//
-//        case 'color':
-//
-//            return ColorKeyframeTrack;
-//
-//        case 'quaternion':
-//
-//            return QuaternionKeyframeTrack;
-//
-//        case 'bool':
-//        case 'boolean':
-//
-//            return BooleanKeyframeTrack;
-//
-//        case 'string':
-//
-//            return StringKeyframeTrack;
-//
-//    }
-//
-//    throw new Error( 'THREE.KeyframeTrack: Unsupported typeName: ' + typeName );
-//
-//}
 
 
 #endif //THREE_CPP_ANIMATION_CLIP_H
