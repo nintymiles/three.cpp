@@ -7,11 +7,14 @@
 
 #include "constants.h"
 #include "keyframe_track.h"
+#include "animation_utils.h"
 
 #include "object_3d.h"
 
 #include <string>
 #include "sole.h"
+
+#include <regex>
 
 
 
@@ -25,7 +28,7 @@ public:
 public:
     using sptr = std::shared_ptr<AnimationClip>;
 
-    AnimationClip(std::string name, float duration = - 1, std::vector<KeyframeTrack::sptr> tracks, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
+    AnimationClip(std::string name, float duration = - 1, std::vector<KeyframeTrack::sptr> tracks = {}, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
                 name(name),tracks(tracks),duration(duration),blendMode(blendMode),uuid(sole::uuid1()){
         // this means it should figure out its duration by scanning the tracks
         if ( this->duration < 0 ) {
@@ -101,7 +104,57 @@ public:
         return std::make_shared<AnimationClip>(name,-1,newTracks);
     }
 
+    static std::vector<AnimationClip::sptr> CreateClipsFromMorphTargetSequences(
+            std::vector<MorphTarget> morphTargets,
+            float fps,
+            bool noLoop
+    ){
+        std::vector<MorphTarget> animationToMorphTargets = {};
 
+        // tested with https://regex101.com/ on trick sequences
+        // such flamingo_flyA_003, flamingo_run1_003, crdeath0059
+        const std::string pattern = R""( /^([\w-]*?)([\d]+)$/ )"";
+        std::regex regex{pattern};
+
+        // sort morph target names into animation groups based
+        // patterns like Walk_001, Walk_002, Run_001, Run_002
+        for ( int i = 0, il = morphTargets.size(); i < il; i ++ ) {
+
+            auto morphTarget = morphTargets[ i ];
+//            auto parts = morphTarget.name.match( pattern );
+            std::smatch smatch;
+            auto searchResut = std::regex_search(morphTarget.name,smatch,regex);
+
+            if ( searchResut && smatch.size()>1 ) {
+
+                auto match = smatch[ 1 ];
+                auto name = match.str();
+
+                //auto animationMorphTargets = animationToMorphTargets[ name ];
+
+//                if ( ! animationMorphTargets ) {
+//
+//                    //animationToMorphTargets[ name ] = animationMorphTargets = [];
+//
+//                }
+//
+//                animationMorphTargets.push( morphTarget );
+
+            }
+
+        }
+
+        std::vector<AnimationClip::sptr> clips{};
+//
+//        for ( auto name : animationToMorphTargets ) {
+//
+//            clips.push( this.CreateFromMorphTargetSequence( name, animationToMorphTargets[ name ], fps, noLoop ) );
+//
+//        }
+
+        return clips;
+
+    }
 
     AnimationClip& resetDuration() {
 
@@ -111,8 +164,7 @@ public:
         for ( size_t i = 0, n = tracks.size(); i != n; ++ i ) {
             auto& track = tracks[ i ];
 
-            duration = math::max( duration, (float)track->times[ track->times.size() - 1 ] );
-
+            duration = math::max( duration, (float)track->getTimes()[ track->getTimes().size() - 1 ] );
         }
 
         this->duration = duration;
