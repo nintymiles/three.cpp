@@ -39,7 +39,7 @@
 
 class AnimationObjectGroupStat;
 class PropertyBinding;
-class AnimationObjectGroup {
+class AnimationObjectGroup: public Object3D{
     friend class AnimationObjectGroupStat;
 
     bool isAnimationObjectGroup = true;

@@ -12,7 +12,12 @@
 class AnimationMixer;
 class PropertyMixer;
 class AnimationAction {
+private:
+    LoopMode loop;
+    int repetitions;
+
 public:
+    using sptr = std::shared_ptr<AnimationAction>;
     std::shared_ptr<AnimationMixer> _mixer;
     AnimationClip::sptr _clip;
     Object3D::sptr _localRoot;
@@ -43,14 +48,31 @@ public:
 
     AnimationAction& startAt( float time );
 
-//    AnimationAction& setLoop( LoopMode mode, repetitions ) {
-//
-//        this.loop = mode;
-//        this.repetitions = repetitions;
-//
-//        return this;
-//
-//    }
+    AnimationAction& setLoop( LoopMode mode, int repetitions ) {
+        this->loop = mode;
+        this->repetitions = repetitions;
+
+        return *this;
+    }
+    AnimationAction& setEffectiveWeight(float weight);
+    float getEffectiveWeight();
+    AnimationAction& fadeIn(float duration);
+    AnimationAction& fadeOut(float duration);
+    AnimationAction& crossFadeFrom(AnimationAction::sptr fadeOutAction, float duration, bool warp);
+    AnimationAction& crossFadeTo(AnimationAction::sptr fadeInAction, float duration, bool warp);
+    AnimationAction& stopFading();
+    AnimationAction& setEffectiveTimeScale(float timeScale);
+    float getEffectiveTimeScale();
+    AnimationAction& setDuration(float duration);
+    AnimationAction& syncWith(AnimationAction::sptr action);
+    AnimationAction& halt(float duration);
+    AnimationAction& warp(float statTimeScale,float endTimeScale,float duration);
+    AnimationAction& stopWarping();
+    std::shared_ptr<AnimationMixer> getMixer();
+    std::shared_ptr<AnimationClip> getClip();
+    Object3D::sptr getRoot();
+
+
 
 
 };
