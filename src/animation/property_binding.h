@@ -54,6 +54,11 @@ public:
         return std::make_shared<PropertyBinding>(rootNode,path,parsedPath);
     }
 
+    std::vector<float> getValue(std::vector<float> sourceArray, int offset);
+    void setValue(std::vector<float> sourceArray, int offset);
+    void bind();
+    void unbind();
+
     static Object3D::sptr findNode( Object3D::sptr root, std::string nodeName ) {
 
         if ( nodeName.empty() || nodeName == "" || nodeName == "." || std::stoi(nodeName) == - 1 || nodeName == root->name /**|| nodeName == root.uuid*/) {

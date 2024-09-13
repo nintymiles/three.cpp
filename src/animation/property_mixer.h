@@ -11,7 +11,8 @@
 #include <string>
 #include <vector>
 
-class PropertyBinding;
+#include "property_binding.h"
+//class PropertyBinding;
 
 template<typename T>
 class PropertyMixer {
@@ -23,6 +24,72 @@ public:
     size_t _origIndex,_addIndex;
     size_t useCount,referenceCount;
     float cumulativeWeight,cumulativeWeightAdditive;
+
+private:
+    void _mixBufferRegion( std::vector<T> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
+        auto s = 1 - t;
+
+        for ( size_t i = 0; i != stride; ++ i ) {
+
+            auto j = dstOffset + i;
+
+            buffer[ j ] = buffer[ j ] * s + buffer[ srcOffset + i ] * t;
+        }
+
+    }
+
+    void _mixBufferRegionAdditive( std::vector<T> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
+
+        for ( size_t i = 0; i != stride; ++ i ) {
+
+            auto j = dstOffset + i;
+
+            buffer[ j ] = buffer[ j ] + buffer[ srcOffset + i ] * t;
+        }
+
+    }
+
+    void _setIdentity() {
+
+        auto startIndex = this->_addIndex * this->valueSize;
+        auto endIndex = startIndex + this->valueSize;
+
+        for ( size_t i = startIndex; i < endIndex; i ++ ) {
+            this->buffer[ i ] = 0;
+        }
+    }
+
+    // accumulate data in the 'incoming' region into 'accu<i>'
+    void accumulate( size_t accuIndex, float weight ) {
+        // note: happily accumulating nothing when weight = 0, the caller knows
+        // the weight and shouldn't have made the call in the first place
+
+        auto buffer = this->buffer;
+        auto stride = this->valueSize,
+                offset = accuIndex * stride + stride;
+
+        auto currentWeight = this->cumulativeWeight;
+
+        if ( currentWeight == 0 ) {
+            // accuN := incoming * weight
+            for ( size_t i = 0; i != stride; ++ i ) {
+
+                buffer[ offset + i ] = buffer[ i ];
+            }
+
+            currentWeight = weight;
+
+        } else {
+            // accuN := accuN + incoming * weight
+            currentWeight += weight;
+            auto mix = weight / currentWeight;
+            this->_mixBufferRegion( buffer, offset, 0, mix, stride );
+
+        }
+
+        this->cumulativeWeight = currentWeight;
+
+    }
 
 public:
     PropertyMixer(std::shared_ptr<PropertyBinding> binding,size_t valueSize):binding(binding),valueSize(valueSize) {
@@ -92,70 +159,7 @@ public:
         this->referenceCount = 0;
     }
 
-    void _mixBufferRegion( std::vector<T> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
-        auto s = 1 - t;
 
-        for ( size_t i = 0; i != stride; ++ i ) {
-
-            auto j = dstOffset + i;
-
-            buffer[ j ] = buffer[ j ] * s + buffer[ srcOffset + i ] * t;
-        }
-
-    }
-
-    void _mixBufferRegionAdditive( std::vector<T> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
-
-        for ( size_t i = 0; i != stride; ++ i ) {
-
-            auto j = dstOffset + i;
-
-            buffer[ j ] = buffer[ j ] + buffer[ srcOffset + i ] * t;
-        }
-
-    }
-
-    void _setIdentity() {
-
-        auto startIndex = this->_addIndex * this->valueSize;
-        auto endIndex = startIndex + this->valueSize;
-
-        for ( size_t i = startIndex; i < endIndex; i ++ ) {
-            this->buffer[ i ] = 0;
-        }
-    }
-
-    // accumulate data in the 'incoming' region into 'accu<i>'
-    void accumulate( size_t accuIndex, float weight ) {
-        // note: happily accumulating nothing when weight = 0, the caller knows
-        // the weight and shouldn't have made the call in the first place
-
-        auto buffer = this->buffer;
-        auto stride = this->valueSize,
-             offset = accuIndex * stride + stride;
-
-        auto currentWeight = this->cumulativeWeight;
-
-        if ( currentWeight == 0 ) {
-            // accuN := incoming * weight
-            for ( size_t i = 0; i != stride; ++ i ) {
-
-                buffer[ offset + i ] = buffer[ i ];
-            }
-
-            currentWeight = weight;
-
-        } else {
-            // accuN := accuN + incoming * weight
-            currentWeight += weight;
-            auto mix = weight / currentWeight;
-            this->_mixBufferRegion( buffer, offset, 0, mix, stride );
-
-        }
-
-        this->cumulativeWeight = currentWeight;
-
-    }
 
     // accumulate data in the 'incoming' region into 'add'
     void accumulateAdditive( float weight ) {
@@ -175,74 +179,74 @@ public:
 
     }
 
-//    // apply the state of 'accu<i>' to the binding when accus differ
-//    void apply( size_t accuIndex ) {
-//        auto stride = this->valueSize,
-//             offset = accuIndex * stride + stride;
-//        auto buffer = this->buffer;
-//
-//        auto weight = this->cumulativeWeight,
-//             weightAdditive = this->cumulativeWeightAdditive;
-//
-//        auto binding = this->binding;
-//
-//        this->cumulativeWeight = 0;
-//        this->cumulativeWeightAdditive = 0;
-//
-//        if ( weight < 1 ) {
-//            // accuN := accuN + original * ( 1 - cumulativeWeight )
-//            auto originalValueOffset = stride * this->_origIndex;
-//
-//            this->_mixBufferRegion(
-//                    buffer, offset, originalValueOffset, 1 - weight, stride );
-//        }
-//
-//        if ( weightAdditive > 0 ) {
-//
-//            // accuN := accuN + additive accuN
-//            this->_mixBufferRegionAdditive( buffer, offset, this->_addIndex * stride, 1, stride );
-//        }
-//
-//        for ( size_t i = stride, e = stride + stride; i != e; ++ i ) {
-//
-//            if ( buffer[ i ] != buffer[ i + stride ] ) {
-//                // value has changed -> update scene graph
-//                binding->setValue( buffer, offset );
-//                break;
-//            }
-//        }
-//    }
+    // apply the state of 'accu<i>' to the binding when accus differ
+    void apply( size_t accuIndex ) {
+        auto stride = this->valueSize,
+             offset = accuIndex * stride + stride;
+        auto buffer = this->buffer;
 
-//    // remember the state of the bound property and copy it to both accus
-//    void saveOriginalState() {
-//
-//        auto binding = this->binding;
-//
-//        auto buffer = this->buffer;
-//        auto stride = this->valueSize,
-//             originalValueOffset = stride * this->_origIndex;
-//
-//        binding->getValue( buffer, originalValueOffset );
-//
-//        // accu[0..1] := orig -- initially detect changes against the original
-//        for ( size_t i = stride, e = originalValueOffset; i != e; ++ i ) {
-//            buffer[ i ] = buffer[ originalValueOffset + ( i % stride ) ];
-//        }
-//
-//        // Add to identity for additive
-//        this->_setIdentity();
-//
-//        this->cumulativeWeight = 0;
-//        this->cumulativeWeightAdditive = 0;
-//
-//    }
-//
-//    // apply the state previously taken via 'saveOriginalState' to the binding
-//    void restoreOriginalState() {
-//
-//        const auto originalValueOffset = this->valueSize * 3;
-//        this->binding->setValue( this->buffer, originalValueOffset );
-//    }
+        auto weight = this->cumulativeWeight,
+             weightAdditive = this->cumulativeWeightAdditive;
+
+        auto binding = this->binding;
+
+        this->cumulativeWeight = 0;
+        this->cumulativeWeightAdditive = 0;
+
+        if ( weight < 1 ) {
+            // accuN := accuN + original * ( 1 - cumulativeWeight )
+            auto originalValueOffset = stride * this->_origIndex;
+
+            this->_mixBufferRegion(
+                    buffer, offset, originalValueOffset, 1 - weight, stride );
+        }
+
+        if ( weightAdditive > 0 ) {
+
+            // accuN := accuN + additive accuN
+            this->_mixBufferRegionAdditive( buffer, offset, this->_addIndex * stride, 1, stride );
+        }
+
+        for ( size_t i = stride, e = stride + stride; i != e; ++ i ) {
+
+            if ( buffer[ i ] != buffer[ i + stride ] ) {
+                // value has changed -> update scene graph
+                binding->setValue( buffer, offset );
+                break;
+            }
+        }
+    }
+
+    // remember the state of the bound property and copy it to both accus
+    void saveOriginalState() {
+
+        auto binding = this->binding;
+
+        auto buffer = this->buffer;
+        auto stride = this->valueSize,
+             originalValueOffset = stride * this->_origIndex;
+
+        binding->getValue( buffer, originalValueOffset );
+
+        // accu[0..1] := orig -- initially detect changes against the original
+        for ( size_t i = stride, e = originalValueOffset; i != e; ++ i ) {
+            buffer[ i ] = buffer[ originalValueOffset + ( i % stride ) ];
+        }
+
+        // Add to identity for additive
+        this->_setIdentity();
+
+        this->cumulativeWeight = 0;
+        this->cumulativeWeightAdditive = 0;
+
+    }
+
+    // apply the state previously taken via 'saveOriginalState' to the binding
+    void restoreOriginalState() {
+
+        const auto originalValueOffset = this->valueSize * 3;
+        this->binding->setValue( this->buffer, originalValueOffset );
+    }
 
 };
 
@@ -256,6 +260,41 @@ public:
     float cumulativeWeight,cumulativeWeightAdditive;
     std::vector<float> buffer;
     size_t _workIndex;
+
+private:
+    void _mixBufferRegion( std::vector<float> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
+
+        Quaternion::slerpFlat(buffer, dstOffset, buffer, dstOffset, buffer, srcOffset, t);
+    }
+
+    void _mixBufferRegionAdditive( std::vector<float> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
+        auto workOffset = this->_workIndex * stride;
+
+        // Store result in intermediate buffer offset
+        Quaternion::multiplyQuaternionsFlat( buffer, workOffset, buffer, dstOffset, buffer, srcOffset );
+
+        // Slerp to the intermediate result
+        Quaternion::slerpFlat( buffer, dstOffset, buffer, dstOffset, buffer, workOffset, t );
+
+    }
+
+    void _setIdentity() {
+
+        this->_setAdditiveIdentityNumeric();
+        this->buffer[ this->_addIndex * this->valueSize + 3 ] = 1;
+
+    }
+
+    void _setAdditiveIdentityNumeric() {
+
+        auto startIndex = this->_addIndex * this->valueSize;
+        auto endIndex = startIndex + this->valueSize;
+
+        for ( size_t i = startIndex; i < endIndex; i ++ ) {
+            this->buffer[ i ] = 0;
+        }
+
+    }
 
 public:
     PropertyMixer(std::shared_ptr<PropertyBinding> binding,size_t valueSize):binding(binding),valueSize(valueSize) {
@@ -327,39 +366,7 @@ public:
         this->referenceCount = 0;
     }
 
-    void _mixBufferRegion( std::vector<float> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
 
-        Quaternion::slerpFlat(buffer, dstOffset, buffer, dstOffset, buffer, srcOffset, t);
-    }
-
-    void _mixBufferRegionAdditive( std::vector<float> buffer, size_t dstOffset, size_t srcOffset, float t, size_t stride ) {
-        auto workOffset = this->_workIndex * stride;
-
-        // Store result in intermediate buffer offset
-        Quaternion::multiplyQuaternionsFlat( buffer, workOffset, buffer, dstOffset, buffer, srcOffset );
-
-        // Slerp to the intermediate result
-        Quaternion::slerpFlat( buffer, dstOffset, buffer, dstOffset, buffer, workOffset, t );
-
-    }
-
-    void _setIdentity() {
-
-        this->_setAdditiveIdentityNumeric();
-        this->buffer[ this->_addIndex * this->valueSize + 3 ] = 1;
-
-    }
-
-    void _setAdditiveIdentityNumeric() {
-
-        auto startIndex = this->_addIndex * this->valueSize;
-        auto endIndex = startIndex + this->valueSize;
-
-        for ( size_t i = startIndex; i < endIndex; i ++ ) {
-            this->buffer[ i ] = 0;
-        }
-
-    }
 
     // accumulate data in the 'incoming' region into 'accu<i>'
     void accumulate( size_t accuIndex, float weight ) {
@@ -411,74 +418,74 @@ public:
 
     }
 
-//    // apply the state of 'accu<i>' to the binding when accus differ
-//    void apply( size_t accuIndex ) {
-//        auto stride = this->valueSize,
-//                offset = accuIndex * stride + stride;
-//        auto buffer = this->buffer;
-//
-//        auto weight = this->cumulativeWeight,
-//                weightAdditive = this->cumulativeWeightAdditive;
-//
-//        auto binding = this->binding;
-//
-//        this->cumulativeWeight = 0;
-//        this->cumulativeWeightAdditive = 0;
-//
-//        if ( weight < 1 ) {
-//            // accuN := accuN + original * ( 1 - cumulativeWeight )
-//            auto originalValueOffset = stride * this->_origIndex;
-//
-//            this->_mixBufferRegion(
-//                    buffer, offset, originalValueOffset, 1 - weight, stride );
-//        }
-//
-//        if ( weightAdditive > 0 ) {
-//
-//            // accuN := accuN + additive accuN
-//            this->_mixBufferRegionAdditive( buffer, offset, this->_addIndex * stride, 1, stride );
-//        }
-//
-//        for ( size_t i = stride, e = stride + stride; i != e; ++ i ) {
-//
-//            if ( buffer[ i ] != buffer[ i + stride ] ) {
-//                // value has changed -> update scene graph
-//                binding.setValue( buffer, offset );
-//                break;
-//            }
-//        }
-//    }
+    // apply the state of 'accu<i>' to the binding when accus differ
+    void apply( size_t accuIndex ) {
+        auto stride = this->valueSize,
+                offset = accuIndex * stride + stride;
+        auto buffer = this->buffer;
 
-//    // remember the state of the bound property and copy it to both accus
-//    void saveOriginalState() {
-//
-//        auto binding = this->binding;
-//
-//        auto buffer = this->buffer;
-//        auto stride = this->valueSize,
-//             originalValueOffset = stride * this->_origIndex;
-//
-//        binding->getValue( buffer, originalValueOffset );
-//
-//        // accu[0..1] := orig -- initially detect changes against the original
-//        for ( size_t i = stride, e = originalValueOffset; i != e; ++ i ) {
-//            buffer[ i ] = buffer[ originalValueOffset + ( i % stride ) ];
-//        }
-//
-//        // Add to identity for additive
-//        this->_setIdentity();
-//
-//        this->cumulativeWeight = 0;
-//        this->cumulativeWeightAdditive = 0;
-//
-//    }
-//
-//    // apply the state previously taken via 'saveOriginalState' to the binding
-//    void restoreOriginalState() {
-//
-//        const auto originalValueOffset = this->valueSize * 3;
-//        this->binding->setValue( this->buffer, originalValueOffset );
-//    }
+        auto weight = this->cumulativeWeight,
+                weightAdditive = this->cumulativeWeightAdditive;
+
+        auto binding = this->binding;
+
+        this->cumulativeWeight = 0;
+        this->cumulativeWeightAdditive = 0;
+
+        if ( weight < 1 ) {
+            // accuN := accuN + original * ( 1 - cumulativeWeight )
+            auto originalValueOffset = stride * this->_origIndex;
+
+            this->_mixBufferRegion(
+                    buffer, offset, originalValueOffset, 1 - weight, stride );
+        }
+
+        if ( weightAdditive > 0 ) {
+
+            // accuN := accuN + additive accuN
+            this->_mixBufferRegionAdditive( buffer, offset, this->_addIndex * stride, 1, stride );
+        }
+
+        for ( size_t i = stride, e = stride + stride; i != e; ++ i ) {
+
+            if ( buffer[ i ] != buffer[ i + stride ] ) {
+                // value has changed -> update scene graph
+                binding.setValue( buffer, offset );
+                break;
+            }
+        }
+    }
+
+    // remember the state of the bound property and copy it to both accus
+    void saveOriginalState() {
+
+        auto binding = this->binding;
+
+        auto buffer = this->buffer;
+        auto stride = this->valueSize,
+             originalValueOffset = stride * this->_origIndex;
+
+        binding->getValue( buffer, originalValueOffset );
+
+        // accu[0..1] := orig -- initially detect changes against the original
+        for ( size_t i = stride, e = originalValueOffset; i != e; ++ i ) {
+            buffer[ i ] = buffer[ originalValueOffset + ( i % stride ) ];
+        }
+
+        // Add to identity for additive
+        this->_setIdentity();
+
+        this->cumulativeWeight = 0;
+        this->cumulativeWeightAdditive = 0;
+
+    }
+
+    // apply the state previously taken via 'saveOriginalState' to the binding
+    void restoreOriginalState() {
+
+        const auto originalValueOffset = this->valueSize * 3;
+        this->binding->setValue( this->buffer, originalValueOffset );
+    }
 
 };
 
