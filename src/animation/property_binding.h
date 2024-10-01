@@ -13,6 +13,68 @@
 
 #include "common_utils.h"
 
+#include "animation_object_group.h"
+
+class Composite {
+
+    Composite( AnimationObjectGroup& targetGroup, std::string path, std::string optionalParsedPath ) {
+
+//        const parsedPath = optionalParsedPath || PropertyBinding.parseTrackName( path );
+//
+//        this._targetGroup = targetGroup;
+//        this._bindings = targetGroup.subscribe_( path, parsedPath );
+
+    }
+
+    void getValue( std::vector<float> array, int offset ) {
+
+        bind(); // bind all binding
+
+//        const firstValidIndex = this._targetGroup.nCachedObjects_,
+//                binding = this._bindings[ firstValidIndex ];
+//
+//        // and only call .getValue on the first
+//        if ( binding !== undefined ) binding.getValue( array, offset );
+
+    }
+
+    void setValue( std::vector<float> array, int offset ) {
+//
+//        const bindings = this._bindings;
+//
+//        for ( let i = this._targetGroup.nCachedObjects_, n = bindings.length; i !== n; ++ i ) {
+//
+//            bindings[ i ].setValue( array, offset );
+//
+//        }
+
+    }
+
+    void bind() {
+
+//        const bindings = this._bindings;
+//
+//        for ( let i = this._targetGroup.nCachedObjects_, n = bindings.length; i !== n; ++ i ) {
+//
+//            bindings[ i ].bind();
+//
+//        }
+
+    }
+
+    void unbind() {
+
+//        const bindings = this._bindings;
+//
+//        for ( let i = this._targetGroup.nCachedObjects_, n = bindings.length; i !== n; ++ i ) {
+//
+//            bindings[ i ].unbind();
+//
+//        }
+//
+//    }
+
+}
 
 // Note: This class uses a State pattern on a per-method basis:
 // 'bind' sets 'this.getValue' / 'setValue' and shadows the
