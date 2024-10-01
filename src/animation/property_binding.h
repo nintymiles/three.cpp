@@ -11,12 +11,17 @@
 #include <regex>
 #include <functional>
 
+#include "common_utils.h"
+
+
 // Note: This class uses a State pattern on a per-method basis:
 // 'bind' sets 'this.getValue' / 'setValue' and shadows the
 // prototype version of these methods with one that represents
 // the bound state. When the property is not found, the methods
 // become no-ops.
 class PropertyBinding {
+private:
+
 
 public:
     struct ParsedPath{
@@ -54,7 +59,14 @@ public:
         return std::make_shared<PropertyBinding>(rootNode,path,parsedPath);
     }
 
-    std::vector<float> getValue(std::vector<float> sourceArray, int offset);
+    std::vector<float> getValue(std::vector<float> bufferArray, int offset){
+        auto& source = this->node;
+
+//        bufferArray.resize(source->);
+//        for ( size_t i = 0, n = source.size(); i != n; ++ i ) {
+//            bufferArray[ offset ++ ] = source[ i ];
+//        }
+    }
     void setValue(std::vector<float> sourceArray, int offset);
     void bind();
     void unbind();
@@ -82,28 +94,28 @@ public:
         if ( root->children.size()>0 ) {
 
             //std::function<Object3D::sptr(std::vector<Object3D::sptr>)> searchNodeSubtree = [&]( std::vector<Object3D::sptr> children ) -> Object3D::sptr {
-            auto searchNodeSubtree =
-                                [&]( auto&& self,std::vector<Object3D::sptr> children ) -> Object3D::sptr {
+//            auto searchNodeSubtree =
+//                                [&]( auto&& self,std::vector<Object3D::sptr> children ) -> Object3D::sptr {
+//
+//                for ( size_t i = 0; i < children.size(); i ++ ) {
+//
+//                    auto childNode = children[ i ];
+//
+//                    if ( childNode->name == nodeName /*|| childNode->uuid == nodeName*/ ) {
+//                        return childNode;
+//                    }
+//
+//                    auto result = self( self,childNode->children );
+//
+//                    if ( result ) return result;
+//
+//                }
+//
+//                return nullptr;
+//
+//            };
 
-                for ( size_t i = 0; i < children.size(); i ++ ) {
-
-                    auto childNode = children[ i ];
-
-                    if ( childNode->name == nodeName /*|| childNode->uuid == nodeName*/ ) {
-                        return childNode;
-                    }
-
-                    auto result = self( self,childNode->children );
-
-                    if ( result ) return result;
-
-                }
-
-                return nullptr;
-
-            };
-
-            auto subTreeNode = searchNodeSubtree( searchNodeSubtree,root->children );
+            auto subTreeNode = searchSubNodeTree(nodeName,root->children );
 
             if ( subTreeNode ) {
                 return subTreeNode;
@@ -134,6 +146,26 @@ private:
     std::shared_ptr<ParsedPath> parsedPath;
 
     Object3D::sptr node;
+
+    static auto searchSubNodeTree( std::string nodeName,std::vector<Object3D::sptr> children ) -> Object3D::sptr {
+
+        for ( size_t i = 0; i < children.size(); i ++ ) {
+
+            auto childNode = children[ i ];
+
+            if ( childNode->name == nodeName /*|| childNode->uuid == nodeName*/ ) {
+                return childNode;
+            }
+
+            auto result = searchSubNodeTree( nodeName,childNode->children );
+
+            if ( result ) return result;
+
+        }
+
+        return nullptr;
+
+    };
 
 
 };

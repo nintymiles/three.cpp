@@ -6,6 +6,49 @@
 
 #include <algorithm>
 
+#include "common_utils.h"
+
+namespace property_binding___{
+    // Characters [].:/ are reserved for track binding syntax.
+    std::string _RESERVED_CHARS_RE = "(\\[\\]\\.:\\/)";
+    std::regex _reservedRe("[" + _RESERVED_CHARS_RE + "]",std::regex_constants::ECMAScript);
+
+
+    // Attempts to allow node names from any language. ES5's `\w` regexp matches
+    // only latin characters, and the unicode \p{L} is not yet supported. So
+    // instead, we exclude reserved characters and match everything else.
+    const std::string _wordChar = "[^" + _RESERVED_CHARS_RE + "]";
+    //const std::string _wordCharOrDot = "[^" + _RESERVED_CHARS_RE.replace( "\\.", "" ) + "]";
+    const std::string _wordCharOrDot = "[^" + threecpp::replaceWithStr(_RESERVED_CHARS_RE,"\\.", "" ) + "]";
+
+    // Parent directories, delimited by '/' or ':'. Currently unused, but must
+    // be matched to parse the rest of the track name.
+    const std::string _directoryRe =  threecpp::replaceWithStr(R""(((?:WC+[\/:])*))"","WC", _wordChar );
+
+    // Target node. May contain word characters (a-zA-Z0-9_) and '.' or '-'.
+    //const std::string _nodeRe = /*@__PURE__*/ /(WCOD+)?/.source.replace( 'WCOD', _wordCharOrDot );
+    const std::string _nodeRe = threecpp::replaceWithStr(R""((WCOD+)?)"","WCOD", _wordCharOrDot );
+
+    // Object on target node, and accessor. May not contain reserved
+    // characters. Accessor may contain any character except closing bracket.
+    //const _objectRe = /*@__PURE__*/ /(?:\.(WC+)(?:\[(.+)\])?)?/.source.replace( 'WC', _wordChar );
+    const std::string _objectRe = threecpp::replaceWithStr(R""((?:\.(WC+)(?:\[(.+)\])?)?)"","WC", _wordChar );
+
+    // Property and accessor. May not contain reserved characters. Accessor may
+    // contain any non-bracket characters.
+    //const _propertyRe = /*@__PURE__*/ /\.(WC+)(?:\[(.+)\])?/.source.replace( 'WC', _wordChar );
+    const std::string _propertyRe = threecpp::replaceWithStr(R""(\.(WC+)(?:\[(.+)\])?)"","WC", _wordChar );
+
+    const std::regex _trackRe( "^"
+                               + _directoryRe
+                               + _nodeRe
+                               + _objectRe
+                               + _propertyRe
+                               + "$"
+    );
+
+    const std::vector<std::string> _supportedObjectNames = { "material", "materials", "bones", "map" };
+}
 
 namespace property_binding__{
     // Characters [].:/ are reserved for track binding syntax.
@@ -69,8 +112,8 @@ PropertyBinding::PropertyBinding( Object3D::sptr rootNode, std::string path, std
 }
 
 std::string PropertyBinding::sanitizeNodeName( std::string name ) {
-    std::regex regExpression{R"(/\s/g)"};
-    return regex_replace(std::regex_replace(name, regExpression, "_"),_reservedRe,"");
+    std::regex regExpression{R"(\s)"};
+    return regex_replace(std::regex_replace(name, regExpression, "_",std::regex_constants::match_any),_reservedRe,"");
 
 }
 
