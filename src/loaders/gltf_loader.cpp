@@ -120,9 +120,7 @@ Group::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Node &
      if(!node.scale.empty() && node.scale.size() >=3 )
         nodeGrp->scale.set(node.scale[0],node.scale[1],node.scale[2]);
 
-    // std::cout << it->first << std::endl;
-    // FIXME: Refactor.
-    // DrawCurves(scene, it->second);
+    // mesh is geometry and other part data of current obj/node
     if (node.mesh > -1) {
         assert(node.mesh < model.meshes.size());
         parseMesh(model, model.meshes[node.mesh],nodeGrp);
@@ -476,8 +474,10 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, G
 //        else
 //            material->color = Color(0xFF0000);
 
-        Mesh::sptr primMesh = Mesh::create(geometry,material);
-        nodeGroup->add(primMesh);
+        nodeGroup->geometry = geometry;
+        nodeGroup->material = material;
+        //Mesh::sptr primMesh = Mesh::create(geometry,material);
+        //nodeGroup->add(primMesh);
     }
 
 

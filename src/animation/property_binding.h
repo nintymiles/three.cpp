@@ -72,9 +72,9 @@ class Composite {
 //
 //        }
 //
-//    }
+    }
 
-}
+};
 
 // Note: This class uses a State pattern on a per-method basis:
 // 'bind' sets 'this.getValue' / 'setValue' and shadows the
@@ -231,6 +231,4 @@ private:
 
 
 };
-
-
 #endif //THREE_CPP_PROPERTY_BINDING_H

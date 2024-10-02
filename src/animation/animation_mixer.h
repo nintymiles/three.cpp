@@ -51,7 +51,7 @@ public:
 
     AnimationMixer& _removeInactiveAction( std::shared_ptr<AnimationAction> action );
     AnimationMixer& _removeInactiveBindingsForAction( std::shared_ptr<AnimationAction> action );
-    AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<PropertyMixer> binding );
+    AnimationMixer& _removeInactiveBinding( std::shared_ptr<PropertyMixer> binding );
 
 public:
     std::shared_ptr<AnimationAction> clipAction(
