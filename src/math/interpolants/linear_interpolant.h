@@ -9,7 +9,7 @@
 class LinearInterpolant:public Interpolant{
 public:
 
-    LinearInterpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer): Interpolant(parameterPositions,sampleValues,sampleSize,resultBuffer){
+    LinearInterpolant(std::vector<size_t> parameterPositions, std::vector<float> sampleValues, size_t sampleSize, std::vector<float> resultBuffer): Interpolant(parameterPositions, sampleValues, sampleSize, resultBuffer){
 
     }
 

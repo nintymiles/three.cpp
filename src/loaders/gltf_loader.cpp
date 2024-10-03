@@ -79,7 +79,7 @@ Group::sptr GLTFLoader::load(const std::string& path){
     return group;
 }
 
-Group::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Node &node) {
+Object3D::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Node &node) {
 
     // Apply xform
 
@@ -108,36 +108,39 @@ Group::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Node &
 //        }
 //    }
 
-     std::cout << "node " << node.name << ", Meshes " << node.mesh << std::endl;
+    std::cout << "node " << node.name << ", Meshes " << node.mesh << std::endl;
 
-     Group::sptr nodeGrp = Group::create();
-     nodeGrp->name = node.name;
+    Object3D::sptr nodeRoot = Object3D::create();
+    nodeRoot->name = node.name;
 
-     if(!node.translation.empty() && node.translation.size() >= 3)
-        nodeGrp->position.set(node.translation[0],node.translation[1],node.translation[2]);
-     if(!node.rotation.empty() && node.rotation.size() >=4)
-        nodeGrp->quaternion.set(node.rotation[0],node.rotation[1],node.rotation[2],node.rotation[3]);
-     if(!node.scale.empty() && node.scale.size() >=3 )
-        nodeGrp->scale.set(node.scale[0],node.scale[1],node.scale[2]);
-
-    // mesh is geometry and other part data of current obj/node
+    // mesh is geometry data of current obj/node
     if (node.mesh > -1) {
+        nodeRoot = Mesh::create();
         assert(node.mesh < model.meshes.size());
-        parseMesh(model, model.meshes[node.mesh],nodeGrp);
+        parseMesh(model, model.meshes[node.mesh], nodeRoot);
     }
+
+    if (!node.translation.empty() && node.translation.size() >= 3)
+        nodeRoot->position.set(node.translation[0], node.translation[1], node.translation[2]);
+    if (!node.rotation.empty() && node.rotation.size() >= 4)
+        nodeRoot->quaternion.set(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
+    if (!node.scale.empty() && node.scale.size() >= 3)
+        nodeRoot->scale.set(node.scale[0], node.scale[1], node.scale[2]);
+
+
 
     // Parse child nodes.
     for (size_t i = 0; i < node.children.size(); i++) {
         assert(node.children[i] < model.nodes.size());
-        nodeGrp->add(parseNode(model, model.nodes[node.children[i]]));
+        nodeRoot->add(parseNode(model, model.nodes[node.children[i]]));
     }
 
 //    glPopMatrix();
-    return nodeGrp;
+    return nodeRoot;
 
 }
 
-void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, Group::sptr nodeGroup) {
+void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, Object3D::sptr nodeObj) {
 
     //// Skip curves primitive.
     // if (gCurvesMesh.find(mesh.name) != gCurvesMesh.end()) {
@@ -151,10 +154,6 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, G
 //    if (gGLProgramState.uniforms["isCurvesLoc"] >= 0) {
 //        glUniform1i(gGLProgramState.uniforms["isCurvesLoc"], 0);
 //    }
-
-
-
-
 //    const tinygltf::Buffer &buffer = model.buffers[bufferView.buffer];
 //    GLBufferState state;
 //    glGenBuffers(1, &state.vb);
@@ -474,10 +473,10 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, G
 //        else
 //            material->color = Color(0xFF0000);
 
-        nodeGroup->geometry = geometry;
-        nodeGroup->material = material;
-        //Mesh::sptr primMesh = Mesh::create(geometry,material);
-        //nodeGroup->add(primMesh);
+//        nodeObj->geometry = geometry;
+//        nodeObj->material = material;
+        Mesh::sptr primMesh = Mesh::create(geometry,material);
+        nodeObj->add(primMesh);
     }
 
 
@@ -724,4 +723,84 @@ void GLTFLoader::buildMaterials(const tinygltf::Model &model) {
         pMaterials.push_back(material);
     }
 
+}
+
+
+std::vector<float> GLTFLoader::loadBufferFromAccessor(const tinygltf::Model &model,const tinygltf::Accessor &accessor){
+
+    if (accessor.bufferView > -1) {
+        //bufferView是针对gpu buffer data中的对应数据记录，本地读取使用accessor中的数据即可
+        const tinygltf::BufferView &bufferView = model.bufferViews[accessor.bufferView];
+        if (bufferView.target == 0) {
+            std::cout << "WARN: bufferView.target is zero" << std::endl;
+            return;  // Unsupported bufferView.
+        }
+
+        const tinygltf::Buffer &buffer = model.buffers[bufferView.buffer];
+
+
+        // copy the buffer to a temporary one for sparse patching
+        unsigned char *tmp_buffer = new unsigned char[bufferView.byteLength];
+        memcpy(tmp_buffer, buffer.data.data() + bufferView.byteOffset + accessor.byteOffset,
+               bufferView.byteLength);
+
+
+        int size = 1;
+        if (accessor.type == TINYGLTF_TYPE_SCALAR) {
+            size = 1;
+        } else if (accessor.type == TINYGLTF_TYPE_VEC2) {
+            size = 2;
+        } else if (accessor.type == TINYGLTF_TYPE_VEC3) {
+            size = 3;
+        } else if (accessor.type == TINYGLTF_TYPE_VEC4) {
+            size = 4;
+        } else {
+            assert(0);
+        }
+
+        // debug:
+        for (size_t p = 0; p < accessor.count * size; p++) {
+            float *b = (float *) tmp_buffer;
+            std::cout << "modified_buffer [" << p << "] = " << b[p] << '\n';
+        }
+
+        BufferAttribute<float>::sptr bufferAttr = BufferAttribute<float>::create((float *) tmp_buffer,
+                                                                                 accessor.count * size, size);
+        std::vector<float> bufferData{};
+
+        delete[] tmp_buffer;
+}
+
+void GLTFLoader::buildAnimations(const tinygltf::Model &model) {
+    for (auto& gltfAnimation : model.animations) {
+        auto name = gltfAnimation.name;
+
+        for(auto& channel: gltfAnimation.channels){
+            auto& sampler = gltfAnimation.samplers[channel.sampler];
+
+            auto targetNode = channel.target_node;
+            auto targetPath = channel.target_path;
+
+            auto input = sampler.input;
+            auto output = sampler.output;
+            auto interpolator = sampler.interpolation;
+
+
+        }
+//        for ( let i = 0, il = animationDef.channels.length; i < il; i ++ ) {
+//
+//            const channel = animationDef.channels[ i ];
+//            const sampler = animationDef.samplers[ channel.sampler ];
+//            const target = channel.target;
+//            const name = target.node;
+//            const input = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.input ] : sampler.input;
+//            const output = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.output ] : sampler.output;
+//            pendingNodes.push( this.getDependency( 'node', name ) );
+//            pendingInputAccessors.push( this.getDependency( 'accessor', input ) );
+//            pendingOutputAccessors.push( this.getDependency( 'accessor', output ) );
+//            pendingSamplers.push( sampler );
+//            pendingTargets.push( target );
+//
+//        }
+    }
 }

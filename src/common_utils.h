@@ -102,6 +102,24 @@ inline void checkError() {
         return "";
     }
 
+    /*
+     函数描述：对字符串中所有指定的子串进行替换
+     参数：
+        string resource_str            //源字符串
+        string sub_str                //被替换子串
+        string new_str                //替换子串
+      返回值: string
+     */
+    inline std::string replaceWithStr(std::string resource_str, std::string sub_str, std::string new_str){
+        std::string dst_str = resource_str;
+        std::string::size_type pos = 0;
+        while((pos = dst_str.find(sub_str)) != std::string::npos)   //替换所有指定子串
+        {
+            dst_str.replace(pos, sub_str.length(), new_str);
+        }
+        return dst_str;
+    }
+
 
 } // namespace threecpp
 

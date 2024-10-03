@@ -29,17 +29,24 @@
 
 class Texture;
 class Material;
+class AnimationClip;
+class Geometry;
 template<class T> class BufferAttribute;
 class GLTFLoader {
     std::vector<std::shared_ptr<Texture>> pTextures;
     std::vector<std::shared_ptr<BufferAttribute<float>>> pBuffers;
     std::vector<std::shared_ptr<Material>> pMaterials;
+    std::vector<std::shared_ptr<AnimationClip>> pAnimations;
 
     void buildImages(const tinygltf::Model &model);
 
     void buildTextures(const tinygltf::Model &model);
 
     void buildMaterials(const tinygltf::Model &model);
+
+    void buildAnimations(const tinygltf::Model &model);
+
+    std::vector<float> loadBufferFromAccessor(const tinygltf::Accessor &accessor);
 
 public:
 
@@ -53,9 +60,9 @@ public:
 
     Group::sptr load(const std::string& path);
 
-    Group::sptr parseNode(tinygltf::Model &model, const tinygltf::Node &node);
+    Object3D::sptr parseNode(tinygltf::Model &model, const tinygltf::Node &node);
 
-    void parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, Group::sptr nodeGroup);
+    void parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, Object3D::sptr nodeObj);
 
     static size_t ComponentTypeByteSize(int type) {
         switch (type) {
