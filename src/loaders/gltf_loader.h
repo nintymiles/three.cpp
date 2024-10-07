@@ -24,6 +24,7 @@
 //#define STB_IMAGE_WRITE_IMPLEMENTATION
 //#include <tiny_gltf.h>
 #include <tiny_gltf.h>
+#include <regex>
 
 #include "group.h"
 
@@ -44,9 +45,11 @@ class GLTFLoader {
 
     void buildMaterials(const tinygltf::Model &model);
 
-    void buildAnimations(const tinygltf::Model &model);
+    void buildAnimations(const tinygltf::Model &model,Object3D::sptr rootObj);
 
-    std::vector<float> loadBufferFromAccessor(const tinygltf::Accessor &accessor);
+    std::vector<float> loadBufferWithAccessorId(const tinygltf::Model &model,int accessorId);
+
+    Object3D::sptr getNodeByIndex(int nodeIndex,Object3D::sptr rootObj);
 
 public:
 
@@ -60,9 +63,17 @@ public:
 
     Group::sptr load(const std::string& path);
 
-    Object3D::sptr parseNode(tinygltf::Model &model, const tinygltf::Node &node);
+    Object3D::sptr parseNode(tinygltf::Model &model, size_t nodeIndex);
 
     void parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, Object3D::sptr nodeObj);
+
+    static std::string sanitizeNodeName( std::string name ){
+        const std::string _RESERVED_CHARS_RE = R"(\[\]\.:\/)";
+        const std::regex _reservedRe{'[' + _RESERVED_CHARS_RE + ']'};
+
+        std::regex regExpression{R"(\s)"};
+        return regex_replace(std::regex_replace(name, regExpression, "_",std::regex_constants::match_any),_reservedRe,"");
+    }
 
     static size_t ComponentTypeByteSize(int type) {
         switch (type) {

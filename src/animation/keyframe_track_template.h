@@ -17,83 +17,94 @@
 #include "keyframe_track.h"
 #include "linear_interpolant.h"
 
-class Interpolant;
 template<typename ValueBufferType>
 class KeyframeTrackTemplate:public KeyframeTrack {
 public:
-    std::vector<int> times;
+    std::vector<float> times;
     std::vector<ValueBufferType> values;
-    using sptr = std::shared_ptr<KeyframeTrack>;
+    using sptr = std::shared_ptr<KeyframeTrackTemplate>;
 
-    KeyframeTrackTemplate(std::string name,std::vector<size_t> times,std::vector<float> values,Interpolate interpolation);
-    using InterpolantFactoryMethodType = std::shared_ptr<Interpolant> (KeyframeTrack::*)(std::vector<float>&);
-    InterpolantFactoryMethodType createInterpolant;
+    KeyframeTrackTemplate() = default;
 
-    KeyframeTrack& setInterpolation( Interpolate interpolation ) {
-        InterpolantFactoryMethodType factoryMethod;
+    KeyframeTrackTemplate(std::string name,const std::vector<float> &times,const std::vector<float> &values,Interpolate interpolation){}
+//    using InterpolantFactoryMethodType = std::shared_ptr<Interpolant> (KeyframeTrack::*)(std::vector<float>&);
+//    InterpolantFactoryMethodType createInterpolant;
 
-        switch ( interpolation ) {
-            case Interpolate::InterpolateDiscrete:
-                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodDiscrete;
-                break;
-            case Interpolate::InterpolateLinear:
-                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodLinear;
-                break;
-            case Interpolate::InterpolateSmooth:
-                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodSmooth;
-                break;
+    static sptr create(std::string name,const std::vector<float> &times,const std::vector<float> &values,Interpolate interpolation){
+        return std::make_shared<KeyframeTrackTemplate>(name,times,values,interpolation);
+    }
 
-        }
+    static sptr create(){
+        return std::make_shared<KeyframeTrackTemplate>();
+    }
 
-//        if ( factoryMethod == nullptr ) {
+//    KeyframeTrack& setInterpolation( Interpolate interpolation ) {
+//        InterpolantFactoryMethodType factoryMethod;
 //
-////            const message = 'unsupported interpolation for ' +
-////                            this.ValueTypeName + ' keyframe track named ' + this.name;
-////
-////            if ( this.createInterpolant == undefined ) {
-////
-////                // fall back to default, unless the default itself is messed up
-////                if ( interpolation != this.DefaultInterpolation ) {
-////
-////                    this.setInterpolation( this.DefaultInterpolation );
-////
-////                } else {
-////
-////                    throw new Error( message ); // fatal, in this case
-////
-////                }
-////
-////            }
-////
-////            console.warn( 'THREE.KeyframeTrack:', message );
-//            return *this;
+//        switch ( interpolation ) {
+//            case Interpolate::InterpolateDiscrete:
+//                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodDiscrete;
+//                break;
+//            case Interpolate::InterpolateLinear:
+//                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodLinear;
+//                break;
+//            case Interpolate::InterpolateSmooth:
+//                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodSmooth;
+//                break;
 //
 //        }
+//
+//
+//
+////        if ( factoryMethod == nullptr ) {
+////
+//////            const message = 'unsupported interpolation for ' +
+//////                            this.ValueTypeName + ' keyframe track named ' + this.name;
+//////
+//////            if ( this.createInterpolant == undefined ) {
+//////
+//////                // fall back to default, unless the default itself is messed up
+//////                if ( interpolation != this.DefaultInterpolation ) {
+//////
+//////                    this.setInterpolation( this.DefaultInterpolation );
+//////
+//////                } else {
+//////
+//////                    throw new Error( message ); // fatal, in this case
+//////
+//////                }
+//////
+//////            }
+//////
+//////            console.warn( 'THREE.KeyframeTrack:', message );
+////            return *this;
+////
+////        }
+//
+//        createInterpolant = factoryMethod;
+//
+//        return *this;
+//
+//    }
+//
+//    Interpolate getInterpolation() {
+//        if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodDiscrete  )
+//            return Interpolate::InterpolateDiscrete;
+//        else if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodLinear  )
+//            return Interpolate::InterpolateLinear;
+//        else if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodSmooth )
+//            return Interpolate::InterpolateSmooth;
+//        else
+//            return Interpolate::Unknown;
+//
+//    }
 
-        createInterpolant = factoryMethod;
-
-        return *this;
-
-    }
-
-    Interpolate getInterpolation() {
-        if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodDiscrete  )
-            return Interpolate::InterpolateDiscrete;
-        else if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodLinear  )
-            return Interpolate::InterpolateLinear;
-        else if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodSmooth )
-            return Interpolate::InterpolateSmooth;
-        else
-            return Interpolate::Unknown;
-
-    }
-
-    size_t getValueSize() {
+    int getValueSize(){
         return this->values.size() / this->times.size();
     }
 
     // move all keyframes either forwards or backwards in time
-    KeyframeTrackTemplate& shift( float timeOffset ) {
+    KeyframeTrackTemplate& shift( float timeOffset ){
 
         if ( timeOffset != 0.0 ) {
             auto& times = this->times;
@@ -108,7 +119,7 @@ public:
     }
 
     // scale all keyframe times by a factor (useful for frame <-> seconds conversions)
-    KeyframeTrackTemplate& scale( float timeScale ) {
+    KeyframeTrackTemplate& scale( float timeScale ){
 
         if ( timeScale != 1.0 ) {
             auto& times = this->times;
@@ -125,7 +136,7 @@ public:
 
     // removes keyframes before and after animation without changing any values within the range [startTime, endTime].
     // IMPORTANT: We do not shift around keys to the start of the track time, because for interpolated keys this will change their values
-    KeyframeTrackTemplate& trim( float startTime, float endTime ) {
+    KeyframeTrackTemplate& trim( float startTime, float endTime ){
 
         auto& times = this->times;
         auto nKeys = times.size();
@@ -162,7 +173,7 @@ public:
     }
 
     // ensure we do not get a GarbageInGarbageOut situation, make sure tracks are at least minimally viable
-    bool validate() {
+    bool validate(){
         bool valid = true;
 
         auto valueSize = this->getValueSize();
@@ -199,7 +210,7 @@ public:
             for ( size_t i = 0, n = values.size(); i != n; ++ i ) {
                 auto value = values[ i ];
 
-                if ( std::isnan( value ) ) {
+                if ( std::isnan<float>( value ) ) {
                     std::cerr << "THREE.KeyframeTrack: Value is not a valid number." << value << std::endl;//, this, i, value );
                     valid = false;
                     break;
@@ -214,15 +225,19 @@ public:
 
     }
 
+    std::vector<float> getTimes(){
+        return times;
+    }
+
     // removes equivalent sequential keys as common in morph target sequences
     // (0,0,0,0,1,1,1,0,0,0,0,0,0,0) --> (0,0,1,1,0,0)
-    KeyframeTrackTemplate& optimize() {
+    KeyframeTrackTemplate& optimize(){
         // times or values may be shared with other tracks, so overwriting is unsafe
         auto times = AnimationUtils::arraySlice( this->times );
         auto values = AnimationUtils::arraySlice( this->values );
         auto stride = this->getValueSize();
 
-        auto smoothInterpolation = (this->getInterpolation() == Interpolate::InterpolateSmooth);
+        auto smoothInterpolation = true; //todo:fixit (this->getInterpolation() == Interpolate::InterpolateSmooth);
 
         auto lastIndex = times.size() - 1;
 

@@ -11,9 +11,8 @@
 
 
 class AnimationAction;
-class PropertyMixer;
 class Interpolant;
-class PropertyMixer;
+template<typename T> class PropertyMixer;
 struct AnimationStatus;
 struct ActionsForClip;
 class AnimationMixer {
@@ -27,7 +26,7 @@ class AnimationMixer {
     std::map<sole::uuid,std::shared_ptr<ActionsForClip>> _actionsByClip;
     std::vector<std::shared_ptr<AnimationAction>> _bindings;
     size_t _nActiveBindings;
-    std::map<std::string,std::shared_ptr<PropertyMixer>> _bindingsByRootAndName;
+    std::map<std::string,std::shared_ptr<PropertyMixer<float>>> _bindingsByRootAndName;
     std::vector<std::shared_ptr<Interpolant>> _controlInterpolants;
     size_t _nActiveControlInterpolants;
 
@@ -51,7 +50,7 @@ public:
 
     AnimationMixer& _removeInactiveAction( std::shared_ptr<AnimationAction> action );
     AnimationMixer& _removeInactiveBindingsForAction( std::shared_ptr<AnimationAction> action );
-    AnimationMixer& _removeInactiveBinding( std::shared_ptr<PropertyMixer> binding );
+    AnimationMixer& _removeInactiveBinding( std::shared_ptr<PropertyMixer<float>> binding );
 
 public:
     std::shared_ptr<AnimationAction> clipAction(

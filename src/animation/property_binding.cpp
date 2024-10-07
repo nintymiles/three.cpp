@@ -52,20 +52,21 @@ namespace property_binding___{
 
 namespace property_binding__{
     // Characters [].:/ are reserved for track binding syntax.
-    const std::string _RESERVED_CHARS_RE = R"(\[\]\.:\/)";
-    const std::regex _reservedRe{'[' + _RESERVED_CHARS_RE + ']'};
+    const std::string _RESERVED_CHARS = R"(\[\]\.:)";
+    const std::regex _reservedRe{"[" + _RESERVED_CHARS + "]"};
     //const _reservedRe = new RegExp( '[' + _RESERVED_CHARS_RE + ']', 'g' );
 
     // Attempts to allow node names from any language. ES5's `\w` regexp matches
     // only latin characters, and the unicode \p{L} is not yet supported. So
     // instead, we exclude reserved characters and match everything else.
-    const std::string _wordChar{"[^" + _RESERVED_CHARS_RE + "]"};
+    const std::string _wordChar{"[^" + _RESERVED_CHARS + "]"};
     //_RESERVED_CHARS_RE.replace( '\\.', '' )
-    const std::string _wordCharOrDot{"[^" + std::regex_replace(_RESERVED_CHARS_RE,std::regex("\\."),"") + "]"};
+    const std::string _wordCharOrDot{"[^" + std::regex_replace(_RESERVED_CHARS, std::regex("\\."), "") + "]"};
 
     // Parent directories, delimited by '/' or ':'. Currently unused, but must
     // be matched to parse the rest of the track name.
-    const std::regex _directoryRe = std::regex{std::regex_replace(R"((?:WC+[\/:])*))",std::regex{"WC"}, _wordChar)};
+    const std::string _direcotryReChar = R"(((?:WC+[\\/:])*))";
+    const std::regex _directoryRe = std::regex{std::regex_replace(_direcotryReChar, std::regex{"WC"}, _wordChar)};
 
     // Target node. May contain word characters (a-zA-Z0-9_) and '.' or '-'.
     //const _nodeRe = /*@__PURE__*/ /(WCOD+)?/.source.replace( 'WCOD', _wordCharOrDot );
@@ -74,27 +75,21 @@ namespace property_binding__{
     // Object on target node, and accessor. May not contain reserved
     // characters. Accessor may contain any character except closing bracket.
     //const _objectRe = /*@__PURE__*/ /(?:\.(WC+)(?:\[(.+)\])?)?/.source.replace( 'WC', _wordChar );
-    const std::regex _objectRe = std::regex{std::regex_replace(R"((?:\.(WC+)(?:\[(.+)\])?)?)",std::regex{"WC"}, _wordChar)};
+    const std::string _objectReChar = R"((?:\.(WC+)(?:[(.+)])?)?)";
+    const std::regex _objectRe = std::regex{std::regex_replace(_objectReChar,std::regex{"WC"}, _wordChar)};
 
     // Property and accessor. May not contain reserved characters. Accessor may
     // contain any non-bracket characters.
     //const _propertyRe = /*@__PURE__*/ /\.(WC+)(?:\[(.+)\])?/.source.replace( 'WC', _wordChar );
-    const std::regex _propertyRe = std::regex{std::regex_replace(R"(\.(WC+)(?:\[(.+)\])?)",std::regex{"WC"}, _wordChar)};
+    const std::string _propertyReChar = R"(\.(WC+)(?:[(.+)])?)";
+    const std::regex _propertyRe = std::regex{std::regex_replace(_propertyReChar,std::regex{"WC"}, _wordChar)};
 
-//    const _trackRe = new RegExp( ''
-//                                 + '^'
-//                                 + _directoryRe
-//                                 + _nodeRe
-//                                 + _objectRe
-//                                 + _propertyRe
-//                                 + '$'
-//    );
     const std::regex _trackRe = std::regex{std::string("")
                                            + "^"
-                                           + std::regex_replace(R"((?:WC+[\/:])*))",std::regex{"WC"}, _wordChar)
-                                           + std::regex_replace(R"((WCOD+)?)",std::regex{"WCOD"}, _wordCharOrDot)
-                                           + std::regex_replace(R"((?:\.(WC+)(?:\[(.+)\])?)?)",std::regex{"WC"}, _wordChar)
-                                           + std::regex_replace(R"(\.(WC+)(?:\[(.+)\])?)",std::regex{"WC"}, _wordChar)
+                                           + std::regex_replace(_direcotryReChar, std::regex{"WC"}, _wordChar)
+                                           + std::regex_replace(_wordChar,std::regex{"WCOD"}, _wordCharOrDot)
+                                           + std::regex_replace(_objectReChar,std::regex{"WC"}, _wordChar)
+                                           + std::regex_replace(_propertyReChar,std::regex{"WC"}, _wordChar)
                                            + "$" };
 
     std::vector<std::string> _supportedObjectNames = { "material", "materials", "bones", "map" };

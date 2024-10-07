@@ -43,6 +43,13 @@ class Object3D {
 public:
     using sptr = std::shared_ptr<Object3D>;
 
+    struct UserData{
+        std::string nodeDefName;
+        int nodeDefIndex = -1;
+    };
+
+    UserData userData{};
+
     /**
      * Unique number of this object instance.
      */
@@ -373,6 +380,7 @@ public:
     //Object3D& getObjectByName(std::string name);
 
     //Object3D& getObjectByProperty(std::string name, std::string);
+
 
     Vector3& getWorldPosition(Vector3& target);
 

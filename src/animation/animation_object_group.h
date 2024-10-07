@@ -37,7 +37,7 @@
 #include "sole.h"
 #include "object_3d.h"
 
-class AnimationObjectGroupStat;
+struct AnimationObjectGroupStat;
 class PropertyBinding;
 class AnimationObjectGroup: public Object3D{
     friend class AnimationObjectGroupStat;

@@ -450,7 +450,8 @@ public:
 
             if ( buffer[ i ] != buffer[ i + stride ] ) {
                 // value has changed -> update scene graph
-                binding.setValue( buffer, offset );
+                //todo:fixit
+                //binding.setValue( buffer, offset );
                 break;
             }
         }

@@ -17,23 +17,26 @@
 #include <regex>
 
 
-
 class AnimationClip {
 public:
     std::string name;
-    std::vector<KeyframeTrack::sptr> tracks;
+    std::vector<std::shared_ptr<KeyframeTrack>> tracks;
     float duration;
     AnimationBlendMode blendMode;
     sole::uuid uuid;
 public:
     using sptr = std::shared_ptr<AnimationClip>;
 
-    AnimationClip(std::string name, float duration = - 1, std::vector<KeyframeTrack::sptr> tracks = {}, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
+    AnimationClip(std::string name, float duration = - 1, std::vector<std::shared_ptr<KeyframeTrack>> tracks = {}, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
                 name(name),tracks(tracks),duration(duration),blendMode(blendMode),uuid(sole::uuid1()){
         // this means it should figure out its duration by scanning the tracks
         if ( this->duration < 0 ) {
             this->resetDuration();
         }
+    }
+
+    static sptr create(std::string name, float duration = - 1, std::vector<std::shared_ptr<KeyframeTrack>> tracks = {}, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode){
+        return std::make_shared<AnimationClip>(name,duration,tracks,blendMode);
     }
 
     static Object3D::sptr findObjectByName( Object3D::sptr parentObj, std::string name ) {
@@ -66,7 +69,7 @@ public:
     static AnimationClip::sptr CreateFromMorphTargetSequence( std::string name, std::vector<MorphTarget> morphTargetSequence, float fps, bool noLoop ) {
 
         const int numMorphTargets = morphTargetSequence.size();
-        std::vector<KeyframeTrack::sptr > newTracks = {};
+        std::vector<std::shared_ptr<KeyframeTrack>> newTracks = {};
 
         for ( auto i = 0; i < numMorphTargets; i ++ ) {
 
@@ -92,7 +95,7 @@ public:
                 values.push_back( values[ 0 ] );
             }
 
-            KeyframeTrack::sptr track; // = KeyframeTrack
+            std::shared_ptr<KeyframeTrack> track; // = KeyframeTrack
 //            new NumberKeyframeTrack(
 //                    '.morphTargetInfluences[' + morphTargetSequence[ i ].name + ']',
 //                    times, values
@@ -156,21 +159,7 @@ public:
 
     }
 
-    AnimationClip& resetDuration() {
-
-        auto& tracks = this->tracks;
-        float duration = 0;
-
-        for ( size_t i = 0, n = tracks.size(); i != n; ++ i ) {
-            auto& track = tracks[ i ];
-
-            duration = math::max( duration, (float)track->getTimes()[ track->getTimes().size() - 1 ] );
-        }
-
-        this->duration = duration;
-
-        return *this;
-    }
+    AnimationClip& resetDuration();
 
     AnimationClip& trim() {
 

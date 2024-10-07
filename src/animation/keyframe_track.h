@@ -5,22 +5,24 @@
 #ifndef THREE_CPP_KEYFRAME_TRACK__H
 #define THREE_CPP_KEYFRAME_TRACK__H
 
-#endif //THREE_CPP_KEYFRAME_TRACK__H
+
 
 #include <memory>
 #include <vector>
 
 class KeyframeTrack{
 public:
-    using sptr = std::shared_ptr<KeyframeTrack>;
+    //using sptr = std::shared_ptr<KeyframeTrack>;
 
-    int getValueSize(){}
-    std::vector<int> getTimes();
+    virtual int getValueSize() = 0;
+    virtual std::vector<float> getTimes() = 0;
 
-    std::shared_ptr<KeyframeTrack> shift(int timeOffset);
-    std::shared_ptr<KeyframeTrack> scale(int  timeScale);
-    std::shared_ptr<KeyframeTrack> trim(int startTime, int endTime);
-    bool validate();
-    std::shared_ptr<KeyframeTrack> optimize();
+    virtual KeyframeTrack& shift(float timeOffset) = 0;
+    virtual KeyframeTrack& scale(float timeScale) = 0;
+    virtual KeyframeTrack& trim(float startTime, float endTime) = 0;
+    virtual bool validate() = 0;
+    virtual KeyframeTrack& optimize() = 0;
     //clone();
 };
+
+#endif //THREE_CPP_KEYFRAME_TRACK__H

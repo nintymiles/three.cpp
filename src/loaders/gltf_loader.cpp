@@ -4,6 +4,8 @@
 
 #include "gltf_loader.h"
 
+#include "constants.h"
+
 #include "buffer_geometry.h"
 #include "mesh.h"
 #include "common_utils.h"
@@ -12,6 +14,9 @@
 #include "material.h"
 #include "mesh_standard_material.h"
 #include "mesh_phong_material.h"
+
+#include "keyframe_track_template.h"
+#include "animation_clip.h"
 
 #include <algorithm>
 
@@ -25,6 +30,16 @@ namespace gltf_loaders{
 //    tinygltf::TinyGLTF loader;
 //    std::string err;
 //    std::string warn;
+
+namespace PATH_PROPERTIES{
+    static const std::string scale = "scale";
+    static const std::string translation = "position";
+    static const std::string rotation = "quaternion";
+    static const std::string weights = "morphTargetInfluences";
+};
+
+const std::map<std::string,Interpolate> INTERPOLATION = {{"CUBICSPLINE",Interpolate::Unknown},{"LINEAR",Interpolate::InterpolateLinear},{"STEP",Interpolate::InterpolateDiscrete}};
+
 }
 
 using namespace gltf_loaders;
@@ -62,6 +77,7 @@ Group::sptr GLTFLoader::load(const std::string& path){
     buildTextures(model);
     buildMaterials(model);
 
+
     // If the glTF asset has at least one scene, and doesn't define a default one
     // just show the first one we can find
     assert(model.scenes.size() > 0);
@@ -73,14 +89,15 @@ Group::sptr GLTFLoader::load(const std::string& path){
 //    int scene_to_display = model.defaultScene > -1 ? model.defaultScene : 0;
 //    const tinygltf::Scene &scene = model.scenes[scene_to_display];
     for (size_t i = 0; i < gScene.nodes.size(); i++) {
-        group->add(parseNode(model, model.nodes[gScene.nodes[i]]));
+        group->add(parseNode(model,gScene.nodes[i]));
     }
+
+    buildAnimations(model,group);
 
     return group;
 }
 
-Object3D::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Node &node) {
-
+Object3D::sptr GLTFLoader::parseNode(tinygltf::Model &model, size_t nodeIndex) {
     // Apply xform
 
 //    glPushMatrix();
@@ -107,11 +124,11 @@ Object3D::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Nod
 //            glScaled(node.scale[0], node.scale[1], node.scale[2]);
 //        }
 //    }
+    const tinygltf::Node &node =  model.nodes[nodeIndex];
 
     std::cout << "node " << node.name << ", Meshes " << node.mesh << std::endl;
 
     Object3D::sptr nodeRoot = Object3D::create();
-    nodeRoot->name = node.name;
 
     // mesh is geometry data of current obj/node
     if (node.mesh > -1) {
@@ -119,6 +136,13 @@ Object3D::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Nod
         assert(node.mesh < model.meshes.size());
         parseMesh(model, model.meshes[node.mesh], nodeRoot);
     }
+
+    std::string nodeName = sanitizeNodeName(node.name);
+
+    nodeRoot->userData.nodeDefName = nodeName;
+    nodeRoot->userData.nodeDefIndex = nodeIndex;
+
+    nodeRoot->name = nodeName;
 
     if (!node.translation.empty() && node.translation.size() >= 3)
         nodeRoot->position.set(node.translation[0], node.translation[1], node.translation[2]);
@@ -128,11 +152,10 @@ Object3D::sptr GLTFLoader::parseNode(tinygltf::Model &model, const tinygltf::Nod
         nodeRoot->scale.set(node.scale[0], node.scale[1], node.scale[2]);
 
 
-
     // Parse child nodes.
     for (size_t i = 0; i < node.children.size(); i++) {
         assert(node.children[i] < model.nodes.size());
-        nodeRoot->add(parseNode(model, model.nodes[node.children[i]]));
+        nodeRoot->add(parseNode(model, node.children[i]));
     }
 
 //    glPopMatrix();
@@ -726,15 +749,16 @@ void GLTFLoader::buildMaterials(const tinygltf::Model &model) {
 }
 
 
-std::vector<float> GLTFLoader::loadBufferFromAccessor(const tinygltf::Model &model,const tinygltf::Accessor &accessor){
+std::vector<float> GLTFLoader::loadBufferWithAccessorId(const tinygltf::Model &model,int accessorId) {
+    auto& accessor = model.accessors[accessorId];
 
     if (accessor.bufferView > -1) {
         //bufferView是针对gpu buffer data中的对应数据记录，本地读取使用accessor中的数据即可
         const tinygltf::BufferView &bufferView = model.bufferViews[accessor.bufferView];
-        if (bufferView.target == 0) {
-            std::cout << "WARN: bufferView.target is zero" << std::endl;
-            return;  // Unsupported bufferView.
-        }
+//        if (bufferView.target == 0) {
+//            std::cout << "WARN: bufferView.target is zero" << std::endl;
+//            return {};  // Unsupported bufferView.
+//        }
 
         const tinygltf::Buffer &buffer = model.buffers[bufferView.buffer];
 
@@ -743,7 +767,7 @@ std::vector<float> GLTFLoader::loadBufferFromAccessor(const tinygltf::Model &mod
         unsigned char *tmp_buffer = new unsigned char[bufferView.byteLength];
         memcpy(tmp_buffer, buffer.data.data() + bufferView.byteOffset + accessor.byteOffset,
                bufferView.byteLength);
-
+        std::vector<unsigned char> inputData(buffer.data.begin() + bufferView.byteOffset + accessor.byteOffset,buffer.data.begin() + bufferView.byteOffset + accessor.byteOffset+bufferView.byteLength);
 
         int size = 1;
         if (accessor.type == TINYGLTF_TYPE_SCALAR) {
@@ -766,14 +790,25 @@ std::vector<float> GLTFLoader::loadBufferFromAccessor(const tinygltf::Model &mod
 
         BufferAttribute<float>::sptr bufferAttr = BufferAttribute<float>::create((float *) tmp_buffer,
                                                                                  accessor.count * size, size);
-        std::vector<float> bufferData{};
+        std::vector<float> bufferData(accessor.count, 0);
+        if (tmp_buffer != nullptr)
+            memcpy(&bufferData[0], tmp_buffer, sizeof(float) * size * accessor.count);
 
         delete[] tmp_buffer;
+
+        return bufferData;
+    }
 }
 
-void GLTFLoader::buildAnimations(const tinygltf::Model &model) {
-    for (auto& gltfAnimation : model.animations) {
+void GLTFLoader::buildAnimations(const tinygltf::Model &model,Object3D::sptr rootObj) {
+
+    for (size_t i = 0; i < model.animations.size(); i++) {
+        auto& gltfAnimation = model.animations[i];
         auto name = gltfAnimation.name;
+
+        std::vector<Object3D::sptr> nodes{};
+        std::vector<std::shared_ptr<KeyframeTrack>> tracks{};
+
 
         for(auto& channel: gltfAnimation.channels){
             auto& sampler = gltfAnimation.samplers[channel.sampler];
@@ -785,22 +820,109 @@ void GLTFLoader::buildAnimations(const tinygltf::Model &model) {
             auto output = sampler.output;
             auto interpolator = sampler.interpolation;
 
+            const auto& inputSamplerData = loadBufferWithAccessorId(model,input);
+            const auto& outputSamplerData = loadBufferWithAccessorId(model,output);
+
+            auto interpolation = sampler.interpolation != "" ? INTERPOLATION.at(sampler.interpolation) : Interpolate::InterpolateLinear;
+
+            auto node = getNodeByIndex(targetNode,rootObj);
+
+            if(node == nullptr) continue;
+            node->updateMatrix();
+
+            auto targetName = node->name != "" ? node->name : node->uuid.str();
+
+            std::vector<std::string> targetNames{};
+
+//            std::shared_ptr<KeyframeTrack> keyFrameTrack;
+//            if(targetPath == PATH_PROPERTIES::weights){
+//                //todo:fixit traverse node children and fetch morphInfluence Names
+//                targetNames.push_back("morphInfluences");
+//            }else if(targetPath == PATH_PROPERTIES::scale){
+//                targetNames.push_back(targetName+"");
+//            }
+            targetNames.push_back(targetName);
+
+            //todo:fixit const scale = getNormalizedComponentScale( outputArray.constructor );
+//            for ( size_t j = 0, jl = targetNames.size(); j < jl; j ++ ) {
+
+//                const track = new TypedKeyframeTrack( targetNames[ j ] + '.' + PATH_PROPERTIES[ target.path ], inputAccessor.array, outputArray, interpolation ); // Override interpolation with custom factory method.
+
+//                if ( sampler.interpolation === 'CUBICSPLINE' ) {
+//
+//                    track.createInterpolant = function InterpolantFactoryMethodGLTFCubicSpline( result ) {
+//
+//                        // A CUBICSPLINE keyframe in glTF has three output values for each input value,
+//                        // representing inTangent, splineVertex, and outTangent. As a result, track.getValueSize()
+//                        // must be divided by three to get the interpolant's sampleSize argument.
+//                        const interpolantType = this instanceof THREE.QuaternionKeyframeTrack ? GLTFCubicSplineQuaternionInterpolant : GLTFCubicSplineInterpolant;
+//                        return new interpolantType( this.times, this.values, this.getValueSize() / 3, result );
+//
+//                    }; // Mark as CUBICSPLINE. `track.getInterpolation()` doesn't support custom interpolants.
+//
+//
+//                    track.createInterpolant.isInterpolantFactoryMethodGLTFCubicSpline = true;
+//
+//                }
+
+//                tracks.push( track );
+//
+//            }
+            for ( size_t j = 0, jl = targetNames.size(); j < jl; j ++ ) {
+                std::shared_ptr<KeyframeTrack> track;
+//                switch ( PATH_PROPERTIES[ target.path ] ) {
+//
+//                    case PATH_PROPERTIES.weights:
+//                        TypedKeyframeTrack = THREE.NumberKeyframeTrack;
+//                        break;
+//
+//                    case PATH_PROPERTIES.rotation:
+//                        TypedKeyframeTrack = THREE.QuaternionKeyframeTrack;
+//                        break;
+//
+//                    case PATH_PROPERTIES.position:
+//                    case PATH_PROPERTIES.scale:
+//                    default:
+//                        TypedKeyframeTrack = THREE.VectorKeyframeTrack;
+//                        break;
+//
+//                }
+                if(PATH_PROPERTIES::weights == targetPath){
+                    track = KeyframeTrackTemplate<int>::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
+                }else if(PATH_PROPERTIES::rotation == targetPath){
+                    track = QuaternionKeyframeTrack::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
+                }else{
+                    track = VectorKeyframeTrack::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
+                }
+
+                if(track!=nullptr)
+                    tracks.push_back(track);
+            }
+
 
         }
-//        for ( let i = 0, il = animationDef.channels.length; i < il; i ++ ) {
-//
-//            const channel = animationDef.channels[ i ];
-//            const sampler = animationDef.samplers[ channel.sampler ];
-//            const target = channel.target;
-//            const name = target.node;
-//            const input = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.input ] : sampler.input;
-//            const output = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.output ] : sampler.output;
-//            pendingNodes.push( this.getDependency( 'node', name ) );
-//            pendingInputAccessors.push( this.getDependency( 'accessor', input ) );
-//            pendingOutputAccessors.push( this.getDependency( 'accessor', output ) );
-//            pendingSamplers.push( sampler );
-//            pendingTargets.push( target );
-//
-//        }
+
+        auto gltfName = gltfAnimation.name != "" ? gltfAnimation.name : "animation_" + i;
+        AnimationClip::sptr animAction = AnimationClip::create( name, -1, tracks );
+        pAnimations.push_back(animAction);
+
     }
+}
+
+Object3D::sptr GLTFLoader::getNodeByIndex(int nodeIndex,Object3D::sptr rootObj) {
+    if(rootObj!= nullptr && rootObj->userData.nodeDefIndex == nodeIndex)
+        return rootObj;
+
+    for ( size_t i = 0, l = rootObj->children.size(); i < l; i ++ ) {
+        auto child = rootObj->children[ i ];
+        auto object = getNodeByIndex(nodeIndex,child);
+
+        if ( object != nullptr ) {
+            return object;
+        }
+
+    }
+
+    return nullptr;
+
 }

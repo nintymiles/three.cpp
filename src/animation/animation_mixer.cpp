@@ -132,7 +132,7 @@ AnimationMixer& AnimationMixer::_removeInactiveBindingsForAction( std::shared_pt
     return *this;
 }
 
-AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<PropertyMixer> binding ) {
+AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<PropertyMixer<float>> binding ) {
 
         auto& bindings = this->_bindings;
         auto propBinding = binding->binding;
@@ -155,5 +155,7 @@ AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<Property
 //            delete bindingsByRoot[ rootUuid ];
 //
 //        }
+
+    return *this;
 
 }

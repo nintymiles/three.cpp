@@ -10,7 +10,7 @@
 #include "constants.h"
 
 class AnimationMixer;
-class PropertyMixer;
+template<typename T> class PropertyMixer;
 class AnimationAction {
 private:
     LoopMode loop;
@@ -26,7 +26,7 @@ public:
     size_t _byClipCacheIndex; // for the memory manager
 
     // inside: PropertyMixer (managed by the mixer)
-    std::vector<std::shared_ptr<PropertyMixer>> _propertyBindings;
+    std::vector<std::shared_ptr<PropertyMixer<float>>> _propertyBindings;
 
     AnimationAction(std::shared_ptr<AnimationMixer> mixer, AnimationClip::sptr clip, Object3D::sptr localRoot, AnimationBlendMode blendMode):
                         _mixer(mixer),_clip(clip),_localRoot(localRoot),blendMode(blendMode){
