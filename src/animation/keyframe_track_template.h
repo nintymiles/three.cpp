@@ -18,15 +18,58 @@
 #include "linear_interpolant.h"
 
 template<typename ValueBufferType>
+class InterpolantFactoryObject{
+private:
+    std::vector<float> times;
+    std::vector<ValueBufferType> values;
+    size_t sampleSize;
+    Interpolate interpolation;
+public:
+    InterpolantFactoryObject() = default;
+
+    InterpolantFactoryObject(const std::vector<float> &times, std::vector<ValueBufferType> values,size_t valueSize,Interpolate interpolation)
+                                                                                            :times(times),values(values),sampleSize(valueSize),interpolation(interpolation){}
+    std::shared_ptr<Interpolant> operator()(std::vector<float> buffer) const{
+//        switch ( interpolation ) {
+//            case Interpolate::InterpolateDiscrete:
+//                return std::make_shared<LinearInterpolant>(times,values,getValueSize(),result);
+//                break;
+//            case Interpolate::InterpolateLinear:
+//                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodLinear;
+//                break;
+//            case Interpolate::InterpolateSmooth:
+//                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodSmooth;
+//                break;
+//
+//        }
+
+        //todo:fixit return concrete Interpolant?
+        return std::make_shared<LinearInterpolant>(times,values,sampleSize,buffer);
+
+    }
+
+    Interpolate getInterpolation(){
+        return interpolation;
+    }
+};
+
+template<typename ValueBufferType>
 class KeyframeTrackTemplate:public KeyframeTrack {
 public:
+    std::string name;
     std::vector<float> times;
     std::vector<ValueBufferType> values;
     using sptr = std::shared_ptr<KeyframeTrackTemplate>;
 
+    InterpolantFactoryObject<ValueBufferType> createInterpolantObj;
+
     KeyframeTrackTemplate() = default;
 
-    KeyframeTrackTemplate(std::string name,const std::vector<float> &times,const std::vector<float> &values,Interpolate interpolation){}
+    KeyframeTrackTemplate(std::string name,const std::vector<float> &times, std::vector<ValueBufferType> values,Interpolate interpolation):name(name),times(times),values(values){
+        //this->setInterpolation(interpolation);
+        this->createInterpolantObj =
+                InterpolantFactoryObject<ValueBufferType>(times,values,this->getValueSize(),interpolation);
+    }
 //    using InterpolantFactoryMethodType = std::shared_ptr<Interpolant> (KeyframeTrack::*)(std::vector<float>&);
 //    InterpolantFactoryMethodType createInterpolant;
 
@@ -86,8 +129,8 @@ public:
 //        return *this;
 //
 //    }
-//
-//    Interpolate getInterpolation() {
+
+    Interpolate getInterpolation() {
 //        if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodDiscrete  )
 //            return Interpolate::InterpolateDiscrete;
 //        else if ( createInterpolant == &KeyframeTrackTemplate::InterpolantFactoryMethodLinear  )
@@ -96,8 +139,8 @@ public:
 //            return Interpolate::InterpolateSmooth;
 //        else
 //            return Interpolate::Unknown;
-//
-//    }
+        return this->createInterpolantObj.getInterpolation();
+    }
 
     int getValueSize(){
         return this->values.size() / this->times.size();

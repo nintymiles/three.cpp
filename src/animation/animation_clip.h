@@ -27,7 +27,7 @@ public:
 public:
     using sptr = std::shared_ptr<AnimationClip>;
 
-    AnimationClip(std::string name, float duration = - 1, std::vector<std::shared_ptr<KeyframeTrack>> tracks = {}, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
+    AnimationClip(std::string name, float duration = - 1.f, std::vector<std::shared_ptr<KeyframeTrack>> tracks = {}, AnimationBlendMode blendMode = AnimationBlendMode::NormalAnimationBlendMode):
                 name(name),tracks(tracks),duration(duration),blendMode(blendMode),uuid(sole::uuid1()){
         // this means it should figure out its duration by scanning the tracks
         if ( this->duration < 0 ) {
@@ -95,16 +95,17 @@ public:
                 values.push_back( values[ 0 ] );
             }
 
-            std::shared_ptr<KeyframeTrack> track; // = KeyframeTrack
+            //todo:fix it
+//            std::shared_ptr<KeyframeTrack> track; // = KeyframeTrack
 //            new NumberKeyframeTrack(
 //                    '.morphTargetInfluences[' + morphTargetSequence[ i ].name + ']',
 //                    times, values
 //            ).scale( 1.0 / fps )
-            newTracks.push_back(track);
+//            newTracks.push_back(track);
 
         }
 
-        return std::make_shared<AnimationClip>(name,-1,newTracks);
+        return std::make_shared<AnimationClip>(name,-1.f,newTracks);
     }
 
     static std::vector<AnimationClip::sptr> CreateClipsFromMorphTargetSequences(
