@@ -888,7 +888,7 @@ void GLTFLoader::buildAnimations(const tinygltf::Model &model,Object3D::sptr roo
 //
 //                }
                 if(PATH_PROPERTIES::weights == targetPath){
-                    track = KeyframeTrackTemplate<int>::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
+                    track = KeyframeTrackTemplate<float>::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
                 }else if(PATH_PROPERTIES::rotation == targetPath){
                     track = QuaternionKeyframeTrack::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
                 }else{

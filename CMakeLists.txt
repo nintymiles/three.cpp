@@ -123,6 +123,9 @@ file(GLOB RENDERS_HEADER ${ROOT_DIR}/src/renders/*.h;${ROOT_DIR}/src/renders/ope
 file(GLOB CONTROLS_SOURCE ${ROOT_DIR}/src/control/*.cpp)
 file(GLOB CONTROLS_HEADER ${ROOT_DIR}/src/control/*.h)
 
+file(GLOB ANIMATION_SOURCE ${ROOT_DIR}/src/animation/*.cpp)
+file(GLOB ANIMATION_HEADER ${ROOT_DIR}/src/animation/*.h)
+
 file(GLOB EXTRA_SOURCE ${ROOT_DIR}/src/extra/shaders/*.cpp;${ROOT_DIR}/src/extra/postprocessing/*.cpp;${ROOT_DIR}/src/extra/math/*.cpp;${ROOT_DIR}/src/extra/*.cpp)
 file(GLOB EXTRA_HEADER ${ROOT_DIR}/src/extra/shaders/*.h;${ROOT_DIR}/src/extra/postprocessing/*.h;${ROOT_DIR}/src/extra/math/*.h;${ROOT_DIR}/src/extra/*.h)
 
@@ -174,6 +177,9 @@ source_group("Materials" FILES ${MATERIALS_HEADER})
 source_group("Controls" FILES ${CONTROLS_SOURCE})
 source_group("Controls" FILES ${CONTROLS_HEADER})
 
+source_group("Animation" FILES ${ANIMATION_SOURCE})
+source_group("Animation" FILES ${ANIMATION_HEADER})
+
 file(GLOB THREECPP_LIB_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_SOURCE};
         ${CAMERAS_HEADER};${CAMERAS_SOURCE};
         ${CORE_SOURCE};${CORE_HEADER};
@@ -189,7 +195,8 @@ file(GLOB THREECPP_LIB_SOURCE ${TOP_HEADER};${TOP_SOURCE};${MATH_HEADER};${MATH_
         ${LOADERS_SOURCE};${LOADERS_HEADER};
         ${MATERIALS_SOURCE};${MATERIALS_HEADER};
         ${RENDERS_SOURCE};${RENDERS_HEADER};
-        ${CONTROLS_SOURCE};${CONTROLS_HEADER})
+        ${CONTROLS_SOURCE};${CONTROLS_HEADER};
+        ${ANIMATION_SOURCE};${ANIMATION_HEADER})
 
 
 # 文件或者目录名有空格时，使用引号"${PROJECT_SOURCE_DIR}/Math Functions"
@@ -216,6 +223,7 @@ list(APPEND THREECPP_LIB_INCLUDES ${ROOT_DIR}/src
         ${ROOT_DIR}/src/renders/opengl
         ${ROOT_DIR}/src/renders/shaders
         ${ROOT_DIR}/src/control
+        ${ROOT_DIR}/src/animation
         ${ROOT_DIR}/src/loaders)
 
 list(APPEND IMGUI_INCLUDES ${ROOT_DIR}/src/imgui
