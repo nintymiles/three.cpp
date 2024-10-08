@@ -8,6 +8,8 @@
 #include "animation_clip.h"
 #include "property_mixer.h"
 
+#include <cmath>
+
 void AnimationMixer::_initMemoryManager() {
 
     this->_actions = {}; // 'nActiveActions' followed by inactive ones
@@ -155,6 +157,35 @@ AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<Property
 //            delete bindingsByRoot[ rootUuid ];
 //
 //        }
+
+    return *this;
+
+}
+
+AnimationMixer& AnimationMixer::update(float deltaTime) {
+    auto deltaTimeScale = deltaTime * this->timeScale;
+
+    const auto& actions = this->_actions;
+    const auto& nActions = this->_nActiveActions;
+
+    auto time = this->time += deltaTime;
+    auto timeDirection = sign( deltaTime );
+    auto accuIndex = this->_accuIndex ^= 1;
+
+    // run active actions
+    for ( size_t i = 0; i != nActions; ++ i ) {
+        auto& action = actions[ i ];
+
+        action->_update( time, deltaTime, timeDirection, accuIndex );
+    }
+
+    // update scene graph
+//    const bindings = this._bindings,
+//            nBindings = this._nActiveBindings;
+
+//    for ( size_t i = 0; i != this->nBindings; ++ i ) {
+//        bindings[ i ].apply( accuIndex );
+//    }
 
     return *this;
 

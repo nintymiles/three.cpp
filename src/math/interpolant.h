@@ -39,15 +39,16 @@ struct InterpolantSetting{
 class Interpolant {
 protected:
     size_t _cachedIndex;
-    std::vector<size_t> parameterPositions;
+
     std::vector<float> resultBuffer;
     std::vector<float> sampleValues;
     size_t valueSize;
     InterpolantSetting defaultSettings_;
     InterpolantSetting settings;
 public:
+    std::vector<float> parameterPositions;
 
-    Interpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),resultBuffer(resultBuffer){
+    Interpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),resultBuffer(resultBuffer){
         if(resultBuffer.empty())
             resultBuffer = std::vector<float>(sampleSize);
 

@@ -33,6 +33,12 @@ class Material;
 class AnimationClip;
 class Geometry;
 template<class T> class BufferAttribute;
+
+struct GLTFModel{
+    Group::sptr scene;
+    std::vector<std::shared_ptr<AnimationClip>> animations;
+};
+
 class GLTFLoader {
     std::vector<std::shared_ptr<Texture>> pTextures;
     std::vector<std::shared_ptr<BufferAttribute<float>>> pBuffers;
@@ -62,6 +68,8 @@ public:
 //    void setMaterials(const MTLLoader::MaterialCreator& materials);
 
     Group::sptr load(const std::string& path);
+
+    GLTFModel loadModel(const std::string& path);
 
     Object3D::sptr parseNode(tinygltf::Model &model, size_t nodeIndex);
 

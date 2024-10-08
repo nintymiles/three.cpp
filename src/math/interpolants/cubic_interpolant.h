@@ -22,7 +22,7 @@ public:
 //        InterpolateParam endingStart;
 //        InterpolateParam endingEnd;
 //    };
-    CubicInterpolant(std::vector<size_t> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer): Interpolant(parameterPositions,sampleValues,sampleSize,resultBuffer){
+    CubicInterpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer): Interpolant(parameterPositions,sampleValues,sampleSize,resultBuffer){
 
         _weightPrev = - 0;
         _offsetPrev = - 0;

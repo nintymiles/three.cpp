@@ -44,6 +44,13 @@ const std::map<std::string,Interpolate> INTERPOLATION = {{"CUBICSPLINE",Interpol
 
 using namespace gltf_loaders;
 Group::sptr GLTFLoader::load(const std::string& path){
+    GLTFModel model = loadModel(path);
+
+    return model.scene;
+}
+
+GLTFModel GLTFLoader::loadModel(const std::string& path){
+    GLTFModel gltfModel{};
     Group::sptr group = Group::create();
 
     std::string ext = threecpp::getFilePathExtension(path);
@@ -92,9 +99,12 @@ Group::sptr GLTFLoader::load(const std::string& path){
         group->add(parseNode(model,gScene.nodes[i]));
     }
 
-    buildAnimations(model,group);
+//    buildAnimations(model,group);
 
-    return group;
+    gltfModel.scene = group;
+    gltfModel.animations = pAnimations;
+
+    return gltfModel;
 }
 
 Object3D::sptr GLTFLoader::parseNode(tinygltf::Model &model, size_t nodeIndex) {
@@ -493,8 +503,10 @@ void GLTFLoader::parseMesh(tinygltf::Model &model, const tinygltf::Mesh &mesh, O
         Material::sptr material;
         if(primitive.material > -1)
             material = pMaterials[primitive.material];
-//        else
-//            material->color = Color(0xFF0000);
+        else
+            material->color = Color(0xFF0000);
+
+//        material = MeshPhongMaterial::create(Color(0xf0f8ff));
 
 //        nodeObj->geometry = geometry;
 //        nodeObj->material = material;
@@ -552,6 +564,7 @@ void GLTFLoader::buildTextures(const tinygltf::Model &model) {
             pDstTexture->image->height = gltfImage.height;
             pDstTexture->image->channels = gltfImage.component;
             pDstTexture->image->imageData = gltfImage.image;
+//            pDstTexture->image->depth = gltfImage.bits;
             switch (gltfImage.component) {
                 case 4:
                     pDstTexture->format = PixelFormat::RGBAFormat;
@@ -566,11 +579,40 @@ void GLTFLoader::buildTextures(const tinygltf::Model &model) {
                     pDstTexture->format = PixelFormat::RedFormat;
                     break;
                 default:
+                    pDstTexture->format = PixelFormat::RGBFormat;
                     break;
 
             };
 
-            pDstTexture->type = TextureDataType::UnsignedByteType;
+            switch (gltfImage.pixel_type) {
+                case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+                    pDstTexture->type = TextureDataType::UnsignedByteType;
+                    break;
+                case TINYGLTF_COMPONENT_TYPE_BYTE:
+                    pDstTexture->type = TextureDataType::ByteType;
+                    break;
+                case TINYGLTF_COMPONENT_TYPE_INT:
+                    pDstTexture->type = TextureDataType::IntType;
+                    break;
+                case TINYGLTF_COMPONENT_TYPE_SHORT:
+                    pDstTexture->type = TextureDataType::ShortType;
+                    break;
+                case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+                    pDstTexture->type = TextureDataType::UnsignedIntType;
+                    break;
+                case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+                    pDstTexture->type = TextureDataType::UnsignedShortType;
+                    break;
+                case TINYGLTF_COMPONENT_TYPE_DOUBLE:
+                case TINYGLTF_COMPONENT_TYPE_FLOAT:
+                    pDstTexture->type = TextureDataType::FloatType;
+                    break;
+                default:
+                    break;
+
+
+
+            }
 
             auto& gltfSampler = model.samplers[gltfTexture.sampler];
             switch (gltfSampler.minFilter) {
