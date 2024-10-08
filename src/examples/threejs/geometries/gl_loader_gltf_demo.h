@@ -16,12 +16,18 @@
 
 #include "gltf_loader.h"
 
+#include "animation_mixer.h"
+#include "timer.h"
+
 #include <thread>
 #include <filesystem>
 
 class GLLoaderGLTFDemo: public ApplicationBase{
     Group::sptr objGroup;
     MeshBasicMaterial::sptr meshMaterial;
+
+    AnimationMixer mixer;
+    Timer timer;
 
 public:
     GLLoaderGLTFDemo(int x, int y):ApplicationBase(x,y){}
@@ -63,15 +69,23 @@ public:
 
         GLTFLoader gltfLoader{};
         std::string relPath = threecpp::getFileSeparator().append("asset").append(threecpp::getFileSeparator()).append("models")
-                .append(threecpp::getFileSeparator()).append("gltf").append(threecpp::getFileSeparator())
-                .append("DamagedHelmet").append(threecpp::getFileSeparator());
-        Group::sptr gltfGroup = gltfLoader.load(dir + relPath +"DamagedHelmet.gltf");
+                .append(threecpp::getFileSeparator()).append("gltf").append(threecpp::getFileSeparator());
+//                .append("DamagedHelmet").append(threecpp::getFileSeparator());
+//        Group::sptr gltfGroup = gltfLoader.load(dir + relPath +"DamagedHelmet.gltf");
+//        Group::sptr gltfGroup = gltfLoader.load(dir + relPath +"LittlestTokyo.glb");
+//        Group::sptr gltfGroup = gltfLoader.load(dir + relPath +"Flamingo.glb");
 //        Geometry::sptr geometry1 = gltfGroup->children[0]->children[0]->children[0]->geometry;
 //        Mesh::sptr mesh = Mesh::create(geometry1,MeshBasicMaterial::create(0xff0000));
-        gltfGroup->scale.multiplyScalar(100);
+//        gltfGroup->scale.multiplyScalar(100);
 //        gltfGroup->position.setY(-100);
 //        gltfGroup->rotation.y(-math_number::PI/2);
-        scene->add(gltfGroup);
+
+        GLTFModel gltfModel = gltfLoader.loadModel(dir + relPath +"Duck.gltf");
+
+        scene->add(gltfModel.scene);
+
+        mixer = AnimationMixer(gltfModel.scene);
+//        mixer.clipAction(gltfModel.animations[0],nullptr,AnimationBlendMode::NormalAnimationBlendMode);
 
 //        BoxGeometry::sptr box = BoxGeometry::create( 1, 1, 1, 1, 1, 1 );
 //        scene->add(Mesh::create(box,MeshBasicMaterial::create(0xff0000)));
@@ -89,7 +103,7 @@ public:
         tcontroller->noRotate = false;
         tcontroller->dynamicDampingFactor = 0.3f;
 
-
+        timer = Timer();
     }
 
     virtual void render() override;

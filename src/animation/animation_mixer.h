@@ -35,6 +35,8 @@ class AnimationMixer {
     std::shared_ptr<AnimationStatus> stat;
 
 public:
+    AnimationMixer() = default;
+
     AnimationMixer( Object3D::sptr root ):_root(root),_accuIndex(0),time(0),timeScale(0){
         _initMemoryManager();
     }
@@ -57,11 +59,11 @@ public:
             std::shared_ptr<AnimationClip> clip,
             Object3D::sptr root,
     AnimationBlendMode blendMode
-    );
+    ){return nullptr;}
     std::shared_ptr<AnimationAction> existingAction(std::shared_ptr<AnimationClip> clip,
                                                     Object3D::sptr root);
     std::shared_ptr<AnimationMixer> stopAllAction();
-    std::shared_ptr<AnimationMixer> update(float deltaTime);
+    AnimationMixer& update(float deltaTime);
     std::shared_ptr<AnimationMixer> setTime(int timeInSeconds);
     Object3D::sptr getRoot();
     void uncacheClip(std::shared_ptr<AnimationClip> clip);
