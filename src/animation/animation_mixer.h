@@ -57,9 +57,9 @@ public:
 public:
     std::shared_ptr<AnimationAction> clipAction(
             std::shared_ptr<AnimationClip> clip,
-            Object3D::sptr root,
+            Object3D::sptr optionalRoot,
     AnimationBlendMode blendMode
-    ){return nullptr;}
+    );
     std::shared_ptr<AnimationAction> existingAction(std::shared_ptr<AnimationClip> clip,
                                                     Object3D::sptr root);
     std::shared_ptr<AnimationMixer> stopAllAction();

@@ -10,6 +10,75 @@
 
 #include <cmath>
 
+std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<AnimationClip> clip, Object3D::sptr optionalRoot,
+                                                            AnimationBlendMode blendMode) {
+    // return an action for a clip optionally using a custom root target
+    // object (this method allocates a lot of dynamic memory in case a
+    // previously unknown clip/root combination is specified)
+
+//    Object3D::sptr root;
+//    if(optionalRoot)
+//        root = optionalRoot;
+//    else
+//        root = this->_root;
+//
+//    auto rootUuid = root->uuid;
+//
+//    auto clipObject = clip;
+//
+//    const auto clipUuid = (clipObject != nullptr) ? clipObject->uuid : nullptr;
+//
+//    const auto actionsForClip = this->_actionsByClip[ clipUuid ];
+//    let prototypeAction = null;
+//
+//    if ( blendMode == AnimationBlendMode::Unknown ) {
+//
+//        if ( clipObject ) {
+//
+//            blendMode = clipObject->blendMode;
+//
+//        } else {
+//
+//            blendMode = AnimationBlendMode::NormalAnimationBlendMode;
+//
+//        }
+//
+//    }
+//
+//    if ( actionsForClip ) {
+//
+//        const auto existingAction = actionsForClip.actionByRoot[ rootUuid ];
+//
+//        if ( existingAction && existingAction.blendMode == blendMode ) {
+//            return existingAction;
+//        }
+//
+//        // we know the clip, so we don't have to parse all
+//        // the bindings again but can just copy
+//        prototypeAction = actionsForClip.knownActions[ 0 ];
+//
+//        // also, take the clip from the prototype action
+//        if (!clipObject)
+//            clipObject = prototypeAction._clip;
+//
+//    }
+//
+//    // clip must be known when specified via string
+//    if ( !clipObject ) return nullptr;
+//
+//    // allocate all resources required to run it
+//    auto newAction = AnimationAction( this, clipObject, optionalRoot, blendMode );
+//
+//    this->_bindAction( newAction, prototypeAction );
+//
+//    // and make the action known to the memory manager
+//    this->_addInactiveAction( newAction, clipUuid, rootUuid );
+//
+//    return newAction;
+    return nullptr;
+
+}
+
 void AnimationMixer::_initMemoryManager() {
 
     this->_actions = {}; // 'nActiveActions' followed by inactive ones
