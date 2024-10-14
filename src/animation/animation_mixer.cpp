@@ -16,66 +16,136 @@ std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<Anim
     // object (this method allocates a lot of dynamic memory in case a
     // previously unknown clip/root combination is specified)
 
-//    Object3D::sptr root;
-//    if(optionalRoot)
-//        root = optionalRoot;
-//    else
-//        root = this->_root;
+    Object3D::sptr root;
+    if(optionalRoot)
+        root = optionalRoot;
+    else
+        root = this->_root;
+
+    auto rootUuid = root->uuid;
+
+    auto clipObject = clip;
+
+    const auto clipUuid = (clipObject != nullptr) ? clipObject->uuid : sole::uuid0();
+
+    const auto actionsForClip = this->_actionsByClip[ clipUuid ];
+    std::shared_ptr<AnimationAction> prototypeAction;
+
+    if ( blendMode == AnimationBlendMode::Unknown ) {
+
+        if ( clipObject ) {
+
+            blendMode = clipObject->blendMode;
+
+        } else {
+
+            blendMode = AnimationBlendMode::NormalAnimationBlendMode;
+
+        }
+
+    }
+
+    if ( actionsForClip ) {
+
+        const auto existingAction = actionsForClip->actionByRoot[ rootUuid ];
+
+        if ( existingAction && existingAction->blendMode == blendMode ) {
+            return existingAction;
+        }
+
+        // we know the clip, so we don't have to parse all
+        // the bindings again but can just copy
+        prototypeAction = actionsForClip->knownActions[ 0 ];
+
+        // also, take the clip from the prototype action
+        if (!clipObject)
+            clipObject = prototypeAction->_clip;
+
+    }
+
+    // clip must be known when specified via string
+    if ( !clipObject ) return nullptr;
+
+    // allocate all resources required to run it
+    auto newAction = std::make_shared<AnimationAction>( std::shared_ptr<AnimationMixer>(this), clipObject, optionalRoot, blendMode );
+
+    //this->_bindAction( newAction, prototypeAction );
+
+    // and make the action known to the memory manager
+    this->_addInactiveAction( newAction, clipUuid, rootUuid );
+
+    return newAction;
+//    return nullptr;
+
+}
+
+void _bindAction( std::shared_ptr<AnimationClip> clip, std::shared_ptr<AnimationAction> prototypeAction ) {
+
+//    const root = action._localRoot || this._root,
+//            tracks = action._clip.tracks,
+//            nTracks = tracks.length,
+//            bindings = action._propertyBindings,
+//            interpolants = action._interpolants,
+//            rootUuid = root.uuid,
+//            bindingsByRoot = this._bindingsByRootAndName;
 //
-//    auto rootUuid = root->uuid;
+//    let bindingsByName = bindingsByRoot[ rootUuid ];
 //
-//    auto clipObject = clip;
+//    if ( bindingsByName === undefined ) {
 //
-//    const auto clipUuid = (clipObject != nullptr) ? clipObject->uuid : nullptr;
-//
-//    const auto actionsForClip = this->_actionsByClip[ clipUuid ];
-//    let prototypeAction = null;
-//
-//    if ( blendMode == AnimationBlendMode::Unknown ) {
-//
-//        if ( clipObject ) {
-//
-//            blendMode = clipObject->blendMode;
-//
-//        } else {
-//
-//            blendMode = AnimationBlendMode::NormalAnimationBlendMode;
-//
-//        }
+//    bindingsByName = {};
+//    bindingsByRoot[ rootUuid ] = bindingsByName;
 //
 //    }
 //
-//    if ( actionsForClip ) {
+//    for ( let i = 0; i !== nTracks; ++ i ) {
 //
-//        const auto existingAction = actionsForClip.actionByRoot[ rootUuid ];
+//    const track = tracks[ i ],
+//            trackName = track.name;
 //
-//        if ( existingAction && existingAction.blendMode == blendMode ) {
-//            return existingAction;
-//        }
+//    let binding = bindingsByName[ trackName ];
 //
-//        // we know the clip, so we don't have to parse all
-//        // the bindings again but can just copy
-//        prototypeAction = actionsForClip.knownActions[ 0 ];
+//    if ( binding !== undefined ) {
 //
-//        // also, take the clip from the prototype action
-//        if (!clipObject)
-//            clipObject = prototypeAction._clip;
+//    ++ binding.referenceCount;
+//    bindings[ i ] = binding;
+//
+//    } else {
+//
+//    binding = bindings[ i ];
+//
+//    if ( binding !== undefined ) {
+//
+//    // existing binding, make sure the cache knows
+//
+//    if ( binding._cacheIndex === null ) {
+//
+//    ++ binding.referenceCount;
+//    this._addInactiveBinding( binding, rootUuid, trackName );
 //
 //    }
 //
-//    // clip must be known when specified via string
-//    if ( !clipObject ) return nullptr;
+//    continue;
+
+//}
 //
-//    // allocate all resources required to run it
-//    auto newAction = AnimationAction( this, clipObject, optionalRoot, blendMode );
+//const path = prototypeAction && prototypeAction.
+//        _propertyBindings[ i ].binding.parsedPath;
 //
-//    this->_bindAction( newAction, prototypeAction );
+//binding = new PropertyMixer(
+//        PropertyBinding.create( root, trackName, path ),
+//        track.ValueTypeName, track.getValueSize() );
 //
-//    // and make the action known to the memory manager
-//    this->_addInactiveAction( newAction, clipUuid, rootUuid );
+//++ binding.referenceCount;
+//this._addInactiveBinding( binding, rootUuid, trackName );
 //
-//    return newAction;
-    return nullptr;
+//bindings[ i ] = binding;
+//
+//}
+//
+//interpolants[ i ].resultBuffer = binding.buffer;
+//
+//}
 
 }
 

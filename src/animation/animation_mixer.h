@@ -15,7 +15,7 @@ class Interpolant;
 template<typename T> class PropertyMixer;
 struct AnimationStatus;
 struct ActionsForClip;
-class AnimationMixer {
+class AnimationMixer:public std::enable_shared_from_this<AnimationMixer> {
     Object3D::sptr _root;
     size_t _accuIndex;
     float time;
