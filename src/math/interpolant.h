@@ -40,13 +40,13 @@ class Interpolant {
 protected:
     size_t _cachedIndex;
 
-    std::vector<float> resultBuffer;
     std::vector<float> sampleValues;
     size_t valueSize;
     InterpolantSetting defaultSettings_;
     InterpolantSetting settings;
 public:
     std::vector<float> parameterPositions;
+    std::vector<float> resultBuffer;
 
     Interpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),resultBuffer(resultBuffer){
         if(resultBuffer.empty())
@@ -206,10 +206,12 @@ public:
         //throw new Error( 'call to abstract method' );
         std::cerr << "call to abstract method" << std::endl;
         // implementations shall return this.resultBuffer
+        return *this;
     }
 
     virtual Interpolant& intervalChanged_( size_t i1,float t0,float t1/* i1, t0, t1 */ ) {
         // empty
+        return *this;
     }
 
 protected:
