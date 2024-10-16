@@ -32,8 +32,6 @@ private:
     std::shared_ptr<Interpolant>  _timeScaleInterpolant;
     std::shared_ptr<Interpolant> _weightInterpolant = nullptr;
 
-    std::vector<std::shared_ptr<Interpolant>> _interpolants;
-
     // global mixer time when the action is to be started
     // it's set back to 'null' upon start of the action
     float _startTime = 0;
@@ -56,11 +54,13 @@ private:
 public:
     using sptr = std::shared_ptr<AnimationAction>;
     std::shared_ptr<AnimationMixer> _mixer;
+    std::vector<std::shared_ptr<Interpolant>> _interpolants;
     AnimationClip::sptr _clip;
     Object3D::sptr _localRoot;
     AnimationBlendMode blendMode;
     size_t _cacheIndex; // for the memory manager
     size_t _byClipCacheIndex; // for the memory manager
+
 
     // inside: PropertyMixer (managed by the mixer)
     std::vector<std::shared_ptr<PropertyMixer<float>>> _propertyBindings;

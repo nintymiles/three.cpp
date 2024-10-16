@@ -79,73 +79,68 @@ std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<Anim
 
 }
 
-void _bindAction( std::shared_ptr<AnimationClip> clip, std::shared_ptr<AnimationAction> prototypeAction ) {
+void AnimationMixer::_bindAction( std::shared_ptr<AnimationAction> action, std::shared_ptr<AnimationAction> prototypeAction ) {
 
-//    const root = action._localRoot || this._root,
-//            tracks = action._clip.tracks,
-//            nTracks = tracks.length,
-//            bindings = action._propertyBindings,
-//            interpolants = action._interpolants,
-//            rootUuid = root.uuid,
-//            bindingsByRoot = this._bindingsByRootAndName;
-//
-//    let bindingsByName = bindingsByRoot[ rootUuid ];
-//
-//    if ( bindingsByName === undefined ) {
-//
-//    bindingsByName = {};
-//    bindingsByRoot[ rootUuid ] = bindingsByName;
-//
-//    }
-//
-//    for ( let i = 0; i !== nTracks; ++ i ) {
-//
-//    const track = tracks[ i ],
-//            trackName = track.name;
-//
-//    let binding = bindingsByName[ trackName ];
-//
-//    if ( binding !== undefined ) {
-//
-//    ++ binding.referenceCount;
-//    bindings[ i ] = binding;
-//
-//    } else {
-//
-//    binding = bindings[ i ];
-//
-//    if ( binding !== undefined ) {
-//
-//    // existing binding, make sure the cache knows
-//
-//    if ( binding._cacheIndex === null ) {
-//
-//    ++ binding.referenceCount;
-//    this._addInactiveBinding( binding, rootUuid, trackName );
-//
-//    }
-//
-//    continue;
+    Object3D::sptr root;
+    if(action->_localRoot)
+        root = action->_localRoot;
+    else
+        root = this->_root;
 
-//}
-//
-//const path = prototypeAction && prototypeAction.
-//        _propertyBindings[ i ].binding.parsedPath;
-//
-//binding = new PropertyMixer(
-//        PropertyBinding.create( root, trackName, path ),
-//        track.ValueTypeName, track.getValueSize() );
-//
-//++ binding.referenceCount;
-//this._addInactiveBinding( binding, rootUuid, trackName );
-//
-//bindings[ i ] = binding;
-//
-//}
-//
-//interpolants[ i ].resultBuffer = binding.buffer;
-//
-//}
+
+    auto &tracks = action->_clip->tracks;
+    auto nTracks = tracks.size();
+    auto &bindings = action->_propertyBindings;
+    auto &interpolants = action->_interpolants;
+    auto rootUuid = root->uuid;
+    auto bindingsByRoot = this->_bindingsByRootAndName;
+
+    //todo: fixit, supports binding by name and uuid?
+    auto &bindingsByName = bindingsByRoot[ rootUuid.str() ];
+
+    //todo:fix it
+    if ( bindingsByName.size() == 0 ) {
+        bindingsByName = {};
+        bindingsByRoot[ rootUuid.str() ] = bindingsByName;
+    }
+
+    for ( size_t i = 0; i != nTracks; ++ i ) {
+        auto track = tracks[ i ];
+        auto trackName = track->getName();
+
+        auto binding = bindingsByName[trackName];
+
+        if ( binding != nullptr ) {
+            ++ binding->referenceCount;
+            bindings[ i ] = binding;
+        }else {
+            binding = bindings[ i ];
+
+            if ( binding != nullptr ) {
+                // existing binding, make sure the cache knows
+                //if ( binding->_cacheIndex == null ) {
+                ++ binding->referenceCount;
+                this->_addInactiveBinding( binding, rootUuid, trackName );
+                //}
+                continue;
+            }
+
+            auto path = prototypeAction && prototypeAction->
+                    _propertyBindings[ i ]->binding->parsedPath;
+
+//            binding = new PropertyMixer(
+//                    PropertyBinding.create( root, trackName, path ),
+//                    track.ValueTypeName, track.getValueSize() );
+            binding = std::make_shared<PropertyMixer<float>>(PropertyBinding::create(root,trackName),track->getValueSize());
+
+            ++ binding->referenceCount;
+            this->_addInactiveBinding( binding, rootUuid, trackName );
+
+            bindings[ i ] = binding;
+        }
+
+        interpolants[ i ]->resultBuffer = binding->buffer;
+    }
 
 }
 
@@ -259,6 +254,30 @@ AnimationMixer& AnimationMixer::_removeInactiveAction( std::shared_ptr<Animation
     return *this;
 }
 
+// Memory management for PropertyMixer objects
+
+AnimationMixer& AnimationMixer::_addInactiveBinding( std::shared_ptr<PropertyMixer<float>> binding, sole::uuid rootUuid, std::string trackName ){
+
+    auto &bindingsByRoot = this->_bindingsByRootAndName;
+    auto &bindings = this->_bindings;
+
+    auto &bindingByName = bindingsByRoot[ rootUuid.str() ];
+
+    if ( bindingByName.size() == 0 ) {
+        bindingByName = {};
+        bindingsByRoot[ rootUuid.str() ] = bindingByName;
+    }
+
+    bindingByName[ trackName ] = binding;
+
+    //javascript语法规定灵活，执行时要求不严格，一些不存在的属性并不影响程序的执行。
+    //binding->_cacheIndex = bindings.size();
+    bindings.push_back( binding );
+
+    return *this;
+}
+
+
 AnimationMixer& AnimationMixer::_removeInactiveBindingsForAction( std::shared_ptr<AnimationAction> action ) {
 
     auto bindings = action->_propertyBindings;
@@ -300,6 +319,8 @@ AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<Property
     return *this;
 
 }
+
+
 
 AnimationMixer& AnimationMixer::update(float deltaTime) {
     auto deltaTimeScale = deltaTime * this->timeScale;

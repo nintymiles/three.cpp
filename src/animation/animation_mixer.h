@@ -24,9 +24,9 @@ class AnimationMixer:public std::enable_shared_from_this<AnimationMixer> {
     std::vector<std::shared_ptr<AnimationAction>> _actions;
     size_t _nActiveActions;
     std::map<sole::uuid,std::shared_ptr<ActionsForClip>> _actionsByClip;
-    std::vector<std::shared_ptr<AnimationAction>> _bindings;
+    std::vector<std::shared_ptr<PropertyMixer<float>>> _bindings;
     size_t _nActiveBindings;
-    std::map<std::string,std::shared_ptr<PropertyMixer<float>>> _bindingsByRootAndName;
+    std::map< std::string,std::map<std::string,std::shared_ptr<PropertyMixer<float>>>> _bindingsByRootAndName;
     std::vector<std::shared_ptr<Interpolant>> _controlInterpolants;
     size_t _nActiveControlInterpolants;
 
@@ -51,8 +51,12 @@ public:
     AnimationMixer& _addInactiveAction( std::shared_ptr<AnimationAction> action, sole::uuid clipUuid, sole::uuid rootUuid );
 
     AnimationMixer& _removeInactiveAction( std::shared_ptr<AnimationAction> action );
+
+    AnimationMixer& _addInactiveBinding( std::shared_ptr<PropertyMixer<float>> binding, sole::uuid rootUuid, std::string trackName );
     AnimationMixer& _removeInactiveBindingsForAction( std::shared_ptr<AnimationAction> action );
     AnimationMixer& _removeInactiveBinding( std::shared_ptr<PropertyMixer<float>> binding );
+
+    void _bindAction( std::shared_ptr<AnimationAction> action, std::shared_ptr<AnimationAction> prototypeAction );
 
 public:
     std::shared_ptr<AnimationAction> clipAction(

@@ -202,10 +202,10 @@ public:
     static std::string sanitizeNodeName( std::string name );
 
 
+    std::shared_ptr<ParsedPath> parsedPath;
 private:
     Object3D::sptr rootNode;
     std::string path;
-    std::shared_ptr<ParsedPath> parsedPath;
 
     Object3D::sptr node;
 

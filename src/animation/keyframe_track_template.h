@@ -106,6 +106,10 @@ public:
         return this->createInterpolantObj.getInterpolation();
     }
 
+    std::string getName(){
+        return name;
+    }
+
     int getValueSize(){
         return this->values.size() / this->times.size();
     }

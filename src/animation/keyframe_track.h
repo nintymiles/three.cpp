@@ -51,6 +51,7 @@ class KeyframeTrack{
 public:
     //using sptr = std::shared_ptr<KeyframeTrack>;
 
+    virtual std::string getName() = 0;
     virtual int getValueSize() = 0;
     virtual std::vector<float> getTimes() = 0;
 
