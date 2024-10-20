@@ -106,6 +106,31 @@ public:
         onChange.emitSignal(*this);
     }
 
+    float& operator[] (int index){
+//        switch (index) {
+//            case 0:
+//                return _x;
+//            case 1:
+//                return _y;
+//            case 2:
+//                return _z;
+//            case 3:
+//                return _w;
+//            default:
+//                assert("index over flow");
+//
+//        }
+        return elements[index];
+    }
+
+    const float& operator[] (int index) const{
+        return operator[](index);
+    }
+
+    size_t size(){
+        return sizeof(elements) / sizeof(elements[0]);
+    }
+
     Quaternion& setFromEuler(const Euler& euler, bool update = false);
 
     Quaternion& setFromAxisAngle(const Vector3& axis, float angle);

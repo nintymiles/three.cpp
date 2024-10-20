@@ -15,7 +15,6 @@ std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<Anim
     // return an action for a clip optionally using a custom root target
     // object (this method allocates a lot of dynamic memory in case a
     // previously unknown clip/root combination is specified)
-
     Object3D::sptr root;
     if(optionalRoot)
         root = optionalRoot;
@@ -69,6 +68,7 @@ std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<Anim
     // allocate all resources required to run it
     auto newAction = std::make_shared<AnimationAction>( std::shared_ptr<AnimationMixer>(this), clipObject, optionalRoot, blendMode );
 
+    //todo: fix this
     //this->_bindAction( newAction, prototypeAction );
 
     // and make the action known to the memory manager
@@ -328,24 +328,24 @@ AnimationMixer& AnimationMixer::update(float deltaTime) {
     const auto& actions = this->_actions;
     const auto& nActions = this->_nActiveActions;
 
-    auto time = this->time += deltaTime;
-    auto timeDirection = sign( deltaTime );
+    auto time = this->time += deltaTimeScale;
+    auto timeDirection = sign( deltaTimeScale );
     auto accuIndex = this->_accuIndex ^= 1;
 
     // run active actions
     for ( size_t i = 0; i != nActions; ++ i ) {
         auto& action = actions[ i ];
 
-        action->_update( time, deltaTime, timeDirection, accuIndex );
+        action->_update( time, deltaTimeScale, timeDirection, accuIndex );
     }
 
     // update scene graph
-//    const bindings = this._bindings,
-//            nBindings = this._nActiveBindings;
+    auto& bindings = this->_bindings;
+    auto nBindings = this->_nActiveBindings;
 
-//    for ( size_t i = 0; i != this->nBindings; ++ i ) {
-//        bindings[ i ].apply( accuIndex );
-//    }
+    for ( size_t i = 0; i != nBindings; ++ i ) {
+        bindings[ i ]->apply( accuIndex );
+    }
 
     return *this;
 

@@ -10,6 +10,7 @@
 #include <string>
 #include <regex>
 #include <functional>
+#include <any>
 
 #include "common_utils.h"
 
@@ -83,6 +84,7 @@ class Composite {
 // become no-ops.
 class PropertyBinding {
 private:
+    std::any resolvedProperty;
 
 
 public:
@@ -122,14 +124,32 @@ public:
     }
 
     std::vector<float> getValue(std::vector<float> bufferArray, int offset){
-        auto& source = this->node;
+        auto& source = this->resolvedProperty;
 
-//        bufferArray.resize(source->);
-//        for ( size_t i = 0, n = source.size(); i != n; ++ i ) {
-//            bufferArray[ offset ++ ] = source[ i ];
-//        }
+        if(source.has_value()){
+            if(source.type() == typeid(Quaternion)) {
+                auto quat = std::any_cast<Quaternion>(source);
+                bufferArray.resize(quat.size());
+                for ( size_t i = 0, n = quat.size(); i != n; ++ i ) {
+                    bufferArray[ offset ++ ] = quat[ i ];
+                }
+            }
+        }
+
     }
-    void setValue(std::vector<float> sourceArray, int offset);
+    void setValue(std::vector<float> bufferArray, int offset){
+        auto dest = this->resolvedProperty;
+
+        if(dest.has_value()) {
+            if(dest.type() == typeid(Quaternion)) {
+                auto quat = std::any_cast<Quaternion>(dest);
+                for (size_t i = 0, n = quat.length(); i != n; ++i) {
+                    quat[i] = bufferArray[offset++];
+                    //quat.setX(bufferArray[offset++]);
+                }
+            }
+        }
+    }
     void bind();
     void unbind();
 

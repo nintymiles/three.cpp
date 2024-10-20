@@ -80,12 +80,12 @@ public:
 //        gltfGroup->position.setY(-100);
 //        gltfGroup->rotation.y(-math_number::PI/2);
 
-        GLTFModel gltfModel = gltfLoader.loadModel(dir + relPath +"Duck.gltf");
+        GLTFModel gltfModel = gltfLoader.loadModel(dir + relPath +"Flamingo.glb");
 
         scene->add(gltfModel.scene);
 
         mixer = AnimationMixer(gltfModel.scene);
-//        mixer.clipAction(gltfModel.animations[0],nullptr,AnimationBlendMode::NormalAnimationBlendMode);
+        mixer.clipAction(gltfModel.animations[0],nullptr,AnimationBlendMode::NormalAnimationBlendMode);
 
 //        BoxGeometry::sptr box = BoxGeometry::create( 1, 1, 1, 1, 1, 1 );
 //        scene->add(Mesh::create(box,MeshBasicMaterial::create(0xff0000)));

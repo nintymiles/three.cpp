@@ -99,7 +99,7 @@ GLTFModel GLTFLoader::loadModel(const std::string& path){
         group->add(parseNode(model,gScene.nodes[i]));
     }
 
-//    buildAnimations(model,group);
+    buildAnimations(model,group);
 
     gltfModel.scene = group;
     gltfModel.animations = pAnimations;
