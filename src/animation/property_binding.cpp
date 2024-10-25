@@ -101,7 +101,7 @@ PropertyBinding::PropertyBinding( Object3D::sptr rootNode, std::string path, std
     if(!parsedPath)
         this->parsedPath = parseTrackName(path);
 
-    auto foundNode = findNode(rootNode,parsedPath->nodeName);
+    auto foundNode = findNode(rootNode,parsedPath?parsedPath->nodeName:"");
     this->node = foundNode?foundNode:rootNode;
 
 }

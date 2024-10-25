@@ -872,7 +872,13 @@ void GLTFLoader::buildAnimations(const tinygltf::Model &model,Object3D::sptr roo
             if(node == nullptr) continue;
             node->updateMatrix();
 
-            auto targetName = node->name != "" ? node->name : node->uuid.str();
+            auto targetName = node->uuid.str(); //node->name != "" ? node->name : node->uuid.str();
+
+            std::cout <<  "||Node->UUID = " << node->uuid.str() << std::endl;
+            if(node->children.size()>0){
+                for(auto nchild:node->children)
+                    std::cout <<  "||Node->Child-UUID = " << nchild->uuid.str() << std::endl;
+            }
 
             std::vector<std::string> targetNames{};
 

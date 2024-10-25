@@ -69,7 +69,7 @@ std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<Anim
     auto newAction = std::make_shared<AnimationAction>( std::shared_ptr<AnimationMixer>(this), clipObject, optionalRoot, blendMode );
 
     //todo: fix this
-    //this->_bindAction( newAction, prototypeAction );
+    this->_bindAction( newAction, prototypeAction );
 
     // and make the action known to the memory manager
     this->_addInactiveAction( newAction, clipUuid, rootUuid );
@@ -91,18 +91,20 @@ void AnimationMixer::_bindAction( std::shared_ptr<AnimationAction> action, std::
     auto &tracks = action->_clip->tracks;
     auto nTracks = tracks.size();
     auto &bindings = action->_propertyBindings;
+    bindings.resize(nTracks);
     auto &interpolants = action->_interpolants;
     auto rootUuid = root->uuid;
-    auto bindingsByRoot = this->_bindingsByRootAndName;
+    auto &bindingsByRoot = this->_bindingsByRootAndName;
 
     //todo: fixit, supports binding by name and uuid?
     auto &bindingsByName = bindingsByRoot[ rootUuid.str() ];
+    std::cout << rootUuid.str() << "||" << rootUuid.str() << std::endl;
 
     //todo:fix it
-    if ( bindingsByName.size() == 0 ) {
-        bindingsByName = {};
-        bindingsByRoot[ rootUuid.str() ] = bindingsByName;
-    }
+//    if ( bindingsByName.size() == 0 ) {
+//        bindingsByName = {};
+    bindingsByRoot[ rootUuid.str() ] = bindingsByName;
+//    }
 
     for ( size_t i = 0; i != nTracks; ++ i ) {
         auto track = tracks[ i ];
