@@ -123,7 +123,7 @@ public:
         return std::make_shared<PropertyBinding>(rootNode,path,parsedPath);
     }
 
-    std::vector<float> getValue(std::vector<float> bufferArray, int offset){
+    std::vector<float> &getValue(std::vector<float> &bufferArray, int offset){
         auto& source = this->resolvedProperty;
 
         if(source.has_value()){
@@ -135,8 +135,9 @@ public:
                 }
             }
         }
-
+        return bufferArray;
     }
+
     void setValue(std::vector<float> bufferArray, int offset){
         auto dest = this->resolvedProperty;
 
@@ -155,7 +156,7 @@ public:
 
     static Object3D::sptr findNode( Object3D::sptr root, std::string nodeName ) {
 
-        if ( nodeName.empty() || nodeName == "" || nodeName == "." || std::stoi(nodeName) == - 1 || nodeName == root->name /**|| nodeName == root.uuid*/) {
+        if ( nodeName.empty() || nodeName == "" || nodeName == "." ||  nodeName == root->name /**|| nodeName == root.uuid*/) {
             return root;
         }
 
@@ -235,7 +236,7 @@ private:
 
             auto childNode = children[ i ];
 
-            if ( childNode->name == nodeName /*|| childNode->uuid == nodeName*/ ) {
+            if ( childNode->name == nodeName || childNode->uuid.str() == nodeName ) {
                 return childNode;
             }
 

@@ -179,6 +179,67 @@ bool AnimationMixer::_isActiveAction(AnimationAction &action) {
         return /**index >= 0  && **/index < this->_nActiveActions;
 }
 
+AnimationMixer& AnimationMixer::_activateAction( std::shared_ptr<AnimationAction> action ) {
+        if ( ! this->_isActiveAction( *action ) ) {
+
+            if ( action->_cacheIndex == -1 ) {
+
+                // this action has been forgotten by the cache, but the user
+                // appears to be still using it -> rebind
+
+                auto &rootUuid = ( action->_localRoot ) ? action->_localRoot->uuid : this->_root->uuid;
+                auto &clipUuid = action->_clip->uuid;
+                auto &actionsForClip = this->_actionsByClip[ clipUuid ];
+
+                this->_bindAction( action,
+                                  actionsForClip?actionsForClip->knownActions[ 0 ]: nullptr );
+
+                this->_addInactiveAction( action, clipUuid, rootUuid );
+
+            }
+
+            auto &bindings = action->_propertyBindings;
+
+            // increment reference counts / sort out state
+            for ( size_t i = 0, n = bindings.size(); i != n; ++ i ) {
+                auto& binding = bindings[ i ];
+
+                if ( binding->useCount ++ == 0 ) {
+                    this->_lendBinding( binding );
+                    binding->saveOriginalState();
+
+                }
+
+            }
+
+            this->_lendAction( action );
+
+        }
+        return *this;
+}
+
+AnimationMixer& AnimationMixer::_lendAction( std::shared_ptr<AnimationAction> action ) {
+
+        // [ active actions |  inactive actions  ]
+        // [  active actions >| inactive actions ]
+        //                 s        a
+        //                  <-swap->
+        //                 a        s
+        auto &actions = this->_actions;
+        auto prevIndex = action->_cacheIndex;
+
+        auto lastActiveIndex = this->_nActiveActions ++;
+        auto &firstInactiveAction = actions[ lastActiveIndex ];
+
+        action->_cacheIndex = lastActiveIndex;
+        actions[ lastActiveIndex ] = action;
+
+        firstInactiveAction->_cacheIndex = prevIndex;
+        actions[ prevIndex ] = firstInactiveAction;
+
+        return *this;
+}
+
 AnimationMixer& AnimationMixer::_addInactiveAction( std::shared_ptr<AnimationAction> action, sole::uuid clipUuid, sole::uuid rootUuid ) {
 
     auto& actions = this->_actions;
@@ -273,7 +334,7 @@ AnimationMixer& AnimationMixer::_addInactiveBinding( std::shared_ptr<PropertyMix
     bindingByName[ trackName ] = binding;
 
     //javascript语法规定灵活，执行时要求不严格，一些不存在的属性并不影响程序的执行。
-    //binding->_cacheIndex = bindings.size();
+    binding->_cacheIndex = bindings.size();
     bindings.push_back( binding );
 
     return *this;
@@ -320,6 +381,24 @@ AnimationMixer& AnimationMixer::_removeInactiveBinding( std::shared_ptr<Property
 
     return *this;
 
+}
+
+AnimationMixer& AnimationMixer::_lendBinding( std::shared_ptr<PropertyMixer<float>> binding ) {
+
+        auto &bindings = this->_bindings;
+        auto prevIndex = binding->_cacheIndex;
+
+        auto lastActiveIndex = this->_nActiveBindings ++;
+
+        auto &firstInactiveBinding = bindings[ lastActiveIndex ];
+
+        binding->_cacheIndex = lastActiveIndex;
+        bindings[ lastActiveIndex ] = binding;
+
+        firstInactiveBinding->_cacheIndex = prevIndex;
+        bindings[ prevIndex ] = firstInactiveBinding;
+
+        return *this;
 }
 
 

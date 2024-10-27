@@ -10,6 +10,8 @@
 #include "constants.h"
 #include "interpolant.h"
 
+#include <memory>
+
 struct InterpolantSettings{
     InterpolateParam endingStart = InterpolateParam::ZeroCurvatureEnding;
     InterpolateParam endingEnd = InterpolateParam::ZeroCurvatureEnding;
@@ -17,7 +19,7 @@ struct InterpolantSettings{
 
 class AnimationMixer;
 template<typename T> class PropertyMixer;
-class AnimationAction {
+class AnimationAction:public std::enable_shared_from_this<AnimationAction>{
 private:
 
     LoopMode loop;
@@ -95,16 +97,31 @@ public:
     // State & Scheduling
     AnimationAction& play();
 
-    AnimationAction& stop();
+    AnimationAction& stop(){
+        //todo:fix this
+        return *this;
+    }
 
-    AnimationAction& reset();
+    AnimationAction& reset(){
+        //todo:fix this
+        return *this;
+    }
 
-    bool isRunning();
+    bool isRunning(){
+        //todo:fixthis
+        return true;
+    }
 
     // return true when play has been called
-    bool isScheduled();
+    bool isScheduled(){
+        //todo:fixthis
+        return false;
+    }
 
-    AnimationAction& startAt( float time );
+    AnimationAction& startAt( float time ){
+        //todo:fix this
+        return *this;
+    }
 
     AnimationAction& setLoop( LoopMode mode, int repetitions ) {
         this->loop = mode;
@@ -112,23 +129,66 @@ public:
 
         return *this;
     }
-    AnimationAction& setEffectiveWeight(float weight);
-    float getEffectiveWeight();
-    AnimationAction& fadeIn(float duration);
-    AnimationAction& fadeOut(float duration);
-    AnimationAction& crossFadeFrom(AnimationAction::sptr fadeOutAction, float duration, bool warp);
-    AnimationAction& crossFadeTo(AnimationAction::sptr fadeInAction, float duration, bool warp);
-    AnimationAction& stopFading(){return *this;}
-    AnimationAction& setEffectiveTimeScale(float timeScale);
-    float getEffectiveTimeScale();
-    AnimationAction& setDuration(float duration);
-    AnimationAction& syncWith(AnimationAction::sptr action);
-    AnimationAction& halt(float duration);
-    AnimationAction& warp(float statTimeScale,float endTimeScale,float duration);
-    AnimationAction& stopWarping(){return *this;}
-    std::shared_ptr<AnimationMixer> getMixer();
-    std::shared_ptr<AnimationClip> getClip();
-    Object3D::sptr getRoot();
+    AnimationAction& setEffectiveWeight(float weight){
+        //todo:fix this
+        return *this;
+    }
+    //todo:fix this
+    //float getEffectiveWeight();
+
+    AnimationAction& fadeIn(float duration){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& fadeOut(float duration){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& crossFadeFrom(AnimationAction::sptr fadeOutAction, float duration, bool warp){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& crossFadeTo(AnimationAction::sptr fadeInAction, float duration, bool warp){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& stopFading(){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& setEffectiveTimeScale(float timeScale){
+        //todo:fix this
+        return *this;
+    }
+
+    //todo: fix this
+//    float getEffectiveTimeScale();
+
+    AnimationAction& setDuration(float duration){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& syncWith(AnimationAction::sptr action){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& halt(float duration){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& warp(float statTimeScale,float endTimeScale,float duration){
+        //todo:fix this
+        return *this;
+    }
+    AnimationAction& stopWarping(){
+        //todo:fix this
+        return *this;
+    }
+
+    //todo:fix this
+//    std::shared_ptr<AnimationMixer> getMixer();
+//    std::shared_ptr<AnimationClip> getClip();
+//    Object3D::sptr getRoot();
 
 
     // Interna
@@ -185,6 +245,7 @@ public:
 
                     for ( size_t j = 0, m = interpolants.size(); j != m; ++ j ) {
                         interpolants[ j ]->evaluate( clipTime );
+                        //todo:fix this
                         //propertyMixers[ j ].accumulate( accuIndex, weight );
 
                     }
@@ -435,6 +496,8 @@ public:
     AnimationAction& _scheduleFading( float duration, float weightNow, float weightThen ) {
 
         const auto mixer = this->_mixer;
+
+        //todo: fix this
         //const now = mixer->time;
 //        let interpolant = this._weightInterpolant;
 //

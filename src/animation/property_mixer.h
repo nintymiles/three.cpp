@@ -23,6 +23,7 @@ public:
     std::vector<T> buffer;
     size_t _origIndex,_addIndex;
     size_t useCount,referenceCount;
+    size_t _cacheIndex;
     float cumulativeWeight,cumulativeWeightAdditive;
 
 private:

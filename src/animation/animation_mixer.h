@@ -48,13 +48,19 @@ public:
     // 检查是否有排定的action index，并且索引小于激活的action数目，用以判断是否正在播放中
     bool _isActiveAction( AnimationAction& action );
 
+    AnimationMixer& _activateAction( std::shared_ptr<AnimationAction> action );
+
     AnimationMixer& _addInactiveAction( std::shared_ptr<AnimationAction> action, sole::uuid clipUuid, sole::uuid rootUuid );
 
     AnimationMixer& _removeInactiveAction( std::shared_ptr<AnimationAction> action );
 
+    AnimationMixer& _lendAction( std::shared_ptr<AnimationAction> action );
+
     AnimationMixer& _addInactiveBinding( std::shared_ptr<PropertyMixer<float>> binding, sole::uuid rootUuid, std::string trackName );
     AnimationMixer& _removeInactiveBindingsForAction( std::shared_ptr<AnimationAction> action );
     AnimationMixer& _removeInactiveBinding( std::shared_ptr<PropertyMixer<float>> binding );
+
+    AnimationMixer& _lendBinding( std::shared_ptr<PropertyMixer<float>> binding );
 
     void _bindAction( std::shared_ptr<AnimationAction> action, std::shared_ptr<AnimationAction> prototypeAction );
 
