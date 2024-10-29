@@ -38,10 +38,10 @@ struct InterpolantSetting{
 
 class Interpolant {
 protected:
-    size_t _cachedIndex;
+    size_t _cachedIndex = 0;
 
     std::vector<float> sampleValues;
-    size_t valueSize;
+    size_t valueSize = 0;
     InterpolantSetting defaultSettings_;
     InterpolantSetting settings;
 public:
@@ -59,20 +59,24 @@ public:
 
         auto& pp = this->parameterPositions;
         auto i1 = this->_cachedIndex;
-        auto t1 = pp[ i1 ],t0 = pp[ i1 - 1 ];
+        size_t i0 = (i1<=0)?0:(i1-1);
+        auto t1 = pp[ i1 ],t0 = pp[ i0 ];
 
-        auto validate_interval = [&](){
+        //auto validate_interval = [&](){
+        {
+            //auto seek = [&](){
+            {
+                size_t right = 0;
 
-            auto seek = [&](){
-                size_t right;
-
-                auto linear_scan = [&](){
+                //auto linear_scan = [&](){
+                {
 
                     //- See http://jsperf.com/comparison-to-undefined/3
                     //- slower code:
                     //-
                     //- 				if ( t >= t1 || t1 === undefined ) {
-                    auto forward_scan = [&](){
+                    //auto forward_scan = [&](){
+                    {
                         if ( ! ( t < t1 ) ) {
 
                             for (auto giveUpAt = i1 + 2;;) {
@@ -83,7 +87,7 @@ public:
                                     // after end
                                     i1 = pp.size();
                                     this->_cachedIndex = i1;
-                                    return this->copySampleValue_(i1 - 1);
+                                    this->copySampleValue_((i1<=0)?0:(i1-1));
                                 }
 
                                 if (i1 == giveUpAt) break; // this loop
@@ -100,11 +104,11 @@ public:
 
                             // prepare binary search on the right side of the index
                             right = pp.size();
-                            return std::vector<float>{};
+                            return *this;//std::vector<float>{};
                             //linear_scan;
                         }
-                    };
-                    forward_scan();
+                    }
+                    //forward_scan();
 
                     //- slower code:
                     //-	if ( t < t0 || t0 === undefined ) {
@@ -126,7 +130,7 @@ public:
 
                             // before start
                             this->_cachedIndex = 0;
-                            return this->copySampleValue_( 0 );
+                            this->copySampleValue_( 0 );
 
                         }
 
@@ -146,15 +150,15 @@ public:
                     right = i1;
                     i1 = 0;
                     //break linear_scan;
-                    return std::vector<float>();
+                    return *this;//std::vector<float>();
                 }
 
                 // the interval is valid
                 //break validate_interval;
-                return std::vector<float>();
+                //return *this;//std::vector<float>();
 
-            }; // linear scan
-            linear_scan();
+            } // linear scan
+            //linear_scan();
 
             // binary search
             while ( i1 < right ) {
@@ -166,31 +170,34 @@ public:
                     i1 = mid + 1;
                 }
             }
-
+            //todo:fix it
+            if(i1>=pp.size()) i1 = pp.size()-1;
             t1 = pp[ i1 ];
             t0 = pp[ i1 - 1 ];
 
             // check boundary cases, again
             if ( t0 == 0 ) {
                 this->_cachedIndex = 0;
-                return this->copySampleValue_( 0 );
+                this->copySampleValue_( 0 );
+                return *this;
             }
 
             if ( t1 == 0 ) {
                 i1 = pp.size();
                 this->_cachedIndex = i1;
-                return this->copySampleValue_( i1 - 1 );
+                this->copySampleValue_( i1 - 1 );
+                return *this;
             }
 
-            }; // seek
-            seek();
+            } // seek
+            //seek();
 
             this->_cachedIndex = i1;
 
             this->intervalChanged_( i1, t0, t1 );
 
         }; // validate_interval
-        validate_interval();
+        //validate_interval();
 
         this->interpolate_( i1, t0, t, t1 );
 
