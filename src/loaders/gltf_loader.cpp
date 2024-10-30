@@ -40,6 +40,8 @@ namespace PATH_PROPERTIES{
 
 const std::map<std::string,Interpolate> INTERPOLATION = {{"CUBICSPLINE",Interpolate::Unknown},{"LINEAR",Interpolate::InterpolateLinear},{"STEP",Interpolate::InterpolateDiscrete}};
 
+const std::map<std::string,std::string> PATH_PROPERTIES_MAP = {{"scale","scale"},{"translation","position"},{"rotation","quaternion"},{"weights","morphTargetInfluences"}};
+
 }
 
 using namespace gltf_loaders;
@@ -872,7 +874,7 @@ void GLTFLoader::buildAnimations(const tinygltf::Model &model,Object3D::sptr roo
             if(node == nullptr) continue;
             node->updateMatrix();
 
-            auto targetName = node->uuid.str(); //node->name != "" ? node->name : node->uuid.str();
+            auto targetName = node->name != "" ? node->name : node->uuid.str();
 
             std::cout <<  "||Node->UUID = " << node->uuid.str() << std::endl;
             if(node->children.size()>0){
@@ -935,12 +937,13 @@ void GLTFLoader::buildAnimations(const tinygltf::Model &model,Object3D::sptr roo
 //                        break;
 //
 //                }
+                std::string trackName = targetNames[j] + "." + PATH_PROPERTIES_MAP.at(targetPath);
                 if(PATH_PROPERTIES::weights == targetPath){
-                    track = KeyframeTrackTemplate<float>::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
+                    track = KeyframeTrackTemplate<float>::create(trackName,inputSamplerData,outputSamplerData,interpolation);
                 }else if(PATH_PROPERTIES::rotation == targetPath){
-                    track = QuaternionKeyframeTrack::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
+                    track = QuaternionKeyframeTrack::create(trackName,inputSamplerData,outputSamplerData,interpolation);
                 }else{
-                    track = VectorKeyframeTrack::create(targetNames[j],inputSamplerData,outputSamplerData,interpolation);
+                    track = VectorKeyframeTrack::create(trackName,inputSamplerData,outputSamplerData,interpolation);
                 }
 
                 if(track!=nullptr)
