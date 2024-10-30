@@ -60,37 +60,7 @@ private:
         }
     }
 
-    // accumulate data in the 'incoming' region into 'accu<i>'
-    void accumulate( size_t accuIndex, float weight ) {
-        // note: happily accumulating nothing when weight = 0, the caller knows
-        // the weight and shouldn't have made the call in the first place
 
-        auto buffer = this->buffer;
-        auto stride = this->valueSize,
-                offset = accuIndex * stride + stride;
-
-        auto currentWeight = this->cumulativeWeight;
-
-        if ( currentWeight == 0 ) {
-            // accuN := incoming * weight
-            for ( size_t i = 0; i != stride; ++ i ) {
-
-                buffer[ offset + i ] = buffer[ i ];
-            }
-
-            currentWeight = weight;
-
-        } else {
-            // accuN := accuN + incoming * weight
-            currentWeight += weight;
-            auto mix = weight / currentWeight;
-            this->_mixBufferRegion( buffer, offset, 0, mix, stride );
-
-        }
-
-        this->cumulativeWeight = currentWeight;
-
-    }
 
 public:
     PropertyMixer(std::shared_ptr<PropertyBinding> binding,size_t valueSize):binding(binding),valueSize(valueSize) {
@@ -216,6 +186,38 @@ public:
                 break;
             }
         }
+    }
+
+    // accumulate data in the 'incoming' region into 'accu<i>'
+    void accumulate( size_t accuIndex, float weight ) {
+        // note: happily accumulating nothing when weight = 0, the caller knows
+        // the weight and shouldn't have made the call in the first place
+
+        auto buffer = this->buffer;
+        auto stride = this->valueSize,
+                offset = accuIndex * stride + stride;
+
+        auto currentWeight = this->cumulativeWeight;
+
+        if ( currentWeight == 0 ) {
+            // accuN := incoming * weight
+            for ( size_t i = 0; i != stride; ++ i ) {
+
+                buffer[ offset + i ] = buffer[ i ];
+            }
+
+            currentWeight = weight;
+
+        } else {
+            // accuN := accuN + incoming * weight
+            currentWeight += weight;
+            auto mix = weight / currentWeight;
+            this->_mixBufferRegion( buffer, offset, 0, mix, stride );
+
+        }
+
+        this->cumulativeWeight = currentWeight;
+
     }
 
     // remember the state of the bound property and copy it to both accus

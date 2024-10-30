@@ -17,9 +17,9 @@ struct AnimationStatus;
 struct ActionsForClip;
 class AnimationMixer:public std::enable_shared_from_this<AnimationMixer> {
     Object3D::sptr _root;
-    size_t _accuIndex;
-    float time;
-    float timeScale;
+    size_t _accuIndex = 0;
+    float time = 0;
+    float timeScale = 1.0;
 
     std::vector<std::shared_ptr<AnimationAction>> _actions;
     size_t _nActiveActions;
@@ -37,7 +37,7 @@ class AnimationMixer:public std::enable_shared_from_this<AnimationMixer> {
 public:
     AnimationMixer() = default;
 
-    AnimationMixer( Object3D::sptr root ):_root(root),_accuIndex(0),time(0),timeScale(0){
+    AnimationMixer( Object3D::sptr root ):_root(root),_accuIndex(0),time(0),timeScale(1.0){
         _initMemoryManager();
     }
 

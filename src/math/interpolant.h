@@ -120,7 +120,7 @@ private:
                     if (t < t0) break; //forward_scan;
 
                     // after end
-                    i1 = pp.size();
+                    i1 = pp.size()-1;
                     this->_cachedIndex = i1;
                     this->copySampleValue_((i1<=0)?0:(i1-1));
                 }
@@ -128,7 +128,8 @@ private:
                 if (i1 == giveUpAt) break; // this loop
 
                 t0 = t1;
-                t1 = pp[++i1];
+                ++i1;
+                t1 = pp[(i1>=pp.size())?pp.size()-1:i1];
 
                 if (t < t1) {
                     // we have arrived at the sought interval
@@ -256,26 +257,6 @@ private:
     //validate_interval();
 
 };
-
-
-//class Interpolant {
-//
-//    constructor( parameterPositions, sampleValues, sampleSize, resultBuffer ) {
-//
-//        this.parameterPositions = parameterPositions;
-//        this._cachedIndex = 0;
-//
-//        this.resultBuffer = resultBuffer !== undefined ?
-//                                             resultBuffer : new sampleValues.constructor( sampleSize );
-//        this.sampleValues = sampleValues;
-//        this.valueSize = sampleSize;
-//
-//        this.settings = null;
-//        this.DefaultSettings_ = {};
-//
-//    }
-
-
 
 
 #endif //THREE_CPP_INTERPOLANT_H
