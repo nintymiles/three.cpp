@@ -116,7 +116,7 @@ private:
 
             for (auto giveUpAt = i1 + 2;;) {
 
-                if (t1 == 0) {
+                if (t1 < 0) {
                     if (t < t0) break; //forward_scan;
 
                     // after end
@@ -133,7 +133,8 @@ private:
 
                 if (t < t1) {
                     // we have arrived at the sought interval
-                    break; //seek;
+                    //break; //seek;
+                    return true;
                 }
 
             }
@@ -141,7 +142,7 @@ private:
             // prepare binary search on the right side of the index
             right = pp.size();
             //return *this;//std::vector<float>{};
-            return true;
+            return false;
             //linear_scan;
         }
         return true;
@@ -151,7 +152,7 @@ private:
         auto& pp = this->parameterPositions;
         auto i1 = this->_cachedIndex;
 
-        if(forward_scan(t,t0,t1,right)){
+        if(!forward_scan(t,t0,t1,right)){
 
             //- slower code:
             //-	if ( t < t0 || t0 === undefined ) {
@@ -169,8 +170,7 @@ private:
                 // linear reverse scan
                 for (auto giveUpAt = i1 - 2;;) {
 
-                    if (t0 == 0) {
-
+                    if (t0 < 0) {
                         // before start
                         this->_cachedIndex = 0;
                         this->copySampleValue_(0);
@@ -193,9 +193,9 @@ private:
                 right = i1;
                 i1 = 0;
                 //break linear_scan;
-                return true;//std::vector<float>();
+                return false;//std::vector<float>();
             }
-            return true;
+            return false;
             // the interval is valid
             //break validate_interval;
             //return *this;//std::vector<float>();
@@ -209,7 +209,7 @@ private:
         auto i1 = this->_cachedIndex;
 
         size_t right = 0;
-        if(linear_scan(t,t0,t1,right)) {
+        if(!linear_scan(t,t0,t1,right)) {
 
             // binary search
             while (i1 < right) {
@@ -227,20 +227,20 @@ private:
             t0 = pp[i1 - 1];
 
             // check boundary cases, again
-            if (t0 == 0) {
+            if (t0 < 0) {
                 this->_cachedIndex = 0;
                 this->copySampleValue_(0);
                 return true;
             }
 
-            if (t1 == 0) {
+            if (t1 < 0) {
                 i1 = pp.size();
                 this->_cachedIndex = i1;
                 this->copySampleValue_(i1 - 1);
                 return true;
             }
         }
-        return true;
+        return false;
     } // seek
     //seek();
 
@@ -248,7 +248,7 @@ private:
         auto& pp = this->parameterPositions;
         auto i1 = this->_cachedIndex;
 
-        if(seek(t,t0,t1)) {
+        if(!seek(t,t0,t1)) {
             this->_cachedIndex = i1;
             this->intervalChanged_(i1, t0, t1);
         }
