@@ -22,22 +22,20 @@ public:
 
     InterpolantFactoryObject(const std::vector<float> times, std::vector<float> values,size_t valueSize,Interpolate interpolation)
             :times(times),values(values),sampleSize(valueSize),interpolation(interpolation){}
-    std::shared_ptr<Interpolant> operator()(std::vector<float> buffer) const{
-//        switch ( interpolation ) {
-//            case Interpolate::InterpolateDiscrete:
-//                return std::make_shared<LinearInterpolant>(times,values,getValueSize(),result);
-//                break;
-//            case Interpolate::InterpolateLinear:
-//                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodLinear;
-//                break;
-//            case Interpolate::InterpolateSmooth:
-//                factoryMethod = &KeyframeTrackTemplate::InterpolantFactoryMethodSmooth;
-//                break;
-//
-//        }
 
-        //todo:fixit return concrete Interpolant?
-        return std::make_shared<LinearInterpolant>(times,values,sampleSize,buffer);
+    std::shared_ptr<Interpolant> operator()(std::vector<float> buffer) {
+        switch ( interpolation ) {
+            case Interpolate::InterpolateDiscrete:
+                return std::make_shared<LinearInterpolant>(times,values,sampleSize,buffer);
+                break;
+            case Interpolate::InterpolateLinear:
+                return std::make_shared<LinearInterpolant>(times,values,sampleSize,buffer);
+                break;
+            case Interpolate::InterpolateSmooth:
+                return std::make_shared<LinearInterpolant>(times,values,sampleSize,buffer);
+                break;
+
+        }
 
     }
 

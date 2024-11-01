@@ -48,7 +48,7 @@ public:
     std::vector<float> parameterPositions;
     std::vector<float> resultBuffer;
 
-    Interpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),resultBuffer(resultBuffer){
+    Interpolant(std::vector<float> parameterPositions,std::vector<float> sampleValues,size_t sampleSize,std::vector<float> resultBuffer):parameterPositions(parameterPositions),sampleValues(sampleValues),valueSize(sampleSize),resultBuffer(resultBuffer){
         if(resultBuffer.empty())
             resultBuffer = std::vector<float>(sampleSize);
 
@@ -62,7 +62,7 @@ public:
         size_t i0 = (i1<=0)?0:(i1-1);
         auto t1 = pp[ i1 ],t0 = pp[ i0 ];
 
-        if(validate_interval(t,t0,t1)) {
+        if(validate_interval(t,t0,t1,i1)) {
             this->interpolate_(i1, t0, t, t1);
         }
 
@@ -107,10 +107,10 @@ private:
     //-
     //- 				if ( t >= t1 || t1 === undefined ) {
     //auto forward_scan = [&](){
-    bool forward_scan(float t,float t0,float t1,size_t &right)
+    bool forward_scan(float &t,float &t0,float &t1,size_t &right,size_t &i1)
     {
         auto& pp = this->parameterPositions;
-        auto i1 = this->_cachedIndex;
+        //auto i1 = this->_cachedIndex;
 
         if ( ! ( t < t1 ) ) {
 
@@ -148,11 +148,11 @@ private:
         return true;
     } //forward_scan();
 
-    bool linear_scan(float t,float t0,float t1,size_t &right){
+    bool linear_scan(float &t,float &t0,float &t1,size_t &right,size_t &i1){
         auto& pp = this->parameterPositions;
-        auto i1 = this->_cachedIndex;
+        //auto i1 = this->_cachedIndex;
 
-        if(!forward_scan(t,t0,t1,right)){
+        if(!forward_scan(t,t0,t1,right,i1)){
 
             //- slower code:
             //-	if ( t < t0 || t0 === undefined ) {
@@ -204,12 +204,12 @@ private:
     } // linear scan
     //linear_scan();
 
-    bool seek(float t,float t0,float t1){
+    bool seek(float &t,float &t0,float &t1,size_t &i1){
         auto& pp = this->parameterPositions;
-        auto i1 = this->_cachedIndex;
+        //auto i1 = this->_cachedIndex;
 
         size_t right = 0;
-        if(!linear_scan(t,t0,t1,right)) {
+        if(!linear_scan(t,t0,t1,right,i1)) {
 
             // binary search
             while (i1 < right) {
@@ -244,13 +244,14 @@ private:
     } // seek
     //seek();
 
-    bool validate_interval(float t,float t0,float t1){
+    bool validate_interval(float &t,float &t0,float &t1,size_t &i1){
         auto& pp = this->parameterPositions;
-        auto i1 = this->_cachedIndex;
+        //auto i1 = this->_cachedIndex;
 
-        if(!seek(t,t0,t1)) {
+        if(!seek(t,t0,t1,i1)) {
             this->_cachedIndex = i1;
             this->intervalChanged_(i1, t0, t1);
+            //return false;
         }
         return true;
     }; // validate_interval

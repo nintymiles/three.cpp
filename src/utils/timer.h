@@ -20,7 +20,7 @@ public:
         float diff = 0;
 
         clock_t newTime = clock();
-        diff = (newTime - start_time) / 1000.0;
+        diff = (newTime - start_time) / 100000.0;
         old_time = newTime;
 
         return diff;
