@@ -68,7 +68,7 @@ AnimationAction& AnimationAction::_update( float time, float deltaTime, int time
                 for ( size_t j = 0, m = interpolants.size(); j != m; ++ j ) {
                     interpolants[ j ]->evaluate( clipTime );
                     //todo:fix this
-                    //propertyMixers[ j ]->accumulate( accuIndex, weight );
+                    propertyMixers[ j ]->accumulate( accuIndex, weight );
 
                 }
 

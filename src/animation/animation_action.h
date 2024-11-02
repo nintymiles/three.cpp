@@ -24,7 +24,7 @@ private:
 
     LoopMode loop;
     int _loopCount = - 1;
-    int repetitions;
+    int repetitions = INT_MAX;
 
     InterpolantSettings _interpolantSettings;
 
@@ -273,15 +273,15 @@ public:
             const auto duration = this->_clip->duration;
             const auto loop = this->loop;
 
-            auto time = this->time + deltaTime;
+            auto ttime = this->time + deltaTime;
             auto loopCount = this->_loopCount;
 
             const auto pingPong = ( loop == LoopMode::LoopPingPong );
 
             if ( deltaTime == 0 ) {
-                if ( loopCount == - 1 ) return time;
+                if ( loopCount == - 1 ) return ttime;
 
-                return ( pingPong && ( loopCount & 1 ) == 1 ) ? duration - time : time;
+                return ( pingPong && ( loopCount & 1 ) == 1 ) ? duration - ttime : ttime;
             }
 
             if ( loop == LoopMode::LoopOnce ) {
@@ -292,29 +292,28 @@ public:
                     this->_setEndings( true, true, false );
                 }
 
+                auto handle_stop = [&](){
                 //handle_stop:{}
-                {
-
-                    if ( time >= duration ) {
-                        time = duration;
-                    } else if ( time < 0 ) {
-                        time = 0;
+                    if (ttime >= duration ) {
+                        ttime = duration;
+                    } else if (ttime < 0 ) {
+                        ttime = 0;
                     } else {
-                        this->time = time;
+                        this->time = ttime;
                     }
 
                     //todo:fix enabled
                     if ( this->clampWhenFinished ) this->paused = true;
                     else this->enabled = true;
 
-                    this->time = time;
-
+                    this->time = ttime;
     //                this._mixer.dispatchEvent( {
     //                                                   type: 'finished', action: this,
     //                                                   direction: deltaTime < 0 ? - 1 : 1
     //                                           } );
 
-                }
+                };
+                handle_stop();
 
             } else { // repetitive Repeat or PingPong
 
@@ -327,7 +326,6 @@ public:
                         this->_setEndings( true, this->repetitions == 0, pingPong );
 
                     } else {
-
                         // when looping in reverse direction, the initial
                         // transition through zero counts as a repetition,
                         // so leave loopCount at -1
@@ -338,11 +336,11 @@ public:
 
                 }
 
-                if ( time >= duration || time < 0 ) {
+                if (ttime >= duration || ttime < 0 ) {
 
                     // wrap around
-                    const auto loopDelta = floor( time / duration ); // signed
-                    time -= duration * loopDelta;
+                    const auto loopDelta = floor(ttime / duration ); // signed
+                    ttime -= duration * loopDelta;
 
                     loopCount += abs( loopDelta );
 
@@ -355,9 +353,9 @@ public:
                         if ( this->clampWhenFinished ) this->paused = true;
                         else this->enabled = true;
 
-                        time = deltaTime > 0 ? duration : 0;
+                        ttime = deltaTime > 0 ? duration : 0;
 
-                        this->time = time;
+                        this->time = ttime;
 
 //                        this._mixer.dispatchEvent( {
 //                                                           type: 'finished', action: this,
@@ -368,20 +366,18 @@ public:
 
                         // keep running
                         if ( pending == 1 ) {
-
                             // entering the last round
                             const auto atStart = deltaTime < 0;
                             this->_setEndings( atStart, ! atStart, pingPong );
 
                         } else {
-
                             this->_setEndings( false, false, pingPong );
 
                         }
 
                         this->_loopCount = loopCount;
 
-                        this->time = time;
+                        this->time = ttime;
 
 //                        this._mixer.dispatchEvent( {
 //                                                           type: 'loop', action: this, loopDelta: loopDelta
@@ -390,22 +386,19 @@ public:
                     }
 
                 } else {
-
-                    this->time = time;
+                    this->time = ttime;
 
                 }
 
                 if ( pingPong && ( loopCount & 1 ) == 1 ) {
-
                     // invert time for the "pong round"
-
-                    return duration - time;
+                    return duration - ttime;
 
                 }
 
             }
 
-            return time;
+            return ttime;
 
     }
 
