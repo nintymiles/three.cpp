@@ -411,7 +411,7 @@ AnimationMixer& AnimationMixer::update(float deltaTime) {
 
     auto time = this->time += deltaTimeScale;
     auto timeDirection = sign( deltaTimeScale );
-    auto accuIndex = this->_accuIndex ^= 1;
+    auto accuIndex = (this->_accuIndex ^= 1);
 
     // run active actions
     for ( size_t i = 0; i != nActions; ++ i ) {

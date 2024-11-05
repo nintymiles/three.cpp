@@ -145,7 +145,7 @@ private:
             return false;
             //linear_scan;
         }
-        return true;
+        return false;
     } //forward_scan();
 
     bool linear_scan(float &t,float &t0,float &t1,size_t &right,size_t &i1){

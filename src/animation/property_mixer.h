@@ -193,7 +193,7 @@ public:
         // note: happily accumulating nothing when weight = 0, the caller knows
         // the weight and shouldn't have made the call in the first place
 
-        auto buffer = this->buffer;
+        auto &buffer = this->buffer;
         auto stride = this->valueSize,
                 offset = accuIndex * stride + stride;
 
@@ -202,7 +202,6 @@ public:
         if ( currentWeight == 0 ) {
             // accuN := incoming * weight
             for ( size_t i = 0; i != stride; ++ i ) {
-
                 buffer[ offset + i ] = buffer[ i ];
             }
 
