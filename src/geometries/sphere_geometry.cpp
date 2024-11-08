@@ -4,6 +4,7 @@
 #include "sphere_geometry.h"
 
 #include "number.h"
+#include <algorithm>
 
 SphereGeometry::SphereGeometry(float radius, float widthSegments, float heightSegments, float phiStart, float phiLength, float thetaStart, float thetaLength) : BufferGeometry(){
     radius = radius != 0 ? radius : 1;
@@ -11,9 +12,9 @@ SphereGeometry::SphereGeometry(float radius, float widthSegments, float heightSe
     if (widthSegments == 0) widthSegments = 8;
     if (heightSegments == 0) heightSegments = 6;
 
-    widthSegments = std::max(3.0f, floor(widthSegments));
+    widthSegments = std::max(3.0f, (float)floor(widthSegments));
 
-    heightSegments = std::max(2.0f, floor(heightSegments));
+    heightSegments = std::max(2.0f, (float)floor(heightSegments));
 
     phiStart = !std::isnan(phiStart) ? phiStart : 0;
     phiLength = !std::isnan(phiLength) ? phiLength : 2 * (float)math_number::PI; ;

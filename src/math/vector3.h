@@ -16,6 +16,7 @@
 #include <vector>
 #include <limits>
 #include <sstream>
+#include <memory>
 
 #include "osdecl.h"
 #include "math_utils.h"

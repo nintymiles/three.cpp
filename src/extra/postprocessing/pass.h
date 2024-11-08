@@ -6,6 +6,7 @@
 #define THREE_CPP_PASS_H
 
 #include <iostream>
+#include <memory>
 
 class GLRenderer;
 class BufferGeometry;

@@ -24,7 +24,7 @@ public :
         bytesPerElement = value.bytesPerElement;
     }
     virtual void render(const GLint start, const GLsizei count) override {
-        glDrawElements(mode, count, type, (const unsigned *)(start * bytesPerElement));
+        glDrawElements(mode, count, type,  (const unsigned *)(start * bytesPerElement));
         info->update(count, mode,count);
         GLBufferRendererInterface::render(start,count);
     }

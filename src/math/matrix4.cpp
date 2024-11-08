@@ -4,6 +4,8 @@
 #include "quaternion.h"
 #include "euler.h"
 
+#include <cstring>
+
 namespace  __matrix4 {
 Vector3 _v1;
 Vector3 _zero(0, 0, 0);

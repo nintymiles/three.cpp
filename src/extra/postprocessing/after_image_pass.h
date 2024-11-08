@@ -12,6 +12,7 @@
 
 #include <unordered_map>
 #include <variant>
+#include <memory>
 
 class GLRenderTarget;
 namespace threecpp {

@@ -18,6 +18,11 @@ if(MSVC)
   message("debugflag: ${CMAKE_CXX_FLAGS_DEBUG}")
 endif()
 
+#if(GCC)
+#  add_definitions(-Wi)
+#  add_definitions(-Bstatic)
+#endif()
+
 add_definitions(-D_DEBUG)
 #add_definitions(-latomic;-lc++)
 #add_definitions(-stdlib=libc++;-D_LIBCPP_DEBUG=1)
@@ -25,6 +30,11 @@ add_definitions(-D_DEBUG)
 
 #find_package(Microsoft.GSL CONFIG)
 
+# for ucrt64 gcc compiling , cause by glfw needing to be compiled by correspondent toolchain. or else raise exception of  #bufferoverflow.lib
+#SET(UCRT_ROOT_DIR "D:\\MyApplication\\MSYS2\\ucrt64\\include")
+## 指定头文件搜索路径
+#INCLUDE_DIRECTORIES(${UCRT_ROOT_DIR}/include)
+#LINK_DIRECTORIES(${UCRT_ROOT_DIR}/lib)
 
 file(GLOB BASE_SOURCE ${ROOT_DIR}/src/examples/base/*.cpp)
 file(GLOB BASE_HEADER ${ROOT_DIR}/src/examples/base/*.h)
@@ -117,6 +127,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到tra
   #angel相关dll要不拷贝到系统路径，要不拷贝到执行目录，lib用于编译引用，dll用于链接执行
   libGLESv2.dll.lib
   libEGL.dll.lib
+  #iphlpapi.lib //for msys2 ucrt64 gcc
   #GLADd.lib
   #pcrecppd.lib
   #pcred.lib

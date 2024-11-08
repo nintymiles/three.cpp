@@ -6,6 +6,7 @@
 #include <cmath>
 #include <vector>
 #include <sstream>
+#include <memory>
 
 #include "osdecl.h"
 #include "math_utils.h"

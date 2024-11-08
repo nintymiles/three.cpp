@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cmath>
 #include <functional>
 
 #include "keyframe_track.h"
@@ -221,7 +222,7 @@ public:
             for ( size_t i = 0, n = values.size(); i != n; ++ i ) {
                 auto value = values[ i ];
 
-                if ( std::isnan<float>( value ) ) {
+                if ( std::isnan( value ) ) {
                     std::cerr << "THREE.KeyframeTrack: Value is not a valid number." << value << std::endl;//, this, i, value );
                     valid = false;
                     break;
