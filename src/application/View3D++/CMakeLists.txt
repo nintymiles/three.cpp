@@ -70,7 +70,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   TARGET_LINK_LIBRARIES(View3D++ PUBLIC
   # "-framework Cocoa"   # not necessary for system library
   # "-framework CoreGraphics"
-  glfw.3.3
+  glfw
   GLESv2
   EGL
   #pcrecpp

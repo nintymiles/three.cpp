@@ -109,6 +109,7 @@ endif()
 # )
 # 如果以FetchContent方式引用GSL，则需要添加'PRIVATE GSL'到traget_link_libraries
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+#  LINK_DIRECTORIES(${ROOT_DIR}/lib/macOS)
   TARGET_LINK_LIBRARIES(threecppgles PUBLIC
   # "-framework Cocoa"   # not necessary for system library
   # "-framework CoreGraphics"
@@ -120,7 +121,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 #  PRIVATE GSL
   )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows") # Windows则需要添加'GSL'到traget_link_libraries
-  LINK_DIRECTORIES(${ROOT_DIR}/lib/win64) #添加动态连接库的路径
+#  LINK_DIRECTORIES(${ROOT_DIR}/lib/win64) #添加动态连接库的路径
   TARGET_LINK_LIBRARIES(threecppgles PUBLIC
   glfw3
   #glfw3d.lib for static debug build lib

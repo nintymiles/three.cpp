@@ -5,6 +5,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
+#set(CMAKE_FIND_FRAMEWORK NEVER)
+#set(CMAKE_FIND_APPBUNDLE NEVER)
+#set(CMAKE_PREFIX_PATH
+#        "/opt/local/lib"
+#        "/opt/local/bin"
+#        # These libraries are keg-only and not loaded into
+#        # the root prefix by default (to avoid clashes).
+#)
+#
+#set(CMAKE_FIND_USE_CMAKE_SYSTEM_PATH FALSE)
+#set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH FALSE)
+
 # 这个策略貌似也没有太大的用处
 # if(POLICY CMP0042)
 #   cmake_policy(SET CMP0042 NEW)  # CMake 3.0+ (2.8.12): MacOS "@rpath" in target's install name
@@ -297,8 +309,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   TARGET_LINK_LIBRARIES(threecpp PUBLIC
   # "-framework Cocoa"   # not necessary for system library
   # "-framework CoreGraphics"
-  # glfw.3.3
-  # libglfw.3.3.dylib
+  #glfw.3.3
+  #libglfw.3.3.dylib
   GLESv2
   EGL)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
