@@ -36,6 +36,7 @@
 #include "gl_materials_cubemap_envmaps.h"
 
 #include "gl_shader_demo1.h"
+#include "gl_shader_demo2.h"
 #include "gl_shader_lava.h"
 #include "gl_performance_shader.h"
 #include "gl_custom_attributes.h"
@@ -238,6 +239,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["GL_Shaders_Demo1"] = std::make_shared<GLShaderDemo1>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Shaders_Demo1"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_Shaders_Demo2", "")) {
+                if (demoClasses.count("GL_Shaders_Demo2") == 0)
+                    demoClasses["GL_Shaders_Demo2"] = std::make_shared<GLShaderDemo2>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_Shaders_Demo2"];
                 currentDemoClass->renderer->clear();
             }
             if (ImGui::MenuItem("GL_Shaders_Lava", "")) {
