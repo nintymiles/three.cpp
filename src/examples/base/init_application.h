@@ -49,6 +49,7 @@
 #include "gl_postprocessing_after_image.h"
 #include "gl_postprocessing_masking.h"
 #include "gl_postprocessing_glitch.h"
+#include "gl_blackhole.h"
 
 #include "gl_volume_cloud.h"
 
@@ -331,6 +332,13 @@ static void ShowApplicationMenuBar() {
                     demoClasses["GL_Postprocessing_Glitch"] = std::make_shared<GLPostProcessingGlitch>(display_w, display_h);
 
                 currentDemoClass = demoClasses["GL_Postprocessing_Glitch"];
+                currentDemoClass->renderer->clear();
+            }
+            if (ImGui::MenuItem("GL_BlackHole", "")) {
+                if (demoClasses.count("GL_BlackHole") == 0)
+                    demoClasses["GL_BlackHole"] = std::make_shared<GLBlackHole>(display_w, display_h);
+
+                currentDemoClass = demoClasses["GL_BlackHole"];
                 currentDemoClass->renderer->clear();
             }
 
