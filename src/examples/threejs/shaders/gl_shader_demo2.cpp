@@ -12,7 +12,7 @@ void GLShaderDemo2::render(){
 #endif
 
     uniforms1->set("time",uniforms1->get("time").get<float>() + delta * 5);
-    uniforms2->set("time",timer.get_elapsed_time());
+    uniforms2->set("time",timer.get_elapsed_time()/1000);
 
     for ( auto i = 0; i < scene->children.size(); i ++ ) {
         auto object = scene->children[ i ];

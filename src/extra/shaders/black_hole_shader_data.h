@@ -23,13 +23,13 @@ struct BlackholeShaderData {
 
         shader->vertexShader = R""(
 
-            layout(location = 0) in vec3 position;
+            layout(location = 0) in vec3 vt;
 
-            out vec2 uv;
+            out vec2 vUv;
 
             void main() {
-              uv = (position.xy + 1.0) * 0.5;
-              gl_Position = vec4(position, 1.0);
+              vUv = (vt.xy + 1.0) * 0.5;
+              gl_Position = vec4(vt, 1.0);
             }
 
         )"";
@@ -50,24 +50,40 @@ struct BlackholeShaderData {
             uniform samplerCube galaxy;
             uniform sampler2D colorMap;
 
-            uniform float frontView = 0.0;
-            uniform float topView = 0.0;
-            uniform float cameraRoll = 0.0;
+//            uniform float frontView = 0.0;
+//            uniform float topView = 0.0;
+//            uniform float cameraRoll = 0.0;
+            uniform float frontView;
+            uniform float topView;
+            uniform float cameraRoll;
 
-            uniform float gravatationalLensing = 1.0;
-            uniform float renderBlackHole = 1.0;
-            uniform float mouseControl = 0.0;
-            uniform float fovScale = 1.0;
+//            uniform float gravatationalLensing = 1.0;
+//            uniform float renderBlackHole = 1.0;
+//            uniform float mouseControl = 0.0;
+//            uniform float fovScale = 1.0;
+            uniform float gravatationalLensing;
+            uniform float renderBlackHole;
+            uniform float mouseControl;
+            uniform float fovScale;
 
-            uniform float adiskEnabled = 1.0;
-            uniform float adiskParticle = 1.0;
-            uniform float adiskHeight = 0.2;
-            uniform float adiskLit = 0.5;
-            uniform float adiskDensityV = 1.0;
-            uniform float adiskDensityH = 1.0;
-            uniform float adiskNoiseScale = 1.0;
-            uniform float adiskNoiseLOD = 5.0;
-            uniform float adiskSpeed = 0.5;
+//            uniform float adiskEnabled = 1.0;
+//            uniform float adiskParticle = 1.0;
+//            uniform float adiskHeight = 0.2;
+//            uniform float adiskLit = 0.5;
+//            uniform float adiskDensityV = 1.0;
+//            uniform float adiskDensityH = 1.0;
+//            uniform float adiskNoiseScale = 1.0;
+//            uniform float adiskNoiseLOD = 5.0;
+//            uniform float adiskSpeed = 0.5;
+            uniform float adiskEnabled;
+            uniform float adiskParticle;
+            uniform float adiskHeight;
+            uniform float adiskLit;
+            uniform float adiskDensityV;
+            uniform float adiskDensityH;
+            uniform float adiskNoiseScale;
+            uniform float adiskNoiseLOD;
+            uniform float adiskSpeed;
 
             struct Ring {
               vec3 center;
@@ -177,8 +193,8 @@ struct BlackholeShaderData {
             }
 
             vec3 panoramaColor(sampler2D tex, vec3 dir) {
-              vec2 uv = vec2(0.5 - atan(dir.z, dir.x) / PI * 0.5, 0.5 - asin(dir.y) / PI);
-              return texture2D(tex, uv).rgb;
+              vec2 tUV = vec2(0.5 - atan(dir.z, dir.x) / PI * 0.5, 0.5 - asin(dir.y) / PI);
+              return texture2D(tex, tUV).rgb;
             }
 
             vec3 accel(float h2, vec3 pos) {
@@ -333,7 +349,7 @@ struct BlackholeShaderData {
 
               float noise = 1.0;
               for (int i = 0; i < int(adiskNoiseLOD); i++) {
-                noise *= 0.5 * snoise(sphericalCoord * pow(i, 2) * adiskNoiseScale) + 0.5;
+                noise *= 0.5 * snoise(sphericalCoord * pow((float)i, (float)2) * adiskNoiseScale) + 0.5;
                 if (i % 2 == 0) {
                   sphericalCoord.y += time * adiskSpeed;
                 } else {
@@ -418,10 +434,10 @@ struct BlackholeShaderData {
               vec3 target = vec3(0.0, 0.0, 0.0);
               view = lookAt(cameraPos, target, radians(cameraRoll));
 
-              vec2 uv = gl_FragCoord.xy / resolution.xy - vec2(0.5);
-              uv.x *= resolution.x / resolution.y;
+              vec2 tUV = gl_FragCoord.xy / resolution.xy - vec2(0.5);
+              tUV.x *= resolution.x / resolution.y;
 
-              vec3 dir = normalize(vec3(-uv.x * fovScale, uv.y * fovScale, 1.0));
+              vec3 dir = normalize(vec3(-tUV.x * fovScale, tUV.y * fovScale, 1.0));
               vec3 pos = cameraPos;
               dir = view * dir;
 

@@ -15,6 +15,9 @@
 #include "mesh_phong_material.h"
 #include "black_hole_shader_data.h"
 
+#include "texture_loader.h"
+#include "cube_texture_loader.h"
+
 #include "ambient_light.h"
 #include "directional_light.h"
 
@@ -52,7 +55,27 @@ public:
 
         auto geometry = PlaneGeometry::create( 2, 2 );
 
+        // textures
+        std::string rootDir = threecpp::getProjectPath();
+        std::string fileSeparator = threecpp::getFileSeparator();
+        std::string resourceDir = std::string(rootDir).append(fileSeparator).append("asset").append(fileSeparator)
+                .append("textures").append(fileSeparator).append("blackhole").append(fileSeparator);
+
         ShaderMaterial::sptr shaderMaterial = BlackholeShaderData::blackHoleMainShader();
+
+        auto colorMap = TextureLoader::load( resourceDir + "color_map.png" );
+        shaderMaterial->uniforms->set<Texture::sptr>("colorMap",colorMap);
+
+        auto format = ".png";
+        std::string cubeResourceDir = resourceDir.append("skybox_nebula_dark").append(fileSeparator);
+        auto fileurls = {
+                cubeResourceDir + "front" + format, cubeResourceDir + "back" + format,
+                cubeResourceDir + "top" + format, cubeResourceDir + "bottom" + format,
+                cubeResourceDir + "left" + format, cubeResourceDir + "right" + format
+        };
+        auto skyboxCube = CubeTextureLoader::load( fileurls );
+        shaderMaterial->uniforms->set<CubeTexture::sptr>("galaxy",skyboxCube);
+
         Mesh::sptr planeMesh = Mesh::create( geometry, shaderMaterial );
         scene->add( planeMesh );
 
