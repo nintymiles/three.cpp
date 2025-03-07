@@ -65,6 +65,7 @@ std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<Anim
     // clip must be known when specified via string
     if ( !clipObject ) return nullptr;
 
+    //AnimationMixer的初始化起点
     // allocate all resources required to run it
     auto newAction = std::make_shared<AnimationAction>( std::shared_ptr<AnimationMixer>(this), clipObject, optionalRoot, blendMode );
 
@@ -79,6 +80,7 @@ std::shared_ptr<AnimationAction> AnimationMixer::clipAction(std::shared_ptr<Anim
 
 }
 
+//绑定动画行为，
 void AnimationMixer::_bindAction( std::shared_ptr<AnimationAction> action, std::shared_ptr<AnimationAction> prototypeAction ) {
 
     Object3D::sptr root;

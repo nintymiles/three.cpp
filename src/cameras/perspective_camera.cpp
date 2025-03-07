@@ -119,7 +119,7 @@ void PerspectiveCamera::updateProjectionMatrix(){
     //Camera::updateProjectionMatrix();
     float pNear = this->_near;
     float top = pNear * math::tan(math_number::DEG2RAD * 0.5f * fov) / zoom;
-    float height = 2 * top;
+    float height = 2.f * top;
     float width = aspect * height;
     float left = -0.5f * width;
 

@@ -203,8 +203,9 @@ public:
 
                 if ( interpolant != nullptr ) {
                     //todo:fixit return interpolated value
-                    //auto interpolantValue = interpolant->evaluate( time );
-                    auto interpolantValue = 0.3f;
+                    //auto interpolantValue = 0.3f;
+                    interpolant->evaluate( time );
+                    auto interpolantValue = interpolant->getResults()[0];
 
                     weight *= interpolantValue;
 
@@ -243,7 +244,9 @@ public:
 
                     //todo:fix it
                     //const interpolantValue = interpolant.evaluate( time )[ 0 ];
-                    float interpolantValue = .3f;
+                    //float interpolantValue = .3f;
+                    interpolant->evaluate( time );
+                    auto interpolantValue = interpolant->getResults()[0];
 
                     timeScale *= interpolantValue;
 
@@ -300,11 +303,11 @@ public:
                         ttime = 0;
                     } else {
                         this->time = ttime;
+                        return;
                     }
 
-                    //todo:fix enabled
                     if ( this->clampWhenFinished ) this->paused = true;
-                    else this->enabled = true;
+                    else this->enabled = false;
 
                     this->time = ttime;
     //                this._mixer.dispatchEvent( {
@@ -348,10 +351,9 @@ public:
 
                     if ( pending <= 0 ) {
 
-                        //todo:fix enabled assigning
                         // have to stop (switch state, clamp time, fire event)
                         if ( this->clampWhenFinished ) this->paused = true;
-                        else this->enabled = true;
+                        else this->enabled = false;
 
                         ttime = deltaTime > 0 ? duration : 0;
 
@@ -393,7 +395,6 @@ public:
                 if ( pingPong && ( loopCount & 1 ) == 1 ) {
                     // invert time for the "pong round"
                     return duration - ttime;
-
                 }
 
             }

@@ -24,8 +24,8 @@ public:
 
         for ( size_t i = 0; i != stride; ++ i ) {
             result[ i ] =
-            values[ offset0 + i ] * weight0 +
-            values[ offset1 + i ] * weight1;
+                values[ offset0 + i ] * weight0 +
+                values[ offset1 + i ] * weight1;
 
         }
 

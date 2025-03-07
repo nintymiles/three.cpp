@@ -66,8 +66,13 @@ AnimationAction& AnimationAction::_update( float time, float deltaTime, int time
             default:
 
                 for ( size_t j = 0, m = interpolants.size(); j != m; ++ j ) {
+                    //LinearInterpolant ParameterPostions参数正常 ResultBuffer不太一致 SampleValues也不太一致
                     interpolants[ j ]->evaluate( clipTime );
                     //todo:fix this
+                    //PropertyMixer对象的构成和web版本稍有不同
+                    //PropertyBinding对象的变量布局不同
+                    //propertymixer种的resultBuffer绑定的数据不对，需要查证一下来源
+                    //propetymixer无法获得正确的resultBuffer，需要验证一下此处逻辑
                     propertyMixers[ j ]->accumulate( accuIndex, weight );
 
                 }

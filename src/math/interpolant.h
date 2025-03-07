@@ -73,6 +73,10 @@ public:
         return defaultSettings_;
     }
 
+    std::vector<float> getResults(){
+        return resultBuffer;
+    }
+
     // Template methods for derived classes:
     virtual Interpolant& interpolate_( size_t i1,float t0,float t,float t1/* i1, t0, t, t1 */ ) {
         //throw new Error( 'call to abstract method' );
@@ -180,7 +184,10 @@ private:
                     if (i1 == giveUpAt) break; // this loop
 
                     t1 = t0;
-                    t0 = pp[--i1 - 1];
+                    auto i = --i1 - 1;
+                    if(i<0)
+                        i = 0;
+                    t0 = pp[i];
 
                     if (t >= t0) {
                         // we have arrived at the sought interval
