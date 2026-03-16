@@ -74,15 +74,15 @@ public:
         textureEquirec->mapping = TextureMapping::EquirectangularRefractionMapping;
         //textureEquirec->encoding = TextureEncoding::sRGBEncoding;
 
-        scene->setBackgroundCubeTexture(texCube);
-//        scene->setBackgroundTexture(textureEquirec);
+//        scene->setBackgroundCubeTexture(texCube);
+        scene->setBackgroundTexture(textureEquirec);
 
 
         auto geometry = IcosahedronBufferGeometry::create( 400, 5 );
         //auto geometry = SphereGeometry::create( 400, 15 );
         Material::sptr sphereMaterial = MeshBasicMaterial::create();
-        sphereMaterial->envMap = texCube;
-//        sphereMaterial->envMap = textureEquirec;
+//        sphereMaterial->envMap = texCube;
+        sphereMaterial->envMap = textureEquirec;
         sphereMaterial->refractionRatio = .96f;
 
         Mesh::sptr sphereMesh = Mesh::create( geometry, sphereMaterial );
