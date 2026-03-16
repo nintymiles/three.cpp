@@ -469,15 +469,15 @@ GLProgram::GLProgram(GLRenderer& renderer, const GLExtensions::sptr& extensions,
     std::string fragmentGlsl = prefixFragment.str();
 
     // for glsl Debug
-//    std::ofstream vshaderfile;
-//    vshaderfile.open(parameters.shaderName+"_vshader.txt", std::ios_base::out);
-//    vshaderfile << vertexGlsl;
-//    vshaderfile.close();
-//
-//    std::ofstream fshaderfile;
-//    fshaderfile.open(parameters.shaderName+"_fshader.txt", std::ios_base::out);
-//    fshaderfile << fragmentGlsl;
-//    fshaderfile.close();
+    std::ofstream vshaderfile;
+    vshaderfile.open(parameters.shaderName+"_vshader.txt", std::ios_base::out);
+    vshaderfile << vertexGlsl;
+    vshaderfile.close();
+
+    std::ofstream fshaderfile;
+    fshaderfile.open(parameters.shaderName+"_fshader.txt", std::ios_base::out);
+    fshaderfile << fragmentGlsl;
+    fshaderfile.close();
 
     GLShader vertexShader = GLShader(GL_VERTEX_SHADER, vertexGlsl);
     GLShader fragmentShader = GLShader(GL_FRAGMENT_SHADER, fragmentGlsl);
@@ -974,13 +974,14 @@ std::string GLProgram::generateEnvMapTypeDefine(const ProgramParameters& paramet
                 break;
 
             case TextureMapping::CubeUVReflectionMapping:
-            //case TextureMapping::CubeUVRefractionMapping:
+            case TextureMapping::CubeUVRefractionMapping:
                 envMapTypeDefine = "ENVMAP_TYPE_CUBE_UV";
                 break;
 
             case TextureMapping::EquirectangularReflectionMapping:
             case TextureMapping::EquirectangularRefractionMapping:
-                envMapTypeDefine = "ENVMAP_TYPE_EQUIREC";
+                //envMapTypeDefine = "ENVMAP_TYPE_EQUIREC";
+                envMapTypeDefine = "ENVMAP_TYPE_CUBE";
                 break;
 
             case TextureMapping::SphericalReflectionMapping:
