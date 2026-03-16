@@ -42,7 +42,7 @@ public:
 
         auto aspect = (float)screenX / screenY;
         perspectiveCamera = std::make_shared<PerspectiveCamera>(70.f, aspect , 1.f, 100000.f);
-        perspectiveCamera->position.set( 0, 0, 1500 );
+        perspectiveCamera->position.set( 0, 0, 1000 );
         //scene->add(camera);
 
         camera = perspectiveCamera;
@@ -71,18 +71,19 @@ public:
         resourceDir = std::string(rootDir).append(fileSeparator).append("asset").append(fileSeparator)
                 .append("textures").append(fileSeparator);
         auto textureEquirec = TextureLoader::load(resourceDir + "2294472375_24a3b8ef46_o.jpg" );
-        textureEquirec->mapping = TextureMapping::EquirectangularReflectionMapping;
+        textureEquirec->mapping = TextureMapping::EquirectangularRefractionMapping;
         //textureEquirec->encoding = TextureEncoding::sRGBEncoding;
 
-//        scene->setBackgroundCubeTexture(texCube);
-        scene->setBackgroundTexture(textureEquirec);
+        scene->setBackgroundCubeTexture(texCube);
+//        scene->setBackgroundTexture(textureEquirec);
 
-        //
+
         auto geometry = IcosahedronBufferGeometry::create( 400, 5 );
         //auto geometry = SphereGeometry::create( 400, 15 );
         Material::sptr sphereMaterial = MeshBasicMaterial::create();
         sphereMaterial->envMap = texCube;
 //        sphereMaterial->envMap = textureEquirec;
+        sphereMaterial->refractionRatio = .96f;
 
         Mesh::sptr sphereMesh = Mesh::create( geometry, sphereMaterial );
         scene->add( sphereMesh );

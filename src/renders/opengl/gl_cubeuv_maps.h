@@ -8,10 +8,11 @@
 #include "texture.h"
 
 #include "pmrem_generator.h"
+#include "gl_env_maps.h"
 
 class GLRenderer;
 
-class GLCubeUVMaps {
+class GLCubeUVMaps:GLEnvMaps {
 private:
     GLRenderer* renderer;
     PMREMGenerator::sptr pmremGenerator;
@@ -27,7 +28,7 @@ public:
 
     ~GLCubeUVMaps() = default;
 
-    Texture::sptr get(const Texture::sptr texture){
+    Texture::sptr get(const Texture::sptr texture) override{
         if(texture){
             auto mapping = texture->mapping;
 

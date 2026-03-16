@@ -22,7 +22,7 @@ public:
 
     ShaderMaterial(const ShaderMaterial& source) : Material(source){
         type = "ShaderMaterial";
-        name = "ShadowMaterial";
+        name = "ShaderMaterial";
         fragmentShader = source.fragmentShader;
         vertexShader = source.vertexShader;
         isShaderMaterial = source.isShaderMaterial;

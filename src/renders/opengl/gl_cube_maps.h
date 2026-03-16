@@ -7,9 +7,10 @@
 
 #include "texture.h"
 #include "gl_render_target.h"
+#include "gl_env_maps.h"
 
 class GLRenderer;
-class GLCubeMaps {
+class GLCubeMaps:GLEnvMaps {
 private:
     GLRenderer* renderer;
 //    std::unordered_map<std::string, Texture::sptr> cubemaps;
@@ -26,7 +27,7 @@ public:
 
     ~GLCubeMaps() = default;
 
-    Texture::sptr get(const Texture::sptr texture){
+    Texture::sptr get(const Texture::sptr texture) override{
         if ( texture && texture->isRenderTargetTexture == false ) {
 
             auto mapping = texture->mapping;

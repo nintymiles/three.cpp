@@ -52,12 +52,11 @@ GLCubeRenderTarget& GLCubeRenderTarget::fromEquirectangularTexture( GLRenderer* 
 
     ShaderMaterial::sptr shaderMaterial = ShaderMaterial::create();
 
-    shaderMaterial->name = "CubemapFromEquirect";
-
     UniformValues::sptr uniforms =std::make_shared<UniformValues>();
 
     uniforms->set<Texture::sptr>("tEquirect", texture);
 
+    shaderMaterial->name = "CubemapFromEquirect";
     shaderMaterial->uniforms = uniforms;
     shaderMaterial->vertexShader = /* glsl */R""(
 

@@ -12,7 +12,7 @@
 #include "gl_renderer.h"
 
 class CubeCamera: public Object3D{
-    const float fov = 45.f, aspect = 1.f;
+    const float fov = 90.f, aspect = 1.f;
     GLRenderTarget::sptr renderTarget;
 
 public:
@@ -23,7 +23,7 @@ public:
 
         auto cameraPX = PerspectiveCamera::create( fov, aspect, _near, _far );
         cameraPX->layers = this->layers;
-        cameraPX->up.set( 0, - 1, 0 );
+        cameraPX->up.set( 0, -1, 0 );
         cameraPX->lookAt( Vector3( 1, 0, 0 ) );
         //cameraPX->updateMatrixWorld();
         cameraPX->updateMatrix();
@@ -32,8 +32,8 @@ public:
 
         auto cameraNX = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraNX->layers = this->layers;
-        cameraNX->up.set( 0, - 1, 0 );
-        cameraNX->lookAt( Vector3( - 1, 0, 0 ) );
+        cameraNX->up.set( 0, -1, 0 );
+        cameraNX->lookAt( Vector3( -1, 0, 0 ) );
         cameraNX->updateMatrix();
         cameraNX->updateProjectionMatrix();
         add( cameraNX );
@@ -56,7 +56,7 @@ public:
 
         auto cameraPZ = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraPZ->layers = this->layers;
-        cameraPZ->up.set( 0, - 1, 0 );
+        cameraPZ->up.set( 0, -1, 0 );
         cameraPZ->lookAt( Vector3( 0, 0, 1 ) );
         cameraPZ->updateMatrix();
         cameraPZ->updateProjectionMatrix();
@@ -64,8 +64,8 @@ public:
 
         auto cameraNZ = PerspectiveCamera::create( fov, aspect,  _near, _far );
         cameraNZ->layers = this->layers;
-        cameraNZ->up.set( 0, - 1, 0 );
-        cameraNZ->lookAt( Vector3( 0, 0, - 1 ) );
+        cameraNZ->up.set( 0, -1, 0 );
+        cameraNZ->lookAt( Vector3( 0, 0, -1 ) );
         cameraNZ->updateMatrix();
         cameraNZ->updateProjectionMatrix();
         add( cameraNZ );

@@ -169,12 +169,16 @@ void GLRenderer::initMaterial(const Material::sptr& material, const Scene::sptr&
     materialProperties.environment = environment;
     materialProperties.fog = scene->fog;
 
-//    materialProperties.envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : materialProperties.environment);
+    //materialProperties.envMap = cubeMaps->get(material->envMap != nullptr ? material->envMap : materialProperties.environment);
+    //todo:fix this section from logic
     if(isStandardMaterial)
         //todo:fix this cubeUVMaps
-        materialProperties.envMap = cubeMaps->get(tex);//cubeUVMaps->get(tex);
+        materialProperties.envMap = cubeUVMaps->get(tex);
     else
         materialProperties.envMap = cubeMaps->get(tex);
+    //todo:fix this,envmap need to get from materialproperties
+    //material->envMap = materialProperties.envMap;
+
 
     materialProperties.needsLights = materialNeedsLights(*material);
     materialProperties.lightsStateVersion =lightsStateVersion;
@@ -1416,7 +1420,7 @@ GLProgram::sptr GLRenderer::getProgram(Material::sptr material,Scene::sptr scene
     // always update environment and fog - changing these trigger an getProgram call, but it's possible that the program doesn't change
     materialProperties.environment = material->type == "MeshStandardMaterial" ? scene->environment : nullptr;
     materialProperties.fog = scene->fog;
-    //materialProperties.envMap = ( material->type == "MeshStandardMaterial" ? /**cubeuvmaps*/nullptr : cubeMaps ).get( material->envMap || materialProperties.environment );
+    materialProperties.envMap = material->type == "MeshStandardMaterial"?cubeUVMaps->get( material->envMap? material->envMap: materialProperties.environment ) : cubeMaps->get( material->envMap? material->envMap: materialProperties.environment );
 
     if ( programs.empty() ) {
         // new material

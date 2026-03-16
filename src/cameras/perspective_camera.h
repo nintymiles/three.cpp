@@ -25,7 +25,7 @@ public:
 
     PerspectiveCamera(float fov, float aspect, float _near = std::numeric_limits<float>::quiet_NaN(), float _far=std::numeric_limits<float>::quiet_NaN()) : Camera(){
         isPerspective = true;
-        this->fov = !fov ? fov : 50.0f;
+        this->fov = fov ? fov : 50.0f;
         this->zoom = 1;
         this->_near = !std::isnan(_near) ? _near : 0.1f;
         this->_far = !std::isnan(_far) ? _far : 2000.0f;

@@ -116,10 +116,12 @@ void GLMaterials::refreshUniformsCommon(UniformValues& uniforms, Material& mater
     }
 
     if (material.envMap != nullptr) {
-        uniforms.set("envMap", material.envMap);
-        uniforms.set("flipEnvMap", material.envMap->isCubeTexture ? -1 : 1);
+        auto envMap = properties->getMaterialProperties(material.uuid).envMap;
+        uniforms.set("envMap", envMap);
+        uniforms.set("flipEnvMap", envMap->isCubeTexture&&!envMap->isRenderTargetTexture ? -1 : 1);
         uniforms.set("reflectivity", material.reflectivity);
         uniforms.set("refractionRatio", material.refractionRatio);
+        //uniforms.set("ior",material.ior);
         //maxMipLevel value abandoned
         //unsigned maxMipLevel = properties->getProperties(material.envMap->uuid).maxMipLevel;
         //uniforms.set("maxMipLevel", maxMipLevel);

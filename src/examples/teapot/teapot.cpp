@@ -4,7 +4,7 @@
 
 #include "teapot.h"
 
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 #include "teapot.inl"
@@ -249,14 +249,16 @@ bool Teapot::init()
     Matrix4 view = Matrix4().makeTranslation(0.0f, -10.0f, -100.0f);
     Matrix4 model = Matrix4().makeTranslation(0.0f, -10.0f, 0.0f);
     Vector3 axisX = Vector3(1.0f, 0.0f, 0.0f);
-    model.makeRotationAxis(axisX,Number::PI/2);
+    model.makeRotationAxis(axisX,math_number::PI/2);
         //rotate(model, (float)M_PI_2, Vector3(1.0f, 0.0f, 0.0f));
 
     Matrix4 mvp = Matrix4(projection).multiply(view).multiply(model);
-    Matrix4 worldInverseTranspose = model.clone().invert();
+    Matrix4 worldInverseTranspose{};
+    worldInverseTranspose.getInverse(model);
     worldInverseTranspose.transpose();
     //worldInverseTranspose = glm::transpose(worldInverseTranspose);
-    Matrix4 viewInverse = view.clone().invert();
+    Matrix4 viewInverse{};
+    viewInverse.getInverse(view);
 
     unfData.world = model;
     unfData.worldInverseTranspose = worldInverseTranspose;
@@ -343,7 +345,7 @@ void Teapot::draw()
 
     //cameraPos = (glm::rotate(Matrix4(1.0f), rotX, Vector3(0.0f, 1.0f, 0.0f)) * glm::rotate(glm::mat4(1.0f), rotY, Vector3(0.0f, 0.0f, 1.0f)) * glm::vec4(cameraPos, 1.0f));
 
-    Matrix4 projection = Matrix4().makePerspective(MathUtils::DEG2RAD * (65.0f / zoom), aspect, 20.0f, 500.0f);
+    Matrix4 projection = Matrix4().makePerspective(math_number::DEG2RAD * (65.0f / zoom), aspect, 20.0f, 500.0f);
 
     Vector3 target{10,-200,-100},up{0.0f, 1.0f, 0.0f};
     Matrix4 view = Matrix4().lookAt(cameraPos, target, up);
@@ -354,14 +356,17 @@ void Teapot::draw()
     model.makeTranslation(10.0f, -200.0f, -100.0f);
     model.makeRotationZ(rotY);
     model.makeRotationY(-rotX);
-    model.makeRotationX(Number::PI/2);
+    model.makeRotationX(math_number::PI/2);
 //    model = glm::rotate(model, rotY, Vector3(0.0f, 0.0f, 1.0f));
 //    model = glm::rotate(model, -rotX, Vector3(0.0f, 1.0f, 0.0f));
 //    model = glm::rotate(model, -(GLfloat)M_PI_2, Vector3(1.0f, 0.0f, 0.0f));
 
     Matrix4 mvp = Matrix4(projection).multiply(view).multiply(model);
-    Matrix4 worldInverseTranspose = model.clone().invert();
-    Matrix4 viewInverse = view.clone().invert();
+    Matrix4 worldInverseTranspose{};
+    worldInverseTranspose.getInverse(model);
+
+    Matrix4 viewInverse{};
+    viewInverse.getInverse(view);
 
     unfData.world = model;
     unfData.worldInverseTranspose = worldInverseTranspose;

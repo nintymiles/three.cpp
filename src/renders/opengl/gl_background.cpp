@@ -57,7 +57,7 @@ void GLBackground::render(GLRenderer& renderer, GLRenderList& renderList,Scene& 
     }
 
     auto background = scene.getBackgroundTexture() ? scene.getBackgroundTexture() : scene.getBackgroundCubeTexture();
-    auto tex = cubeMaps->get(background);
+    auto tex = background!=nullptr?cubeMaps->get(background): nullptr;
 
     if (renderer.autoClear || forceClear)
         renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
