@@ -34,6 +34,7 @@
 #include "gl_materials_displacementmap.h"
 #include "gl_materials_cubemap_refraction.h"
 #include "gl_materials_cubemap_envmaps.h"
+#include "gl_materials_texture_rotation.h"
 
 #include "gl_shader_demo1.h"
 #include "gl_shader_demo2.h"
@@ -226,6 +227,14 @@ static void ShowApplicationMenuBar() {
                     demoClasses["Gl_Materials_Envmaps"] = std::make_shared<GLMaterialsCubeMapEnvmaps>(display_w, display_h);
 
                 currentDemoClass = demoClasses["Gl_Materials_Envmaps"];
+                currentDemoClass->renderer->clear();
+            }
+
+            if (ImGui::MenuItem("Gl_Materials_Texture_Rotation", "")) {
+                if (demoClasses.count("Gl_Materials_Texture_Rotation") == 0)
+                    demoClasses["Gl_Materials_Texture_Rotation"] = std::make_shared<GLMaterialsTextureRotation>(display_w, display_h);
+
+                currentDemoClass = demoClasses["Gl_Materials_Texture_Rotation"];
                 currentDemoClass->renderer->clear();
             }
 

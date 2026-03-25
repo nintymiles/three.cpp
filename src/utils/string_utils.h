@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <iomanip>
 #include <algorithm>
 
 namespace string_utils{
@@ -106,6 +107,12 @@ namespace string_utils{
 
     inline float parseFloat(std::string value){
         return atof(value.c_str());
+    }
+
+    inline std::string floatToString(float value, int precision = 2) {
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(precision) << value;
+        return oss.str();
     }
 }
 
